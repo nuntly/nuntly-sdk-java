@@ -196,7 +196,7 @@ class NuntlyOkHttpClientAsync private constructor() {
          */
         fun maxRetries(maxRetries: Int) = apply { clientOptions.maxRetries(maxRetries) }
 
-        /** API Key for authentication */
+        /** API key to authenticate requests */
         fun apiKey(apiKey: String?) = apply { clientOptions.apiKey(apiKey) }
 
         /** Alias for calling [Builder.apiKey] with `apiKey.orElse(null)`. */

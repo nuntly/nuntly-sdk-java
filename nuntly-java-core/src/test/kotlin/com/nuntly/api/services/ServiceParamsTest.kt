@@ -17,6 +17,7 @@ import com.nuntly.api.client.okhttp.NuntlyOkHttpClient
 import com.nuntly.api.core.JsonValue
 import com.nuntly.api.models.apikeys.ApiKeyCreateParams
 import com.nuntly.api.models.emails.EmailSendParams
+import com.nuntly.api.models.shared.EmailHeaders
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -80,7 +81,7 @@ internal class ServiceParamsTest {
                 .ccOfStrings(listOf("string"))
                 .context(JsonValue.from(mapOf<String, Any>()))
                 .headers(
-                    EmailSendParams.Headers.builder()
+                    EmailHeaders.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )

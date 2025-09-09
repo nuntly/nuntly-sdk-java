@@ -3,6 +3,7 @@
 package com.nuntly.api.models.emails
 
 import com.nuntly.api.core.JsonValue
+import com.nuntly.api.models.shared.EmailHeaders
 import java.time.OffsetDateTime
 import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
@@ -27,7 +28,7 @@ internal class EmailSendParamsTest {
             .ccOfStrings(listOf("string"))
             .context(JsonValue.from(mapOf<String, Any>()))
             .headers(
-                EmailSendParams.Headers.builder()
+                EmailHeaders.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
@@ -59,7 +60,7 @@ internal class EmailSendParamsTest {
                 .ccOfStrings(listOf("string"))
                 .context(JsonValue.from(mapOf<String, Any>()))
                 .headers(
-                    EmailSendParams.Headers.builder()
+                    EmailHeaders.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
@@ -90,7 +91,7 @@ internal class EmailSendParamsTest {
         assertThat(body._context()).isEqualTo(JsonValue.from(mapOf<String, Any>()))
         assertThat(body.headers())
             .contains(
-                EmailSendParams.Headers.builder()
+                EmailHeaders.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )

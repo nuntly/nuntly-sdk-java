@@ -5,6 +5,7 @@ package com.nuntly.api.models.emails
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.api.core.JsonValue
 import com.nuntly.api.core.jsonMapper
+import com.nuntly.api.models.shared.EmailHeaders
 import com.nuntly.api.models.shared.EmailStatus
 import java.time.OffsetDateTime
 import kotlin.jvm.optionals.getOrNull
@@ -38,7 +39,7 @@ internal class EmailRetrieveResponseTest {
                 .ccOfStrings(listOf("string"))
                 .context(JsonValue.from(mapOf<String, Any>()))
                 .headers(
-                    EmailRetrieveResponse.Headers.builder()
+                    EmailHeaders.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
@@ -81,7 +82,7 @@ internal class EmailRetrieveResponseTest {
         assertThat(emailRetrieveResponse._context()).isEqualTo(JsonValue.from(mapOf<String, Any>()))
         assertThat(emailRetrieveResponse.headers())
             .contains(
-                EmailRetrieveResponse.Headers.builder()
+                EmailHeaders.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
@@ -130,7 +131,7 @@ internal class EmailRetrieveResponseTest {
                 .ccOfStrings(listOf("string"))
                 .context(JsonValue.from(mapOf<String, Any>()))
                 .headers(
-                    EmailRetrieveResponse.Headers.builder()
+                    EmailHeaders.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )

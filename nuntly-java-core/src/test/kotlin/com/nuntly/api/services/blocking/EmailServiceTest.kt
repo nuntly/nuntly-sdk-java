@@ -6,6 +6,7 @@ import com.nuntly.api.TestServerExtension
 import com.nuntly.api.client.okhttp.NuntlyOkHttpClient
 import com.nuntly.api.core.JsonValue
 import com.nuntly.api.models.emails.EmailSendParams
+import com.nuntly.api.models.shared.EmailHeaders
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -81,7 +82,7 @@ internal class EmailServiceTest {
                     .ccOfStrings(listOf("string"))
                     .context(JsonValue.from(mapOf<String, Any>()))
                     .headers(
-                        EmailSendParams.Headers.builder()
+                        EmailHeaders.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )

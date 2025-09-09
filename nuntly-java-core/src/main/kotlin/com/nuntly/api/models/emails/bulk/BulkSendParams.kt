@@ -28,6 +28,7 @@ import com.nuntly.api.core.http.Headers
 import com.nuntly.api.core.http.QueryParams
 import com.nuntly.api.core.toImmutable
 import com.nuntly.api.errors.NuntlyInvalidDataException
+import com.nuntly.api.models.shared.EmailHeaders
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
@@ -509,7 +510,7 @@ private constructor(
         private val cc: JsonField<Cc>,
         private val context: JsonValue,
         private val from: JsonField<String>,
-        private val headers: JsonField<Headers>,
+        private val headers: JsonField<EmailHeaders>,
         private val html: JsonField<String>,
         private val replyTo: JsonField<ReplyTo>,
         private val scheduledAt: JsonField<OffsetDateTime>,
@@ -526,7 +527,9 @@ private constructor(
             @JsonProperty("cc") @ExcludeMissing cc: JsonField<Cc> = JsonMissing.of(),
             @JsonProperty("context") @ExcludeMissing context: JsonValue = JsonMissing.of(),
             @JsonProperty("from") @ExcludeMissing from: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("headers") @ExcludeMissing headers: JsonField<Headers> = JsonMissing.of(),
+            @JsonProperty("headers")
+            @ExcludeMissing
+            headers: JsonField<EmailHeaders> = JsonMissing.of(),
             @JsonProperty("html") @ExcludeMissing html: JsonField<String> = JsonMissing.of(),
             @JsonProperty("reply_to")
             @ExcludeMissing
@@ -594,7 +597,7 @@ private constructor(
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun headers(): Optional<Headers> = headers.getOptional("headers")
+        fun headers(): Optional<EmailHeaders> = headers.getOptional("headers")
 
         /**
          * The HTML version of the email
@@ -678,7 +681,7 @@ private constructor(
          *
          * Unlike [headers], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("headers") @ExcludeMissing fun _headers(): JsonField<Headers> = headers
+        @JsonProperty("headers") @ExcludeMissing fun _headers(): JsonField<EmailHeaders> = headers
 
         /**
          * Returns the raw JSON value of [html].
@@ -757,7 +760,7 @@ private constructor(
             private var cc: JsonField<Cc> = JsonMissing.of()
             private var context: JsonValue = JsonMissing.of()
             private var from: JsonField<String> = JsonMissing.of()
-            private var headers: JsonField<Headers> = JsonMissing.of()
+            private var headers: JsonField<EmailHeaders> = JsonMissing.of()
             private var html: JsonField<String> = JsonMissing.of()
             private var replyTo: JsonField<ReplyTo> = JsonMissing.of()
             private var scheduledAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -853,16 +856,16 @@ private constructor(
             fun from(from: JsonField<String>) = apply { this.from = from }
 
             /** The headers to add to the email */
-            fun headers(headers: Headers) = headers(JsonField.of(headers))
+            fun headers(headers: EmailHeaders) = headers(JsonField.of(headers))
 
             /**
              * Sets [Builder.headers] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.headers] with a well-typed [Headers] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.headers] with a well-typed [EmailHeaders] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
+            fun headers(headers: JsonField<EmailHeaders>) = apply { this.headers = headers }
 
             /** The HTML version of the email */
             fun html(html: String) = html(JsonField.of(html))
@@ -1566,109 +1569,6 @@ private constructor(
             }
         }
 
-        /** The headers to add to the email */
-        class Headers
-        @JsonCreator
-        private constructor(
-            @com.fasterxml.jackson.annotation.JsonValue
-            private val additionalProperties: Map<String, JsonValue>
-        ) {
-
-            @JsonAnyGetter
-            @ExcludeMissing
-            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
-
-            fun toBuilder() = Builder().from(this)
-
-            companion object {
-
-                /** Returns a mutable builder for constructing an instance of [Headers]. */
-                @JvmStatic fun builder() = Builder()
-            }
-
-            /** A builder for [Headers]. */
-            class Builder internal constructor() {
-
-                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-                @JvmSynthetic
-                internal fun from(headers: Headers) = apply {
-                    additionalProperties = headers.additionalProperties.toMutableMap()
-                }
-
-                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                    this.additionalProperties.clear()
-                    putAllAdditionalProperties(additionalProperties)
-                }
-
-                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                    additionalProperties.put(key, value)
-                }
-
-                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
-                    apply {
-                        this.additionalProperties.putAll(additionalProperties)
-                    }
-
-                fun removeAdditionalProperty(key: String) = apply {
-                    additionalProperties.remove(key)
-                }
-
-                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                    keys.forEach(::removeAdditionalProperty)
-                }
-
-                /**
-                 * Returns an immutable instance of [Headers].
-                 *
-                 * Further updates to this [Builder] will not mutate the returned instance.
-                 */
-                fun build(): Headers = Headers(additionalProperties.toImmutable())
-            }
-
-            private var validated: Boolean = false
-
-            fun validate(): Headers = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: NuntlyInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            @JvmSynthetic
-            internal fun validity(): Int =
-                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is Headers && additionalProperties == other.additionalProperties
-            }
-
-            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
-
-            override fun hashCode(): Int = hashCode
-
-            override fun toString() = "Headers{additionalProperties=$additionalProperties}"
-        }
-
         /**
          * The email address where replies should be sent. If a recipient replies, the response will
          * go to this address instead of the sender's email address
@@ -2098,7 +1998,7 @@ private constructor(
         private val cc: JsonField<Cc>,
         private val context: JsonValue,
         private val from: JsonField<String>,
-        private val headers: JsonField<Headers>,
+        private val headers: JsonField<EmailHeaders>,
         private val html: JsonField<String>,
         private val replyTo: JsonField<ReplyTo>,
         private val scheduledAt: JsonField<OffsetDateTime>,
@@ -2115,7 +2015,9 @@ private constructor(
             @JsonProperty("cc") @ExcludeMissing cc: JsonField<Cc> = JsonMissing.of(),
             @JsonProperty("context") @ExcludeMissing context: JsonValue = JsonMissing.of(),
             @JsonProperty("from") @ExcludeMissing from: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("headers") @ExcludeMissing headers: JsonField<Headers> = JsonMissing.of(),
+            @JsonProperty("headers")
+            @ExcludeMissing
+            headers: JsonField<EmailHeaders> = JsonMissing.of(),
             @JsonProperty("html") @ExcludeMissing html: JsonField<String> = JsonMissing.of(),
             @JsonProperty("reply_to")
             @ExcludeMissing
@@ -2176,7 +2078,7 @@ private constructor(
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun headers(): Optional<Headers> = headers.getOptional("headers")
+        fun headers(): Optional<EmailHeaders> = headers.getOptional("headers")
 
         /**
          * The HTML version of the email
@@ -2261,7 +2163,7 @@ private constructor(
          *
          * Unlike [headers], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("headers") @ExcludeMissing fun _headers(): JsonField<Headers> = headers
+        @JsonProperty("headers") @ExcludeMissing fun _headers(): JsonField<EmailHeaders> = headers
 
         /**
          * Returns the raw JSON value of [html].
@@ -2339,7 +2241,7 @@ private constructor(
             private var cc: JsonField<Cc> = JsonMissing.of()
             private var context: JsonValue = JsonMissing.of()
             private var from: JsonField<String> = JsonMissing.of()
-            private var headers: JsonField<Headers> = JsonMissing.of()
+            private var headers: JsonField<EmailHeaders> = JsonMissing.of()
             private var html: JsonField<String> = JsonMissing.of()
             private var replyTo: JsonField<ReplyTo> = JsonMissing.of()
             private var scheduledAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -2418,16 +2320,16 @@ private constructor(
             fun from(from: JsonField<String>) = apply { this.from = from }
 
             /** The headers to add to the email */
-            fun headers(headers: Headers) = headers(JsonField.of(headers))
+            fun headers(headers: EmailHeaders) = headers(JsonField.of(headers))
 
             /**
              * Sets [Builder.headers] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.headers] with a well-typed [Headers] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.headers] with a well-typed [EmailHeaders] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
+            fun headers(headers: JsonField<EmailHeaders>) = apply { this.headers = headers }
 
             /** The HTML version of the email */
             fun html(html: String) = html(JsonField.of(html))
@@ -2971,109 +2873,6 @@ private constructor(
                     }
                 }
             }
-        }
-
-        /** The headers to add to the email */
-        class Headers
-        @JsonCreator
-        private constructor(
-            @com.fasterxml.jackson.annotation.JsonValue
-            private val additionalProperties: Map<String, JsonValue>
-        ) {
-
-            @JsonAnyGetter
-            @ExcludeMissing
-            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
-
-            fun toBuilder() = Builder().from(this)
-
-            companion object {
-
-                /** Returns a mutable builder for constructing an instance of [Headers]. */
-                @JvmStatic fun builder() = Builder()
-            }
-
-            /** A builder for [Headers]. */
-            class Builder internal constructor() {
-
-                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-                @JvmSynthetic
-                internal fun from(headers: Headers) = apply {
-                    additionalProperties = headers.additionalProperties.toMutableMap()
-                }
-
-                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                    this.additionalProperties.clear()
-                    putAllAdditionalProperties(additionalProperties)
-                }
-
-                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                    additionalProperties.put(key, value)
-                }
-
-                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
-                    apply {
-                        this.additionalProperties.putAll(additionalProperties)
-                    }
-
-                fun removeAdditionalProperty(key: String) = apply {
-                    additionalProperties.remove(key)
-                }
-
-                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                    keys.forEach(::removeAdditionalProperty)
-                }
-
-                /**
-                 * Returns an immutable instance of [Headers].
-                 *
-                 * Further updates to this [Builder] will not mutate the returned instance.
-                 */
-                fun build(): Headers = Headers(additionalProperties.toImmutable())
-            }
-
-            private var validated: Boolean = false
-
-            fun validate(): Headers = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: NuntlyInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            @JvmSynthetic
-            internal fun validity(): Int =
-                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is Headers && additionalProperties == other.additionalProperties
-            }
-
-            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
-
-            override fun hashCode(): Int = hashCode
-
-            override fun toString() = "Headers{additionalProperties=$additionalProperties}"
         }
 
         /**

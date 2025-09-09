@@ -6,6 +6,7 @@ import com.nuntly.api.TestServerExtension
 import com.nuntly.api.client.okhttp.NuntlyOkHttpClient
 import com.nuntly.api.core.JsonValue
 import com.nuntly.api.models.emails.bulk.BulkSendParams
+import com.nuntly.api.models.shared.EmailHeaders
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -47,7 +48,7 @@ internal class BulkServiceTest {
                             .context(JsonValue.from(mapOf<String, Any>()))
                             .from("ray@info.tomlinson.ai")
                             .headers(
-                                BulkSendParams.Email.Headers.builder()
+                                EmailHeaders.builder()
                                     .putAdditionalProperty("foo", JsonValue.from("string"))
                                     .build()
                             )
@@ -74,7 +75,7 @@ internal class BulkServiceTest {
                             .context(JsonValue.from(mapOf<String, Any>()))
                             .from("ray@info.tomlinson.ai")
                             .headers(
-                                BulkSendParams.Email.Headers.builder()
+                                EmailHeaders.builder()
                                     .putAdditionalProperty("foo", JsonValue.from("string"))
                                     .build()
                             )
@@ -100,7 +101,7 @@ internal class BulkServiceTest {
                             .context(JsonValue.from(mapOf<String, Any>()))
                             .from("from")
                             .headers(
-                                BulkSendParams.Fallback.Headers.builder()
+                                EmailHeaders.builder()
                                     .putAdditionalProperty("foo", JsonValue.from("string"))
                                     .build()
                             )

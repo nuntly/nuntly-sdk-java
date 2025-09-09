@@ -113,7 +113,7 @@ private constructor(
      */
     fun baseUrl(): String = baseUrl ?: PRODUCTION_URL
 
-    /** API Key for authentication */
+    /** API key to authenticate requests */
     fun apiKey(): Optional<String> = Optional.ofNullable(apiKey)
 
     fun toBuilder() = Builder().from(this)
@@ -279,7 +279,7 @@ private constructor(
          */
         fun maxRetries(maxRetries: Int) = apply { this.maxRetries = maxRetries }
 
-        /** API Key for authentication */
+        /** API key to authenticate requests */
         fun apiKey(apiKey: String?) = apply { this.apiKey = apiKey }
 
         /** Alias for calling [Builder.apiKey] with `apiKey.orElse(null)`. */
