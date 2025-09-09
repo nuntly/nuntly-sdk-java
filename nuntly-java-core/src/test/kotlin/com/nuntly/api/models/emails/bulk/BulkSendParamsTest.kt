@@ -3,6 +3,7 @@
 package com.nuntly.api.models.emails.bulk
 
 import com.nuntly.api.core.JsonValue
+import com.nuntly.api.models.shared.EmailHeaders
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -20,7 +21,7 @@ internal class BulkSendParamsTest {
                     .context(JsonValue.from(mapOf<String, Any>()))
                     .from("ray@info.tomlinson.ai")
                     .headers(
-                        BulkSendParams.Email.Headers.builder()
+                        EmailHeaders.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
@@ -42,7 +43,7 @@ internal class BulkSendParamsTest {
                     .context(JsonValue.from(mapOf<String, Any>()))
                     .from("ray@info.tomlinson.ai")
                     .headers(
-                        BulkSendParams.Email.Headers.builder()
+                        EmailHeaders.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
@@ -63,7 +64,7 @@ internal class BulkSendParamsTest {
                     .context(JsonValue.from(mapOf<String, Any>()))
                     .from("from")
                     .headers(
-                        BulkSendParams.Fallback.Headers.builder()
+                        EmailHeaders.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
@@ -93,7 +94,7 @@ internal class BulkSendParamsTest {
                         .context(JsonValue.from(mapOf<String, Any>()))
                         .from("ray@info.tomlinson.ai")
                         .headers(
-                            BulkSendParams.Email.Headers.builder()
+                            EmailHeaders.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
@@ -117,7 +118,7 @@ internal class BulkSendParamsTest {
                         .context(JsonValue.from(mapOf<String, Any>()))
                         .from("ray@info.tomlinson.ai")
                         .headers(
-                            BulkSendParams.Email.Headers.builder()
+                            EmailHeaders.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
@@ -140,7 +141,7 @@ internal class BulkSendParamsTest {
                         .context(JsonValue.from(mapOf<String, Any>()))
                         .from("from")
                         .headers(
-                            BulkSendParams.Fallback.Headers.builder()
+                            EmailHeaders.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
@@ -171,7 +172,7 @@ internal class BulkSendParamsTest {
                     .context(JsonValue.from(mapOf<String, Any>()))
                     .from("ray@info.tomlinson.ai")
                     .headers(
-                        BulkSendParams.Email.Headers.builder()
+                        EmailHeaders.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
@@ -191,7 +192,7 @@ internal class BulkSendParamsTest {
                     .context(JsonValue.from(mapOf<String, Any>()))
                     .from("ray@info.tomlinson.ai")
                     .headers(
-                        BulkSendParams.Email.Headers.builder()
+                        EmailHeaders.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
@@ -213,7 +214,7 @@ internal class BulkSendParamsTest {
                     .context(JsonValue.from(mapOf<String, Any>()))
                     .from("from")
                     .headers(
-                        BulkSendParams.Fallback.Headers.builder()
+                        EmailHeaders.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
