@@ -8,8 +8,8 @@ repositories {
 }
 
 allprojects {
-    group = "com.nuntly.api"
-    version = "0.0.1"
+    group = "com.nuntly"
+    version = "0.1.0" // x-release-please-version
 }
 
 subprojects {
