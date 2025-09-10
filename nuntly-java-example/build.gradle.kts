@@ -19,7 +19,7 @@ tasks.withType<JavaCompile>().configureEach {
 application {
     // Use `./gradlew :nuntly-java-example:run` to run `Main`
     // Use `./gradlew :nuntly-java-example:run -Pexample=Something` to run `SomethingExample`
-    mainClass = "com.nuntly.api.example.${
+    mainClass = "com.nuntly.example.${
         if (project.hasProperty("example"))
             "${project.property("example")}Example"
         else

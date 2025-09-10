@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.nuntly.api/nuntly-java)](https://central.sonatype.com/artifact/com.nuntly.api/nuntly-java/0.0.1)
-[![javadoc](https://javadoc.io/badge2/com.nuntly.api/nuntly-java/0.0.1/javadoc.svg)](https://javadoc.io/doc/com.nuntly.api/nuntly-java/0.0.1)
+[![Maven Central](https://img.shields.io/maven-central/v/com.nuntly/nuntly-java)](https://central.sonatype.com/artifact/com.nuntly/nuntly-java/0.0.1)
+[![javadoc](https://javadoc.io/badge2/com.nuntly/nuntly-java/0.0.1/javadoc.svg)](https://javadoc.io/doc/com.nuntly/nuntly-java/0.0.1)
 
 <!-- x-release-please-end -->
 
@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [developers.nuntly.com](http://developers.nuntly.com). Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.nuntly.api/nuntly-java/0.0.1).
+The REST API documentation can be found on [developers.nuntly.com](http://developers.nuntly.com). Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.nuntly/nuntly-java/0.0.1).
 
 <!-- x-release-please-end -->
 
@@ -24,14 +24,14 @@ The REST API documentation can be found on [developers.nuntly.com](http://develo
 ### Gradle
 
 ```kotlin
-implementation("com.nuntly.api:nuntly-java:0.0.1")
+implementation("com.nuntly:nuntly-java:0.0.1")
 ```
 
 ### Maven
 
 ```xml
 <dependency>
-  <groupId>com.nuntly.api</groupId>
+  <groupId>com.nuntly</groupId>
   <artifactId>nuntly-java</artifactId>
   <version>0.0.1</version>
 </dependency>
@@ -46,10 +46,10 @@ This library requires Java 8 or later.
 ## Usage
 
 ```java
-import com.nuntly.api.client.NuntlyClient;
-import com.nuntly.api.client.okhttp.NuntlyOkHttpClient;
-import com.nuntly.api.models.emails.EmailSendParams;
-import com.nuntly.api.models.emails.EmailSendResponse;
+import com.nuntly.client.NuntlyClient;
+import com.nuntly.client.okhttp.NuntlyOkHttpClient;
+import com.nuntly.models.emails.EmailSendParams;
+import com.nuntly.models.emails.EmailSendResponse;
 
 // Configures using the `nuntly.apiKey` and `nuntly.baseUrl` system properties
 // Or configures using the `NUNTLY_API_KEY` and `NUNTLY_BASE_URL` environment variables
@@ -69,8 +69,8 @@ EmailSendResponse email = client.emails().send(params);
 Configure the client using system properties or environment variables:
 
 ```java
-import com.nuntly.api.client.NuntlyClient;
-import com.nuntly.api.client.okhttp.NuntlyOkHttpClient;
+import com.nuntly.client.NuntlyClient;
+import com.nuntly.client.okhttp.NuntlyOkHttpClient;
 
 // Configures using the `nuntly.apiKey` and `nuntly.baseUrl` system properties
 // Or configures using the `NUNTLY_API_KEY` and `NUNTLY_BASE_URL` environment variables
@@ -80,8 +80,8 @@ NuntlyClient client = NuntlyOkHttpClient.fromEnv();
 Or manually:
 
 ```java
-import com.nuntly.api.client.NuntlyClient;
-import com.nuntly.api.client.okhttp.NuntlyOkHttpClient;
+import com.nuntly.client.NuntlyClient;
+import com.nuntly.client.okhttp.NuntlyOkHttpClient;
 
 NuntlyClient client = NuntlyOkHttpClient.builder()
     .apiKey("My API Key")
@@ -91,8 +91,8 @@ NuntlyClient client = NuntlyOkHttpClient.builder()
 Or using a combination of the two approaches:
 
 ```java
-import com.nuntly.api.client.NuntlyClient;
-import com.nuntly.api.client.okhttp.NuntlyOkHttpClient;
+import com.nuntly.client.NuntlyClient;
+import com.nuntly.client.okhttp.NuntlyOkHttpClient;
 
 NuntlyClient client = NuntlyOkHttpClient.builder()
     // Configures using the `nuntly.apiKey` and `nuntly.baseUrl` system properties
@@ -120,7 +120,7 @@ System properties take precedence over environment variables.
 To temporarily use a modified client configuration, while reusing the same connection and thread pools, call `withOptions()` on any client or service:
 
 ```java
-import com.nuntly.api.client.NuntlyClient;
+import com.nuntly.client.NuntlyClient;
 
 NuntlyClient clientWithOptions = client.withOptions(optionsBuilder -> {
     optionsBuilder.baseUrl("https://example.com");
@@ -149,10 +149,10 @@ Because each class is immutable, builder modification will _never_ affect alread
 The default client is synchronous. To switch to asynchronous execution, call the `async()` method:
 
 ```java
-import com.nuntly.api.client.NuntlyClient;
-import com.nuntly.api.client.okhttp.NuntlyOkHttpClient;
-import com.nuntly.api.models.emails.EmailSendParams;
-import com.nuntly.api.models.emails.EmailSendResponse;
+import com.nuntly.client.NuntlyClient;
+import com.nuntly.client.okhttp.NuntlyOkHttpClient;
+import com.nuntly.models.emails.EmailSendParams;
+import com.nuntly.models.emails.EmailSendResponse;
 import java.util.concurrent.CompletableFuture;
 
 // Configures using the `nuntly.apiKey` and `nuntly.baseUrl` system properties
@@ -171,10 +171,10 @@ CompletableFuture<EmailSendResponse> email = client.async().emails().send(params
 Or create an asynchronous client from the beginning:
 
 ```java
-import com.nuntly.api.client.NuntlyClientAsync;
-import com.nuntly.api.client.okhttp.NuntlyOkHttpClientAsync;
-import com.nuntly.api.models.emails.EmailSendParams;
-import com.nuntly.api.models.emails.EmailSendResponse;
+import com.nuntly.client.NuntlyClientAsync;
+import com.nuntly.client.okhttp.NuntlyOkHttpClientAsync;
+import com.nuntly.models.emails.EmailSendParams;
+import com.nuntly.models.emails.EmailSendResponse;
 import java.util.concurrent.CompletableFuture;
 
 // Configures using the `nuntly.apiKey` and `nuntly.baseUrl` system properties
@@ -199,10 +199,10 @@ The SDK defines methods that deserialize responses into instances of Java classe
 To access this data, prefix any HTTP method call on a client or service with `withRawResponse()`:
 
 ```java
-import com.nuntly.api.core.http.Headers;
-import com.nuntly.api.core.http.HttpResponseFor;
-import com.nuntly.api.models.apikeys.ApiKeyCreateParams;
-import com.nuntly.api.models.apikeys.ApiKeyCreateResponse;
+import com.nuntly.core.http.Headers;
+import com.nuntly.core.http.HttpResponseFor;
+import com.nuntly.models.apikeys.ApiKeyCreateParams;
+import com.nuntly.models.apikeys.ApiKeyCreateResponse;
 
 HttpResponseFor<ApiKeyCreateResponse> apiKey = client.apiKeys().withRawResponse().create();
 
@@ -213,7 +213,7 @@ Headers headers = apiKey.headers();
 You can still deserialize the response into an instance of a Java class if needed:
 
 ```java
-import com.nuntly.api.models.apikeys.ApiKeyCreateResponse;
+import com.nuntly.models.apikeys.ApiKeyCreateResponse;
 
 ApiKeyCreateResponse parsedApiKey = apiKey.parse();
 ```
@@ -222,26 +222,26 @@ ApiKeyCreateResponse parsedApiKey = apiKey.parse();
 
 The SDK throws custom unchecked exception types:
 
-- [`NuntlyServiceException`](nuntly-java-core/src/main/kotlin/com/nuntly/api/errors/NuntlyServiceException.kt): Base class for HTTP errors. See this table for which exception subclass is thrown for each HTTP status code:
+- [`NuntlyServiceException`](nuntly-java-core/src/main/kotlin/com/nuntly/errors/NuntlyServiceException.kt): Base class for HTTP errors. See this table for which exception subclass is thrown for each HTTP status code:
 
-  | Status | Exception                                                                                                                  |
-  | ------ | -------------------------------------------------------------------------------------------------------------------------- |
-  | 400    | [`BadRequestException`](nuntly-java-core/src/main/kotlin/com/nuntly/api/errors/BadRequestException.kt)                     |
-  | 401    | [`UnauthorizedException`](nuntly-java-core/src/main/kotlin/com/nuntly/api/errors/UnauthorizedException.kt)                 |
-  | 403    | [`PermissionDeniedException`](nuntly-java-core/src/main/kotlin/com/nuntly/api/errors/PermissionDeniedException.kt)         |
-  | 404    | [`NotFoundException`](nuntly-java-core/src/main/kotlin/com/nuntly/api/errors/NotFoundException.kt)                         |
-  | 422    | [`UnprocessableEntityException`](nuntly-java-core/src/main/kotlin/com/nuntly/api/errors/UnprocessableEntityException.kt)   |
-  | 429    | [`RateLimitException`](nuntly-java-core/src/main/kotlin/com/nuntly/api/errors/RateLimitException.kt)                       |
-  | 5xx    | [`InternalServerException`](nuntly-java-core/src/main/kotlin/com/nuntly/api/errors/InternalServerException.kt)             |
-  | others | [`UnexpectedStatusCodeException`](nuntly-java-core/src/main/kotlin/com/nuntly/api/errors/UnexpectedStatusCodeException.kt) |
+  | Status | Exception                                                                                                              |
+  | ------ | ---------------------------------------------------------------------------------------------------------------------- |
+  | 400    | [`BadRequestException`](nuntly-java-core/src/main/kotlin/com/nuntly/errors/BadRequestException.kt)                     |
+  | 401    | [`UnauthorizedException`](nuntly-java-core/src/main/kotlin/com/nuntly/errors/UnauthorizedException.kt)                 |
+  | 403    | [`PermissionDeniedException`](nuntly-java-core/src/main/kotlin/com/nuntly/errors/PermissionDeniedException.kt)         |
+  | 404    | [`NotFoundException`](nuntly-java-core/src/main/kotlin/com/nuntly/errors/NotFoundException.kt)                         |
+  | 422    | [`UnprocessableEntityException`](nuntly-java-core/src/main/kotlin/com/nuntly/errors/UnprocessableEntityException.kt)   |
+  | 429    | [`RateLimitException`](nuntly-java-core/src/main/kotlin/com/nuntly/errors/RateLimitException.kt)                       |
+  | 5xx    | [`InternalServerException`](nuntly-java-core/src/main/kotlin/com/nuntly/errors/InternalServerException.kt)             |
+  | others | [`UnexpectedStatusCodeException`](nuntly-java-core/src/main/kotlin/com/nuntly/errors/UnexpectedStatusCodeException.kt) |
 
-- [`NuntlyIoException`](nuntly-java-core/src/main/kotlin/com/nuntly/api/errors/NuntlyIoException.kt): I/O networking errors.
+- [`NuntlyIoException`](nuntly-java-core/src/main/kotlin/com/nuntly/errors/NuntlyIoException.kt): I/O networking errors.
 
-- [`NuntlyRetryableException`](nuntly-java-core/src/main/kotlin/com/nuntly/api/errors/NuntlyRetryableException.kt): Generic error indicating a failure that could be retried by the client.
+- [`NuntlyRetryableException`](nuntly-java-core/src/main/kotlin/com/nuntly/errors/NuntlyRetryableException.kt): Generic error indicating a failure that could be retried by the client.
 
-- [`NuntlyInvalidDataException`](nuntly-java-core/src/main/kotlin/com/nuntly/api/errors/NuntlyInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
+- [`NuntlyInvalidDataException`](nuntly-java-core/src/main/kotlin/com/nuntly/errors/NuntlyInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
 
-- [`NuntlyException`](nuntly-java-core/src/main/kotlin/com/nuntly/api/errors/NuntlyException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
+- [`NuntlyException`](nuntly-java-core/src/main/kotlin/com/nuntly/errors/NuntlyException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
 
 ## Pagination
 
@@ -254,8 +254,8 @@ To iterate through all results across all pages, use the `autoPager()` method, w
 When using the synchronous client, the method returns an [`Iterable`](https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html)
 
 ```java
-import com.nuntly.api.models.emails.EmailListPage;
-import com.nuntly.api.models.emails.EmailListResponse;
+import com.nuntly.models.emails.EmailListPage;
+import com.nuntly.models.emails.EmailListResponse;
 
 EmailListPage page = client.emails().list();
 
@@ -271,12 +271,12 @@ page.autoPager()
     .forEach(email -> System.out.println(email));
 ```
 
-When using the asynchronous client, the method returns an [`AsyncStreamResponse`](nuntly-java-core/src/main/kotlin/com/nuntly/api/core/http/AsyncStreamResponse.kt):
+When using the asynchronous client, the method returns an [`AsyncStreamResponse`](nuntly-java-core/src/main/kotlin/com/nuntly/core/http/AsyncStreamResponse.kt):
 
 ```java
-import com.nuntly.api.core.http.AsyncStreamResponse;
-import com.nuntly.api.models.emails.EmailListPageAsync;
-import com.nuntly.api.models.emails.EmailListResponse;
+import com.nuntly.core.http.AsyncStreamResponse;
+import com.nuntly.models.emails.EmailListPageAsync;
+import com.nuntly.models.emails.EmailListResponse;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -326,8 +326,8 @@ To access individual page items and manually request the next page, use the `ite
 `hasNextPage()`, and `nextPage()` methods:
 
 ```java
-import com.nuntly.api.models.emails.EmailListPage;
-import com.nuntly.api.models.emails.EmailListResponse;
+import com.nuntly.models.emails.EmailListPage;
+import com.nuntly.models.emails.EmailListResponse;
 
 EmailListPage page = client.emails().list();
 while (true) {
@@ -371,7 +371,7 @@ The SDK depends on [Jackson](https://github.com/FasterXML/jackson) for JSON seri
 
 The SDK throws an exception if it detects an incompatible Jackson version at runtime (e.g. if the default version was overridden in your Maven or Gradle config).
 
-If the SDK threw an exception, but you're _certain_ the version is compatible, then disable the version check using the `checkJacksonVersionCompatibility` on [`NuntlyOkHttpClient`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/api/client/okhttp/NuntlyOkHttpClient.kt) or [`NuntlyOkHttpClientAsync`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/api/client/okhttp/NuntlyOkHttpClientAsync.kt).
+If the SDK threw an exception, but you're _certain_ the version is compatible, then disable the version check using the `checkJacksonVersionCompatibility` on [`NuntlyOkHttpClient`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/client/okhttp/NuntlyOkHttpClient.kt) or [`NuntlyOkHttpClientAsync`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/client/okhttp/NuntlyOkHttpClientAsync.kt).
 
 > [!CAUTION]
 > We make no guarantee that the SDK works correctly when the Jackson version check is disabled.
@@ -395,8 +395,8 @@ The API may also explicitly instruct the SDK to retry or not retry a request.
 To set a custom number of retries, configure the client using the `maxRetries` method:
 
 ```java
-import com.nuntly.api.client.NuntlyClient;
-import com.nuntly.api.client.okhttp.NuntlyOkHttpClient;
+import com.nuntly.client.NuntlyClient;
+import com.nuntly.client.okhttp.NuntlyOkHttpClient;
 
 NuntlyClient client = NuntlyOkHttpClient.builder()
     .fromEnv()
@@ -411,7 +411,7 @@ Requests time out after 1 minute by default.
 To set a custom timeout, configure the method call using the `timeout` method:
 
 ```java
-import com.nuntly.api.models.emails.EmailSendResponse;
+import com.nuntly.models.emails.EmailSendResponse;
 
 EmailSendResponse email = client.emails().send(
   params, RequestOptions.builder().timeout(Duration.ofSeconds(30)).build()
@@ -421,8 +421,8 @@ EmailSendResponse email = client.emails().send(
 Or configure the default for all method calls at the client level:
 
 ```java
-import com.nuntly.api.client.NuntlyClient;
-import com.nuntly.api.client.okhttp.NuntlyOkHttpClient;
+import com.nuntly.client.NuntlyClient;
+import com.nuntly.client.okhttp.NuntlyOkHttpClient;
 import java.time.Duration;
 
 NuntlyClient client = NuntlyOkHttpClient.builder()
@@ -436,8 +436,8 @@ NuntlyClient client = NuntlyOkHttpClient.builder()
 To route requests through a proxy, configure the client using the `proxy` method:
 
 ```java
-import com.nuntly.api.client.NuntlyClient;
-import com.nuntly.api.client.okhttp.NuntlyOkHttpClient;
+import com.nuntly.client.NuntlyClient;
+import com.nuntly.client.okhttp.NuntlyOkHttpClient;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
@@ -460,8 +460,8 @@ NuntlyClient client = NuntlyOkHttpClient.builder()
 To configure how HTTPS connections are secured, configure the client using the `sslSocketFactory`, `trustManager`, and `hostnameVerifier` methods:
 
 ```java
-import com.nuntly.api.client.NuntlyClient;
-import com.nuntly.api.client.okhttp.NuntlyOkHttpClient;
+import com.nuntly.client.NuntlyClient;
+import com.nuntly.client.okhttp.NuntlyOkHttpClient;
 
 NuntlyClient client = NuntlyOkHttpClient.builder()
     .fromEnv()
@@ -479,10 +479,10 @@ The SDK consists of three artifacts:
 - `nuntly-java-core`
   - Contains core SDK logic
   - Does not depend on [OkHttp](https://square.github.io/okhttp)
-  - Exposes [`NuntlyClient`](nuntly-java-core/src/main/kotlin/com/nuntly/api/client/NuntlyClient.kt), [`NuntlyClientAsync`](nuntly-java-core/src/main/kotlin/com/nuntly/api/client/NuntlyClientAsync.kt), [`NuntlyClientImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/api/client/NuntlyClientImpl.kt), and [`NuntlyClientAsyncImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/api/client/NuntlyClientAsyncImpl.kt), all of which can work with any HTTP client
+  - Exposes [`NuntlyClient`](nuntly-java-core/src/main/kotlin/com/nuntly/client/NuntlyClient.kt), [`NuntlyClientAsync`](nuntly-java-core/src/main/kotlin/com/nuntly/client/NuntlyClientAsync.kt), [`NuntlyClientImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/client/NuntlyClientImpl.kt), and [`NuntlyClientAsyncImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/client/NuntlyClientAsyncImpl.kt), all of which can work with any HTTP client
 - `nuntly-java-client-okhttp`
   - Depends on [OkHttp](https://square.github.io/okhttp)
-  - Exposes [`NuntlyOkHttpClient`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/api/client/okhttp/NuntlyOkHttpClient.kt) and [`NuntlyOkHttpClientAsync`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/api/client/okhttp/NuntlyOkHttpClientAsync.kt), which provide a way to construct [`NuntlyClientImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/api/client/NuntlyClientImpl.kt) and [`NuntlyClientAsyncImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/api/client/NuntlyClientAsyncImpl.kt), respectively, using OkHttp
+  - Exposes [`NuntlyOkHttpClient`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/client/okhttp/NuntlyOkHttpClient.kt) and [`NuntlyOkHttpClientAsync`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/client/okhttp/NuntlyOkHttpClientAsync.kt), which provide a way to construct [`NuntlyClientImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/client/NuntlyClientImpl.kt) and [`NuntlyClientAsyncImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/client/NuntlyClientAsyncImpl.kt), respectively, using OkHttp
 - `nuntly-java`
   - Depends on and exposes the APIs of both `nuntly-java-core` and `nuntly-java-client-okhttp`
   - Does not have its own logic
@@ -497,16 +497,16 @@ This structure allows replacing the SDK's default HTTP client without pulling in
 To use a customized `OkHttpClient`:
 
 1. Replace your [`nuntly-java` dependency](#installation) with `nuntly-java-core`
-2. Copy `nuntly-java-client-okhttp`'s [`OkHttpClient`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/api/client/okhttp/OkHttpClient.kt) class into your code and customize it
-3. Construct [`NuntlyClientImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/api/client/NuntlyClientImpl.kt) or [`NuntlyClientAsyncImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/api/client/NuntlyClientAsyncImpl.kt), similarly to [`NuntlyOkHttpClient`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/api/client/okhttp/NuntlyOkHttpClient.kt) or [`NuntlyOkHttpClientAsync`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/api/client/okhttp/NuntlyOkHttpClientAsync.kt), using your customized client
+2. Copy `nuntly-java-client-okhttp`'s [`OkHttpClient`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/client/okhttp/OkHttpClient.kt) class into your code and customize it
+3. Construct [`NuntlyClientImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/client/NuntlyClientImpl.kt) or [`NuntlyClientAsyncImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/client/NuntlyClientAsyncImpl.kt), similarly to [`NuntlyOkHttpClient`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/client/okhttp/NuntlyOkHttpClient.kt) or [`NuntlyOkHttpClientAsync`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/client/okhttp/NuntlyOkHttpClientAsync.kt), using your customized client
 
 ### Completely custom HTTP client
 
 To use a completely custom HTTP client:
 
 1. Replace your [`nuntly-java` dependency](#installation) with `nuntly-java-core`
-2. Write a class that implements the [`HttpClient`](nuntly-java-core/src/main/kotlin/com/nuntly/api/core/http/HttpClient.kt) interface
-3. Construct [`NuntlyClientImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/api/client/NuntlyClientImpl.kt) or [`NuntlyClientAsyncImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/api/client/NuntlyClientAsyncImpl.kt), similarly to [`NuntlyOkHttpClient`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/api/client/okhttp/NuntlyOkHttpClient.kt) or [`NuntlyOkHttpClientAsync`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/api/client/okhttp/NuntlyOkHttpClientAsync.kt), using your new client class
+2. Write a class that implements the [`HttpClient`](nuntly-java-core/src/main/kotlin/com/nuntly/core/http/HttpClient.kt) interface
+3. Construct [`NuntlyClientImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/client/NuntlyClientImpl.kt) or [`NuntlyClientAsyncImpl`](nuntly-java-core/src/main/kotlin/com/nuntly/client/NuntlyClientAsyncImpl.kt), similarly to [`NuntlyOkHttpClient`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/client/okhttp/NuntlyOkHttpClient.kt) or [`NuntlyOkHttpClientAsync`](nuntly-java-client-okhttp/src/main/kotlin/com/nuntly/client/okhttp/NuntlyOkHttpClientAsync.kt), using your new client class
 
 ## Undocumented API functionality
 
@@ -517,8 +517,8 @@ The SDK is typed for convenient usage of the documented API. However, it also su
 To set undocumented parameters, call the `putAdditionalHeader`, `putAdditionalQueryParam`, or `putAdditionalBodyProperty` methods on any `Params` class:
 
 ```java
-import com.nuntly.api.core.JsonValue;
-import com.nuntly.api.models.emails.EmailSendParams;
+import com.nuntly.core.JsonValue;
+import com.nuntly.models.emails.EmailSendParams;
 
 EmailSendParams params = EmailSendParams.builder()
     .putAdditionalHeader("Secret-Header", "42")
@@ -532,8 +532,8 @@ These can be accessed on the built object later using the `_additionalHeaders()`
 To set undocumented parameters on _nested_ headers, query params, or body classes, call the `putAdditionalProperty` method on the nested class:
 
 ```java
-import com.nuntly.api.core.JsonValue;
-import com.nuntly.api.models.emails.bulk.BulkSendParams;
+import com.nuntly.core.JsonValue;
+import com.nuntly.models.emails.bulk.BulkSendParams;
 
 BulkSendParams params = BulkSendParams.builder()
     .fallback(BulkSendParams.Fallback.builder()
@@ -544,11 +544,11 @@ BulkSendParams params = BulkSendParams.builder()
 
 These properties can be accessed on the nested built object later using the `_additionalProperties()` method.
 
-To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](nuntly-java-core/src/main/kotlin/com/nuntly/api/core/Values.kt) object to its setter:
+To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](nuntly-java-core/src/main/kotlin/com/nuntly/core/Values.kt) object to its setter:
 
 ```java
-import com.nuntly.api.core.JsonValue;
-import com.nuntly.api.models.emails.EmailSendParams;
+import com.nuntly.core.JsonValue;
+import com.nuntly.models.emails.EmailSendParams;
 
 EmailSendParams params = EmailSendParams.builder()
     .from(JsonValue.from(42))
@@ -558,10 +558,10 @@ EmailSendParams params = EmailSendParams.builder()
     .build();
 ```
 
-The most straightforward way to create a [`JsonValue`](nuntly-java-core/src/main/kotlin/com/nuntly/api/core/Values.kt) is using its `from(...)` method:
+The most straightforward way to create a [`JsonValue`](nuntly-java-core/src/main/kotlin/com/nuntly/core/Values.kt) is using its `from(...)` method:
 
 ```java
-import com.nuntly.api.core.JsonValue;
+import com.nuntly.core.JsonValue;
 import java.util.List;
 import java.util.Map;
 
@@ -599,11 +599,11 @@ JsonValue complexValue = JsonValue.from(Map.of(
 
 Normally a `Builder` class's `build` method will throw [`IllegalStateException`](https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalStateException.html) if any required parameter or property is unset.
 
-To forcibly omit a required parameter or property, pass [`JsonMissing`](nuntly-java-core/src/main/kotlin/com/nuntly/api/core/Values.kt):
+To forcibly omit a required parameter or property, pass [`JsonMissing`](nuntly-java-core/src/main/kotlin/com/nuntly/core/Values.kt):
 
 ```java
-import com.nuntly.api.core.JsonMissing;
-import com.nuntly.api.models.emails.EmailSendParams;
+import com.nuntly.core.JsonMissing;
+import com.nuntly.models.emails.EmailSendParams;
 
 EmailSendParams params = EmailSendParams.builder()
     .subject("Welcome to Tomlinson AI!")
@@ -617,7 +617,7 @@ EmailSendParams params = EmailSendParams.builder()
 To access undocumented response properties, call the `_additionalProperties()` method:
 
 ```java
-import com.nuntly.api.core.JsonValue;
+import com.nuntly.core.JsonValue;
 import java.util.Map;
 
 Map<String, JsonValue> additionalProperties = client.emails().send(params)._additionalProperties();
@@ -647,7 +647,7 @@ String result = secretPropertyValue.accept(new JsonValue.Visitor<>() {
 To access a property's raw JSON value, which may be undocumented, call its `_` prefixed method:
 
 ```java
-import com.nuntly.api.core.JsonField;
+import com.nuntly.core.JsonField;
 import java.util.Optional;
 
 JsonField<String> from = client.emails().send(params)._from();
@@ -670,12 +670,12 @@ if (from.isMissing()) {
 
 In rare cases, the API may return a response that doesn't match the expected type. For example, the SDK may expect a property to contain a `String`, but the API could return something else.
 
-By default, the SDK will not throw an exception in this case. It will throw [`NuntlyInvalidDataException`](nuntly-java-core/src/main/kotlin/com/nuntly/api/errors/NuntlyInvalidDataException.kt) only if you directly access the property.
+By default, the SDK will not throw an exception in this case. It will throw [`NuntlyInvalidDataException`](nuntly-java-core/src/main/kotlin/com/nuntly/errors/NuntlyInvalidDataException.kt) only if you directly access the property.
 
 If you would prefer to check that the response is completely well-typed upfront, then either call `validate()`:
 
 ```java
-import com.nuntly.api.models.emails.EmailSendResponse;
+import com.nuntly.models.emails.EmailSendResponse;
 
 EmailSendResponse email = client.emails().send(params).validate();
 ```
@@ -683,7 +683,7 @@ EmailSendResponse email = client.emails().send(params).validate();
 Or configure the method call to validate the response using the `responseValidation` method:
 
 ```java
-import com.nuntly.api.models.emails.EmailSendResponse;
+import com.nuntly.models.emails.EmailSendResponse;
 
 EmailSendResponse email = client.emails().send(
   params, RequestOptions.builder().responseValidation(true).build()
@@ -693,8 +693,8 @@ EmailSendResponse email = client.emails().send(
 Or configure the default for all method calls at the client level:
 
 ```java
-import com.nuntly.api.client.NuntlyClient;
-import com.nuntly.api.client.okhttp.NuntlyOkHttpClient;
+import com.nuntly.client.NuntlyClient;
+import com.nuntly.client.okhttp.NuntlyOkHttpClient;
 
 NuntlyClient client = NuntlyOkHttpClient.builder()
     .fromEnv()
