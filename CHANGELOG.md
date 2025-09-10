@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.1 (2025-09-10)
+
+Full Changelog: [v0.1.0...v0.1.1](https://github.com/nuntly/nuntly-sdk-java/compare/v0.1.0...v0.1.1)
+
+### Chores
+
+* **publish:** configure to publish to Central Portal ([39b66d4](https://github.com/nuntly/nuntly-sdk-java/commit/39b66d447d96b3dd6b8b412f1fe431739865478d))
+
 ## 0.1.0 (2025-09-10)
 
 Full Changelog: [v0.0.1...v0.1.0](https://github.com/nuntly/nuntly-sdk-java/compare/v0.0.1...v0.1.0)
