@@ -27,9 +27,9 @@ configure<PublishingExtension> {
                 }
 
                 scm {
-                    connection.set("scm:git:git://github.com/stainless-sdks/nuntly-java.git")
-                    developerConnection.set("scm:git:git://github.com/stainless-sdks/nuntly-java.git")
-                    url.set("https://github.com/stainless-sdks/nuntly-java")
+                    connection.set("scm:git:git://github.com/nuntly/nuntly-sdk-java.git")
+                    developerConnection.set("scm:git:git://github.com/nuntly/nuntly-sdk-java.git")
+                    url.set("https://github.com/nuntly/nuntly-sdk-java")
                 }
 
                 versionMapping {
