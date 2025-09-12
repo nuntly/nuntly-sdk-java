@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2 (2025-09-12)
+
+Full Changelog: [v0.1.1...v0.1.2](https://github.com/nuntly/nuntly-sdk-java/compare/v0.1.1...v0.1.2)
+
+### Chores
+
+* improve formatter performance ([65d9aa4](https://github.com/nuntly/nuntly-sdk-java/commit/65d9aa43ea3d2dfd030f4f6f4027c19a47e4577f))
+
 ## 0.1.1 (2025-09-10)
 
 Full Changelog: [v0.1.0...v0.1.1](https://github.com/nuntly/nuntly-sdk-java/compare/v0.1.0...v0.1.1)
