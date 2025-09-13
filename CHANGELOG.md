@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3 (2025-09-13)
+
+Full Changelog: [v0.1.2...v0.1.3](https://github.com/nuntly/nuntly-sdk-java/compare/v0.1.2...v0.1.3)
+
+### Chores
+
+* **internal:** codegen related update ([1e9bc87](https://github.com/nuntly/nuntly-sdk-java/commit/1e9bc87bbc98276f4d9890e0450f96990ea785cd))
+
 ## 0.1.2 (2025-09-12)
 
 Full Changelog: [v0.1.1...v0.1.2](https://github.com/nuntly/nuntly-sdk-java/compare/v0.1.1...v0.1.2)
