@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4 (2025-09-16)
+
+Full Changelog: [v0.1.3...v0.1.4](https://github.com/nuntly/nuntly-sdk-java/compare/v0.1.3...v0.1.4)
+
+### Bug Fixes
+
+* **client:** incorrect `getPackageVersion` impl ([9e812d5](https://github.com/nuntly/nuntly-sdk-java/commit/9e812d5dac101c135bdcc78f2872d4140a5e4b2b))
+
 ## 0.1.3 (2025-09-13)
 
 Full Changelog: [v0.1.2...v0.1.3](https://github.com/nuntly/nuntly-sdk-java/compare/v0.1.2...v0.1.3)
