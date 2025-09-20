@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.2.0 (2025-09-20)
+
+Full Changelog: [v0.1.4...v0.2.0](https://github.com/nuntly/nuntly-sdk-java/compare/v0.1.4...v0.2.0)
+
+### Features
+
+* **api:** webhook events, retry and deliveries ([26f87b3](https://github.com/nuntly/nuntly-sdk-java/commit/26f87b39c4cf8d1148880fbc80ebd3532bb7766e))
+* **client:** expose sleeper option ([f69e0fa](https://github.com/nuntly/nuntly-sdk-java/commit/f69e0fa9e48c06c3bc3728eb07a883c6950ecbb0))
+
+
+### Bug Fixes
+
+* **client:** ensure single timer is created per client ([f69e0fa](https://github.com/nuntly/nuntly-sdk-java/commit/f69e0fa9e48c06c3bc3728eb07a883c6950ecbb0))
+
+
+### Chores
+
+* improve formatter performance ([bff501b](https://github.com/nuntly/nuntly-sdk-java/commit/bff501bd1f14ea58fce596b7bd6527addb21b169))
+
 ## 0.1.4 (2025-09-16)
 
 Full Changelog: [v0.1.3...v0.1.4](https://github.com/nuntly/nuntly-sdk-java/compare/v0.1.3...v0.1.4)
