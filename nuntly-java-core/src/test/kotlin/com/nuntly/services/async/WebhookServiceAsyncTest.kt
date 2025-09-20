@@ -4,7 +4,7 @@ package com.nuntly.services.async
 
 import com.nuntly.TestServerExtension
 import com.nuntly.client.okhttp.NuntlyOkHttpClientAsync
-import com.nuntly.models.shared.WebhookEventType
+import com.nuntly.models.shared.EventType
 import com.nuntly.models.webhooks.WebhookCreateParams
 import com.nuntly.models.webhooks.WebhookUpdateParams
 import org.junit.jupiter.api.Test
@@ -26,8 +26,8 @@ internal class WebhookServiceAsyncTest {
             webhookServiceAsync.create(
                 WebhookCreateParams.builder()
                     .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-                    .addEvent(WebhookEventType.EMAIL_DELIVERED)
-                    .addEvent(WebhookEventType.EMAIL_SENT)
+                    .addEvent(EventType.EMAIL_DELIVERED)
+                    .addEvent(EventType.EMAIL_SENT)
                     .status(WebhookCreateParams.Status.ENABLED)
                     .name("My webhook")
                     .build()
@@ -66,8 +66,8 @@ internal class WebhookServiceAsyncTest {
                 WebhookUpdateParams.builder()
                     .id("wh_YNtYn86oYZmP1ZHbnUBvXXFt")
                     .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-                    .addEvent(WebhookEventType.EMAIL_DELIVERED)
-                    .addEvent(WebhookEventType.EMAIL_SENT)
+                    .addEvent(EventType.EMAIL_DELIVERED)
+                    .addEvent(EventType.EMAIL_SENT)
                     .name("My webhook")
                     .status(WebhookUpdateParams.Status.ENABLED)
                     .build()

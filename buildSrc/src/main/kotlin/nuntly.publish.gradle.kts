@@ -30,7 +30,7 @@ configure<MavenPublishBaseExtension> {
 
     pom {
         name.set("Nuntly REST API")
-        description.set("An OpenAPI 3.1 definition for the Nuntly REST API")
+        description.set("Nuntly REST API definition")
         url.set("http://developers.nuntly.com")
 
         licenses {
