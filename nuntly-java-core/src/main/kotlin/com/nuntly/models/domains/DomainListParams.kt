@@ -21,7 +21,7 @@ private constructor(
     /** The cursor to use for pagination */
     fun cursor(): Optional<String> = Optional.ofNullable(cursor)
 
-    /** The number of emails to return */
+    /** The maximum number of items to return */
     fun limit(): Optional<Double> = Optional.ofNullable(limit)
 
     /** Additional headers to send with the request. */
@@ -62,7 +62,7 @@ private constructor(
         /** Alias for calling [Builder.cursor] with `cursor.orElse(null)`. */
         fun cursor(cursor: Optional<String>) = cursor(cursor.getOrNull())
 
-        /** The number of emails to return */
+        /** The maximum number of items to return */
         fun limit(limit: Double?) = apply { this.limit = limit }
 
         /**

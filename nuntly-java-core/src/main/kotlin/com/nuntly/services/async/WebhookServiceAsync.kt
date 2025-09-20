@@ -5,6 +5,8 @@ package com.nuntly.services.async
 import com.nuntly.core.ClientOptions
 import com.nuntly.core.RequestOptions
 import com.nuntly.core.http.HttpResponseFor
+import com.nuntly.errors.NuntlyInvalidDataException
+import com.nuntly.models.webhooks.UnwrapWebhookEvent
 import com.nuntly.models.webhooks.WebhookCreateParams
 import com.nuntly.models.webhooks.WebhookCreateResponse
 import com.nuntly.models.webhooks.WebhookDeleteParams
@@ -15,6 +17,7 @@ import com.nuntly.models.webhooks.WebhookRetrieveParams
 import com.nuntly.models.webhooks.WebhookRetrieveResponse
 import com.nuntly.models.webhooks.WebhookUpdateParams
 import com.nuntly.models.webhooks.WebhookUpdateResponse
+import com.nuntly.services.async.webhooks.EventServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -31,6 +34,8 @@ interface WebhookServiceAsync {
      * The original service is not modified.
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): WebhookServiceAsync
+
+    fun events(): EventServiceAsync
 
     /** Create a webhook so the endpoint is notified from Nuntly platform events (Emails events) */
     fun create(params: WebhookCreateParams): CompletableFuture<WebhookCreateResponse> =
@@ -166,6 +171,13 @@ interface WebhookServiceAsync {
         delete(id, WebhookDeleteParams.none(), requestOptions)
 
     /**
+     * Unwraps a webhook event from its JSON representation.
+     *
+     * @throws NuntlyInvalidDataException if the body could not be parsed.
+     */
+    fun unwrap(body: String): UnwrapWebhookEvent
+
+    /**
      * A view of [WebhookServiceAsync] that provides access to raw HTTP responses for each method.
      */
     interface WithRawResponse {
@@ -178,6 +190,8 @@ interface WebhookServiceAsync {
         fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): WebhookServiceAsync.WithRawResponse
+
+        fun events(): EventServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `post /webhooks`, but is otherwise the same as

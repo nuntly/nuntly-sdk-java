@@ -2,6 +2,7 @@
 
 package com.nuntly.services.blocking
 
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.ClientOptions
 import com.nuntly.core.RequestOptions
 import com.nuntly.core.checkRequired
@@ -16,7 +17,9 @@ import com.nuntly.core.http.HttpResponseFor
 import com.nuntly.core.http.json
 import com.nuntly.core.http.parseable
 import com.nuntly.core.prepare
+import com.nuntly.errors.NuntlyInvalidDataException
 import com.nuntly.models.DataEnvelope
+import com.nuntly.models.webhooks.UnwrapWebhookEvent
 import com.nuntly.models.webhooks.WebhookCreateParams
 import com.nuntly.models.webhooks.WebhookCreateResponse
 import com.nuntly.models.webhooks.WebhookDeleteParams
@@ -28,6 +31,8 @@ import com.nuntly.models.webhooks.WebhookRetrieveParams
 import com.nuntly.models.webhooks.WebhookRetrieveResponse
 import com.nuntly.models.webhooks.WebhookUpdateParams
 import com.nuntly.models.webhooks.WebhookUpdateResponse
+import com.nuntly.services.blocking.webhooks.EventService
+import com.nuntly.services.blocking.webhooks.EventServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -38,10 +43,14 @@ class WebhookServiceImpl internal constructor(private val clientOptions: ClientO
         WithRawResponseImpl(clientOptions)
     }
 
+    private val events: EventService by lazy { EventServiceImpl(clientOptions) }
+
     override fun withRawResponse(): WebhookService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): WebhookService =
         WebhookServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
+
+    override fun events(): EventService = events
 
     override fun create(
         params: WebhookCreateParams,
@@ -75,11 +84,27 @@ class WebhookServiceImpl internal constructor(private val clientOptions: ClientO
         // delete /webhooks/{id}
         withRawResponse().delete(params, requestOptions).parse()
 
+    /**
+     * Unwraps a webhook event from its JSON representation.
+     *
+     * @throws NuntlyInvalidDataException if the body could not be parsed.
+     */
+    override fun unwrap(body: String): UnwrapWebhookEvent =
+        try {
+            clientOptions.jsonMapper.readValue(body, jacksonTypeRef<UnwrapWebhookEvent>())
+        } catch (e: Exception) {
+            throw NuntlyInvalidDataException("Error parsing body", e)
+        }
+
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         WebhookService.WithRawResponse {
 
         private val errorHandler: Handler<HttpResponse> =
             errorHandler(errorBodyHandler(clientOptions.jsonMapper))
+
+        private val events: EventService.WithRawResponse by lazy {
+            EventServiceImpl.WithRawResponseImpl(clientOptions)
+        }
 
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
@@ -87,6 +112,8 @@ class WebhookServiceImpl internal constructor(private val clientOptions: ClientO
             WebhookServiceImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
+
+        override fun events(): EventService.WithRawResponse = events
 
         private val createHandler: Handler<DataEnvelope<WebhookCreateResponse>> =
             jsonHandler<DataEnvelope<WebhookCreateResponse>>(clientOptions.jsonMapper)
