@@ -15,7 +15,7 @@ import com.nuntly.core.checkKnown
 import com.nuntly.core.checkRequired
 import com.nuntly.core.toImmutable
 import com.nuntly.errors.NuntlyInvalidDataException
-import com.nuntly.models.shared.WebhookEventType
+import com.nuntly.models.shared.EventType
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
@@ -27,7 +27,7 @@ private constructor(
     private val id: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val endpointUrl: JsonField<String>,
-    private val events: JsonField<List<WebhookEventType>>,
+    private val events: JsonField<List<EventType>>,
     private val kind: JsonField<Kind>,
     private val orgId: JsonField<String>,
     private val region: JsonField<Region>,
@@ -49,7 +49,7 @@ private constructor(
         endpointUrl: JsonField<String> = JsonMissing.of(),
         @JsonProperty("events")
         @ExcludeMissing
-        events: JsonField<List<WebhookEventType>> = JsonMissing.of(),
+        events: JsonField<List<EventType>> = JsonMissing.of(),
         @JsonProperty("kind") @ExcludeMissing kind: JsonField<Kind> = JsonMissing.of(),
         @JsonProperty("org_id") @ExcludeMissing orgId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("region") @ExcludeMissing region: JsonField<Region> = JsonMissing.of(),
@@ -104,7 +104,7 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun events(): List<WebhookEventType> = events.getRequired("events")
+    fun events(): List<EventType> = events.getRequired("events")
 
     /**
      * The kind of object returned
@@ -192,9 +192,7 @@ private constructor(
      *
      * Unlike [events], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("events")
-    @ExcludeMissing
-    fun _events(): JsonField<List<WebhookEventType>> = events
+    @JsonProperty("events") @ExcludeMissing fun _events(): JsonField<List<EventType>> = events
 
     /**
      * Returns the raw JSON value of [kind].
@@ -288,7 +286,7 @@ private constructor(
         private var id: JsonField<String>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var endpointUrl: JsonField<String>? = null
-        private var events: JsonField<MutableList<WebhookEventType>>? = null
+        private var events: JsonField<MutableList<EventType>>? = null
         private var kind: JsonField<Kind>? = null
         private var orgId: JsonField<String>? = null
         private var region: JsonField<Region>? = null
@@ -349,25 +347,25 @@ private constructor(
          */
         fun endpointUrl(endpointUrl: JsonField<String>) = apply { this.endpointUrl = endpointUrl }
 
-        fun events(events: List<WebhookEventType>) = events(JsonField.of(events))
+        fun events(events: List<EventType>) = events(JsonField.of(events))
 
         /**
          * Sets [Builder.events] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.events] with a well-typed `List<WebhookEventType>` value
+         * You should usually call [Builder.events] with a well-typed `List<EventType>` value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun events(events: JsonField<List<WebhookEventType>>) = apply {
+        fun events(events: JsonField<List<EventType>>) = apply {
             this.events = events.map { it.toMutableList() }
         }
 
         /**
-         * Adds a single [WebhookEventType] to [events].
+         * Adds a single [EventType] to [events].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addEvent(event: WebhookEventType) = apply {
+        fun addEvent(event: EventType) = apply {
             events =
                 (events ?: JsonField.of(mutableListOf())).also {
                     checkKnown("events", it).add(event)

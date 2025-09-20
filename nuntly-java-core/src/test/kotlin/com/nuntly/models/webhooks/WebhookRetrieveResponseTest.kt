@@ -4,7 +4,7 @@ package com.nuntly.models.webhooks
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.jsonMapper
-import com.nuntly.models.shared.WebhookEventType
+import com.nuntly.models.shared.EventType
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -18,8 +18,8 @@ internal class WebhookRetrieveResponseTest {
                 .id("wh_01jne5c7gr2mhwrqg4zqwf48y2")
                 .createdAt(OffsetDateTime.parse("2025-03-03T14:08:22.552Z"))
                 .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-                .addEvent(WebhookEventType.EMAIL_DELIVERED)
-                .addEvent(WebhookEventType.EMAIL_SENT)
+                .addEvent(EventType.EMAIL_DELIVERED)
+                .addEvent(EventType.EMAIL_SENT)
                 .kind(WebhookRetrieveResponse.Kind.WEBHOOK)
                 .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
                 .region(WebhookRetrieveResponse.Region.EU_WEST_1)
@@ -34,7 +34,7 @@ internal class WebhookRetrieveResponseTest {
         assertThat(webhookRetrieveResponse.endpointUrl())
             .isEqualTo("https://webhook.site/12345678-1234-5678-1234-123456789012")
         assertThat(webhookRetrieveResponse.events())
-            .containsExactly(WebhookEventType.EMAIL_DELIVERED, WebhookEventType.EMAIL_SENT)
+            .containsExactly(EventType.EMAIL_DELIVERED, EventType.EMAIL_SENT)
         assertThat(webhookRetrieveResponse.kind()).isEqualTo(WebhookRetrieveResponse.Kind.WEBHOOK)
         assertThat(webhookRetrieveResponse.orgId()).isEqualTo("org_01jh6jk82zjq9deye73h0mzcaq")
         assertThat(webhookRetrieveResponse.region())
@@ -54,8 +54,8 @@ internal class WebhookRetrieveResponseTest {
                 .id("wh_01jne5c7gr2mhwrqg4zqwf48y2")
                 .createdAt(OffsetDateTime.parse("2025-03-03T14:08:22.552Z"))
                 .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-                .addEvent(WebhookEventType.EMAIL_DELIVERED)
-                .addEvent(WebhookEventType.EMAIL_SENT)
+                .addEvent(EventType.EMAIL_DELIVERED)
+                .addEvent(EventType.EMAIL_SENT)
                 .kind(WebhookRetrieveResponse.Kind.WEBHOOK)
                 .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
                 .region(WebhookRetrieveResponse.Region.EU_WEST_1)

@@ -7,9 +7,7 @@ import com.nuntly.core.Enum
 import com.nuntly.core.JsonField
 import com.nuntly.errors.NuntlyInvalidDataException
 
-/** The webhook events */
-class WebhookEventType @JsonCreator private constructor(private val value: JsonField<String>) :
-    Enum {
+class EventType @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
     /**
      * Returns this class instance's raw value.
@@ -40,10 +38,10 @@ class WebhookEventType @JsonCreator private constructor(private val value: JsonF
 
         @JvmField val EMAIL_FAILED = of("email.failed")
 
-        @JvmStatic fun of(value: String) = WebhookEventType(JsonField.of(value))
+        @JvmStatic fun of(value: String) = EventType(JsonField.of(value))
     }
 
-    /** An enum containing [WebhookEventType]'s known values. */
+    /** An enum containing [EventType]'s known values. */
     enum class Known {
         EMAIL_SENT,
         EMAIL_DELIVERED,
@@ -57,9 +55,9 @@ class WebhookEventType @JsonCreator private constructor(private val value: JsonF
     }
 
     /**
-     * An enum containing [WebhookEventType]'s known values, as well as an [_UNKNOWN] member.
+     * An enum containing [EventType]'s known values, as well as an [_UNKNOWN] member.
      *
-     * An instance of [WebhookEventType] can contain an unknown value in a couple of cases:
+     * An instance of [EventType] can contain an unknown value in a couple of cases:
      * - It was deserialized from data that doesn't match any known member. For example, if the SDK
      *   is on an older version than the API, then the API may respond with new members that the SDK
      *   is unaware of.
@@ -75,9 +73,7 @@ class WebhookEventType @JsonCreator private constructor(private val value: JsonF
         EMAIL_REJECTED,
         EMAIL_DELIVERY_DELAYED,
         EMAIL_FAILED,
-        /**
-         * An enum member indicating that [WebhookEventType] was instantiated with an unknown value.
-         */
+        /** An enum member indicating that [EventType] was instantiated with an unknown value. */
         _UNKNOWN,
     }
 
@@ -121,7 +117,7 @@ class WebhookEventType @JsonCreator private constructor(private val value: JsonF
             EMAIL_REJECTED -> Known.EMAIL_REJECTED
             EMAIL_DELIVERY_DELAYED -> Known.EMAIL_DELIVERY_DELAYED
             EMAIL_FAILED -> Known.EMAIL_FAILED
-            else -> throw NuntlyInvalidDataException("Unknown WebhookEventType: $value")
+            else -> throw NuntlyInvalidDataException("Unknown EventType: $value")
         }
 
     /**
@@ -138,7 +134,7 @@ class WebhookEventType @JsonCreator private constructor(private val value: JsonF
 
     private var validated: Boolean = false
 
-    fun validate(): WebhookEventType = apply {
+    fun validate(): EventType = apply {
         if (validated) {
             return@apply
         }
@@ -167,7 +163,7 @@ class WebhookEventType @JsonCreator private constructor(private val value: JsonF
             return true
         }
 
-        return other is WebhookEventType && value == other.value
+        return other is EventType && value == other.value
     }
 
     override fun hashCode() = value.hashCode()

@@ -6,6 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.nuntly.core.ClientOptions
 import com.nuntly.core.RequestOptions
 import com.nuntly.core.http.HttpResponseFor
+import com.nuntly.errors.NuntlyInvalidDataException
+import com.nuntly.models.webhooks.UnwrapWebhookEvent
 import com.nuntly.models.webhooks.WebhookCreateParams
 import com.nuntly.models.webhooks.WebhookCreateResponse
 import com.nuntly.models.webhooks.WebhookDeleteParams
@@ -16,6 +18,7 @@ import com.nuntly.models.webhooks.WebhookRetrieveParams
 import com.nuntly.models.webhooks.WebhookRetrieveResponse
 import com.nuntly.models.webhooks.WebhookUpdateParams
 import com.nuntly.models.webhooks.WebhookUpdateResponse
+import com.nuntly.services.blocking.webhooks.EventService
 import java.util.function.Consumer
 
 interface WebhookService {
@@ -31,6 +34,8 @@ interface WebhookService {
      * The original service is not modified.
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): WebhookService
+
+    fun events(): EventService
 
     /** Create a webhook so the endpoint is notified from Nuntly platform events (Emails events) */
     fun create(params: WebhookCreateParams): WebhookCreateResponse =
@@ -149,6 +154,13 @@ interface WebhookService {
     fun delete(id: String, requestOptions: RequestOptions): WebhookDeleteResponse =
         delete(id, WebhookDeleteParams.none(), requestOptions)
 
+    /**
+     * Unwraps a webhook event from its JSON representation.
+     *
+     * @throws NuntlyInvalidDataException if the body could not be parsed.
+     */
+    fun unwrap(body: String): UnwrapWebhookEvent
+
     /** A view of [WebhookService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -158,6 +170,8 @@ interface WebhookService {
          * The original service is not modified.
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): WebhookService.WithRawResponse
+
+        fun events(): EventService.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `post /webhooks`, but is otherwise the same as

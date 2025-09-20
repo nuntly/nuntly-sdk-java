@@ -4,9 +4,16 @@ package com.nuntly.proguard
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.client.okhttp.NuntlyOkHttpClient
+import com.nuntly.core.JsonValue
 import com.nuntly.core.jsonMapper
 import com.nuntly.models.apikeys.ApiKeyCreateResponse
 import com.nuntly.models.shared.BulkEmailsStatus
+import com.nuntly.models.shared.EmailEvent
+import com.nuntly.models.shared.EventType
+import com.nuntly.models.shared.SendDetail
+import com.nuntly.models.webhooks.BaseEvent
+import com.nuntly.models.webhooks.EmailSentEvent
+import com.nuntly.models.webhooks.Event
 import java.time.OffsetDateTime
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
@@ -83,6 +90,52 @@ internal class ProGuardCompatibilityTest {
             )
 
         assertThat(roundtrippedApiKeyCreateResponse).isEqualTo(apiKeyCreateResponse)
+    }
+
+    @Test
+    fun eventRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val event =
+            Event.ofEmailSent(
+                EmailSentEvent.builder()
+                    .id("id")
+                    .createdAt("created_at")
+                    .type(EventType.EMAIL_SENT)
+                    .kind(BaseEvent.Kind.EVENT)
+                    .data(
+                        EmailSentEvent.Data.builder()
+                            .id("id")
+                            .domain("domain")
+                            .domainId("domain_id")
+                            .enqueueAt("enqueue_at")
+                            .from("from")
+                            .messageId("message_id")
+                            .orgId("org_id")
+                            .sentAt("sent_at")
+                            .subject("subject")
+                            .to("string")
+                            .bcc("string")
+                            .bulkId("bulk_id")
+                            .cc("string")
+                            .addHeader(
+                                EmailEvent.Header.builder().name("name").value("value").build()
+                            )
+                            .replyTo("string")
+                            .tags(
+                                EmailEvent.Tags.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
+                                    .build()
+                            )
+                            .send(SendDetail.builder().build())
+                            .build()
+                    )
+                    .build()
+            )
+
+        val roundtrippedEvent =
+            jsonMapper.readValue(jsonMapper.writeValueAsString(event), jacksonTypeRef<Event>())
+
+        assertThat(roundtrippedEvent).isEqualTo(event)
     }
 
     @Test

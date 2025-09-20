@@ -16,7 +16,9 @@ import com.nuntly.core.http.HttpResponseFor
 import com.nuntly.core.http.json
 import com.nuntly.core.http.parseable
 import com.nuntly.core.prepareAsync
+import com.nuntly.errors.NuntlyInvalidDataException
 import com.nuntly.models.DataEnvelope
+import com.nuntly.models.webhooks.UnwrapWebhookEvent
 import com.nuntly.models.webhooks.WebhookCreateParams
 import com.nuntly.models.webhooks.WebhookCreateResponse
 import com.nuntly.models.webhooks.WebhookDeleteParams
@@ -28,6 +30,9 @@ import com.nuntly.models.webhooks.WebhookRetrieveParams
 import com.nuntly.models.webhooks.WebhookRetrieveResponse
 import com.nuntly.models.webhooks.WebhookUpdateParams
 import com.nuntly.models.webhooks.WebhookUpdateResponse
+import com.nuntly.services.async.webhooks.EventServiceAsync
+import com.nuntly.services.async.webhooks.EventServiceAsyncImpl
+import com.nuntly.services.blocking.WebhookServiceImpl
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -39,10 +44,14 @@ class WebhookServiceAsyncImpl internal constructor(private val clientOptions: Cl
         WithRawResponseImpl(clientOptions)
     }
 
+    private val events: EventServiceAsync by lazy { EventServiceAsyncImpl(clientOptions) }
+
     override fun withRawResponse(): WebhookServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): WebhookServiceAsync =
         WebhookServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
+
+    override fun events(): EventServiceAsync = events
 
     override fun create(
         params: WebhookCreateParams,
@@ -79,11 +88,23 @@ class WebhookServiceAsyncImpl internal constructor(private val clientOptions: Cl
         // delete /webhooks/{id}
         withRawResponse().delete(params, requestOptions).thenApply { it.parse() }
 
+    /**
+     * Unwraps a webhook event from its JSON representation.
+     *
+     * @throws NuntlyInvalidDataException if the body could not be parsed.
+     */
+    override fun unwrap(body: String): UnwrapWebhookEvent =
+        WebhookServiceImpl(clientOptions).unwrap(body)
+
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         WebhookServiceAsync.WithRawResponse {
 
         private val errorHandler: Handler<HttpResponse> =
             errorHandler(errorBodyHandler(clientOptions.jsonMapper))
+
+        private val events: EventServiceAsync.WithRawResponse by lazy {
+            EventServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
 
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
@@ -91,6 +112,8 @@ class WebhookServiceAsyncImpl internal constructor(private val clientOptions: Cl
             WebhookServiceAsyncImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
+
+        override fun events(): EventServiceAsync.WithRawResponse = events
 
         private val createHandler: Handler<DataEnvelope<WebhookCreateResponse>> =
             jsonHandler<DataEnvelope<WebhookCreateResponse>>(clientOptions.jsonMapper)

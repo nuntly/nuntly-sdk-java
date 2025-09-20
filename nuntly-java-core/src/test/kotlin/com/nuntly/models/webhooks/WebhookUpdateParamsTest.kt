@@ -2,7 +2,7 @@
 
 package com.nuntly.models.webhooks
 
-import com.nuntly.models.shared.WebhookEventType
+import com.nuntly.models.shared.EventType
 import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -14,8 +14,8 @@ internal class WebhookUpdateParamsTest {
         WebhookUpdateParams.builder()
             .id("wh_YNtYn86oYZmP1ZHbnUBvXXFt")
             .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-            .addEvent(WebhookEventType.EMAIL_DELIVERED)
-            .addEvent(WebhookEventType.EMAIL_SENT)
+            .addEvent(EventType.EMAIL_DELIVERED)
+            .addEvent(EventType.EMAIL_SENT)
             .name("My webhook")
             .status(WebhookUpdateParams.Status.ENABLED)
             .build()
@@ -36,8 +36,8 @@ internal class WebhookUpdateParamsTest {
             WebhookUpdateParams.builder()
                 .id("wh_YNtYn86oYZmP1ZHbnUBvXXFt")
                 .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-                .addEvent(WebhookEventType.EMAIL_DELIVERED)
-                .addEvent(WebhookEventType.EMAIL_SENT)
+                .addEvent(EventType.EMAIL_DELIVERED)
+                .addEvent(EventType.EMAIL_SENT)
                 .name("My webhook")
                 .status(WebhookUpdateParams.Status.ENABLED)
                 .build()
@@ -47,7 +47,7 @@ internal class WebhookUpdateParamsTest {
         assertThat(body.endpointUrl())
             .contains("https://webhook.site/12345678-1234-5678-1234-123456789012")
         assertThat(body.events().getOrNull())
-            .containsExactly(WebhookEventType.EMAIL_DELIVERED, WebhookEventType.EMAIL_SENT)
+            .containsExactly(EventType.EMAIL_DELIVERED, EventType.EMAIL_SENT)
         assertThat(body.name()).contains("My webhook")
         assertThat(body.status()).contains(WebhookUpdateParams.Status.ENABLED)
     }
