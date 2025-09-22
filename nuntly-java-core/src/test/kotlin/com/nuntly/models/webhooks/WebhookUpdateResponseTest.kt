@@ -16,11 +16,13 @@ internal class WebhookUpdateResponseTest {
                 .id("wh_01jne5c7gr2mhwrqg4zqwf48y2")
                 .kind(WebhookUpdateResponse.Kind.WEBHOOK)
                 .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
+                .signingSecret("signing_secret")
                 .build()
 
         assertThat(webhookUpdateResponse.id()).isEqualTo("wh_01jne5c7gr2mhwrqg4zqwf48y2")
         assertThat(webhookUpdateResponse.kind()).isEqualTo(WebhookUpdateResponse.Kind.WEBHOOK)
         assertThat(webhookUpdateResponse.orgId()).isEqualTo("org_01jh6jk82zjq9deye73h0mzcaq")
+        assertThat(webhookUpdateResponse.signingSecret()).contains("signing_secret")
     }
 
     @Test
@@ -31,6 +33,7 @@ internal class WebhookUpdateResponseTest {
                 .id("wh_01jne5c7gr2mhwrqg4zqwf48y2")
                 .kind(WebhookUpdateResponse.Kind.WEBHOOK)
                 .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
+                .signingSecret("signing_secret")
                 .build()
 
         val roundtrippedWebhookUpdateResponse =

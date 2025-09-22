@@ -17,6 +17,7 @@ internal class WebhookUpdateParamsTest {
             .addEvent(EventType.EMAIL_DELIVERED)
             .addEvent(EventType.EMAIL_SENT)
             .name("My webhook")
+            .rotateSecret(true)
             .status(WebhookUpdateParams.Status.ENABLED)
             .build()
     }
@@ -39,6 +40,7 @@ internal class WebhookUpdateParamsTest {
                 .addEvent(EventType.EMAIL_DELIVERED)
                 .addEvent(EventType.EMAIL_SENT)
                 .name("My webhook")
+                .rotateSecret(true)
                 .status(WebhookUpdateParams.Status.ENABLED)
                 .build()
 
@@ -49,6 +51,7 @@ internal class WebhookUpdateParamsTest {
         assertThat(body.events().getOrNull())
             .containsExactly(EventType.EMAIL_DELIVERED, EventType.EMAIL_SENT)
         assertThat(body.name()).contains("My webhook")
+        assertThat(body.rotateSecret()).contains(true)
         assertThat(body.status()).contains(WebhookUpdateParams.Status.ENABLED)
     }
 
