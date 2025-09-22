@@ -57,6 +57,14 @@ private constructor(
     fun name(): Optional<String> = body.name()
 
     /**
+     * If true, a new signing secret will be generated
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun rotateSecret(): Optional<Boolean> = body.rotateSecret()
+
+    /**
      * The status of the webhook.
      *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -84,6 +92,13 @@ private constructor(
      * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _name(): JsonField<String> = body._name()
+
+    /**
+     * Returns the raw JSON value of [rotateSecret].
+     *
+     * Unlike [rotateSecret], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _rotateSecret(): JsonField<Boolean> = body._rotateSecret()
 
     /**
      * Returns the raw JSON value of [status].
@@ -139,7 +154,9 @@ private constructor(
          * - [endpointUrl]
          * - [events]
          * - [name]
+         * - [rotateSecret]
          * - [status]
+         * - etc.
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
@@ -183,6 +200,20 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun name(name: JsonField<String>) = apply { body.name(name) }
+
+        /** If true, a new signing secret will be generated */
+        fun rotateSecret(rotateSecret: Boolean) = apply { body.rotateSecret(rotateSecret) }
+
+        /**
+         * Sets [Builder.rotateSecret] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.rotateSecret] with a well-typed [Boolean] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun rotateSecret(rotateSecret: JsonField<Boolean>) = apply {
+            body.rotateSecret(rotateSecret)
+        }
 
         /** The status of the webhook. */
         fun status(status: Status) = apply { body.status(status) }
@@ -343,6 +374,7 @@ private constructor(
         private val endpointUrl: JsonField<String>,
         private val events: JsonField<List<EventType>>,
         private val name: JsonField<String>,
+        private val rotateSecret: JsonField<Boolean>,
         private val status: JsonField<Status>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -356,8 +388,11 @@ private constructor(
             @ExcludeMissing
             events: JsonField<List<EventType>> = JsonMissing.of(),
             @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("rotate_secret")
+            @ExcludeMissing
+            rotateSecret: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
-        ) : this(endpointUrl, events, name, status, mutableMapOf())
+        ) : this(endpointUrl, events, name, rotateSecret, status, mutableMapOf())
 
         /**
          * The endpoint URL of the webhook
@@ -380,6 +415,14 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun name(): Optional<String> = name.getOptional("name")
+
+        /**
+         * If true, a new signing secret will be generated
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun rotateSecret(): Optional<Boolean> = rotateSecret.getOptional("rotate_secret")
 
         /**
          * The status of the webhook.
@@ -413,6 +456,16 @@ private constructor(
         @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
 
         /**
+         * Returns the raw JSON value of [rotateSecret].
+         *
+         * Unlike [rotateSecret], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("rotate_secret")
+        @ExcludeMissing
+        fun _rotateSecret(): JsonField<Boolean> = rotateSecret
+
+        /**
          * Returns the raw JSON value of [status].
          *
          * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
@@ -443,6 +496,7 @@ private constructor(
             private var endpointUrl: JsonField<String> = JsonMissing.of()
             private var events: JsonField<MutableList<EventType>>? = null
             private var name: JsonField<String> = JsonMissing.of()
+            private var rotateSecret: JsonField<Boolean> = JsonMissing.of()
             private var status: JsonField<Status> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -451,6 +505,7 @@ private constructor(
                 endpointUrl = body.endpointUrl
                 events = body.events.map { it.toMutableList() }
                 name = body.name
+                rotateSecret = body.rotateSecret
                 status = body.status
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
@@ -506,6 +561,20 @@ private constructor(
              */
             fun name(name: JsonField<String>) = apply { this.name = name }
 
+            /** If true, a new signing secret will be generated */
+            fun rotateSecret(rotateSecret: Boolean) = rotateSecret(JsonField.of(rotateSecret))
+
+            /**
+             * Sets [Builder.rotateSecret] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.rotateSecret] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun rotateSecret(rotateSecret: JsonField<Boolean>) = apply {
+                this.rotateSecret = rotateSecret
+            }
+
             /** The status of the webhook. */
             fun status(status: Status) = status(JsonField.of(status))
 
@@ -547,6 +616,7 @@ private constructor(
                     endpointUrl,
                     (events ?: JsonMissing.of()).map { it.toImmutable() },
                     name,
+                    rotateSecret,
                     status,
                     additionalProperties.toMutableMap(),
                 )
@@ -562,6 +632,7 @@ private constructor(
             endpointUrl()
             events().ifPresent { it.forEach { it.validate() } }
             name()
+            rotateSecret()
             status().ifPresent { it.validate() }
             validated = true
         }
@@ -585,6 +656,7 @@ private constructor(
             (if (endpointUrl.asKnown().isPresent) 1 else 0) +
                 (events.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (name.asKnown().isPresent) 1 else 0) +
+                (if (rotateSecret.asKnown().isPresent) 1 else 0) +
                 (status.asKnown().getOrNull()?.validity() ?: 0)
 
         override fun equals(other: Any?): Boolean {
@@ -596,18 +668,19 @@ private constructor(
                 endpointUrl == other.endpointUrl &&
                 events == other.events &&
                 name == other.name &&
+                rotateSecret == other.rotateSecret &&
                 status == other.status &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(endpointUrl, events, name, status, additionalProperties)
+            Objects.hash(endpointUrl, events, name, rotateSecret, status, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{endpointUrl=$endpointUrl, events=$events, name=$name, status=$status, additionalProperties=$additionalProperties}"
+            "Body{endpointUrl=$endpointUrl, events=$events, name=$name, rotateSecret=$rotateSecret, status=$status, additionalProperties=$additionalProperties}"
     }
 
     /** The status of the webhook. */

@@ -69,6 +69,7 @@ internal class WebhookServiceAsyncTest {
                     .addEvent(EventType.EMAIL_DELIVERED)
                     .addEvent(EventType.EMAIL_SENT)
                     .name("My webhook")
+                    .rotateSecret(true)
                     .status(WebhookUpdateParams.Status.ENABLED)
                     .build()
             )
