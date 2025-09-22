@@ -15,6 +15,7 @@ import com.nuntly.core.checkRequired
 import com.nuntly.errors.NuntlyInvalidDataException
 import java.util.Collections
 import java.util.Objects
+import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class WebhookUpdateResponse
@@ -22,6 +23,7 @@ private constructor(
     private val id: JsonField<String>,
     private val kind: JsonField<Kind>,
     private val orgId: JsonField<String>,
+    private val signingSecret: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -30,7 +32,10 @@ private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
         @JsonProperty("kind") @ExcludeMissing kind: JsonField<Kind> = JsonMissing.of(),
         @JsonProperty("org_id") @ExcludeMissing orgId: JsonField<String> = JsonMissing.of(),
-    ) : this(id, kind, orgId, mutableMapOf())
+        @JsonProperty("signing_secret")
+        @ExcludeMissing
+        signingSecret: JsonField<String> = JsonMissing.of(),
+    ) : this(id, kind, orgId, signingSecret, mutableMapOf())
 
     /**
      * The id of the webhook
@@ -57,6 +62,14 @@ private constructor(
     fun orgId(): String = orgId.getRequired("org_id")
 
     /**
+     * The signing secret of the webhook.
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun signingSecret(): Optional<String> = signingSecret.getOptional("signing_secret")
+
+    /**
      * Returns the raw JSON value of [id].
      *
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -76,6 +89,15 @@ private constructor(
      * Unlike [orgId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("org_id") @ExcludeMissing fun _orgId(): JsonField<String> = orgId
+
+    /**
+     * Returns the raw JSON value of [signingSecret].
+     *
+     * Unlike [signingSecret], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("signing_secret")
+    @ExcludeMissing
+    fun _signingSecret(): JsonField<String> = signingSecret
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -110,6 +132,7 @@ private constructor(
         private var id: JsonField<String>? = null
         private var kind: JsonField<Kind>? = null
         private var orgId: JsonField<String>? = null
+        private var signingSecret: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -117,6 +140,7 @@ private constructor(
             id = webhookUpdateResponse.id
             kind = webhookUpdateResponse.kind
             orgId = webhookUpdateResponse.orgId
+            signingSecret = webhookUpdateResponse.signingSecret
             additionalProperties = webhookUpdateResponse.additionalProperties.toMutableMap()
         }
 
@@ -152,6 +176,20 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun orgId(orgId: JsonField<String>) = apply { this.orgId = orgId }
+
+        /** The signing secret of the webhook. */
+        fun signingSecret(signingSecret: String) = signingSecret(JsonField.of(signingSecret))
+
+        /**
+         * Sets [Builder.signingSecret] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.signingSecret] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun signingSecret(signingSecret: JsonField<String>) = apply {
+            this.signingSecret = signingSecret
+        }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -191,6 +229,7 @@ private constructor(
                 checkRequired("id", id),
                 checkRequired("kind", kind),
                 checkRequired("orgId", orgId),
+                signingSecret,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -205,6 +244,7 @@ private constructor(
         id()
         kind().validate()
         orgId()
+        signingSecret()
         validated = true
     }
 
@@ -225,7 +265,8 @@ private constructor(
     internal fun validity(): Int =
         (if (id.asKnown().isPresent) 1 else 0) +
             (kind.asKnown().getOrNull()?.validity() ?: 0) +
-            (if (orgId.asKnown().isPresent) 1 else 0)
+            (if (orgId.asKnown().isPresent) 1 else 0) +
+            (if (signingSecret.asKnown().isPresent) 1 else 0)
 
     /** The kind of object returned */
     class Kind @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -356,13 +397,16 @@ private constructor(
             id == other.id &&
             kind == other.kind &&
             orgId == other.orgId &&
+            signingSecret == other.signingSecret &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(id, kind, orgId, additionalProperties) }
+    private val hashCode: Int by lazy {
+        Objects.hash(id, kind, orgId, signingSecret, additionalProperties)
+    }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "WebhookUpdateResponse{id=$id, kind=$kind, orgId=$orgId, additionalProperties=$additionalProperties}"
+        "WebhookUpdateResponse{id=$id, kind=$kind, orgId=$orgId, signingSecret=$signingSecret, additionalProperties=$additionalProperties}"
 }
