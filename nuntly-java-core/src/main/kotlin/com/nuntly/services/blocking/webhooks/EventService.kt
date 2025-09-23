@@ -10,8 +10,8 @@ import com.nuntly.models.webhooks.events.EventDeliveriesParams
 import com.nuntly.models.webhooks.events.EventDeliveriesResponse
 import com.nuntly.models.webhooks.events.EventListPage
 import com.nuntly.models.webhooks.events.EventListParams
-import com.nuntly.models.webhooks.events.EventRetryParams
-import com.nuntly.models.webhooks.events.EventRetryResponse
+import com.nuntly.models.webhooks.events.EventReplayParams
+import com.nuntly.models.webhooks.events.EventReplayResponse
 import java.util.function.Consumer
 
 interface EventService {
@@ -67,25 +67,26 @@ interface EventService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): List<EventDeliveriesResponse>
 
-    /** Retry sending the webhook event with the given event ID */
-    fun retry(eventId: String, params: EventRetryParams): EventRetryResponse =
-        retry(eventId, params, RequestOptions.none())
+    /** Replay the webhook event */
+    fun replay(eventId: String, params: EventReplayParams): EventReplayResponse =
+        replay(eventId, params, RequestOptions.none())
 
-    /** @see retry */
-    fun retry(
+    /** @see replay */
+    fun replay(
         eventId: String,
-        params: EventRetryParams,
+        params: EventReplayParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EventRetryResponse = retry(params.toBuilder().eventId(eventId).build(), requestOptions)
+    ): EventReplayResponse = replay(params.toBuilder().eventId(eventId).build(), requestOptions)
 
-    /** @see retry */
-    fun retry(params: EventRetryParams): EventRetryResponse = retry(params, RequestOptions.none())
+    /** @see replay */
+    fun replay(params: EventReplayParams): EventReplayResponse =
+        replay(params, RequestOptions.none())
 
-    /** @see retry */
-    fun retry(
-        params: EventRetryParams,
+    /** @see replay */
+    fun replay(
+        params: EventReplayParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EventRetryResponse
+    ): EventReplayResponse
 
     /** A view of [EventService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -155,32 +156,34 @@ interface EventService {
         ): HttpResponseFor<List<EventDeliveriesResponse>>
 
         /**
-         * Returns a raw HTTP response for `post /webhooks/{id}/events/{event_id}/retry`, but is
-         * otherwise the same as [EventService.retry].
+         * Returns a raw HTTP response for `post /webhooks/{id}/events/{event_id}/replay`, but is
+         * otherwise the same as [EventService.replay].
          */
         @MustBeClosed
-        fun retry(eventId: String, params: EventRetryParams): HttpResponseFor<EventRetryResponse> =
-            retry(eventId, params, RequestOptions.none())
-
-        /** @see retry */
-        @MustBeClosed
-        fun retry(
+        fun replay(
             eventId: String,
-            params: EventRetryParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EventRetryResponse> =
-            retry(params.toBuilder().eventId(eventId).build(), requestOptions)
+            params: EventReplayParams,
+        ): HttpResponseFor<EventReplayResponse> = replay(eventId, params, RequestOptions.none())
 
-        /** @see retry */
+        /** @see replay */
         @MustBeClosed
-        fun retry(params: EventRetryParams): HttpResponseFor<EventRetryResponse> =
-            retry(params, RequestOptions.none())
-
-        /** @see retry */
-        @MustBeClosed
-        fun retry(
-            params: EventRetryParams,
+        fun replay(
+            eventId: String,
+            params: EventReplayParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EventRetryResponse>
+        ): HttpResponseFor<EventReplayResponse> =
+            replay(params.toBuilder().eventId(eventId).build(), requestOptions)
+
+        /** @see replay */
+        @MustBeClosed
+        fun replay(params: EventReplayParams): HttpResponseFor<EventReplayResponse> =
+            replay(params, RequestOptions.none())
+
+        /** @see replay */
+        @MustBeClosed
+        fun replay(
+            params: EventReplayParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<EventReplayResponse>
     }
 }

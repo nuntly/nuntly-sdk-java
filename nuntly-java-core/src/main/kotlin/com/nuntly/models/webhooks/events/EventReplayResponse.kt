@@ -11,7 +11,7 @@ import com.nuntly.errors.NuntlyInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
-class EventRetryResponse
+class EventReplayResponse
 private constructor(private val additionalProperties: MutableMap<String, JsonValue>) {
 
     @JsonCreator private constructor() : this(mutableMapOf())
@@ -30,18 +30,18 @@ private constructor(private val additionalProperties: MutableMap<String, JsonVal
 
     companion object {
 
-        /** Returns a mutable builder for constructing an instance of [EventRetryResponse]. */
+        /** Returns a mutable builder for constructing an instance of [EventReplayResponse]. */
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [EventRetryResponse]. */
+    /** A builder for [EventReplayResponse]. */
     class Builder internal constructor() {
 
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
-        internal fun from(eventRetryResponse: EventRetryResponse) = apply {
-            additionalProperties = eventRetryResponse.additionalProperties.toMutableMap()
+        internal fun from(eventReplayResponse: EventReplayResponse) = apply {
+            additionalProperties = eventReplayResponse.additionalProperties.toMutableMap()
         }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -64,16 +64,16 @@ private constructor(private val additionalProperties: MutableMap<String, JsonVal
         }
 
         /**
-         * Returns an immutable instance of [EventRetryResponse].
+         * Returns an immutable instance of [EventReplayResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          */
-        fun build(): EventRetryResponse = EventRetryResponse(additionalProperties.toMutableMap())
+        fun build(): EventReplayResponse = EventReplayResponse(additionalProperties.toMutableMap())
     }
 
     private var validated: Boolean = false
 
-    fun validate(): EventRetryResponse = apply {
+    fun validate(): EventReplayResponse = apply {
         if (validated) {
             return@apply
         }
@@ -101,12 +101,12 @@ private constructor(private val additionalProperties: MutableMap<String, JsonVal
             return true
         }
 
-        return other is EventRetryResponse && additionalProperties == other.additionalProperties
+        return other is EventReplayResponse && additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
-    override fun toString() = "EventRetryResponse{additionalProperties=$additionalProperties}"
+    override fun toString() = "EventReplayResponse{additionalProperties=$additionalProperties}"
 }
