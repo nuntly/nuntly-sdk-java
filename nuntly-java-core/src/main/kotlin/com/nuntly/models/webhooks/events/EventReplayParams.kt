@@ -12,8 +12,8 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Retry sending the webhook event with the given event ID */
-class EventRetryParams
+/** Replay the webhook event */
+class EventReplayParams
 private constructor(
     private val id: String,
     private val eventId: String?,
@@ -40,7 +40,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [EventRetryParams].
+         * Returns a mutable builder for constructing an instance of [EventReplayParams].
          *
          * The following fields are required:
          * ```java
@@ -50,7 +50,7 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [EventRetryParams]. */
+    /** A builder for [EventReplayParams]. */
     class Builder internal constructor() {
 
         private var id: String? = null
@@ -60,12 +60,12 @@ private constructor(
         private var additionalBodyProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
-        internal fun from(eventRetryParams: EventRetryParams) = apply {
-            id = eventRetryParams.id
-            eventId = eventRetryParams.eventId
-            additionalHeaders = eventRetryParams.additionalHeaders.toBuilder()
-            additionalQueryParams = eventRetryParams.additionalQueryParams.toBuilder()
-            additionalBodyProperties = eventRetryParams.additionalBodyProperties.toMutableMap()
+        internal fun from(eventReplayParams: EventReplayParams) = apply {
+            id = eventReplayParams.id
+            eventId = eventReplayParams.eventId
+            additionalHeaders = eventReplayParams.additionalHeaders.toBuilder()
+            additionalQueryParams = eventReplayParams.additionalQueryParams.toBuilder()
+            additionalBodyProperties = eventReplayParams.additionalBodyProperties.toMutableMap()
         }
 
         fun id(id: String) = apply { this.id = id }
@@ -196,7 +196,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [EventRetryParams].
+         * Returns an immutable instance of [EventReplayParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -207,8 +207,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): EventRetryParams =
-            EventRetryParams(
+        fun build(): EventReplayParams =
+            EventReplayParams(
                 checkRequired("id", id),
                 eventId,
                 additionalHeaders.build(),
@@ -236,7 +236,7 @@ private constructor(
             return true
         }
 
-        return other is EventRetryParams &&
+        return other is EventReplayParams &&
             id == other.id &&
             eventId == other.eventId &&
             additionalHeaders == other.additionalHeaders &&
@@ -254,5 +254,5 @@ private constructor(
         )
 
     override fun toString() =
-        "EventRetryParams{id=$id, eventId=$eventId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
+        "EventReplayParams{id=$id, eventId=$eventId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
 }

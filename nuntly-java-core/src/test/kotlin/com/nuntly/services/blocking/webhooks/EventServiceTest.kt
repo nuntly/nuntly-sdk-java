@@ -5,7 +5,7 @@ package com.nuntly.services.blocking.webhooks
 import com.nuntly.TestServerExtension
 import com.nuntly.client.okhttp.NuntlyOkHttpClient
 import com.nuntly.models.webhooks.events.EventDeliveriesParams
-import com.nuntly.models.webhooks.events.EventRetryParams
+import com.nuntly.models.webhooks.events.EventReplayParams
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -44,7 +44,7 @@ internal class EventServiceTest {
     }
 
     @Test
-    fun retry() {
+    fun replay() {
         val client =
             NuntlyOkHttpClient.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
@@ -53,8 +53,8 @@ internal class EventServiceTest {
         val eventService = client.webhooks().events()
 
         val response =
-            eventService.retry(
-                EventRetryParams.builder()
+            eventService.replay(
+                EventReplayParams.builder()
                     .id("wh_YNtYn86oYZmP1ZHbnUBvXXFt")
                     .eventId("event_id")
                     .build()
