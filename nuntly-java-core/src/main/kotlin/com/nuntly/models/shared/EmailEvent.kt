@@ -31,6 +31,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class EmailEvent
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
     private val domain: JsonField<String>,
@@ -1195,6 +1196,7 @@ private constructor(
     }
 
     class Header
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val name: JsonField<String>,
         private val value: JsonField<String>,

@@ -16,6 +16,7 @@ import java.util.Collections
 import java.util.Objects
 
 class ClickDetail
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val clickedAt: JsonField<String>,
     private val link: JsonField<String>,
