@@ -7,24 +7,24 @@ import com.nuntly.core.jsonMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class EventRetryResponseTest {
+internal class EventReplayResponseTest {
 
     @Test
     fun create() {
-        val eventRetryResponse = EventRetryResponse.builder().build()
+        val eventReplayResponse = EventReplayResponse.builder().build()
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val eventRetryResponse = EventRetryResponse.builder().build()
+        val eventReplayResponse = EventReplayResponse.builder().build()
 
-        val roundtrippedEventRetryResponse =
+        val roundtrippedEventReplayResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(eventRetryResponse),
-                jacksonTypeRef<EventRetryResponse>(),
+                jsonMapper.writeValueAsString(eventReplayResponse),
+                jacksonTypeRef<EventReplayResponse>(),
             )
 
-        assertThat(roundtrippedEventRetryResponse).isEqualTo(eventRetryResponse)
+        assertThat(roundtrippedEventReplayResponse).isEqualTo(eventReplayResponse)
     }
 }

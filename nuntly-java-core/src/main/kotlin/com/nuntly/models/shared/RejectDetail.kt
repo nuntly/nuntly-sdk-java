@@ -16,6 +16,7 @@ import java.util.Collections
 import java.util.Objects
 
 class RejectDetail
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val reason: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,

@@ -22,6 +22,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class DomainRetrieveResponse
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
     private val clickTracking: JsonField<Boolean>,
@@ -882,6 +883,7 @@ private constructor(
     }
 
     class SendingRecord
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val fullname: JsonField<String>,
         private val group: JsonField<Group>,

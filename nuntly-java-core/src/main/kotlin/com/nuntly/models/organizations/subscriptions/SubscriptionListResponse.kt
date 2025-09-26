@@ -21,6 +21,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class SubscriptionListResponse
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val cancelAt: JsonField<String>,
     private val cancelAtPeriodEnd: JsonField<Boolean>,
@@ -574,6 +575,7 @@ private constructor(
             (schedule.asKnown().getOrNull()?.validity() ?: 0)
 
     class Price
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val currency: JsonField<String>,
         private val recurring: JsonField<Recurring>,
@@ -805,6 +807,7 @@ private constructor(
                 (if (unitAmount.asKnown().isPresent) 1 else 0)
 
         class Recurring
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val interval: JsonField<Interval>,
             private val intervalCount: JsonField<Double>,
@@ -1712,6 +1715,7 @@ private constructor(
     }
 
     class Quota
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val daily: JsonField<Daily>,
         private val monthly: JsonField<Monthly>,
@@ -1884,6 +1888,7 @@ private constructor(
                 (monthly.asKnown().getOrNull()?.validity() ?: 0)
 
         class Daily
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val transacEmails: JsonField<Double>,
             private val additionalProperties: MutableMap<String, JsonValue>,
@@ -2055,6 +2060,7 @@ private constructor(
         }
 
         class Monthly
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val transacEmails: JsonField<Double>,
             private val additionalProperties: MutableMap<String, JsonValue>,
@@ -2245,6 +2251,7 @@ private constructor(
     }
 
     class Schedule
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val created: JsonField<String>,
         private val phases: JsonField<List<Phase>>,
@@ -2436,6 +2443,7 @@ private constructor(
                 (phases.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
         class Phase
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val price: JsonField<Price>,
             private val additionalProperties: MutableMap<String, JsonValue>,
@@ -2575,6 +2583,7 @@ private constructor(
             internal fun validity(): Int = (price.asKnown().getOrNull()?.validity() ?: 0)
 
             class Price
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
             private constructor(
                 private val currency: JsonField<String>,
                 private val recurring: JsonField<Recurring>,
@@ -2929,6 +2938,7 @@ private constructor(
                         (quota.asKnown().getOrNull()?.validity() ?: 0)
 
                 class Recurring
+                @JsonCreator(mode = JsonCreator.Mode.DISABLED)
                 private constructor(
                     private val interval: JsonField<Interval>,
                     private val intervalCount: JsonField<Double>,
@@ -3559,6 +3569,7 @@ private constructor(
                 }
 
                 class Quota
+                @JsonCreator(mode = JsonCreator.Mode.DISABLED)
                 private constructor(
                     private val daily: JsonField<Daily>,
                     private val monthly: JsonField<Monthly>,
@@ -3745,6 +3756,7 @@ private constructor(
                             (monthly.asKnown().getOrNull()?.validity() ?: 0)
 
                     class Daily
+                    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
                     private constructor(
                         private val transacEmails: JsonField<Double>,
                         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -3921,6 +3933,7 @@ private constructor(
                     }
 
                     class Monthly
+                    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
                     private constructor(
                         private val transacEmails: JsonField<Double>,
                         private val additionalProperties: MutableMap<String, JsonValue>,

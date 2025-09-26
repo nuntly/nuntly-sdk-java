@@ -20,6 +20,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class BounceDetail
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val bounceSubtype: JsonField<String>,
     private val bounceType: JsonField<String>,
@@ -366,6 +367,7 @@ private constructor(
             (if (reportingMta.asKnown().isPresent) 1 else 0)
 
     class BouncedRecipient
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val email: JsonField<String>,
         private val action: JsonField<String>,

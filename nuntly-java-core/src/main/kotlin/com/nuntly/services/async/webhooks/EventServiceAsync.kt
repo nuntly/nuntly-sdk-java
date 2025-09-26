@@ -9,8 +9,8 @@ import com.nuntly.models.webhooks.events.EventDeliveriesParams
 import com.nuntly.models.webhooks.events.EventDeliveriesResponse
 import com.nuntly.models.webhooks.events.EventListPageAsync
 import com.nuntly.models.webhooks.events.EventListParams
-import com.nuntly.models.webhooks.events.EventRetryParams
-import com.nuntly.models.webhooks.events.EventRetryResponse
+import com.nuntly.models.webhooks.events.EventReplayParams
+import com.nuntly.models.webhooks.events.EventReplayResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -72,27 +72,27 @@ interface EventServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<List<EventDeliveriesResponse>>
 
-    /** Retry sending the webhook event with the given event ID */
-    fun retry(eventId: String, params: EventRetryParams): CompletableFuture<EventRetryResponse> =
-        retry(eventId, params, RequestOptions.none())
+    /** Replay the webhook event */
+    fun replay(eventId: String, params: EventReplayParams): CompletableFuture<EventReplayResponse> =
+        replay(eventId, params, RequestOptions.none())
 
-    /** @see retry */
-    fun retry(
+    /** @see replay */
+    fun replay(
         eventId: String,
-        params: EventRetryParams,
+        params: EventReplayParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<EventRetryResponse> =
-        retry(params.toBuilder().eventId(eventId).build(), requestOptions)
+    ): CompletableFuture<EventReplayResponse> =
+        replay(params.toBuilder().eventId(eventId).build(), requestOptions)
 
-    /** @see retry */
-    fun retry(params: EventRetryParams): CompletableFuture<EventRetryResponse> =
-        retry(params, RequestOptions.none())
+    /** @see replay */
+    fun replay(params: EventReplayParams): CompletableFuture<EventReplayResponse> =
+        replay(params, RequestOptions.none())
 
-    /** @see retry */
-    fun retry(
-        params: EventRetryParams,
+    /** @see replay */
+    fun replay(
+        params: EventReplayParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<EventRetryResponse>
+    ): CompletableFuture<EventReplayResponse>
 
     /** A view of [EventServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -162,33 +162,33 @@ interface EventServiceAsync {
         ): CompletableFuture<HttpResponseFor<List<EventDeliveriesResponse>>>
 
         /**
-         * Returns a raw HTTP response for `post /webhooks/{id}/events/{event_id}/retry`, but is
-         * otherwise the same as [EventServiceAsync.retry].
+         * Returns a raw HTTP response for `post /webhooks/{id}/events/{event_id}/replay`, but is
+         * otherwise the same as [EventServiceAsync.replay].
          */
-        fun retry(
+        fun replay(
             eventId: String,
-            params: EventRetryParams,
-        ): CompletableFuture<HttpResponseFor<EventRetryResponse>> =
-            retry(eventId, params, RequestOptions.none())
+            params: EventReplayParams,
+        ): CompletableFuture<HttpResponseFor<EventReplayResponse>> =
+            replay(eventId, params, RequestOptions.none())
 
-        /** @see retry */
-        fun retry(
+        /** @see replay */
+        fun replay(
             eventId: String,
-            params: EventRetryParams,
+            params: EventReplayParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<EventRetryResponse>> =
-            retry(params.toBuilder().eventId(eventId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<EventReplayResponse>> =
+            replay(params.toBuilder().eventId(eventId).build(), requestOptions)
 
-        /** @see retry */
-        fun retry(
-            params: EventRetryParams
-        ): CompletableFuture<HttpResponseFor<EventRetryResponse>> =
-            retry(params, RequestOptions.none())
+        /** @see replay */
+        fun replay(
+            params: EventReplayParams
+        ): CompletableFuture<HttpResponseFor<EventReplayResponse>> =
+            replay(params, RequestOptions.none())
 
-        /** @see retry */
-        fun retry(
-            params: EventRetryParams,
+        /** @see replay */
+        fun replay(
+            params: EventReplayParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<EventRetryResponse>>
+        ): CompletableFuture<HttpResponseFor<EventReplayResponse>>
     }
 }

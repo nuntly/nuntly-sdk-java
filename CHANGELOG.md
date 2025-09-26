@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.3.0 (2025-09-26)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/nuntly/nuntly-sdk-java/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* **api:** rename retry to replay ([e201579](https://github.com/nuntly/nuntly-sdk-java/commit/e2015797ca8ba887b7baebdda904ee6ce7475850))
+
+
+### Bug Fixes
+
+* **client:** deserialization of empty objects ([b536710](https://github.com/nuntly/nuntly-sdk-java/commit/b536710ee560f1d149577878755687ba255ab1af))
+
+
+### Chores
+
+* improve example values ([72db38f](https://github.com/nuntly/nuntly-sdk-java/commit/72db38f16f2ba3ab2846723cfacd80d6d9061d53))
+
 ## 0.2.0 (2025-09-22)
 
 Full Changelog: [v0.1.4...v0.2.0](https://github.com/nuntly/nuntly-sdk-java/compare/v0.1.4...v0.2.0)

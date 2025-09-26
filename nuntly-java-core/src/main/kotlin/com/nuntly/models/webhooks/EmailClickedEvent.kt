@@ -24,6 +24,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class EmailClickedEvent
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
     private val createdAt: JsonField<String>,
@@ -292,6 +293,7 @@ private constructor(
             (data.asKnown().getOrNull()?.validity() ?: 0)
 
     class Data
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val id: JsonField<String>,
         private val domain: JsonField<String>,

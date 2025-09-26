@@ -20,6 +20,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class DeliveryDelayDetail
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val delayType: JsonField<String>,
     private val delayedAt: JsonField<String>,
@@ -332,6 +333,7 @@ private constructor(
             (if (reportingMta.asKnown().isPresent) 1 else 0)
 
     class DelayedRecipient
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val email: JsonField<String>,
         private val diagnosticCode: JsonField<String>,

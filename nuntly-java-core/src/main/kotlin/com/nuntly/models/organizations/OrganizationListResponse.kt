@@ -20,6 +20,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class OrganizationListResponse
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val createdAt: JsonField<OffsetDateTime>,
     private val displayName: JsonField<String>,

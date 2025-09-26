@@ -22,6 +22,7 @@ import kotlin.jvm.optionals.getOrNull
 
 /** The emails stats */
 class StatListResponse
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val end: JsonField<LocalDate>,
     private val start: JsonField<LocalDate>,
@@ -236,6 +237,7 @@ private constructor(
             (stats.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
     class Stat
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val occurredOn: JsonField<LocalDate>,
         private val bounced: JsonField<Double>,

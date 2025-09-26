@@ -22,8 +22,8 @@ import com.nuntly.models.webhooks.events.EventDeliveriesResponse
 import com.nuntly.models.webhooks.events.EventListPage
 import com.nuntly.models.webhooks.events.EventListPageResponse
 import com.nuntly.models.webhooks.events.EventListParams
-import com.nuntly.models.webhooks.events.EventRetryParams
-import com.nuntly.models.webhooks.events.EventRetryResponse
+import com.nuntly.models.webhooks.events.EventReplayParams
+import com.nuntly.models.webhooks.events.EventReplayResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -50,12 +50,12 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
         // get /webhooks/{id}/events/{event_id}/deliveries
         withRawResponse().deliveries(params, requestOptions).parse()
 
-    override fun retry(
-        params: EventRetryParams,
+    override fun replay(
+        params: EventReplayParams,
         requestOptions: RequestOptions,
-    ): EventRetryResponse =
-        // post /webhooks/{id}/events/{event_id}/retry
-        withRawResponse().retry(params, requestOptions).parse()
+    ): EventReplayResponse =
+        // post /webhooks/{id}/events/{event_id}/replay
+        withRawResponse().replay(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         EventService.WithRawResponse {
@@ -141,13 +141,13 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
             }
         }
 
-        private val retryHandler: Handler<DataEnvelope<EventRetryResponse>> =
-            jsonHandler<DataEnvelope<EventRetryResponse>>(clientOptions.jsonMapper)
+        private val replayHandler: Handler<DataEnvelope<EventReplayResponse>> =
+            jsonHandler<DataEnvelope<EventReplayResponse>>(clientOptions.jsonMapper)
 
-        override fun retry(
-            params: EventRetryParams,
+        override fun replay(
+            params: EventReplayParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<EventRetryResponse> {
+        ): HttpResponseFor<EventReplayResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("eventId", params.eventId().getOrNull())
@@ -160,7 +160,7 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
                         params._pathParam(0),
                         "events",
                         params._pathParam(1),
-                        "retry",
+                        "replay",
                     )
                     .apply { params._body().ifPresent { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
@@ -169,7 +169,7 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { retryHandler.handle(it) }
+                    .use { replayHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

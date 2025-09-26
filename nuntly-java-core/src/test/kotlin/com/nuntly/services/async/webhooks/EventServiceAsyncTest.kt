@@ -5,7 +5,7 @@ package com.nuntly.services.async.webhooks
 import com.nuntly.TestServerExtension
 import com.nuntly.client.okhttp.NuntlyOkHttpClientAsync
 import com.nuntly.models.webhooks.events.EventDeliveriesParams
-import com.nuntly.models.webhooks.events.EventRetryParams
+import com.nuntly.models.webhooks.events.EventReplayParams
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -46,7 +46,7 @@ internal class EventServiceAsyncTest {
     }
 
     @Test
-    fun retry() {
+    fun replay() {
         val client =
             NuntlyOkHttpClientAsync.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
@@ -55,8 +55,8 @@ internal class EventServiceAsyncTest {
         val eventServiceAsync = client.webhooks().events()
 
         val responseFuture =
-            eventServiceAsync.retry(
-                EventRetryParams.builder()
+            eventServiceAsync.replay(
+                EventReplayParams.builder()
                     .id("wh_YNtYn86oYZmP1ZHbnUBvXXFt")
                     .eventId("event_id")
                     .build()

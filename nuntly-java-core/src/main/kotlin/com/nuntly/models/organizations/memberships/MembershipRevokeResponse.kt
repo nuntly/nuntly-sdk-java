@@ -18,6 +18,7 @@ import java.util.Objects
 import kotlin.jvm.optionals.getOrNull
 
 class MembershipRevokeResponse
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val kind: JsonField<Kind>,
     private val orgId: JsonField<String>,

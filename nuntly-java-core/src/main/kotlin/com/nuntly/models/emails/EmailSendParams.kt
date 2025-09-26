@@ -608,6 +608,7 @@ private constructor(
     override fun _queryParams(): QueryParams = additionalQueryParams
 
     class Body
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val from: JsonField<String>,
         private val subject: JsonField<String>,
@@ -1437,6 +1438,7 @@ private constructor(
 
     /** The attachment */
     class Attachment
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val content: JsonField<String>,
         private val contentType: JsonField<String>,
@@ -2165,6 +2167,7 @@ private constructor(
 
     /** The tag to add to the email and you can get via email id or in webhook events */
     class Tag
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val name: JsonField<String>,
         private val value: JsonField<String>,

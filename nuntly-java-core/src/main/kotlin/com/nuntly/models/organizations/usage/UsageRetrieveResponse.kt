@@ -17,6 +17,7 @@ import java.util.Objects
 import kotlin.jvm.optionals.getOrNull
 
 class UsageRetrieveResponse
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val daily: JsonField<Daily>,
     private val monthly: JsonField<Monthly>,
@@ -186,6 +187,7 @@ private constructor(
             (monthly.asKnown().getOrNull()?.validity() ?: 0)
 
     class Daily
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val consumed: JsonField<Consumed>,
         private val period: JsonField<String>,
@@ -393,6 +395,7 @@ private constructor(
                 (quota.asKnown().getOrNull()?.validity() ?: 0)
 
         class Consumed
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val transacEmails: JsonField<Double>,
             private val additionalProperties: MutableMap<String, JsonValue>,
@@ -561,6 +564,7 @@ private constructor(
         }
 
         class Quota
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val transacEmails: JsonField<Double>,
             private val additionalProperties: MutableMap<String, JsonValue>,
@@ -751,6 +755,7 @@ private constructor(
     }
 
     class Monthly
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val consumed: JsonField<Consumed>,
         private val period: JsonField<String>,
@@ -958,6 +963,7 @@ private constructor(
                 (quota.asKnown().getOrNull()?.validity() ?: 0)
 
         class Consumed
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val transacEmails: JsonField<Double>,
             private val additionalProperties: MutableMap<String, JsonValue>,
@@ -1126,6 +1132,7 @@ private constructor(
         }
 
         class Quota
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val transacEmails: JsonField<Double>,
             private val additionalProperties: MutableMap<String, JsonValue>,
