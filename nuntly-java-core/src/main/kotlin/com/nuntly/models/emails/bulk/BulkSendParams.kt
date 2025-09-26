@@ -291,6 +291,7 @@ private constructor(
     override fun _queryParams(): QueryParams = additionalQueryParams
 
     class Body
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val emails: JsonField<List<Email>>,
         private val fallback: JsonField<Fallback>,
@@ -504,6 +505,7 @@ private constructor(
     }
 
     class Email
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val to: JsonField<To>,
         private val bcc: JsonField<Bcc>,
@@ -1746,6 +1748,7 @@ private constructor(
 
         /** The tag to add to the email and you can get via email id or in webhook events */
         class Tag
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val name: JsonField<String>,
             private val value: JsonField<String>,
@@ -1993,6 +1996,7 @@ private constructor(
 
     /** Used as a fallback field email value if no value is present in emails */
     class Fallback
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val bcc: JsonField<Bcc>,
         private val cc: JsonField<Cc>,
@@ -3052,6 +3056,7 @@ private constructor(
 
         /** The tag to add to the email and you can get via email id or in webhook events */
         class Tag
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val name: JsonField<String>,
             private val value: JsonField<String>,

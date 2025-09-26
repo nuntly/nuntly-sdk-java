@@ -339,6 +339,7 @@ private constructor(
     override fun _queryParams(): QueryParams = additionalQueryParams
 
     class Body
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val endpointUrl: JsonField<String>,
         private val events: JsonField<List<EventType>>,

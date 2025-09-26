@@ -20,6 +20,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class ComplaintDetail
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val complainedAt: JsonField<String>,
     private val feedbackId: JsonField<String>,
@@ -404,6 +405,7 @@ private constructor(
             (if (userAgent.asKnown().isPresent) 1 else 0)
 
     class ComplainedRecipient
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val email: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,

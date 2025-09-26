@@ -16,6 +16,7 @@ import java.util.Collections
 import java.util.Objects
 
 class OpenDetail
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val openedAt: JsonField<String>,
     private val userAgent: JsonField<String>,

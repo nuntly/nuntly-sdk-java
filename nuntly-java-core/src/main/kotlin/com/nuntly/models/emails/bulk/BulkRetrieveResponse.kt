@@ -22,6 +22,7 @@ import kotlin.jvm.optionals.getOrNull
 
 /** The emails in a given bulk */
 class BulkRetrieveResponse
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
     private val emails: JsonField<List<Email>>,
@@ -244,6 +245,7 @@ private constructor(
             (kind.asKnown().getOrNull()?.validity() ?: 0)
 
     class Email
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val id: JsonField<String>,
         private val kind: JsonField<Kind>,
