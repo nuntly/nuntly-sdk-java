@@ -35,6 +35,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class EmailRetrieveResponse
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
@@ -1383,6 +1384,7 @@ private constructor(
 
     /** The attachment */
     class Attachment
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val contentType: JsonField<String>,
         private val filename: JsonField<String>,
@@ -2177,6 +2179,7 @@ private constructor(
 
     /** The tag to add to the email and you can get via email id or in webhook events */
     class Tag
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val name: JsonField<String>,
         private val value: JsonField<String>,
