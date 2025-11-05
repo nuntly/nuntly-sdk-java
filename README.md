@@ -411,11 +411,9 @@ Requests time out after 1 minute by default.
 To set a custom timeout, configure the method call using the `timeout` method:
 
 ```java
-import com.nuntly.models.emails.EmailSendResponse;
+import com.nuntly.models.apikeys.ApiKeyCreateResponse;
 
-EmailSendResponse email = client.emails().send(
-  params, RequestOptions.builder().timeout(Duration.ofSeconds(30)).build()
-);
+ApiKeyCreateResponse apiKey = client.apiKeys().create(RequestOptions.builder().timeout(Duration.ofSeconds(30)).build());
 ```
 
 Or configure the default for all method calls at the client level:
