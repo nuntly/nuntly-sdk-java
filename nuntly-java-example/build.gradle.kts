@@ -8,7 +8,8 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":nuntly-java"))
+    implementation(project(":nuntly-java-core"))
+    implementation(project(":nuntly-java-client-okhttp"))
 }
 
 tasks.withType<JavaCompile>().configureEach {

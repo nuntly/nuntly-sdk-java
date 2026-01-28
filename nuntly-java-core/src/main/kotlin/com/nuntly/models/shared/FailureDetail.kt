@@ -25,6 +25,12 @@ private constructor(
         @JsonProperty("error") @ExcludeMissing error: JsonValue = JsonMissing.of()
     ) : this(error, mutableMapOf())
 
+    /**
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```java
+     * MyClass myObject = failureDetail.error().convert(MyClass.class);
+     * ```
+     */
     @JsonProperty("error") @ExcludeMissing fun _error(): JsonValue = error
 
     @JsonAnySetter
