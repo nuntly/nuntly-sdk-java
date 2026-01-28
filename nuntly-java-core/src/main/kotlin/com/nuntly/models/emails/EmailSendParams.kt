@@ -94,7 +94,14 @@ private constructor(
      */
     fun cc(): Optional<Cc> = body.cc()
 
-    /** The context for the template */
+    /**
+     * The context for the template
+     *
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```java
+     * MyClass myObject = emailSendParams.context().convert(MyClass.class);
+     * ```
+     */
     fun _context(): JsonValue = body._context()
 
     /**
@@ -714,7 +721,14 @@ private constructor(
          */
         fun cc(): Optional<Cc> = cc.getOptional("cc")
 
-        /** The context for the template */
+        /**
+         * The context for the template
+         *
+         * This arbitrary value can be deserialized into a custom type using the `convert` method:
+         * ```java
+         * MyClass myObject = body.context().convert(MyClass.class);
+         * ```
+         */
         @JsonProperty("context") @ExcludeMissing fun _context(): JsonValue = context
 
         /**
@@ -1396,11 +1410,11 @@ private constructor(
 
                 val bestMatches =
                     sequenceOf(
-                            tryDeserialize(node, jacksonTypeRef<List<String>>())?.let {
-                                To(strings = it, _json = json)
-                            },
                             tryDeserialize(node, jacksonTypeRef<String>())?.let {
                                 To(string = it, _json = json)
+                            },
+                            tryDeserialize(node, jacksonTypeRef<List<String>>())?.let {
+                                To(strings = it, _json = json)
                             },
                         )
                         .filterNotNull()
@@ -1408,7 +1422,7 @@ private constructor(
                         .toList()
                 return when (bestMatches.size) {
                     // This can happen if what we're deserializing is completely incompatible with
-                    // all the possible variants (e.g. deserializing from object).
+                    // all the possible variants (e.g. deserializing from boolean).
                     0 -> To(_json = json)
                     1 -> bestMatches.single()
                     // If there's more than one match with the highest validity, then use the first
@@ -1784,11 +1798,11 @@ private constructor(
 
                 val bestMatches =
                     sequenceOf(
-                            tryDeserialize(node, jacksonTypeRef<List<String>>())?.let {
-                                Bcc(strings = it, _json = json)
-                            },
                             tryDeserialize(node, jacksonTypeRef<String>())?.let {
                                 Bcc(string = it, _json = json)
+                            },
+                            tryDeserialize(node, jacksonTypeRef<List<String>>())?.let {
+                                Bcc(strings = it, _json = json)
                             },
                         )
                         .filterNotNull()
@@ -1796,7 +1810,7 @@ private constructor(
                         .toList()
                 return when (bestMatches.size) {
                     // This can happen if what we're deserializing is completely incompatible with
-                    // all the possible variants (e.g. deserializing from object).
+                    // all the possible variants (e.g. deserializing from boolean).
                     0 -> Bcc(_json = json)
                     1 -> bestMatches.single()
                     // If there's more than one match with the highest validity, then use the first
@@ -1951,11 +1965,11 @@ private constructor(
 
                 val bestMatches =
                     sequenceOf(
-                            tryDeserialize(node, jacksonTypeRef<List<String>>())?.let {
-                                Cc(strings = it, _json = json)
-                            },
                             tryDeserialize(node, jacksonTypeRef<String>())?.let {
                                 Cc(string = it, _json = json)
+                            },
+                            tryDeserialize(node, jacksonTypeRef<List<String>>())?.let {
+                                Cc(strings = it, _json = json)
                             },
                         )
                         .filterNotNull()
@@ -1963,7 +1977,7 @@ private constructor(
                         .toList()
                 return when (bestMatches.size) {
                     // This can happen if what we're deserializing is completely incompatible with
-                    // all the possible variants (e.g. deserializing from object).
+                    // all the possible variants (e.g. deserializing from boolean).
                     0 -> Cc(_json = json)
                     1 -> bestMatches.single()
                     // If there's more than one match with the highest validity, then use the first
@@ -2125,11 +2139,11 @@ private constructor(
 
                 val bestMatches =
                     sequenceOf(
-                            tryDeserialize(node, jacksonTypeRef<List<String>>())?.let {
-                                ReplyTo(strings = it, _json = json)
-                            },
                             tryDeserialize(node, jacksonTypeRef<String>())?.let {
                                 ReplyTo(string = it, _json = json)
+                            },
+                            tryDeserialize(node, jacksonTypeRef<List<String>>())?.let {
+                                ReplyTo(strings = it, _json = json)
                             },
                         )
                         .filterNotNull()
@@ -2137,7 +2151,7 @@ private constructor(
                         .toList()
                 return when (bestMatches.size) {
                     // This can happen if what we're deserializing is completely incompatible with
-                    // all the possible variants (e.g. deserializing from object).
+                    // all the possible variants (e.g. deserializing from boolean).
                     0 -> ReplyTo(_json = json)
                     1 -> bestMatches.single()
                     // If there's more than one match with the highest validity, then use the first
