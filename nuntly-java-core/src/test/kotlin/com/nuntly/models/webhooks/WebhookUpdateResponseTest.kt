@@ -13,16 +13,12 @@ internal class WebhookUpdateResponseTest {
     fun create() {
         val webhookUpdateResponse =
             WebhookUpdateResponse.builder()
-                .id("wh_01jne5c7gr2mhwrqg4zqwf48y2")
-                .kind(WebhookUpdateResponse.Kind.WEBHOOK)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .signingSecret("signing_secret")
+                .id("wh_01ka8k8s80gvx9604cn9am5st4")
+                .signingSecret("signingSecret")
                 .build()
 
-        assertThat(webhookUpdateResponse.id()).isEqualTo("wh_01jne5c7gr2mhwrqg4zqwf48y2")
-        assertThat(webhookUpdateResponse.kind()).isEqualTo(WebhookUpdateResponse.Kind.WEBHOOK)
-        assertThat(webhookUpdateResponse.orgId()).isEqualTo("org_01jh6jk82zjq9deye73h0mzcaq")
-        assertThat(webhookUpdateResponse.signingSecret()).contains("signing_secret")
+        assertThat(webhookUpdateResponse.id()).isEqualTo("wh_01ka8k8s80gvx9604cn9am5st4")
+        assertThat(webhookUpdateResponse.signingSecret()).contains("signingSecret")
     }
 
     @Test
@@ -30,10 +26,8 @@ internal class WebhookUpdateResponseTest {
         val jsonMapper = jsonMapper()
         val webhookUpdateResponse =
             WebhookUpdateResponse.builder()
-                .id("wh_01jne5c7gr2mhwrqg4zqwf48y2")
-                .kind(WebhookUpdateResponse.Kind.WEBHOOK)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .signingSecret("signing_secret")
+                .id("wh_01ka8k8s80gvx9604cn9am5st4")
+                .signingSecret("signingSecret")
                 .build()
 
         val roundtrippedWebhookUpdateResponse =

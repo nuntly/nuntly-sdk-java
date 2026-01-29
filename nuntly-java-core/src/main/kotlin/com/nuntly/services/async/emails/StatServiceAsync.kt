@@ -24,7 +24,7 @@ interface StatServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): StatServiceAsync
 
-    /** Return the emails stats */
+    /** Retrieve email statistics */
     fun list(): CompletableFuture<StatListResponse> = list(StatListParams.none())
 
     /** @see list */

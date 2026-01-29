@@ -19,7 +19,7 @@ internal class UsageServiceAsyncTest {
                 .build()
         val usageServiceAsync = client.organizations().usage()
 
-        val usageFuture = usageServiceAsync.retrieve("id")
+        val usageFuture = usageServiceAsync.retrieve("org_01ka8k8s80gvx9604cn9am5st4")
 
         val usage = usageFuture.get()
         usage.validate()

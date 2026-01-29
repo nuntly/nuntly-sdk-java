@@ -7,6 +7,7 @@ import com.nuntly.core.Enum
 import com.nuntly.core.JsonField
 import com.nuntly.errors.NuntlyInvalidDataException
 
+/** An event */
 class EventType @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
     /**
@@ -19,6 +20,14 @@ class EventType @JsonCreator private constructor(private val value: JsonField<St
     @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
 
     companion object {
+
+        @JvmField val EMAIL_QUEUED = of("email.queued")
+
+        @JvmField val EMAIL_SCHEDULED = of("email.scheduled")
+
+        @JvmField val EMAIL_PROCESSED = of("email.processed")
+
+        @JvmField val EMAIL_SENDING = of("email.sending")
 
         @JvmField val EMAIL_SENT = of("email.sent")
 
@@ -34,15 +43,25 @@ class EventType @JsonCreator private constructor(private val value: JsonField<St
 
         @JvmField val EMAIL_REJECTED = of("email.rejected")
 
-        @JvmField val EMAIL_DELIVERY_DELAYED = of("email.delivery_delayed")
+        @JvmField val EMAIL_DELIVERY_DELAYED = of("email.deliveryDelayed")
 
         @JvmField val EMAIL_FAILED = of("email.failed")
+
+        @JvmField val EMAIL_RENDERING_FAILED = of("email.renderingFailed")
+
+        @JvmField val EMAIL_SUBSCRIBED = of("email.subscribed")
+
+        @JvmField val EMAIL_UNSUBSCRIBED = of("email.unsubscribed")
 
         @JvmStatic fun of(value: String) = EventType(JsonField.of(value))
     }
 
     /** An enum containing [EventType]'s known values. */
     enum class Known {
+        EMAIL_QUEUED,
+        EMAIL_SCHEDULED,
+        EMAIL_PROCESSED,
+        EMAIL_SENDING,
         EMAIL_SENT,
         EMAIL_DELIVERED,
         EMAIL_OPENED,
@@ -52,6 +71,9 @@ class EventType @JsonCreator private constructor(private val value: JsonField<St
         EMAIL_REJECTED,
         EMAIL_DELIVERY_DELAYED,
         EMAIL_FAILED,
+        EMAIL_RENDERING_FAILED,
+        EMAIL_SUBSCRIBED,
+        EMAIL_UNSUBSCRIBED,
     }
 
     /**
@@ -64,6 +86,10 @@ class EventType @JsonCreator private constructor(private val value: JsonField<St
      * - It was constructed with an arbitrary value using the [of] method.
      */
     enum class Value {
+        EMAIL_QUEUED,
+        EMAIL_SCHEDULED,
+        EMAIL_PROCESSED,
+        EMAIL_SENDING,
         EMAIL_SENT,
         EMAIL_DELIVERED,
         EMAIL_OPENED,
@@ -73,6 +99,9 @@ class EventType @JsonCreator private constructor(private val value: JsonField<St
         EMAIL_REJECTED,
         EMAIL_DELIVERY_DELAYED,
         EMAIL_FAILED,
+        EMAIL_RENDERING_FAILED,
+        EMAIL_SUBSCRIBED,
+        EMAIL_UNSUBSCRIBED,
         /** An enum member indicating that [EventType] was instantiated with an unknown value. */
         _UNKNOWN,
     }
@@ -86,6 +115,10 @@ class EventType @JsonCreator private constructor(private val value: JsonField<St
      */
     fun value(): Value =
         when (this) {
+            EMAIL_QUEUED -> Value.EMAIL_QUEUED
+            EMAIL_SCHEDULED -> Value.EMAIL_SCHEDULED
+            EMAIL_PROCESSED -> Value.EMAIL_PROCESSED
+            EMAIL_SENDING -> Value.EMAIL_SENDING
             EMAIL_SENT -> Value.EMAIL_SENT
             EMAIL_DELIVERED -> Value.EMAIL_DELIVERED
             EMAIL_OPENED -> Value.EMAIL_OPENED
@@ -95,6 +128,9 @@ class EventType @JsonCreator private constructor(private val value: JsonField<St
             EMAIL_REJECTED -> Value.EMAIL_REJECTED
             EMAIL_DELIVERY_DELAYED -> Value.EMAIL_DELIVERY_DELAYED
             EMAIL_FAILED -> Value.EMAIL_FAILED
+            EMAIL_RENDERING_FAILED -> Value.EMAIL_RENDERING_FAILED
+            EMAIL_SUBSCRIBED -> Value.EMAIL_SUBSCRIBED
+            EMAIL_UNSUBSCRIBED -> Value.EMAIL_UNSUBSCRIBED
             else -> Value._UNKNOWN
         }
 
@@ -108,6 +144,10 @@ class EventType @JsonCreator private constructor(private val value: JsonField<St
      */
     fun known(): Known =
         when (this) {
+            EMAIL_QUEUED -> Known.EMAIL_QUEUED
+            EMAIL_SCHEDULED -> Known.EMAIL_SCHEDULED
+            EMAIL_PROCESSED -> Known.EMAIL_PROCESSED
+            EMAIL_SENDING -> Known.EMAIL_SENDING
             EMAIL_SENT -> Known.EMAIL_SENT
             EMAIL_DELIVERED -> Known.EMAIL_DELIVERED
             EMAIL_OPENED -> Known.EMAIL_OPENED
@@ -117,6 +157,9 @@ class EventType @JsonCreator private constructor(private val value: JsonField<St
             EMAIL_REJECTED -> Known.EMAIL_REJECTED
             EMAIL_DELIVERY_DELAYED -> Known.EMAIL_DELIVERY_DELAYED
             EMAIL_FAILED -> Known.EMAIL_FAILED
+            EMAIL_RENDERING_FAILED -> Known.EMAIL_RENDERING_FAILED
+            EMAIL_SUBSCRIBED -> Known.EMAIL_SUBSCRIBED
+            EMAIL_UNSUBSCRIBED -> Known.EMAIL_UNSUBSCRIBED
             else -> throw NuntlyInvalidDataException("Unknown EventType: $value")
         }
 

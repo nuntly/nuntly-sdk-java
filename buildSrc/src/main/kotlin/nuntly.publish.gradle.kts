@@ -42,7 +42,7 @@ configure<MavenPublishBaseExtension> {
     )
 
     pom {
-        name.set("Nuntly REST API")
+        name.set("Nuntly REST API 1.x")
         description.set("Nuntly REST API definition")
         url.set("http://developers.nuntly.com")
 

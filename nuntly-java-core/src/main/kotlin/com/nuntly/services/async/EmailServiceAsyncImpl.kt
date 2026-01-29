@@ -28,6 +28,8 @@ import com.nuntly.models.emails.EmailSendParams
 import com.nuntly.models.emails.EmailSendResponse
 import com.nuntly.services.async.emails.BulkServiceAsync
 import com.nuntly.services.async.emails.BulkServiceAsyncImpl
+import com.nuntly.services.async.emails.ContentServiceAsync
+import com.nuntly.services.async.emails.ContentServiceAsyncImpl
 import com.nuntly.services.async.emails.EventServiceAsync
 import com.nuntly.services.async.emails.EventServiceAsyncImpl
 import com.nuntly.services.async.emails.StatServiceAsync
@@ -47,6 +49,8 @@ class EmailServiceAsyncImpl internal constructor(private val clientOptions: Clie
 
     private val events: EventServiceAsync by lazy { EventServiceAsyncImpl(clientOptions) }
 
+    private val content: ContentServiceAsync by lazy { ContentServiceAsyncImpl(clientOptions) }
+
     private val stats: StatServiceAsync by lazy { StatServiceAsyncImpl(clientOptions) }
 
     override fun withRawResponse(): EmailServiceAsync.WithRawResponse = withRawResponse
@@ -57,6 +61,8 @@ class EmailServiceAsyncImpl internal constructor(private val clientOptions: Clie
     override fun bulk(): BulkServiceAsync = bulk
 
     override fun events(): EventServiceAsync = events
+
+    override fun content(): ContentServiceAsync = content
 
     override fun stats(): StatServiceAsync = stats
 
@@ -102,6 +108,10 @@ class EmailServiceAsyncImpl internal constructor(private val clientOptions: Clie
             EventServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val content: ContentServiceAsync.WithRawResponse by lazy {
+            ContentServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val stats: StatServiceAsync.WithRawResponse by lazy {
             StatServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
@@ -116,6 +126,8 @@ class EmailServiceAsyncImpl internal constructor(private val clientOptions: Clie
         override fun bulk(): BulkServiceAsync.WithRawResponse = bulk
 
         override fun events(): EventServiceAsync.WithRawResponse = events
+
+        override fun content(): ContentServiceAsync.WithRawResponse = content
 
         override fun stats(): StatServiceAsync.WithRawResponse = stats
 

@@ -24,7 +24,7 @@ interface StatService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): StatService
 
-    /** Return the emails stats */
+    /** Retrieve email statistics */
     fun list(): StatListResponse = list(StatListParams.none())
 
     /** @see list */

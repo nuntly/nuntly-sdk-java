@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Return the email with the given id */
+/** Retrieve an email by its id */
 class EmailRetrieveParams
 private constructor(
     private val id: String?,
@@ -17,6 +17,7 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
+    /** The id of the email */
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /** Additional headers to send with the request. */
@@ -49,6 +50,7 @@ private constructor(
             additionalQueryParams = emailRetrieveParams.additionalQueryParams.toBuilder()
         }
 
+        /** The id of the email */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */

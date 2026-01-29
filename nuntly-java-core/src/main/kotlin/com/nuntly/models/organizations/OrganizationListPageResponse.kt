@@ -11,6 +11,7 @@ import com.nuntly.core.JsonField
 import com.nuntly.core.JsonMissing
 import com.nuntly.core.JsonValue
 import com.nuntly.core.checkKnown
+import com.nuntly.core.checkRequired
 import com.nuntly.core.toImmutable
 import com.nuntly.errors.NuntlyInvalidDataException
 import java.util.Collections
@@ -31,24 +32,20 @@ private constructor(
         @JsonProperty("data")
         @ExcludeMissing
         data: JsonField<List<OrganizationListResponse>> = JsonMissing.of(),
-        @JsonProperty("next_cursor")
-        @ExcludeMissing
-        nextCursor: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("nextCursor") @ExcludeMissing nextCursor: JsonField<String> = JsonMissing.of(),
     ) : this(data, nextCursor, mutableMapOf())
 
     /**
-     * The organizations for the user
-     *
-     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun data(): Optional<List<OrganizationListResponse>> = data.getOptional("data")
+    fun data(): List<OrganizationListResponse> = data.getRequired("data")
 
     /**
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun nextCursor(): Optional<String> = nextCursor.getOptional("next_cursor")
+    fun nextCursor(): Optional<String> = nextCursor.getOptional("nextCursor")
 
     /**
      * Returns the raw JSON value of [data].
@@ -64,7 +61,7 @@ private constructor(
      *
      * Unlike [nextCursor], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("next_cursor") @ExcludeMissing fun _nextCursor(): JsonField<String> = nextCursor
+    @JsonProperty("nextCursor") @ExcludeMissing fun _nextCursor(): JsonField<String> = nextCursor
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -82,6 +79,11 @@ private constructor(
 
         /**
          * Returns a mutable builder for constructing an instance of [OrganizationListPageResponse].
+         *
+         * The following fields are required:
+         * ```java
+         * .data()
+         * ```
          */
         @JvmStatic fun builder() = Builder()
     }
@@ -100,7 +102,6 @@ private constructor(
             additionalProperties = organizationListPageResponse.additionalProperties.toMutableMap()
         }
 
-        /** The organizations for the user */
         fun data(data: List<OrganizationListResponse>) = data(JsonField.of(data))
 
         /**
@@ -126,10 +127,7 @@ private constructor(
                 }
         }
 
-        fun nextCursor(nextCursor: String?) = nextCursor(JsonField.ofNullable(nextCursor))
-
-        /** Alias for calling [Builder.nextCursor] with `nextCursor.orElse(null)`. */
-        fun nextCursor(nextCursor: Optional<String>) = nextCursor(nextCursor.getOrNull())
+        fun nextCursor(nextCursor: String) = nextCursor(JsonField.of(nextCursor))
 
         /**
          * Sets [Builder.nextCursor] to an arbitrary JSON value.
@@ -163,10 +161,17 @@ private constructor(
          * Returns an immutable instance of [OrganizationListPageResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```java
+         * .data()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): OrganizationListPageResponse =
             OrganizationListPageResponse(
-                (data ?: JsonMissing.of()).map { it.toImmutable() },
+                checkRequired("data", data).map { it.toImmutable() },
                 nextCursor,
                 additionalProperties.toMutableMap(),
             )
@@ -179,7 +184,7 @@ private constructor(
             return@apply
         }
 
-        data().ifPresent { it.forEach { it.validate() } }
+        data().forEach { it.validate() }
         nextCursor()
         validated = true
     }

@@ -9,23 +9,16 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Return the events related to this email id */
+/** Retrieve email events by email id */
 class EventListParams
 private constructor(
     private val id: String?,
-    private val cursor: String?,
-    private val limit: Double?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
+    /** The id of the email */
     fun id(): Optional<String> = Optional.ofNullable(id)
-
-    /** The cursor to use for pagination */
-    fun cursor(): Optional<String> = Optional.ofNullable(cursor)
-
-    /** The maximum number of items to return */
-    fun limit(): Optional<Double> = Optional.ofNullable(limit)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -47,43 +40,21 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: String? = null
-        private var cursor: String? = null
-        private var limit: Double? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
         internal fun from(eventListParams: EventListParams) = apply {
             id = eventListParams.id
-            cursor = eventListParams.cursor
-            limit = eventListParams.limit
             additionalHeaders = eventListParams.additionalHeaders.toBuilder()
             additionalQueryParams = eventListParams.additionalQueryParams.toBuilder()
         }
 
+        /** The id of the email */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */
         fun id(id: Optional<String>) = id(id.getOrNull())
-
-        /** The cursor to use for pagination */
-        fun cursor(cursor: String?) = apply { this.cursor = cursor }
-
-        /** Alias for calling [Builder.cursor] with `cursor.orElse(null)`. */
-        fun cursor(cursor: Optional<String>) = cursor(cursor.getOrNull())
-
-        /** The maximum number of items to return */
-        fun limit(limit: Double?) = apply { this.limit = limit }
-
-        /**
-         * Alias for [Builder.limit].
-         *
-         * This unboxed primitive overload exists for backwards compatibility.
-         */
-        fun limit(limit: Double) = limit(limit as Double?)
-
-        /** Alias for calling [Builder.limit] with `limit.orElse(null)`. */
-        fun limit(limit: Optional<Double>) = limit(limit.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -189,13 +160,7 @@ private constructor(
          * Further updates to this [Builder] will not mutate the returned instance.
          */
         fun build(): EventListParams =
-            EventListParams(
-                id,
-                cursor,
-                limit,
-                additionalHeaders.build(),
-                additionalQueryParams.build(),
-            )
+            EventListParams(id, additionalHeaders.build(), additionalQueryParams.build())
     }
 
     fun _pathParam(index: Int): String =
@@ -206,14 +171,7 @@ private constructor(
 
     override fun _headers(): Headers = additionalHeaders
 
-    override fun _queryParams(): QueryParams =
-        QueryParams.builder()
-            .apply {
-                cursor?.let { put("cursor", it) }
-                limit?.let { put("limit", it.toString()) }
-                putAll(additionalQueryParams)
-            }
-            .build()
+    override fun _queryParams(): QueryParams = additionalQueryParams
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -222,15 +180,12 @@ private constructor(
 
         return other is EventListParams &&
             id == other.id &&
-            cursor == other.cursor &&
-            limit == other.limit &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int =
-        Objects.hash(id, cursor, limit, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int = Objects.hash(id, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "EventListParams{id=$id, cursor=$cursor, limit=$limit, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "EventListParams{id=$id, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

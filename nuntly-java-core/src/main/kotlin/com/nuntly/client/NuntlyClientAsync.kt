@@ -3,7 +3,6 @@
 package com.nuntly.client
 
 import com.nuntly.core.ClientOptions
-import com.nuntly.services.async.AccountServiceAsync
 import com.nuntly.services.async.ApiKeyServiceAsync
 import com.nuntly.services.async.DomainServiceAsync
 import com.nuntly.services.async.EmailServiceAsync
@@ -60,8 +59,6 @@ interface NuntlyClientAsync {
 
     fun organizations(): OrganizationServiceAsync
 
-    fun account(): AccountServiceAsync
-
     /**
      * Closes this client, relinquishing any underlying resources.
      *
@@ -98,7 +95,5 @@ interface NuntlyClientAsync {
         fun webhooks(): WebhookServiceAsync.WithRawResponse
 
         fun organizations(): OrganizationServiceAsync.WithRawResponse
-
-        fun account(): AccountServiceAsync.WithRawResponse
     }
 }

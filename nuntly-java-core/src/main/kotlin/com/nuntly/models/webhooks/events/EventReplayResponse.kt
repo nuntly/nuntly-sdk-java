@@ -11,6 +11,7 @@ import com.nuntly.errors.NuntlyInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
+/** Response for webhook event replay */
 class EventReplayResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(private val additionalProperties: MutableMap<String, JsonValue>) {

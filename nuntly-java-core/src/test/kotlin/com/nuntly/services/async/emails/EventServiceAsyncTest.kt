@@ -4,7 +4,6 @@ package com.nuntly.services.async.emails
 
 import com.nuntly.TestServerExtension
 import com.nuntly.client.okhttp.NuntlyOkHttpClientAsync
-import com.nuntly.models.emails.events.EventListParams
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -20,14 +19,7 @@ internal class EventServiceAsyncTest {
                 .build()
         val eventServiceAsync = client.emails().events()
 
-        val eventsFuture =
-            eventServiceAsync.list(
-                EventListParams.builder()
-                    .id("em_qiPSkLrTmXvDohbxCcYt3pFEMGgnjHD6kbDL8d4uGKvNGboT")
-                    .cursor("cursor")
-                    .limit(1.0)
-                    .build()
-            )
+        val eventsFuture = eventServiceAsync.list("em_01ka8k8s80gvx9604cn9am5st4")
 
         val events = eventsFuture.get()
         events.forEach { it.validate() }

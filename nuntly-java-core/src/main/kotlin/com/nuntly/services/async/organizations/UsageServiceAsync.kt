@@ -24,7 +24,7 @@ interface UsageServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): UsageServiceAsync
 
-    /** Return the organization usage */
+    /** Retrieve organization usage */
     fun retrieve(id: String): CompletableFuture<UsageRetrieveResponse> =
         retrieve(id, UsageRetrieveParams.none())
 

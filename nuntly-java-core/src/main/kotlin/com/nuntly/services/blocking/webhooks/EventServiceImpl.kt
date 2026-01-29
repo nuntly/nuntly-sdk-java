@@ -47,14 +47,14 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
         params: EventDeliveriesParams,
         requestOptions: RequestOptions,
     ): List<EventDeliveriesResponse> =
-        // get /webhooks/{id}/events/{event_id}/deliveries
+        // get /webhooks/{id}/events/{eventId}/deliveries
         withRawResponse().deliveries(params, requestOptions).parse()
 
     override fun replay(
         params: EventReplayParams,
         requestOptions: RequestOptions,
     ): EventReplayResponse =
-        // post /webhooks/{id}/events/{event_id}/replay
+        // post /webhooks/{id}/events/{eventId}/replay
         withRawResponse().replay(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :

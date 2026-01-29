@@ -12,26 +12,16 @@ internal class DomainDeleteResponseTest {
     @Test
     fun create() {
         val domainDeleteResponse =
-            DomainDeleteResponse.builder()
-                .id("dns_01jh8xggryggczvjv4xfff4rwn")
-                .kind(DomainDeleteResponse.Kind.DOMAIN)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .build()
+            DomainDeleteResponse.builder().id("dns_01kabn43yqyxn2bx4ve84mczd3").build()
 
-        assertThat(domainDeleteResponse.id()).isEqualTo("dns_01jh8xggryggczvjv4xfff4rwn")
-        assertThat(domainDeleteResponse.kind()).isEqualTo(DomainDeleteResponse.Kind.DOMAIN)
-        assertThat(domainDeleteResponse.orgId()).isEqualTo("org_01jh6jk82zjq9deye73h0mzcaq")
+        assertThat(domainDeleteResponse.id()).isEqualTo("dns_01kabn43yqyxn2bx4ve84mczd3")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
         val domainDeleteResponse =
-            DomainDeleteResponse.builder()
-                .id("dns_01jh8xggryggczvjv4xfff4rwn")
-                .kind(DomainDeleteResponse.Kind.DOMAIN)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .build()
+            DomainDeleteResponse.builder().id("dns_01kabn43yqyxn2bx4ve84mczd3").build()
 
         val roundtrippedDomainDeleteResponse =
             jsonMapper.readValue(

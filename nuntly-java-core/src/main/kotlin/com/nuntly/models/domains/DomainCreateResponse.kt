@@ -15,7 +15,6 @@ import com.nuntly.core.checkKnown
 import com.nuntly.core.checkRequired
 import com.nuntly.core.toImmutable
 import com.nuntly.errors.NuntlyInvalidDataException
-import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
@@ -26,61 +25,48 @@ class DomainCreateResponse
 private constructor(
     private val id: JsonField<String>,
     private val clickTracking: JsonField<Boolean>,
-    private val createdAt: JsonField<OffsetDateTime>,
-    private val kind: JsonField<Kind>,
+    private val createdAt: JsonField<String>,
     private val name: JsonField<String>,
     private val openTracking: JsonField<Boolean>,
-    private val orgId: JsonField<String>,
     private val region: JsonField<Region>,
     private val sendingRecords: JsonField<List<SendingRecord>>,
     private val sendingStatus: JsonField<SendingStatus>,
     private val status: JsonField<Status>,
     private val statusAt: JsonField<String>,
-    private val modifiedAt: JsonField<OffsetDateTime>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("click_tracking")
+        @JsonProperty("clickTracking")
         @ExcludeMissing
         clickTracking: JsonField<Boolean> = JsonMissing.of(),
-        @JsonProperty("created_at")
-        @ExcludeMissing
-        createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("kind") @ExcludeMissing kind: JsonField<Kind> = JsonMissing.of(),
+        @JsonProperty("createdAt") @ExcludeMissing createdAt: JsonField<String> = JsonMissing.of(),
         @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("open_tracking")
+        @JsonProperty("openTracking")
         @ExcludeMissing
         openTracking: JsonField<Boolean> = JsonMissing.of(),
-        @JsonProperty("org_id") @ExcludeMissing orgId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("region") @ExcludeMissing region: JsonField<Region> = JsonMissing.of(),
-        @JsonProperty("sending_records")
+        @JsonProperty("sendingRecords")
         @ExcludeMissing
         sendingRecords: JsonField<List<SendingRecord>> = JsonMissing.of(),
-        @JsonProperty("sending_status")
+        @JsonProperty("sendingStatus")
         @ExcludeMissing
         sendingStatus: JsonField<SendingStatus> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
-        @JsonProperty("status_at") @ExcludeMissing statusAt: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("modified_at")
-        @ExcludeMissing
-        modifiedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("statusAt") @ExcludeMissing statusAt: JsonField<String> = JsonMissing.of(),
     ) : this(
         id,
         clickTracking,
         createdAt,
-        kind,
         name,
         openTracking,
-        orgId,
         region,
         sendingRecords,
         sendingStatus,
         status,
         statusAt,
-        modifiedAt,
         mutableMapOf(),
     )
 
@@ -93,10 +79,12 @@ private constructor(
     fun id(): String = id.getRequired("id")
 
     /**
+     * Emit an event for each time the recipient clicks a link in the email
+     *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun clickTracking(): Boolean = clickTracking.getRequired("click_tracking")
+    fun clickTracking(): Boolean = clickTracking.getRequired("clickTracking")
 
     /**
      * Date at which the object was created (ISO 8601 format)
@@ -104,18 +92,10 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun createdAt(): OffsetDateTime = createdAt.getRequired("created_at")
+    fun createdAt(): String = createdAt.getRequired("createdAt")
 
     /**
-     * The kind of object returned
-     *
-     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun kind(): Kind = kind.getRequired("kind")
-
-    /**
-     * The name of the domain. For example: 'email.mycompany.com'
+     * The name of the domain to send e-mails'
      *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -123,21 +103,15 @@ private constructor(
     fun name(): String = name.getRequired("name")
 
     /**
-     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun openTracking(): Boolean = openTracking.getRequired("open_tracking")
-
-    /**
-     * The id of the organization
+     * Emit an event for each recipient opens an email their email client
      *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun orgId(): String = orgId.getRequired("org_id")
+    fun openTracking(): Boolean = openTracking.getRequired("openTracking")
 
     /**
-     * The region of the related data
+     * The region of the domain data
      *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -150,7 +124,7 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun sendingRecords(): List<SendingRecord> = sendingRecords.getRequired("sending_records")
+    fun sendingRecords(): List<SendingRecord> = sendingRecords.getRequired("sendingRecords")
 
     /**
      * The sending status for the domain
@@ -158,7 +132,7 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun sendingStatus(): SendingStatus = sendingStatus.getRequired("sending_status")
+    fun sendingStatus(): SendingStatus = sendingStatus.getRequired("sendingStatus")
 
     /**
      * The status for the domain
@@ -169,20 +143,12 @@ private constructor(
     fun status(): Status = status.getRequired("status")
 
     /**
-     * The date of the lastest verification of the status
+     * The date of the lastest verification of this record
      *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun statusAt(): String = statusAt.getRequired("status_at")
-
-    /**
-     * Date at which the object was modified (ISO 8601 format)
-     *
-     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun modifiedAt(): Optional<OffsetDateTime> = modifiedAt.getOptional("modified_at")
+    fun statusAt(): String = statusAt.getRequired("statusAt")
 
     /**
      * Returns the raw JSON value of [id].
@@ -196,7 +162,7 @@ private constructor(
      *
      * Unlike [clickTracking], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("click_tracking")
+    @JsonProperty("clickTracking")
     @ExcludeMissing
     fun _clickTracking(): JsonField<Boolean> = clickTracking
 
@@ -205,16 +171,7 @@ private constructor(
      *
      * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("created_at")
-    @ExcludeMissing
-    fun _createdAt(): JsonField<OffsetDateTime> = createdAt
-
-    /**
-     * Returns the raw JSON value of [kind].
-     *
-     * Unlike [kind], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("kind") @ExcludeMissing fun _kind(): JsonField<Kind> = kind
+    @JsonProperty("createdAt") @ExcludeMissing fun _createdAt(): JsonField<String> = createdAt
 
     /**
      * Returns the raw JSON value of [name].
@@ -228,16 +185,9 @@ private constructor(
      *
      * Unlike [openTracking], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("open_tracking")
+    @JsonProperty("openTracking")
     @ExcludeMissing
     fun _openTracking(): JsonField<Boolean> = openTracking
-
-    /**
-     * Returns the raw JSON value of [orgId].
-     *
-     * Unlike [orgId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("org_id") @ExcludeMissing fun _orgId(): JsonField<String> = orgId
 
     /**
      * Returns the raw JSON value of [region].
@@ -251,7 +201,7 @@ private constructor(
      *
      * Unlike [sendingRecords], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("sending_records")
+    @JsonProperty("sendingRecords")
     @ExcludeMissing
     fun _sendingRecords(): JsonField<List<SendingRecord>> = sendingRecords
 
@@ -260,7 +210,7 @@ private constructor(
      *
      * Unlike [sendingStatus], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("sending_status")
+    @JsonProperty("sendingStatus")
     @ExcludeMissing
     fun _sendingStatus(): JsonField<SendingStatus> = sendingStatus
 
@@ -276,16 +226,7 @@ private constructor(
      *
      * Unlike [statusAt], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("status_at") @ExcludeMissing fun _statusAt(): JsonField<String> = statusAt
-
-    /**
-     * Returns the raw JSON value of [modifiedAt].
-     *
-     * Unlike [modifiedAt], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("modified_at")
-    @ExcludeMissing
-    fun _modifiedAt(): JsonField<OffsetDateTime> = modifiedAt
+    @JsonProperty("statusAt") @ExcludeMissing fun _statusAt(): JsonField<String> = statusAt
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -309,10 +250,8 @@ private constructor(
          * .id()
          * .clickTracking()
          * .createdAt()
-         * .kind()
          * .name()
          * .openTracking()
-         * .orgId()
          * .region()
          * .sendingRecords()
          * .sendingStatus()
@@ -328,17 +267,14 @@ private constructor(
 
         private var id: JsonField<String>? = null
         private var clickTracking: JsonField<Boolean>? = null
-        private var createdAt: JsonField<OffsetDateTime>? = null
-        private var kind: JsonField<Kind>? = null
+        private var createdAt: JsonField<String>? = null
         private var name: JsonField<String>? = null
         private var openTracking: JsonField<Boolean>? = null
-        private var orgId: JsonField<String>? = null
         private var region: JsonField<Region>? = null
         private var sendingRecords: JsonField<MutableList<SendingRecord>>? = null
         private var sendingStatus: JsonField<SendingStatus>? = null
         private var status: JsonField<Status>? = null
         private var statusAt: JsonField<String>? = null
-        private var modifiedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -346,16 +282,13 @@ private constructor(
             id = domainCreateResponse.id
             clickTracking = domainCreateResponse.clickTracking
             createdAt = domainCreateResponse.createdAt
-            kind = domainCreateResponse.kind
             name = domainCreateResponse.name
             openTracking = domainCreateResponse.openTracking
-            orgId = domainCreateResponse.orgId
             region = domainCreateResponse.region
             sendingRecords = domainCreateResponse.sendingRecords.map { it.toMutableList() }
             sendingStatus = domainCreateResponse.sendingStatus
             status = domainCreateResponse.status
             statusAt = domainCreateResponse.statusAt
-            modifiedAt = domainCreateResponse.modifiedAt
             additionalProperties = domainCreateResponse.additionalProperties.toMutableMap()
         }
 
@@ -370,6 +303,7 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
 
+        /** Emit an event for each time the recipient clicks a link in the email */
         fun clickTracking(clickTracking: Boolean) = clickTracking(JsonField.of(clickTracking))
 
         /**
@@ -384,29 +318,18 @@ private constructor(
         }
 
         /** Date at which the object was created (ISO 8601 format) */
-        fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
+        fun createdAt(createdAt: String) = createdAt(JsonField.of(createdAt))
 
         /**
          * Sets [Builder.createdAt] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.createdAt] with a well-typed [OffsetDateTime] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.createdAt] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
          */
-        fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
+        fun createdAt(createdAt: JsonField<String>) = apply { this.createdAt = createdAt }
 
-        /** The kind of object returned */
-        fun kind(kind: Kind) = kind(JsonField.of(kind))
-
-        /**
-         * Sets [Builder.kind] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.kind] with a well-typed [Kind] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun kind(kind: JsonField<Kind>) = apply { this.kind = kind }
-
-        /** The name of the domain. For example: 'email.mycompany.com' */
+        /** The name of the domain to send e-mails' */
         fun name(name: String) = name(JsonField.of(name))
 
         /**
@@ -417,6 +340,7 @@ private constructor(
          */
         fun name(name: JsonField<String>) = apply { this.name = name }
 
+        /** Emit an event for each recipient opens an email their email client */
         fun openTracking(openTracking: Boolean) = openTracking(JsonField.of(openTracking))
 
         /**
@@ -430,18 +354,7 @@ private constructor(
             this.openTracking = openTracking
         }
 
-        /** The id of the organization */
-        fun orgId(orgId: String) = orgId(JsonField.of(orgId))
-
-        /**
-         * Sets [Builder.orgId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.orgId] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun orgId(orgId: JsonField<String>) = apply { this.orgId = orgId }
-
-        /** The region of the related data */
+        /** The region of the domain data */
         fun region(region: Region) = region(JsonField.of(region))
 
         /**
@@ -504,7 +417,7 @@ private constructor(
          */
         fun status(status: JsonField<Status>) = apply { this.status = status }
 
-        /** The date of the lastest verification of the status */
+        /** The date of the lastest verification of this record */
         fun statusAt(statusAt: String) = statusAt(JsonField.of(statusAt))
 
         /**
@@ -514,20 +427,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun statusAt(statusAt: JsonField<String>) = apply { this.statusAt = statusAt }
-
-        /** Date at which the object was modified (ISO 8601 format) */
-        fun modifiedAt(modifiedAt: OffsetDateTime) = modifiedAt(JsonField.of(modifiedAt))
-
-        /**
-         * Sets [Builder.modifiedAt] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.modifiedAt] with a well-typed [OffsetDateTime] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun modifiedAt(modifiedAt: JsonField<OffsetDateTime>) = apply {
-            this.modifiedAt = modifiedAt
-        }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -558,10 +457,8 @@ private constructor(
          * .id()
          * .clickTracking()
          * .createdAt()
-         * .kind()
          * .name()
          * .openTracking()
-         * .orgId()
          * .region()
          * .sendingRecords()
          * .sendingStatus()
@@ -576,16 +473,13 @@ private constructor(
                 checkRequired("id", id),
                 checkRequired("clickTracking", clickTracking),
                 checkRequired("createdAt", createdAt),
-                checkRequired("kind", kind),
                 checkRequired("name", name),
                 checkRequired("openTracking", openTracking),
-                checkRequired("orgId", orgId),
                 checkRequired("region", region),
                 checkRequired("sendingRecords", sendingRecords).map { it.toImmutable() },
                 checkRequired("sendingStatus", sendingStatus),
                 checkRequired("status", status),
                 checkRequired("statusAt", statusAt),
-                modifiedAt,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -600,16 +494,13 @@ private constructor(
         id()
         clickTracking()
         createdAt()
-        kind().validate()
         name()
         openTracking()
-        orgId()
         region().validate()
         sendingRecords().forEach { it.validate() }
         sendingStatus().validate()
         status().validate()
         statusAt()
-        modifiedAt()
         validated = true
     }
 
@@ -631,138 +522,15 @@ private constructor(
         (if (id.asKnown().isPresent) 1 else 0) +
             (if (clickTracking.asKnown().isPresent) 1 else 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
-            (kind.asKnown().getOrNull()?.validity() ?: 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
             (if (openTracking.asKnown().isPresent) 1 else 0) +
-            (if (orgId.asKnown().isPresent) 1 else 0) +
             (region.asKnown().getOrNull()?.validity() ?: 0) +
             (sendingRecords.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (sendingStatus.asKnown().getOrNull()?.validity() ?: 0) +
             (status.asKnown().getOrNull()?.validity() ?: 0) +
-            (if (statusAt.asKnown().isPresent) 1 else 0) +
-            (if (modifiedAt.asKnown().isPresent) 1 else 0)
+            (if (statusAt.asKnown().isPresent) 1 else 0)
 
-    /** The kind of object returned */
-    class Kind @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-        companion object {
-
-            @JvmField val DOMAIN = of("domain")
-
-            @JvmStatic fun of(value: String) = Kind(JsonField.of(value))
-        }
-
-        /** An enum containing [Kind]'s known values. */
-        enum class Known {
-            DOMAIN
-        }
-
-        /**
-         * An enum containing [Kind]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [Kind] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            DOMAIN,
-            /** An enum member indicating that [Kind] was instantiated with an unknown value. */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                DOMAIN -> Value.DOMAIN
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws NuntlyInvalidDataException if this class instance's value is a not a known
-         *   member.
-         */
-        fun known(): Known =
-            when (this) {
-                DOMAIN -> Known.DOMAIN
-                else -> throw NuntlyInvalidDataException("Unknown Kind: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws NuntlyInvalidDataException if this class instance's value does not have the
-         *   expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString().orElseThrow { NuntlyInvalidDataException("Value is not a String") }
-
-        private var validated: Boolean = false
-
-        fun validate(): Kind = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: NuntlyInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Kind && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
-
-    /** The region of the related data */
+    /** The region of the domain data */
     class Region @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
@@ -887,13 +655,11 @@ private constructor(
     private constructor(
         private val fullname: JsonField<String>,
         private val group: JsonField<Group>,
-        private val kind: JsonField<Kind>,
         private val name: JsonField<String>,
-        private val region: JsonField<Region>,
+        private val recordType: JsonField<RecordType>,
         private val status: JsonField<Status>,
         private val statusAt: JsonField<String>,
         private val ttl: JsonField<String>,
-        private val type: JsonField<Type>,
         private val value: JsonField<String>,
         private val priority: JsonField<String>,
         private val selector: JsonField<String>,
@@ -906,15 +672,15 @@ private constructor(
             @ExcludeMissing
             fullname: JsonField<String> = JsonMissing.of(),
             @JsonProperty("group") @ExcludeMissing group: JsonField<Group> = JsonMissing.of(),
-            @JsonProperty("kind") @ExcludeMissing kind: JsonField<Kind> = JsonMissing.of(),
             @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("region") @ExcludeMissing region: JsonField<Region> = JsonMissing.of(),
+            @JsonProperty("recordType")
+            @ExcludeMissing
+            recordType: JsonField<RecordType> = JsonMissing.of(),
             @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
-            @JsonProperty("status_at")
+            @JsonProperty("statusAt")
             @ExcludeMissing
             statusAt: JsonField<String> = JsonMissing.of(),
             @JsonProperty("ttl") @ExcludeMissing ttl: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
             @JsonProperty("value") @ExcludeMissing value: JsonField<String> = JsonMissing.of(),
             @JsonProperty("priority")
             @ExcludeMissing
@@ -923,13 +689,11 @@ private constructor(
         ) : this(
             fullname,
             group,
-            kind,
             name,
-            region,
+            recordType,
             status,
             statusAt,
             ttl,
-            type,
             value,
             priority,
             selector,
@@ -953,14 +717,6 @@ private constructor(
         fun group(): Group = group.getRequired("group")
 
         /**
-         * The kind of object returned
-         *
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun kind(): Kind = kind.getRequired("kind")
-
-        /**
          * The name of the record.
          *
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
@@ -969,12 +725,12 @@ private constructor(
         fun name(): String = name.getRequired("name")
 
         /**
-         * The region of the related data
+         * The type of the record: "TXT", "MX" or "CNAME"
          *
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun region(): Region = region.getRequired("region")
+        fun recordType(): RecordType = recordType.getRequired("recordType")
 
         /**
          * The status of the record
@@ -990,7 +746,7 @@ private constructor(
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun statusAt(): String = statusAt.getRequired("status_at")
+        fun statusAt(): String = statusAt.getRequired("statusAt")
 
         /**
          * TTL (Time To Live) for this DNS record specifies the duration (in seconds)
@@ -999,14 +755,6 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun ttl(): String = ttl.getRequired("ttl")
-
-        /**
-         * The type of the record: "TXT", "MX" or "CNAME"
-         *
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun type(): Type = type.getRequired("type")
 
         /**
          * The value of a DNS record is the data that the record points to
@@ -1050,13 +798,6 @@ private constructor(
         @JsonProperty("group") @ExcludeMissing fun _group(): JsonField<Group> = group
 
         /**
-         * Returns the raw JSON value of [kind].
-         *
-         * Unlike [kind], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("kind") @ExcludeMissing fun _kind(): JsonField<Kind> = kind
-
-        /**
          * Returns the raw JSON value of [name].
          *
          * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
@@ -1064,11 +805,13 @@ private constructor(
         @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
 
         /**
-         * Returns the raw JSON value of [region].
+         * Returns the raw JSON value of [recordType].
          *
-         * Unlike [region], this method doesn't throw if the JSON field has an unexpected type.
+         * Unlike [recordType], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("region") @ExcludeMissing fun _region(): JsonField<Region> = region
+        @JsonProperty("recordType")
+        @ExcludeMissing
+        fun _recordType(): JsonField<RecordType> = recordType
 
         /**
          * Returns the raw JSON value of [status].
@@ -1082,7 +825,7 @@ private constructor(
          *
          * Unlike [statusAt], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("status_at") @ExcludeMissing fun _statusAt(): JsonField<String> = statusAt
+        @JsonProperty("statusAt") @ExcludeMissing fun _statusAt(): JsonField<String> = statusAt
 
         /**
          * Returns the raw JSON value of [ttl].
@@ -1090,13 +833,6 @@ private constructor(
          * Unlike [ttl], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("ttl") @ExcludeMissing fun _ttl(): JsonField<String> = ttl
-
-        /**
-         * Returns the raw JSON value of [type].
-         *
-         * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
 
         /**
          * Returns the raw JSON value of [value].
@@ -1140,13 +876,11 @@ private constructor(
              * ```java
              * .fullname()
              * .group()
-             * .kind()
              * .name()
-             * .region()
+             * .recordType()
              * .status()
              * .statusAt()
              * .ttl()
-             * .type()
              * .value()
              * ```
              */
@@ -1158,13 +892,11 @@ private constructor(
 
             private var fullname: JsonField<String>? = null
             private var group: JsonField<Group>? = null
-            private var kind: JsonField<Kind>? = null
             private var name: JsonField<String>? = null
-            private var region: JsonField<Region>? = null
+            private var recordType: JsonField<RecordType>? = null
             private var status: JsonField<Status>? = null
             private var statusAt: JsonField<String>? = null
             private var ttl: JsonField<String>? = null
-            private var type: JsonField<Type>? = null
             private var value: JsonField<String>? = null
             private var priority: JsonField<String> = JsonMissing.of()
             private var selector: JsonField<String> = JsonMissing.of()
@@ -1174,13 +906,11 @@ private constructor(
             internal fun from(sendingRecord: SendingRecord) = apply {
                 fullname = sendingRecord.fullname
                 group = sendingRecord.group
-                kind = sendingRecord.kind
                 name = sendingRecord.name
-                region = sendingRecord.region
+                recordType = sendingRecord.recordType
                 status = sendingRecord.status
                 statusAt = sendingRecord.statusAt
                 ttl = sendingRecord.ttl
-                type = sendingRecord.type
                 value = sendingRecord.value
                 priority = sendingRecord.priority
                 selector = sendingRecord.selector
@@ -1213,18 +943,6 @@ private constructor(
              */
             fun group(group: JsonField<Group>) = apply { this.group = group }
 
-            /** The kind of object returned */
-            fun kind(kind: Kind) = kind(JsonField.of(kind))
-
-            /**
-             * Sets [Builder.kind] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.kind] with a well-typed [Kind] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun kind(kind: JsonField<Kind>) = apply { this.kind = kind }
-
             /** The name of the record. */
             fun name(name: String) = name(JsonField.of(name))
 
@@ -1237,17 +955,19 @@ private constructor(
              */
             fun name(name: JsonField<String>) = apply { this.name = name }
 
-            /** The region of the related data */
-            fun region(region: Region) = region(JsonField.of(region))
+            /** The type of the record: "TXT", "MX" or "CNAME" */
+            fun recordType(recordType: RecordType) = recordType(JsonField.of(recordType))
 
             /**
-             * Sets [Builder.region] to an arbitrary JSON value.
+             * Sets [Builder.recordType] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.region] with a well-typed [Region] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.recordType] with a well-typed [RecordType] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun region(region: JsonField<Region>) = apply { this.region = region }
+            fun recordType(recordType: JsonField<RecordType>) = apply {
+                this.recordType = recordType
+            }
 
             /** The status of the record */
             fun status(status: Status) = status(JsonField.of(status))
@@ -1284,18 +1004,6 @@ private constructor(
              * value.
              */
             fun ttl(ttl: JsonField<String>) = apply { this.ttl = ttl }
-
-            /** The type of the record: "TXT", "MX" or "CNAME" */
-            fun type(type: Type) = type(JsonField.of(type))
-
-            /**
-             * Sets [Builder.type] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.type] with a well-typed [Type] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun type(type: JsonField<Type>) = apply { this.type = type }
 
             /** The value of a DNS record is the data that the record points to */
             fun value(value: String) = value(JsonField.of(value))
@@ -1368,13 +1076,11 @@ private constructor(
              * ```java
              * .fullname()
              * .group()
-             * .kind()
              * .name()
-             * .region()
+             * .recordType()
              * .status()
              * .statusAt()
              * .ttl()
-             * .type()
              * .value()
              * ```
              *
@@ -1384,13 +1090,11 @@ private constructor(
                 SendingRecord(
                     checkRequired("fullname", fullname),
                     checkRequired("group", group),
-                    checkRequired("kind", kind),
                     checkRequired("name", name),
-                    checkRequired("region", region),
+                    checkRequired("recordType", recordType),
                     checkRequired("status", status),
                     checkRequired("statusAt", statusAt),
                     checkRequired("ttl", ttl),
-                    checkRequired("type", type),
                     checkRequired("value", value),
                     priority,
                     selector,
@@ -1407,13 +1111,11 @@ private constructor(
 
             fullname()
             group().validate()
-            kind().validate()
             name()
-            region().validate()
+            recordType().validate()
             status().validate()
             statusAt()
             ttl()
-            type().validate()
             value()
             priority()
             selector()
@@ -1438,13 +1140,11 @@ private constructor(
         internal fun validity(): Int =
             (if (fullname.asKnown().isPresent) 1 else 0) +
                 (group.asKnown().getOrNull()?.validity() ?: 0) +
-                (kind.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (name.asKnown().isPresent) 1 else 0) +
-                (region.asKnown().getOrNull()?.validity() ?: 0) +
+                (recordType.asKnown().getOrNull()?.validity() ?: 0) +
                 (status.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (statusAt.asKnown().isPresent) 1 else 0) +
                 (if (ttl.asKnown().isPresent) 1 else 0) +
-                (type.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (value.asKnown().isPresent) 1 else 0) +
                 (if (priority.asKnown().isPresent) 1 else 0) +
                 (if (selector.asKnown().isPresent) 1 else 0)
@@ -1591,8 +1291,9 @@ private constructor(
             override fun toString() = value.toString()
         }
 
-        /** The kind of object returned */
-        class Kind @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+        /** The type of the record: "TXT", "MX" or "CNAME" */
+        class RecordType @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
 
             /**
              * Returns this class instance's raw value.
@@ -1606,151 +1307,38 @@ private constructor(
 
             companion object {
 
-                @JvmField val RECORD = of("record")
+                @JvmField val TXT = of("TXT")
 
-                @JvmStatic fun of(value: String) = Kind(JsonField.of(value))
+                @JvmField val MX = of("MX")
+
+                @JvmField val CNAME = of("CNAME")
+
+                @JvmStatic fun of(value: String) = RecordType(JsonField.of(value))
             }
 
-            /** An enum containing [Kind]'s known values. */
+            /** An enum containing [RecordType]'s known values. */
             enum class Known {
-                RECORD
+                TXT,
+                MX,
+                CNAME,
             }
 
             /**
-             * An enum containing [Kind]'s known values, as well as an [_UNKNOWN] member.
+             * An enum containing [RecordType]'s known values, as well as an [_UNKNOWN] member.
              *
-             * An instance of [Kind] can contain an unknown value in a couple of cases:
+             * An instance of [RecordType] can contain an unknown value in a couple of cases:
              * - It was deserialized from data that doesn't match any known member. For example, if
              *   the SDK is on an older version than the API, then the API may respond with new
              *   members that the SDK is unaware of.
              * - It was constructed with an arbitrary value using the [of] method.
              */
             enum class Value {
-                RECORD,
-                /** An enum member indicating that [Kind] was instantiated with an unknown value. */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    RECORD -> Value.RECORD
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws NuntlyInvalidDataException if this class instance's value is a not a known
-             *   member.
-             */
-            fun known(): Known =
-                when (this) {
-                    RECORD -> Known.RECORD
-                    else -> throw NuntlyInvalidDataException("Unknown Kind: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws NuntlyInvalidDataException if this class instance's value does not have the
-             *   expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString().orElseThrow {
-                    NuntlyInvalidDataException("Value is not a String")
-                }
-
-            private var validated: Boolean = false
-
-            fun validate(): Kind = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: NuntlyInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is Kind && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
-
-        /** The region of the related data */
-        class Region @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                @JvmField val EU_WEST_1 = of("eu-west-1")
-
-                @JvmStatic fun of(value: String) = Region(JsonField.of(value))
-            }
-
-            /** An enum containing [Region]'s known values. */
-            enum class Known {
-                EU_WEST_1
-            }
-
-            /**
-             * An enum containing [Region]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [Region] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                EU_WEST_1,
+                TXT,
+                MX,
+                CNAME,
                 /**
-                 * An enum member indicating that [Region] was instantiated with an unknown value.
+                 * An enum member indicating that [RecordType] was instantiated with an unknown
+                 * value.
                  */
                 _UNKNOWN,
             }
@@ -1764,7 +1352,9 @@ private constructor(
              */
             fun value(): Value =
                 when (this) {
-                    EU_WEST_1 -> Value.EU_WEST_1
+                    TXT -> Value.TXT
+                    MX -> Value.MX
+                    CNAME -> Value.CNAME
                     else -> Value._UNKNOWN
                 }
 
@@ -1779,8 +1369,10 @@ private constructor(
              */
             fun known(): Known =
                 when (this) {
-                    EU_WEST_1 -> Known.EU_WEST_1
-                    else -> throw NuntlyInvalidDataException("Unknown Region: $value")
+                    TXT -> Known.TXT
+                    MX -> Known.MX
+                    CNAME -> Known.CNAME
+                    else -> throw NuntlyInvalidDataException("Unknown RecordType: $value")
                 }
 
             /**
@@ -1799,7 +1391,7 @@ private constructor(
 
             private var validated: Boolean = false
 
-            fun validate(): Region = apply {
+            fun validate(): RecordType = apply {
                 if (validated) {
                     return@apply
                 }
@@ -1829,7 +1421,7 @@ private constructor(
                     return true
                 }
 
-                return other is Region && value == other.value
+                return other is RecordType && value == other.value
             }
 
             override fun hashCode() = value.hashCode()
@@ -1985,140 +1577,6 @@ private constructor(
             override fun toString() = value.toString()
         }
 
-        /** The type of the record: "TXT", "MX" or "CNAME" */
-        class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                @JvmField val TXT = of("TXT")
-
-                @JvmField val MX = of("MX")
-
-                @JvmField val CNAME = of("CNAME")
-
-                @JvmStatic fun of(value: String) = Type(JsonField.of(value))
-            }
-
-            /** An enum containing [Type]'s known values. */
-            enum class Known {
-                TXT,
-                MX,
-                CNAME,
-            }
-
-            /**
-             * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [Type] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                TXT,
-                MX,
-                CNAME,
-                /** An enum member indicating that [Type] was instantiated with an unknown value. */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    TXT -> Value.TXT
-                    MX -> Value.MX
-                    CNAME -> Value.CNAME
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws NuntlyInvalidDataException if this class instance's value is a not a known
-             *   member.
-             */
-            fun known(): Known =
-                when (this) {
-                    TXT -> Known.TXT
-                    MX -> Known.MX
-                    CNAME -> Known.CNAME
-                    else -> throw NuntlyInvalidDataException("Unknown Type: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws NuntlyInvalidDataException if this class instance's value does not have the
-             *   expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString().orElseThrow {
-                    NuntlyInvalidDataException("Value is not a String")
-                }
-
-            private var validated: Boolean = false
-
-            fun validate(): Type = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: NuntlyInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is Type && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
-
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
@@ -2127,13 +1585,11 @@ private constructor(
             return other is SendingRecord &&
                 fullname == other.fullname &&
                 group == other.group &&
-                kind == other.kind &&
                 name == other.name &&
-                region == other.region &&
+                recordType == other.recordType &&
                 status == other.status &&
                 statusAt == other.statusAt &&
                 ttl == other.ttl &&
-                type == other.type &&
                 value == other.value &&
                 priority == other.priority &&
                 selector == other.selector &&
@@ -2144,13 +1600,11 @@ private constructor(
             Objects.hash(
                 fullname,
                 group,
-                kind,
                 name,
-                region,
+                recordType,
                 status,
                 statusAt,
                 ttl,
-                type,
                 value,
                 priority,
                 selector,
@@ -2161,7 +1615,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "SendingRecord{fullname=$fullname, group=$group, kind=$kind, name=$name, region=$region, status=$status, statusAt=$statusAt, ttl=$ttl, type=$type, value=$value, priority=$priority, selector=$selector, additionalProperties=$additionalProperties}"
+            "SendingRecord{fullname=$fullname, group=$group, name=$name, recordType=$recordType, status=$status, statusAt=$statusAt, ttl=$ttl, value=$value, priority=$priority, selector=$selector, additionalProperties=$additionalProperties}"
     }
 
     /** The sending status for the domain */
@@ -2447,16 +1901,13 @@ private constructor(
             id == other.id &&
             clickTracking == other.clickTracking &&
             createdAt == other.createdAt &&
-            kind == other.kind &&
             name == other.name &&
             openTracking == other.openTracking &&
-            orgId == other.orgId &&
             region == other.region &&
             sendingRecords == other.sendingRecords &&
             sendingStatus == other.sendingStatus &&
             status == other.status &&
             statusAt == other.statusAt &&
-            modifiedAt == other.modifiedAt &&
             additionalProperties == other.additionalProperties
     }
 
@@ -2465,16 +1916,13 @@ private constructor(
             id,
             clickTracking,
             createdAt,
-            kind,
             name,
             openTracking,
-            orgId,
             region,
             sendingRecords,
             sendingStatus,
             status,
             statusAt,
-            modifiedAt,
             additionalProperties,
         )
     }
@@ -2482,5 +1930,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "DomainCreateResponse{id=$id, clickTracking=$clickTracking, createdAt=$createdAt, kind=$kind, name=$name, openTracking=$openTracking, orgId=$orgId, region=$region, sendingRecords=$sendingRecords, sendingStatus=$sendingStatus, status=$status, statusAt=$statusAt, modifiedAt=$modifiedAt, additionalProperties=$additionalProperties}"
+        "DomainCreateResponse{id=$id, clickTracking=$clickTracking, createdAt=$createdAt, name=$name, openTracking=$openTracking, region=$region, sendingRecords=$sendingRecords, sendingStatus=$sendingStatus, status=$status, statusAt=$statusAt, additionalProperties=$additionalProperties}"
 }

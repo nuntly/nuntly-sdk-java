@@ -28,6 +28,8 @@ import com.nuntly.models.emails.EmailSendParams
 import com.nuntly.models.emails.EmailSendResponse
 import com.nuntly.services.blocking.emails.BulkService
 import com.nuntly.services.blocking.emails.BulkServiceImpl
+import com.nuntly.services.blocking.emails.ContentService
+import com.nuntly.services.blocking.emails.ContentServiceImpl
 import com.nuntly.services.blocking.emails.EventService
 import com.nuntly.services.blocking.emails.EventServiceImpl
 import com.nuntly.services.blocking.emails.StatService
@@ -46,6 +48,8 @@ class EmailServiceImpl internal constructor(private val clientOptions: ClientOpt
 
     private val events: EventService by lazy { EventServiceImpl(clientOptions) }
 
+    private val content: ContentService by lazy { ContentServiceImpl(clientOptions) }
+
     private val stats: StatService by lazy { StatServiceImpl(clientOptions) }
 
     override fun withRawResponse(): EmailService.WithRawResponse = withRawResponse
@@ -56,6 +60,8 @@ class EmailServiceImpl internal constructor(private val clientOptions: ClientOpt
     override fun bulk(): BulkService = bulk
 
     override fun events(): EventService = events
+
+    override fun content(): ContentService = content
 
     override fun stats(): StatService = stats
 
@@ -95,6 +101,10 @@ class EmailServiceImpl internal constructor(private val clientOptions: ClientOpt
             EventServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val content: ContentService.WithRawResponse by lazy {
+            ContentServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val stats: StatService.WithRawResponse by lazy {
             StatServiceImpl.WithRawResponseImpl(clientOptions)
         }
@@ -109,6 +119,8 @@ class EmailServiceImpl internal constructor(private val clientOptions: ClientOpt
         override fun bulk(): BulkService.WithRawResponse = bulk
 
         override fun events(): EventService.WithRawResponse = events
+
+        override fun content(): ContentService.WithRawResponse = content
 
         override fun stats(): StatService.WithRawResponse = stats
 

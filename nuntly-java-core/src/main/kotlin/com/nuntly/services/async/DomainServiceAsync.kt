@@ -32,7 +32,7 @@ interface DomainServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): DomainServiceAsync
 
-    /** Return the domain with the given ID */
+    /** Create a domain */
     fun create(params: DomainCreateParams): CompletableFuture<DomainCreateResponse> =
         create(params, RequestOptions.none())
 
@@ -42,7 +42,7 @@ interface DomainServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<DomainCreateResponse>
 
-    /** Return the domain with the given id */
+    /** Retrieve a domain */
     fun retrieve(id: String): CompletableFuture<DomainRetrieveResponse> =
         retrieve(id, DomainRetrieveParams.none())
 
@@ -77,7 +77,7 @@ interface DomainServiceAsync {
     ): CompletableFuture<DomainRetrieveResponse> =
         retrieve(id, DomainRetrieveParams.none(), requestOptions)
 
-    /** Updates domain tracking settings */
+    /** Update a domain */
     fun update(id: String): CompletableFuture<DomainUpdateResponse> =
         update(id, DomainUpdateParams.none())
 
@@ -112,7 +112,6 @@ interface DomainServiceAsync {
     ): CompletableFuture<DomainUpdateResponse> =
         update(id, DomainUpdateParams.none(), requestOptions)
 
-    /** Return a list of your domains */
     fun list(): CompletableFuture<DomainListPageAsync> = list(DomainListParams.none())
 
     /** @see list */
@@ -130,7 +129,7 @@ interface DomainServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<DomainListPageAsync> =
         list(DomainListParams.none(), requestOptions)
 
-    /** Delete the domain with the given ID */
+    /** Delete a domain */
     fun delete(id: String): CompletableFuture<DomainDeleteResponse> =
         delete(id, DomainDeleteParams.none())
 

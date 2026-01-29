@@ -3,8 +3,9 @@
 package com.nuntly.models.emails.events
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.nuntly.core.JsonValue
 import com.nuntly.core.jsonMapper
-import java.time.OffsetDateTime
+import com.nuntly.models.shared.EventType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,24 +15,22 @@ internal class EventListResponseTest {
     fun create() {
         val eventListResponse =
             EventListResponse.builder()
-                .id("evt_01jmwk9690775vgaqnwty4hkxb")
-                .details(EventListResponse.Details.builder().build())
-                .emailId("em_01jnvnn9avq52k5mrhn1gab0ch")
-                .eventAt(OffsetDateTime.parse("2025-02-24T18:25:03.264Z"))
-                .kind(EventListResponse.Kind.EVENT_EMAIL)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .type(EventListResponse.Type.EMAIL_CLICKED)
+                .id("evt_01ka8k8s80gvx9604cn9am5st4")
+                .createdAt("createdAt")
+                .emailId("em_01ka8k8s80gvx9604cn9am5st4")
+                .eventType(EventType.EMAIL_QUEUED)
+                .orgId("orgId")
+                .payload(JsonValue.from(mapOf<String, Any>()))
+                .occurredAt("occurredAt")
                 .build()
 
-        assertThat(eventListResponse.id()).isEqualTo("evt_01jmwk9690775vgaqnwty4hkxb")
-        assertThat(eventListResponse.details())
-            .isEqualTo(EventListResponse.Details.builder().build())
-        assertThat(eventListResponse.emailId()).isEqualTo("em_01jnvnn9avq52k5mrhn1gab0ch")
-        assertThat(eventListResponse.eventAt())
-            .isEqualTo(OffsetDateTime.parse("2025-02-24T18:25:03.264Z"))
-        assertThat(eventListResponse.kind()).isEqualTo(EventListResponse.Kind.EVENT_EMAIL)
-        assertThat(eventListResponse.orgId()).isEqualTo("org_01jh6jk82zjq9deye73h0mzcaq")
-        assertThat(eventListResponse.type()).isEqualTo(EventListResponse.Type.EMAIL_CLICKED)
+        assertThat(eventListResponse.id()).isEqualTo("evt_01ka8k8s80gvx9604cn9am5st4")
+        assertThat(eventListResponse.createdAt()).isEqualTo("createdAt")
+        assertThat(eventListResponse.emailId()).isEqualTo("em_01ka8k8s80gvx9604cn9am5st4")
+        assertThat(eventListResponse.eventType()).isEqualTo(EventType.EMAIL_QUEUED)
+        assertThat(eventListResponse.orgId()).isEqualTo("orgId")
+        assertThat(eventListResponse._payload()).isEqualTo(JsonValue.from(mapOf<String, Any>()))
+        assertThat(eventListResponse.occurredAt()).contains("occurredAt")
     }
 
     @Test
@@ -39,13 +38,13 @@ internal class EventListResponseTest {
         val jsonMapper = jsonMapper()
         val eventListResponse =
             EventListResponse.builder()
-                .id("evt_01jmwk9690775vgaqnwty4hkxb")
-                .details(EventListResponse.Details.builder().build())
-                .emailId("em_01jnvnn9avq52k5mrhn1gab0ch")
-                .eventAt(OffsetDateTime.parse("2025-02-24T18:25:03.264Z"))
-                .kind(EventListResponse.Kind.EVENT_EMAIL)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .type(EventListResponse.Type.EMAIL_CLICKED)
+                .id("evt_01ka8k8s80gvx9604cn9am5st4")
+                .createdAt("createdAt")
+                .emailId("em_01ka8k8s80gvx9604cn9am5st4")
+                .eventType(EventType.EMAIL_QUEUED)
+                .orgId("orgId")
+                .payload(JsonValue.from(mapOf<String, Any>()))
+                .occurredAt("occurredAt")
                 .build()
 
         val roundtrippedEventListResponse =
