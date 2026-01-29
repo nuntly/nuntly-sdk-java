@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.3.0 (2026-01-29)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/nuntly/nuntly-sdk-java/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* **api:** rename retry to replay ([e201579](https://github.com/nuntly/nuntly-sdk-java/commit/e2015797ca8ba887b7baebdda904ee6ce7475850))
+
+
+### Bug Fixes
+
+* **client:** deserialization of empty objects ([b536710](https://github.com/nuntly/nuntly-sdk-java/commit/b536710ee560f1d149577878755687ba255ab1af))
+* **client:** multi-value header serialization ([7ddcbc4](https://github.com/nuntly/nuntly-sdk-java/commit/7ddcbc4808232f776c96d8fb820f8ea823b1909a))
+
+
+### Chores
+
+* improve example values ([72db38f](https://github.com/nuntly/nuntly-sdk-java/commit/72db38f16f2ba3ab2846723cfacd80d6d9061d53))
+* **internal:** codegen related update ([2fd5146](https://github.com/nuntly/nuntly-sdk-java/commit/2fd51461d20dd79594294a0c13a7437966ca794d))
+* **internal:** codegen related update ([2f561d4](https://github.com/nuntly/nuntly-sdk-java/commit/2f561d462ae6e54ef092d83a52b6ba4b1947182c))
+
+
+### Documentation
+
+* **client:** update readme timeout snippet ([167194b](https://github.com/nuntly/nuntly-sdk-java/commit/167194be7834665f0a8364dc1677e759f27cae0f))
+
 ## 0.2.0 (2025-09-22)
 
 Full Changelog: [v0.1.4...v0.2.0](https://github.com/nuntly/nuntly-sdk-java/compare/v0.1.4...v0.2.0)
