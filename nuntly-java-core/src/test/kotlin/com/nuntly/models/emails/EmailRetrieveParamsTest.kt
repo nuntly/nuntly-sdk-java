@@ -9,20 +9,14 @@ internal class EmailRetrieveParamsTest {
 
     @Test
     fun create() {
-        EmailRetrieveParams.builder()
-            .id("em_qiPSkLrTmXvDohbxCcYt3pFEMGgnjHD6kbDL8d4uGKvNGboT")
-            .build()
+        EmailRetrieveParams.builder().id("em_01ka8k8s80gvx9604cn9am5st4").build()
     }
 
     @Test
     fun pathParams() {
-        val params =
-            EmailRetrieveParams.builder()
-                .id("em_qiPSkLrTmXvDohbxCcYt3pFEMGgnjHD6kbDL8d4uGKvNGboT")
-                .build()
+        val params = EmailRetrieveParams.builder().id("em_01ka8k8s80gvx9604cn9am5st4").build()
 
-        assertThat(params._pathParam(0))
-            .isEqualTo("em_qiPSkLrTmXvDohbxCcYt3pFEMGgnjHD6kbDL8d4uGKvNGboT")
+        assertThat(params._pathParam(0)).isEqualTo("em_01ka8k8s80gvx9604cn9am5st4")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }

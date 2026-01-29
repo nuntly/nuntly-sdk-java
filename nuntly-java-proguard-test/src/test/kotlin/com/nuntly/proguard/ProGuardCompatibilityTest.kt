@@ -7,14 +7,9 @@ import com.nuntly.client.okhttp.NuntlyOkHttpClient
 import com.nuntly.core.JsonValue
 import com.nuntly.core.jsonMapper
 import com.nuntly.models.apikeys.ApiKeyCreateResponse
-import com.nuntly.models.shared.BulkEmailsStatus
-import com.nuntly.models.shared.EmailEvent
-import com.nuntly.models.shared.EventType
-import com.nuntly.models.shared.SendDetail
-import com.nuntly.models.webhooks.BaseEvent
-import com.nuntly.models.webhooks.EmailSentEvent
+import com.nuntly.models.emails.Status
+import com.nuntly.models.webhooks.EmailQueuedEvent
 import com.nuntly.models.webhooks.Event
-import java.time.OffsetDateTime
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
 import org.assertj.core.api.Assertions.assertThat
@@ -62,7 +57,6 @@ internal class ProGuardCompatibilityTest {
         assertThat(client.emails()).isNotNull()
         assertThat(client.webhooks()).isNotNull()
         assertThat(client.organizations()).isNotNull()
-        assertThat(client.account()).isNotNull()
     }
 
     @Test
@@ -70,17 +64,11 @@ internal class ProGuardCompatibilityTest {
         val jsonMapper = jsonMapper()
         val apiKeyCreateResponse =
             ApiKeyCreateResponse.builder()
-                .id("apk_01jnx372zj49s3zqnn7ew8hzpk")
-                .apikey("ntly_****_***************")
-                .apikeyTruncated("GGvLoL")
-                .createdAt(OffsetDateTime.parse("2025-03-09T09:19:13.394Z"))
-                .kind(ApiKeyCreateResponse.Kind.API_KEY)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .region(ApiKeyCreateResponse.Region.EU_WEST_1)
+                .id("apk_01ka8k8s80gvx9604cn9am5st4")
+                .apiKey("apiKey")
+                .shortToken("shortToken")
                 .status(ApiKeyCreateResponse.Status.ENABLED)
-                .userId("user_01jh6jk831bzen14edngw38we9")
-                .modifiedAt(OffsetDateTime.parse("2025-03-09T09:19:13.394Z"))
-                .name("My API key")
+                .name("name")
                 .build()
 
         val roundtrippedApiKeyCreateResponse =
@@ -96,39 +84,16 @@ internal class ProGuardCompatibilityTest {
     fun eventRoundtrip() {
         val jsonMapper = jsonMapper()
         val event =
-            Event.ofEmailSent(
-                EmailSentEvent.builder()
+            Event.ofEmailQueued(
+                EmailQueuedEvent.builder()
                     .id("id")
-                    .createdAt("created_at")
-                    .type(EventType.EMAIL_SENT)
-                    .kind(BaseEvent.Kind.EVENT)
+                    .createdAt("createdAt")
                     .data(
-                        EmailSentEvent.Data.builder()
-                            .id("id")
-                            .domain("domain")
-                            .domainId("domain_id")
-                            .enqueueAt("enqueue_at")
-                            .from("from")
-                            .messageId("message_id")
-                            .orgId("org_id")
-                            .sentAt("sent_at")
-                            .subject("subject")
-                            .to("string")
-                            .bcc("string")
-                            .bulkId("bulk_id")
-                            .cc("string")
-                            .addHeader(
-                                EmailEvent.Header.builder().name("name").value("value").build()
-                            )
-                            .replyTo("string")
-                            .tags(
-                                EmailEvent.Tags.builder()
-                                    .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
-                                    .build()
-                            )
-                            .send(SendDetail.builder().build())
+                        EmailQueuedEvent.Data.builder()
+                            .queue(JsonValue.from(mapOf<String, Any>()))
                             .build()
                     )
+                    .type(EmailQueuedEvent.Type.EMAIL_QUEUED)
                     .build()
             )
 
@@ -139,16 +104,13 @@ internal class ProGuardCompatibilityTest {
     }
 
     @Test
-    fun bulkEmailsStatusRoundtrip() {
+    fun statusRoundtrip() {
         val jsonMapper = jsonMapper()
-        val bulkEmailsStatus = BulkEmailsStatus.QUEUED
+        val status = Status.QUEUED
 
-        val roundtrippedBulkEmailsStatus =
-            jsonMapper.readValue(
-                jsonMapper.writeValueAsString(bulkEmailsStatus),
-                jacksonTypeRef<BulkEmailsStatus>(),
-            )
+        val roundtrippedStatus =
+            jsonMapper.readValue(jsonMapper.writeValueAsString(status), jacksonTypeRef<Status>())
 
-        assertThat(roundtrippedBulkEmailsStatus).isEqualTo(bulkEmailsStatus)
+        assertThat(roundtrippedStatus).isEqualTo(status)
     }
 }

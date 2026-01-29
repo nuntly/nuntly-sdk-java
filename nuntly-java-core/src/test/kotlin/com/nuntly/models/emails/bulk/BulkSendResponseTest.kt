@@ -4,7 +4,7 @@ package com.nuntly.models.emails.bulk
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.jsonMapper
-import com.nuntly.models.shared.BulkEmailsStatus
+import com.nuntly.models.emails.Status
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,61 +14,23 @@ internal class BulkSendResponseTest {
     fun create() {
         val bulkSendResponse =
             BulkSendResponse.builder()
-                .id("blk_01jnvnn9avq52k5mrhn1gab0ce")
-                .emails(
-                    listOf(
-                        BulkSendResponse.Email.builder()
-                            .kind(BulkSendResponse.Email.Kind.EMAIL)
-                            .status(BulkEmailsStatus.QUEUED)
-                            .id("em_01jnvnn9avq52k5mrhn1gab0ci")
-                            .error("error")
-                            .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                            .build(),
-                        BulkSendResponse.Email.builder()
-                            .kind(BulkSendResponse.Email.Kind.EMAIL)
-                            .status(BulkEmailsStatus.QUEUED)
-                            .id("em_01jnvnn9avq52k5mrhn1gab0cj")
-                            .error("error")
-                            .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                            .build(),
-                        BulkSendResponse.Email.builder()
-                            .kind(BulkSendResponse.Email.Kind.EMAIL)
-                            .status(BulkEmailsStatus.REJECTED)
-                            .id("id")
-                            .error("The domain is not verified")
-                            .orgId("org_id")
-                            .build(),
-                    )
+                .addEmail(
+                    BulkSendResponse.Email.builder()
+                        .status(Status.QUEUED)
+                        .id("em_01ka8k8s80gvx9604cn9am5st4")
+                        .build()
                 )
-                .kind(BulkSendResponse.Kind.BULK_EMAIL)
+                .id("id")
                 .build()
 
-        assertThat(bulkSendResponse.id()).isEqualTo("blk_01jnvnn9avq52k5mrhn1gab0ce")
         assertThat(bulkSendResponse.emails())
             .containsExactly(
                 BulkSendResponse.Email.builder()
-                    .kind(BulkSendResponse.Email.Kind.EMAIL)
-                    .status(BulkEmailsStatus.QUEUED)
-                    .id("em_01jnvnn9avq52k5mrhn1gab0ci")
-                    .error("error")
-                    .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                    .build(),
-                BulkSendResponse.Email.builder()
-                    .kind(BulkSendResponse.Email.Kind.EMAIL)
-                    .status(BulkEmailsStatus.QUEUED)
-                    .id("em_01jnvnn9avq52k5mrhn1gab0cj")
-                    .error("error")
-                    .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                    .build(),
-                BulkSendResponse.Email.builder()
-                    .kind(BulkSendResponse.Email.Kind.EMAIL)
-                    .status(BulkEmailsStatus.REJECTED)
-                    .id("id")
-                    .error("The domain is not verified")
-                    .orgId("org_id")
-                    .build(),
+                    .status(Status.QUEUED)
+                    .id("em_01ka8k8s80gvx9604cn9am5st4")
+                    .build()
             )
-        assertThat(bulkSendResponse.kind()).isEqualTo(BulkSendResponse.Kind.BULK_EMAIL)
+        assertThat(bulkSendResponse.id()).contains("id")
     }
 
     @Test
@@ -76,33 +38,13 @@ internal class BulkSendResponseTest {
         val jsonMapper = jsonMapper()
         val bulkSendResponse =
             BulkSendResponse.builder()
-                .id("blk_01jnvnn9avq52k5mrhn1gab0ce")
-                .emails(
-                    listOf(
-                        BulkSendResponse.Email.builder()
-                            .kind(BulkSendResponse.Email.Kind.EMAIL)
-                            .status(BulkEmailsStatus.QUEUED)
-                            .id("em_01jnvnn9avq52k5mrhn1gab0ci")
-                            .error("error")
-                            .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                            .build(),
-                        BulkSendResponse.Email.builder()
-                            .kind(BulkSendResponse.Email.Kind.EMAIL)
-                            .status(BulkEmailsStatus.QUEUED)
-                            .id("em_01jnvnn9avq52k5mrhn1gab0cj")
-                            .error("error")
-                            .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                            .build(),
-                        BulkSendResponse.Email.builder()
-                            .kind(BulkSendResponse.Email.Kind.EMAIL)
-                            .status(BulkEmailsStatus.REJECTED)
-                            .id("id")
-                            .error("The domain is not verified")
-                            .orgId("org_id")
-                            .build(),
-                    )
+                .addEmail(
+                    BulkSendResponse.Email.builder()
+                        .status(Status.QUEUED)
+                        .id("em_01ka8k8s80gvx9604cn9am5st4")
+                        .build()
                 )
-                .kind(BulkSendResponse.Kind.BULK_EMAIL)
+                .id("id")
                 .build()
 
         val roundtrippedBulkSendResponse =

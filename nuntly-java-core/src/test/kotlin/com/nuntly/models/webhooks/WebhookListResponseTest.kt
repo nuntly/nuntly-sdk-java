@@ -5,7 +5,6 @@ package com.nuntly.models.webhooks
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.jsonMapper
 import com.nuntly.models.shared.EventType
-import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -15,33 +14,20 @@ internal class WebhookListResponseTest {
     fun create() {
         val webhookListResponse =
             WebhookListResponse.builder()
-                .id("wh_01jne5c7gr2mhwrqg4zqwf48y2")
-                .createdAt(OffsetDateTime.parse("2025-03-03T14:08:22.552Z"))
-                .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-                .addEvent(EventType.EMAIL_DELIVERED)
-                .addEvent(EventType.EMAIL_SENT)
-                .kind(WebhookListResponse.Kind.WEBHOOK)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .region(WebhookListResponse.Region.EU_WEST_1)
+                .id("wh_01ka8k8s80gvx9604cn9am5st4")
+                .createdAt("createdAt")
+                .endpointUrl("https://example.com")
+                .addEvent(EventType.EMAIL_QUEUED)
                 .status(WebhookListResponse.Status.ENABLED)
-                .modifiedAt(OffsetDateTime.parse("2025-03-03T14:08:22.552Z"))
-                .name("My webhook")
+                .name("name")
                 .build()
 
-        assertThat(webhookListResponse.id()).isEqualTo("wh_01jne5c7gr2mhwrqg4zqwf48y2")
-        assertThat(webhookListResponse.createdAt())
-            .isEqualTo(OffsetDateTime.parse("2025-03-03T14:08:22.552Z"))
-        assertThat(webhookListResponse.endpointUrl())
-            .isEqualTo("https://webhook.site/12345678-1234-5678-1234-123456789012")
-        assertThat(webhookListResponse.events())
-            .containsExactly(EventType.EMAIL_DELIVERED, EventType.EMAIL_SENT)
-        assertThat(webhookListResponse.kind()).isEqualTo(WebhookListResponse.Kind.WEBHOOK)
-        assertThat(webhookListResponse.orgId()).isEqualTo("org_01jh6jk82zjq9deye73h0mzcaq")
-        assertThat(webhookListResponse.region()).isEqualTo(WebhookListResponse.Region.EU_WEST_1)
+        assertThat(webhookListResponse.id()).isEqualTo("wh_01ka8k8s80gvx9604cn9am5st4")
+        assertThat(webhookListResponse.createdAt()).isEqualTo("createdAt")
+        assertThat(webhookListResponse.endpointUrl()).isEqualTo("https://example.com")
+        assertThat(webhookListResponse.events()).containsExactly(EventType.EMAIL_QUEUED)
         assertThat(webhookListResponse.status()).isEqualTo(WebhookListResponse.Status.ENABLED)
-        assertThat(webhookListResponse.modifiedAt())
-            .contains(OffsetDateTime.parse("2025-03-03T14:08:22.552Z"))
-        assertThat(webhookListResponse.name()).contains("My webhook")
+        assertThat(webhookListResponse.name()).contains("name")
     }
 
     @Test
@@ -49,17 +35,12 @@ internal class WebhookListResponseTest {
         val jsonMapper = jsonMapper()
         val webhookListResponse =
             WebhookListResponse.builder()
-                .id("wh_01jne5c7gr2mhwrqg4zqwf48y2")
-                .createdAt(OffsetDateTime.parse("2025-03-03T14:08:22.552Z"))
-                .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-                .addEvent(EventType.EMAIL_DELIVERED)
-                .addEvent(EventType.EMAIL_SENT)
-                .kind(WebhookListResponse.Kind.WEBHOOK)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .region(WebhookListResponse.Region.EU_WEST_1)
+                .id("wh_01ka8k8s80gvx9604cn9am5st4")
+                .createdAt("createdAt")
+                .endpointUrl("https://example.com")
+                .addEvent(EventType.EMAIL_QUEUED)
                 .status(WebhookListResponse.Status.ENABLED)
-                .modifiedAt(OffsetDateTime.parse("2025-03-03T14:08:22.552Z"))
-                .name("My webhook")
+                .name("name")
                 .build()
 
         val roundtrippedWebhookListResponse =

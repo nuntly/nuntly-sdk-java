@@ -9,14 +9,14 @@ internal class ApiKeyRetrieveParamsTest {
 
     @Test
     fun create() {
-        ApiKeyRetrieveParams.builder().id("apk_pdGukGd4BTmHj8dscBDE5Mc9").build()
+        ApiKeyRetrieveParams.builder().id("apk_01ka8k8s80gvx9604cn9am5st4").build()
     }
 
     @Test
     fun pathParams() {
-        val params = ApiKeyRetrieveParams.builder().id("apk_pdGukGd4BTmHj8dscBDE5Mc9").build()
+        val params = ApiKeyRetrieveParams.builder().id("apk_01ka8k8s80gvx9604cn9am5st4").build()
 
-        assertThat(params._pathParam(0)).isEqualTo("apk_pdGukGd4BTmHj8dscBDE5Mc9")
+        assertThat(params._pathParam(0)).isEqualTo("apk_01ka8k8s80gvx9604cn9am5st4")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }

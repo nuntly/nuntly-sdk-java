@@ -10,17 +10,17 @@ internal class ApiKeyUpdateParamsTest {
     @Test
     fun create() {
         ApiKeyUpdateParams.builder()
-            .id("ak_pdGukGd4BTmHj8dscBDE5Mc9")
+            .id("apk_01ka8k8s80gvx9604cn9am5st4")
             .name("name")
-            .status(ApiKeyUpdateParams.Status.DISABLED)
+            .status(ApiKeyUpdateParams.Status.ENABLED)
             .build()
     }
 
     @Test
     fun pathParams() {
-        val params = ApiKeyUpdateParams.builder().id("ak_pdGukGd4BTmHj8dscBDE5Mc9").build()
+        val params = ApiKeyUpdateParams.builder().id("apk_01ka8k8s80gvx9604cn9am5st4").build()
 
-        assertThat(params._pathParam(0)).isEqualTo("ak_pdGukGd4BTmHj8dscBDE5Mc9")
+        assertThat(params._pathParam(0)).isEqualTo("apk_01ka8k8s80gvx9604cn9am5st4")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }
@@ -29,20 +29,20 @@ internal class ApiKeyUpdateParamsTest {
     fun body() {
         val params =
             ApiKeyUpdateParams.builder()
-                .id("ak_pdGukGd4BTmHj8dscBDE5Mc9")
+                .id("apk_01ka8k8s80gvx9604cn9am5st4")
                 .name("name")
-                .status(ApiKeyUpdateParams.Status.DISABLED)
+                .status(ApiKeyUpdateParams.Status.ENABLED)
                 .build()
 
         val body = params._body()
 
         assertThat(body.name()).contains("name")
-        assertThat(body.status()).contains(ApiKeyUpdateParams.Status.DISABLED)
+        assertThat(body.status()).contains(ApiKeyUpdateParams.Status.ENABLED)
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = ApiKeyUpdateParams.builder().id("ak_pdGukGd4BTmHj8dscBDE5Mc9").build()
+        val params = ApiKeyUpdateParams.builder().id("apk_01ka8k8s80gvx9604cn9am5st4").build()
 
         val body = params._body()
     }

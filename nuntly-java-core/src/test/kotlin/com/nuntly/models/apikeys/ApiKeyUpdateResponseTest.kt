@@ -12,26 +12,16 @@ internal class ApiKeyUpdateResponseTest {
     @Test
     fun create() {
         val apiKeyUpdateResponse =
-            ApiKeyUpdateResponse.builder()
-                .id("apk_01jnx372zj49s3zqnn7ew8hzpk")
-                .kind(ApiKeyUpdateResponse.Kind.API_KEY)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .build()
+            ApiKeyUpdateResponse.builder().id("apk_01ka8k8s80gvx9604cn9am5st4").build()
 
-        assertThat(apiKeyUpdateResponse.id()).isEqualTo("apk_01jnx372zj49s3zqnn7ew8hzpk")
-        assertThat(apiKeyUpdateResponse.kind()).isEqualTo(ApiKeyUpdateResponse.Kind.API_KEY)
-        assertThat(apiKeyUpdateResponse.orgId()).isEqualTo("org_01jh6jk82zjq9deye73h0mzcaq")
+        assertThat(apiKeyUpdateResponse.id()).isEqualTo("apk_01ka8k8s80gvx9604cn9am5st4")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
         val apiKeyUpdateResponse =
-            ApiKeyUpdateResponse.builder()
-                .id("apk_01jnx372zj49s3zqnn7ew8hzpk")
-                .kind(ApiKeyUpdateResponse.Kind.API_KEY)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .build()
+            ApiKeyUpdateResponse.builder().id("apk_01ka8k8s80gvx9604cn9am5st4").build()
 
         val roundtrippedApiKeyUpdateResponse =
             jsonMapper.readValue(

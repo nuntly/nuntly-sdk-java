@@ -17,10 +17,8 @@ import com.nuntly.errors.NuntlyInvalidDataException
 import java.time.LocalDate
 import java.util.Collections
 import java.util.Objects
-import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** The emails stats */
 class StatListResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -38,12 +36,16 @@ private constructor(
     ) : this(end, start, stats, mutableMapOf())
 
     /**
+     * The end date of the stats range
+     *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun end(): LocalDate = end.getRequired("end")
 
     /**
+     * The start date of the stats range
+     *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -119,6 +121,7 @@ private constructor(
             additionalProperties = statListResponse.additionalProperties.toMutableMap()
         }
 
+        /** The end date of the stats range */
         fun end(end: LocalDate) = end(JsonField.of(end))
 
         /**
@@ -129,6 +132,7 @@ private constructor(
          */
         fun end(end: JsonField<LocalDate>) = apply { this.end = end }
 
+        /** The start date of the stats range */
         fun start(start: LocalDate) = start(JsonField.of(start))
 
         /**
@@ -239,137 +243,208 @@ private constructor(
     class Stat
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val occurredOn: JsonField<LocalDate>,
         private val bounced: JsonField<Double>,
+        private val canceled: JsonField<Double>,
         private val clicked: JsonField<Double>,
         private val complaintReceived: JsonField<Double>,
         private val delivered: JsonField<Double>,
-        private val deliveryDelayed: JsonField<Double>,
+        private val deliveredDelayed: JsonField<Double>,
+        private val failed: JsonField<Double>,
+        private val occurredOn: JsonField<LocalDate>,
         private val opened: JsonField<Double>,
+        private val processed: JsonField<Double>,
+        private val queued: JsonField<Double>,
         private val rejected: JsonField<Double>,
         private val renderingFailed: JsonField<Double>,
+        private val scheduled: JsonField<Double>,
+        private val sending: JsonField<Double>,
         private val sent: JsonField<Double>,
-        private val subscribed: JsonField<Double>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("occurred_on")
-            @ExcludeMissing
-            occurredOn: JsonField<LocalDate> = JsonMissing.of(),
             @JsonProperty("bounced") @ExcludeMissing bounced: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("canceled")
+            @ExcludeMissing
+            canceled: JsonField<Double> = JsonMissing.of(),
             @JsonProperty("clicked") @ExcludeMissing clicked: JsonField<Double> = JsonMissing.of(),
-            @JsonProperty("complaint_received")
+            @JsonProperty("complaintReceived")
             @ExcludeMissing
             complaintReceived: JsonField<Double> = JsonMissing.of(),
             @JsonProperty("delivered")
             @ExcludeMissing
             delivered: JsonField<Double> = JsonMissing.of(),
-            @JsonProperty("delivery_delayed")
+            @JsonProperty("deliveredDelayed")
             @ExcludeMissing
-            deliveryDelayed: JsonField<Double> = JsonMissing.of(),
+            deliveredDelayed: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("failed") @ExcludeMissing failed: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("occurredOn")
+            @ExcludeMissing
+            occurredOn: JsonField<LocalDate> = JsonMissing.of(),
             @JsonProperty("opened") @ExcludeMissing opened: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("processed")
+            @ExcludeMissing
+            processed: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("queued") @ExcludeMissing queued: JsonField<Double> = JsonMissing.of(),
             @JsonProperty("rejected")
             @ExcludeMissing
             rejected: JsonField<Double> = JsonMissing.of(),
-            @JsonProperty("rendering_failed")
+            @JsonProperty("renderingFailed")
             @ExcludeMissing
             renderingFailed: JsonField<Double> = JsonMissing.of(),
-            @JsonProperty("sent") @ExcludeMissing sent: JsonField<Double> = JsonMissing.of(),
-            @JsonProperty("subscribed")
+            @JsonProperty("scheduled")
             @ExcludeMissing
-            subscribed: JsonField<Double> = JsonMissing.of(),
+            scheduled: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("sending") @ExcludeMissing sending: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("sent") @ExcludeMissing sent: JsonField<Double> = JsonMissing.of(),
         ) : this(
-            occurredOn,
             bounced,
+            canceled,
             clicked,
             complaintReceived,
             delivered,
-            deliveryDelayed,
+            deliveredDelayed,
+            failed,
+            occurredOn,
             opened,
+            processed,
+            queued,
             rejected,
             renderingFailed,
+            scheduled,
+            sending,
             sent,
-            subscribed,
             mutableMapOf(),
         )
 
         /**
+         * Number of emails bounced
+         *
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun occurredOn(): LocalDate = occurredOn.getRequired("occurred_on")
+        fun bounced(): Double = bounced.getRequired("bounced")
 
         /**
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun bounced(): Optional<Double> = bounced.getOptional("bounced")
-
-        /**
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun clicked(): Optional<Double> = clicked.getOptional("clicked")
-
-        /**
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun complaintReceived(): Optional<Double> =
-            complaintReceived.getOptional("complaint_received")
-
-        /**
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun delivered(): Optional<Double> = delivered.getOptional("delivered")
-
-        /**
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun deliveryDelayed(): Optional<Double> = deliveryDelayed.getOptional("delivery_delayed")
-
-        /**
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun opened(): Optional<Double> = opened.getOptional("opened")
-
-        /**
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun rejected(): Optional<Double> = rejected.getOptional("rejected")
-
-        /**
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun renderingFailed(): Optional<Double> = renderingFailed.getOptional("rendering_failed")
-
-        /**
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun sent(): Optional<Double> = sent.getOptional("sent")
-
-        /**
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun subscribed(): Optional<Double> = subscribed.getOptional("subscribed")
-
-        /**
-         * Returns the raw JSON value of [occurredOn].
+         * Number of emails canceled
          *
-         * Unlike [occurredOn], this method doesn't throw if the JSON field has an unexpected type.
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("occurred_on")
-        @ExcludeMissing
-        fun _occurredOn(): JsonField<LocalDate> = occurredOn
+        fun canceled(): Double = canceled.getRequired("canceled")
+
+        /**
+         * Number of emails clicked
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun clicked(): Double = clicked.getRequired("clicked")
+
+        /**
+         * Number of complaint received
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun complaintReceived(): Double = complaintReceived.getRequired("complaintReceived")
+
+        /**
+         * Number of emails delivered
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun delivered(): Double = delivered.getRequired("delivered")
+
+        /**
+         * Number of emails delivered with delay
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun deliveredDelayed(): Double = deliveredDelayed.getRequired("deliveredDelayed")
+
+        /**
+         * Number of emails failed
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun failed(): Double = failed.getRequired("failed")
+
+        /**
+         * The date of the stats
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun occurredOn(): LocalDate = occurredOn.getRequired("occurredOn")
+
+        /**
+         * Number of emails opened
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun opened(): Double = opened.getRequired("opened")
+
+        /**
+         * Number of emails processed
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun processed(): Double = processed.getRequired("processed")
+
+        /**
+         * Number of emails queued
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun queued(): Double = queued.getRequired("queued")
+
+        /**
+         * Number of emails rejected
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun rejected(): Double = rejected.getRequired("rejected")
+
+        /**
+         * Number of emails with rendering failed
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun renderingFailed(): Double = renderingFailed.getRequired("renderingFailed")
+
+        /**
+         * Number of emails scheduled
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun scheduled(): Double = scheduled.getRequired("scheduled")
+
+        /**
+         * Number of emails sending
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun sending(): Double = sending.getRequired("sending")
+
+        /**
+         * Number of emails sent
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun sent(): Double = sent.getRequired("sent")
 
         /**
          * Returns the raw JSON value of [bounced].
@@ -377,6 +452,13 @@ private constructor(
          * Unlike [bounced], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("bounced") @ExcludeMissing fun _bounced(): JsonField<Double> = bounced
+
+        /**
+         * Returns the raw JSON value of [canceled].
+         *
+         * Unlike [canceled], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("canceled") @ExcludeMissing fun _canceled(): JsonField<Double> = canceled
 
         /**
          * Returns the raw JSON value of [clicked].
@@ -391,7 +473,7 @@ private constructor(
          * Unlike [complaintReceived], this method doesn't throw if the JSON field has an unexpected
          * type.
          */
-        @JsonProperty("complaint_received")
+        @JsonProperty("complaintReceived")
         @ExcludeMissing
         fun _complaintReceived(): JsonField<Double> = complaintReceived
 
@@ -403,14 +485,30 @@ private constructor(
         @JsonProperty("delivered") @ExcludeMissing fun _delivered(): JsonField<Double> = delivered
 
         /**
-         * Returns the raw JSON value of [deliveryDelayed].
+         * Returns the raw JSON value of [deliveredDelayed].
          *
-         * Unlike [deliveryDelayed], this method doesn't throw if the JSON field has an unexpected
+         * Unlike [deliveredDelayed], this method doesn't throw if the JSON field has an unexpected
          * type.
          */
-        @JsonProperty("delivery_delayed")
+        @JsonProperty("deliveredDelayed")
         @ExcludeMissing
-        fun _deliveryDelayed(): JsonField<Double> = deliveryDelayed
+        fun _deliveredDelayed(): JsonField<Double> = deliveredDelayed
+
+        /**
+         * Returns the raw JSON value of [failed].
+         *
+         * Unlike [failed], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("failed") @ExcludeMissing fun _failed(): JsonField<Double> = failed
+
+        /**
+         * Returns the raw JSON value of [occurredOn].
+         *
+         * Unlike [occurredOn], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("occurredOn")
+        @ExcludeMissing
+        fun _occurredOn(): JsonField<LocalDate> = occurredOn
 
         /**
          * Returns the raw JSON value of [opened].
@@ -418,6 +516,20 @@ private constructor(
          * Unlike [opened], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("opened") @ExcludeMissing fun _opened(): JsonField<Double> = opened
+
+        /**
+         * Returns the raw JSON value of [processed].
+         *
+         * Unlike [processed], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("processed") @ExcludeMissing fun _processed(): JsonField<Double> = processed
+
+        /**
+         * Returns the raw JSON value of [queued].
+         *
+         * Unlike [queued], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("queued") @ExcludeMissing fun _queued(): JsonField<Double> = queued
 
         /**
          * Returns the raw JSON value of [rejected].
@@ -432,9 +544,23 @@ private constructor(
          * Unlike [renderingFailed], this method doesn't throw if the JSON field has an unexpected
          * type.
          */
-        @JsonProperty("rendering_failed")
+        @JsonProperty("renderingFailed")
         @ExcludeMissing
         fun _renderingFailed(): JsonField<Double> = renderingFailed
+
+        /**
+         * Returns the raw JSON value of [scheduled].
+         *
+         * Unlike [scheduled], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("scheduled") @ExcludeMissing fun _scheduled(): JsonField<Double> = scheduled
+
+        /**
+         * Returns the raw JSON value of [sending].
+         *
+         * Unlike [sending], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("sending") @ExcludeMissing fun _sending(): JsonField<Double> = sending
 
         /**
          * Returns the raw JSON value of [sent].
@@ -442,15 +568,6 @@ private constructor(
          * Unlike [sent], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("sent") @ExcludeMissing fun _sent(): JsonField<Double> = sent
-
-        /**
-         * Returns the raw JSON value of [subscribed].
-         *
-         * Unlike [subscribed], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("subscribed")
-        @ExcludeMissing
-        fun _subscribed(): JsonField<Double> = subscribed
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -471,7 +588,22 @@ private constructor(
              *
              * The following fields are required:
              * ```java
+             * .bounced()
+             * .canceled()
+             * .clicked()
+             * .complaintReceived()
+             * .delivered()
+             * .deliveredDelayed()
+             * .failed()
              * .occurredOn()
+             * .opened()
+             * .processed()
+             * .queued()
+             * .rejected()
+             * .renderingFailed()
+             * .scheduled()
+             * .sending()
+             * .sent()
              * ```
              */
             @JvmStatic fun builder() = Builder()
@@ -480,48 +612,46 @@ private constructor(
         /** A builder for [Stat]. */
         class Builder internal constructor() {
 
+            private var bounced: JsonField<Double>? = null
+            private var canceled: JsonField<Double>? = null
+            private var clicked: JsonField<Double>? = null
+            private var complaintReceived: JsonField<Double>? = null
+            private var delivered: JsonField<Double>? = null
+            private var deliveredDelayed: JsonField<Double>? = null
+            private var failed: JsonField<Double>? = null
             private var occurredOn: JsonField<LocalDate>? = null
-            private var bounced: JsonField<Double> = JsonMissing.of()
-            private var clicked: JsonField<Double> = JsonMissing.of()
-            private var complaintReceived: JsonField<Double> = JsonMissing.of()
-            private var delivered: JsonField<Double> = JsonMissing.of()
-            private var deliveryDelayed: JsonField<Double> = JsonMissing.of()
-            private var opened: JsonField<Double> = JsonMissing.of()
-            private var rejected: JsonField<Double> = JsonMissing.of()
-            private var renderingFailed: JsonField<Double> = JsonMissing.of()
-            private var sent: JsonField<Double> = JsonMissing.of()
-            private var subscribed: JsonField<Double> = JsonMissing.of()
+            private var opened: JsonField<Double>? = null
+            private var processed: JsonField<Double>? = null
+            private var queued: JsonField<Double>? = null
+            private var rejected: JsonField<Double>? = null
+            private var renderingFailed: JsonField<Double>? = null
+            private var scheduled: JsonField<Double>? = null
+            private var sending: JsonField<Double>? = null
+            private var sent: JsonField<Double>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(stat: Stat) = apply {
-                occurredOn = stat.occurredOn
                 bounced = stat.bounced
+                canceled = stat.canceled
                 clicked = stat.clicked
                 complaintReceived = stat.complaintReceived
                 delivered = stat.delivered
-                deliveryDelayed = stat.deliveryDelayed
+                deliveredDelayed = stat.deliveredDelayed
+                failed = stat.failed
+                occurredOn = stat.occurredOn
                 opened = stat.opened
+                processed = stat.processed
+                queued = stat.queued
                 rejected = stat.rejected
                 renderingFailed = stat.renderingFailed
+                scheduled = stat.scheduled
+                sending = stat.sending
                 sent = stat.sent
-                subscribed = stat.subscribed
                 additionalProperties = stat.additionalProperties.toMutableMap()
             }
 
-            fun occurredOn(occurredOn: LocalDate) = occurredOn(JsonField.of(occurredOn))
-
-            /**
-             * Sets [Builder.occurredOn] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.occurredOn] with a well-typed [LocalDate] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun occurredOn(occurredOn: JsonField<LocalDate>) = apply {
-                this.occurredOn = occurredOn
-            }
-
+            /** Number of emails bounced */
             fun bounced(bounced: Double) = bounced(JsonField.of(bounced))
 
             /**
@@ -533,6 +663,19 @@ private constructor(
              */
             fun bounced(bounced: JsonField<Double>) = apply { this.bounced = bounced }
 
+            /** Number of emails canceled */
+            fun canceled(canceled: Double) = canceled(JsonField.of(canceled))
+
+            /**
+             * Sets [Builder.canceled] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.canceled] with a well-typed [Double] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun canceled(canceled: JsonField<Double>) = apply { this.canceled = canceled }
+
+            /** Number of emails clicked */
             fun clicked(clicked: Double) = clicked(JsonField.of(clicked))
 
             /**
@@ -544,6 +687,7 @@ private constructor(
              */
             fun clicked(clicked: JsonField<Double>) = apply { this.clicked = clicked }
 
+            /** Number of complaint received */
             fun complaintReceived(complaintReceived: Double) =
                 complaintReceived(JsonField.of(complaintReceived))
 
@@ -558,6 +702,7 @@ private constructor(
                 this.complaintReceived = complaintReceived
             }
 
+            /** Number of emails delivered */
             fun delivered(delivered: Double) = delivered(JsonField.of(delivered))
 
             /**
@@ -569,20 +714,48 @@ private constructor(
              */
             fun delivered(delivered: JsonField<Double>) = apply { this.delivered = delivered }
 
-            fun deliveryDelayed(deliveryDelayed: Double) =
-                deliveryDelayed(JsonField.of(deliveryDelayed))
+            /** Number of emails delivered with delay */
+            fun deliveredDelayed(deliveredDelayed: Double) =
+                deliveredDelayed(JsonField.of(deliveredDelayed))
 
             /**
-             * Sets [Builder.deliveryDelayed] to an arbitrary JSON value.
+             * Sets [Builder.deliveredDelayed] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.deliveryDelayed] with a well-typed [Double] value
+             * You should usually call [Builder.deliveredDelayed] with a well-typed [Double] value
              * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun deliveryDelayed(deliveryDelayed: JsonField<Double>) = apply {
-                this.deliveryDelayed = deliveryDelayed
+            fun deliveredDelayed(deliveredDelayed: JsonField<Double>) = apply {
+                this.deliveredDelayed = deliveredDelayed
             }
 
+            /** Number of emails failed */
+            fun failed(failed: Double) = failed(JsonField.of(failed))
+
+            /**
+             * Sets [Builder.failed] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.failed] with a well-typed [Double] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun failed(failed: JsonField<Double>) = apply { this.failed = failed }
+
+            /** The date of the stats */
+            fun occurredOn(occurredOn: LocalDate) = occurredOn(JsonField.of(occurredOn))
+
+            /**
+             * Sets [Builder.occurredOn] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.occurredOn] with a well-typed [LocalDate] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun occurredOn(occurredOn: JsonField<LocalDate>) = apply {
+                this.occurredOn = occurredOn
+            }
+
+            /** Number of emails opened */
             fun opened(opened: Double) = opened(JsonField.of(opened))
 
             /**
@@ -594,6 +767,31 @@ private constructor(
              */
             fun opened(opened: JsonField<Double>) = apply { this.opened = opened }
 
+            /** Number of emails processed */
+            fun processed(processed: Double) = processed(JsonField.of(processed))
+
+            /**
+             * Sets [Builder.processed] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.processed] with a well-typed [Double] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun processed(processed: JsonField<Double>) = apply { this.processed = processed }
+
+            /** Number of emails queued */
+            fun queued(queued: Double) = queued(JsonField.of(queued))
+
+            /**
+             * Sets [Builder.queued] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.queued] with a well-typed [Double] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun queued(queued: JsonField<Double>) = apply { this.queued = queued }
+
+            /** Number of emails rejected */
             fun rejected(rejected: Double) = rejected(JsonField.of(rejected))
 
             /**
@@ -605,6 +803,7 @@ private constructor(
              */
             fun rejected(rejected: JsonField<Double>) = apply { this.rejected = rejected }
 
+            /** Number of emails with rendering failed */
             fun renderingFailed(renderingFailed: Double) =
                 renderingFailed(JsonField.of(renderingFailed))
 
@@ -619,6 +818,31 @@ private constructor(
                 this.renderingFailed = renderingFailed
             }
 
+            /** Number of emails scheduled */
+            fun scheduled(scheduled: Double) = scheduled(JsonField.of(scheduled))
+
+            /**
+             * Sets [Builder.scheduled] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.scheduled] with a well-typed [Double] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun scheduled(scheduled: JsonField<Double>) = apply { this.scheduled = scheduled }
+
+            /** Number of emails sending */
+            fun sending(sending: Double) = sending(JsonField.of(sending))
+
+            /**
+             * Sets [Builder.sending] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.sending] with a well-typed [Double] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun sending(sending: JsonField<Double>) = apply { this.sending = sending }
+
+            /** Number of emails sent */
             fun sent(sent: Double) = sent(JsonField.of(sent))
 
             /**
@@ -629,17 +853,6 @@ private constructor(
              * value.
              */
             fun sent(sent: JsonField<Double>) = apply { this.sent = sent }
-
-            fun subscribed(subscribed: Double) = subscribed(JsonField.of(subscribed))
-
-            /**
-             * Sets [Builder.subscribed] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.subscribed] with a well-typed [Double] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun subscribed(subscribed: JsonField<Double>) = apply { this.subscribed = subscribed }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -667,24 +880,44 @@ private constructor(
              *
              * The following fields are required:
              * ```java
+             * .bounced()
+             * .canceled()
+             * .clicked()
+             * .complaintReceived()
+             * .delivered()
+             * .deliveredDelayed()
+             * .failed()
              * .occurredOn()
+             * .opened()
+             * .processed()
+             * .queued()
+             * .rejected()
+             * .renderingFailed()
+             * .scheduled()
+             * .sending()
+             * .sent()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
              */
             fun build(): Stat =
                 Stat(
+                    checkRequired("bounced", bounced),
+                    checkRequired("canceled", canceled),
+                    checkRequired("clicked", clicked),
+                    checkRequired("complaintReceived", complaintReceived),
+                    checkRequired("delivered", delivered),
+                    checkRequired("deliveredDelayed", deliveredDelayed),
+                    checkRequired("failed", failed),
                     checkRequired("occurredOn", occurredOn),
-                    bounced,
-                    clicked,
-                    complaintReceived,
-                    delivered,
-                    deliveryDelayed,
-                    opened,
-                    rejected,
-                    renderingFailed,
-                    sent,
-                    subscribed,
+                    checkRequired("opened", opened),
+                    checkRequired("processed", processed),
+                    checkRequired("queued", queued),
+                    checkRequired("rejected", rejected),
+                    checkRequired("renderingFailed", renderingFailed),
+                    checkRequired("scheduled", scheduled),
+                    checkRequired("sending", sending),
+                    checkRequired("sent", sent),
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -696,17 +929,22 @@ private constructor(
                 return@apply
             }
 
-            occurredOn()
             bounced()
+            canceled()
             clicked()
             complaintReceived()
             delivered()
-            deliveryDelayed()
+            deliveredDelayed()
+            failed()
+            occurredOn()
             opened()
+            processed()
+            queued()
             rejected()
             renderingFailed()
+            scheduled()
+            sending()
             sent()
-            subscribed()
             validated = true
         }
 
@@ -726,17 +964,22 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (if (occurredOn.asKnown().isPresent) 1 else 0) +
-                (if (bounced.asKnown().isPresent) 1 else 0) +
+            (if (bounced.asKnown().isPresent) 1 else 0) +
+                (if (canceled.asKnown().isPresent) 1 else 0) +
                 (if (clicked.asKnown().isPresent) 1 else 0) +
                 (if (complaintReceived.asKnown().isPresent) 1 else 0) +
                 (if (delivered.asKnown().isPresent) 1 else 0) +
-                (if (deliveryDelayed.asKnown().isPresent) 1 else 0) +
+                (if (deliveredDelayed.asKnown().isPresent) 1 else 0) +
+                (if (failed.asKnown().isPresent) 1 else 0) +
+                (if (occurredOn.asKnown().isPresent) 1 else 0) +
                 (if (opened.asKnown().isPresent) 1 else 0) +
+                (if (processed.asKnown().isPresent) 1 else 0) +
+                (if (queued.asKnown().isPresent) 1 else 0) +
                 (if (rejected.asKnown().isPresent) 1 else 0) +
                 (if (renderingFailed.asKnown().isPresent) 1 else 0) +
-                (if (sent.asKnown().isPresent) 1 else 0) +
-                (if (subscribed.asKnown().isPresent) 1 else 0)
+                (if (scheduled.asKnown().isPresent) 1 else 0) +
+                (if (sending.asKnown().isPresent) 1 else 0) +
+                (if (sent.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -744,33 +987,43 @@ private constructor(
             }
 
             return other is Stat &&
-                occurredOn == other.occurredOn &&
                 bounced == other.bounced &&
+                canceled == other.canceled &&
                 clicked == other.clicked &&
                 complaintReceived == other.complaintReceived &&
                 delivered == other.delivered &&
-                deliveryDelayed == other.deliveryDelayed &&
+                deliveredDelayed == other.deliveredDelayed &&
+                failed == other.failed &&
+                occurredOn == other.occurredOn &&
                 opened == other.opened &&
+                processed == other.processed &&
+                queued == other.queued &&
                 rejected == other.rejected &&
                 renderingFailed == other.renderingFailed &&
+                scheduled == other.scheduled &&
+                sending == other.sending &&
                 sent == other.sent &&
-                subscribed == other.subscribed &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
             Objects.hash(
-                occurredOn,
                 bounced,
+                canceled,
                 clicked,
                 complaintReceived,
                 delivered,
-                deliveryDelayed,
+                deliveredDelayed,
+                failed,
+                occurredOn,
                 opened,
+                processed,
+                queued,
                 rejected,
                 renderingFailed,
+                scheduled,
+                sending,
                 sent,
-                subscribed,
                 additionalProperties,
             )
         }
@@ -778,7 +1031,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Stat{occurredOn=$occurredOn, bounced=$bounced, clicked=$clicked, complaintReceived=$complaintReceived, delivered=$delivered, deliveryDelayed=$deliveryDelayed, opened=$opened, rejected=$rejected, renderingFailed=$renderingFailed, sent=$sent, subscribed=$subscribed, additionalProperties=$additionalProperties}"
+            "Stat{bounced=$bounced, canceled=$canceled, clicked=$clicked, complaintReceived=$complaintReceived, delivered=$delivered, deliveredDelayed=$deliveredDelayed, failed=$failed, occurredOn=$occurredOn, opened=$opened, processed=$processed, queued=$queued, rejected=$rejected, renderingFailed=$renderingFailed, scheduled=$scheduled, sending=$sending, sent=$sent, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

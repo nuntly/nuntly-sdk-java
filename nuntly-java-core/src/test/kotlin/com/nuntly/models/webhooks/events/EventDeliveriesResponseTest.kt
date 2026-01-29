@@ -16,7 +16,7 @@ internal class EventDeliveriesResponseTest {
             EventDeliveriesResponse.builder()
                 .id("id")
                 .code("code")
-                .deliveredAt("delivered_at")
+                .deliveredAt("deliveredAt")
                 .response(
                     EventDeliveriesResponse.Response.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -27,9 +27,9 @@ internal class EventDeliveriesResponseTest {
 
         assertThat(eventDeliveriesResponse.id()).isEqualTo("id")
         assertThat(eventDeliveriesResponse.code()).isEqualTo("code")
-        assertThat(eventDeliveriesResponse.deliveredAt()).isEqualTo("delivered_at")
+        assertThat(eventDeliveriesResponse.deliveredAt()).isEqualTo("deliveredAt")
         assertThat(eventDeliveriesResponse.response())
-            .contains(
+            .isEqualTo(
                 EventDeliveriesResponse.Response.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
@@ -45,7 +45,7 @@ internal class EventDeliveriesResponseTest {
             EventDeliveriesResponse.builder()
                 .id("id")
                 .code("code")
-                .deliveredAt("delivered_at")
+                .deliveredAt("deliveredAt")
                 .response(
                     EventDeliveriesResponse.Response.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))

@@ -119,7 +119,7 @@ private constructor(
     /**
      * The base URL to use for every request.
      *
-     * Defaults to the production environment: `https://api.eu.nuntly.com`.
+     * Defaults to the production environment: `https://api.nuntly.com`.
      */
     fun baseUrl(): String = baseUrl ?: PRODUCTION_URL
 
@@ -130,7 +130,7 @@ private constructor(
 
     companion object {
 
-        const val PRODUCTION_URL = "https://api.eu.nuntly.com"
+        const val PRODUCTION_URL = "https://api.nuntly.com"
 
         /**
          * Returns a mutable builder for constructing an instance of [ClientOptions].
@@ -251,7 +251,7 @@ private constructor(
         /**
          * The base URL to use for every request.
          *
-         * Defaults to the production environment: `https://api.eu.nuntly.com`.
+         * Defaults to the production environment: `https://api.nuntly.com`.
          */
         fun baseUrl(baseUrl: String?) = apply { this.baseUrl = baseUrl }
 
@@ -395,10 +395,10 @@ private constructor(
          *
          * See this table for the available options:
          *
-         * |Setter   |System property |Environment variable|Required|Default value                |
-         * |---------|----------------|--------------------|--------|-----------------------------|
-         * |`apiKey` |`nuntly.apiKey` |`NUNTLY_API_KEY`    |false   |-                            |
-         * |`baseUrl`|`nuntly.baseUrl`|`NUNTLY_BASE_URL`   |true    |`"https://api.eu.nuntly.com"`|
+         * |Setter   |System property |Environment variable|Required|Default value             |
+         * |---------|----------------|--------------------|--------|--------------------------|
+         * |`apiKey` |`nuntly.apiKey` |`NUNTLY_API_KEY`    |false   |-                         |
+         * |`baseUrl`|`nuntly.baseUrl`|`NUNTLY_BASE_URL`   |true    |`"https://api.nuntly.com"`|
          *
          * System properties take precedence over environment variables.
          */

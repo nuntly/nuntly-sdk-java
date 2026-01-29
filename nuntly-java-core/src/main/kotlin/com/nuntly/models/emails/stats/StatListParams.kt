@@ -7,7 +7,7 @@ import com.nuntly.core.http.Headers
 import com.nuntly.core.http.QueryParams
 import java.util.Objects
 
-/** Return the emails stats */
+/** Retrieve email statistics */
 class StatListParams
 private constructor(
     private val additionalHeaders: Headers,

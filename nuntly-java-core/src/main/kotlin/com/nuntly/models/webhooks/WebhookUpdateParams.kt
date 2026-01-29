@@ -23,7 +23,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Updates a webhook with the given ID */
+/** Update a webhook */
 class WebhookUpdateParams
 private constructor(
     private val id: String?,
@@ -32,6 +32,7 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
+    /** The id of the webhook */
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /**
@@ -141,6 +142,7 @@ private constructor(
             additionalQueryParams = webhookUpdateParams.additionalQueryParams.toBuilder()
         }
 
+        /** The id of the webhook */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */
@@ -369,6 +371,7 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
+    /** Request to update a webhook */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -382,14 +385,14 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("endpoint_url")
+            @JsonProperty("endpointUrl")
             @ExcludeMissing
             endpointUrl: JsonField<String> = JsonMissing.of(),
             @JsonProperty("events")
             @ExcludeMissing
             events: JsonField<List<EventType>> = JsonMissing.of(),
             @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("rotate_secret")
+            @JsonProperty("rotateSecret")
             @ExcludeMissing
             rotateSecret: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
@@ -401,7 +404,7 @@ private constructor(
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun endpointUrl(): Optional<String> = endpointUrl.getOptional("endpoint_url")
+        fun endpointUrl(): Optional<String> = endpointUrl.getOptional("endpointUrl")
 
         /**
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -423,7 +426,7 @@ private constructor(
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun rotateSecret(): Optional<Boolean> = rotateSecret.getOptional("rotate_secret")
+        fun rotateSecret(): Optional<Boolean> = rotateSecret.getOptional("rotateSecret")
 
         /**
          * The status of the webhook.
@@ -438,7 +441,7 @@ private constructor(
          *
          * Unlike [endpointUrl], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("endpoint_url")
+        @JsonProperty("endpointUrl")
         @ExcludeMissing
         fun _endpointUrl(): JsonField<String> = endpointUrl
 
@@ -462,7 +465,7 @@ private constructor(
          * Unlike [rotateSecret], this method doesn't throw if the JSON field has an unexpected
          * type.
          */
-        @JsonProperty("rotate_secret")
+        @JsonProperty("rotateSecret")
         @ExcludeMissing
         fun _rotateSecret(): JsonField<Boolean> = rotateSecret
 
@@ -703,6 +706,8 @@ private constructor(
 
             @JvmField val DISABLED = of("disabled")
 
+            @JvmField val REVOKED = of("revoked")
+
             @JvmStatic fun of(value: String) = Status(JsonField.of(value))
         }
 
@@ -710,6 +715,7 @@ private constructor(
         enum class Known {
             ENABLED,
             DISABLED,
+            REVOKED,
         }
 
         /**
@@ -724,6 +730,7 @@ private constructor(
         enum class Value {
             ENABLED,
             DISABLED,
+            REVOKED,
             /** An enum member indicating that [Status] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -739,6 +746,7 @@ private constructor(
             when (this) {
                 ENABLED -> Value.ENABLED
                 DISABLED -> Value.DISABLED
+                REVOKED -> Value.REVOKED
                 else -> Value._UNKNOWN
             }
 
@@ -755,6 +763,7 @@ private constructor(
             when (this) {
                 ENABLED -> Known.ENABLED
                 DISABLED -> Known.DISABLED
+                REVOKED -> Known.REVOKED
                 else -> throw NuntlyInvalidDataException("Unknown Status: $value")
             }
 

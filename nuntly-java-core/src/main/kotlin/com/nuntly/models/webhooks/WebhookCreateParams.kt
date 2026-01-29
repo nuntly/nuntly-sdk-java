@@ -24,7 +24,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Create a webhook so the endpoint is notified from Nuntly platform events (Emails events) */
+/** Create a webhook */
 class WebhookCreateParams
 private constructor(
     private val body: Body,
@@ -47,20 +47,20 @@ private constructor(
     fun events(): List<EventType> = body.events()
 
     /**
-     * The status of the webhook.
-     *
-     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun status(): Status = body.status()
-
-    /**
      * The name of the webhook
      *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
     fun name(): Optional<String> = body.name()
+
+    /**
+     * The status of the webhook.
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun status(): Optional<Status> = body.status()
 
     /**
      * Returns the raw JSON value of [endpointUrl].
@@ -77,18 +77,18 @@ private constructor(
     fun _events(): JsonField<List<EventType>> = body._events()
 
     /**
-     * Returns the raw JSON value of [status].
-     *
-     * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _status(): JsonField<Status> = body._status()
-
-    /**
      * Returns the raw JSON value of [name].
      *
      * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _name(): JsonField<String> = body._name()
+
+    /**
+     * Returns the raw JSON value of [status].
+     *
+     * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _status(): JsonField<Status> = body._status()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -109,7 +109,6 @@ private constructor(
          * ```java
          * .endpointUrl()
          * .events()
-         * .status()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -136,8 +135,8 @@ private constructor(
          * Otherwise, it's more convenient to use the top-level setters instead:
          * - [endpointUrl]
          * - [events]
-         * - [status]
          * - [name]
+         * - [status]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
@@ -171,17 +170,6 @@ private constructor(
          */
         fun addEvent(event: EventType) = apply { body.addEvent(event) }
 
-        /** The status of the webhook. */
-        fun status(status: Status) = apply { body.status(status) }
-
-        /**
-         * Sets [Builder.status] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.status] with a well-typed [Status] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun status(status: JsonField<Status>) = apply { body.status(status) }
-
         /** The name of the webhook */
         fun name(name: String) = apply { body.name(name) }
 
@@ -192,6 +180,17 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun name(name: JsonField<String>) = apply { body.name(name) }
+
+        /** The status of the webhook. */
+        fun status(status: Status) = apply { body.status(status) }
+
+        /**
+         * Sets [Builder.status] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.status] with a well-typed [Status] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun status(status: JsonField<Status>) = apply { body.status(status) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -319,7 +318,6 @@ private constructor(
          * ```java
          * .endpointUrl()
          * .events()
-         * .status()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -338,27 +336,28 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
+    /** Request to create a webhook */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val endpointUrl: JsonField<String>,
         private val events: JsonField<List<EventType>>,
-        private val status: JsonField<Status>,
         private val name: JsonField<String>,
+        private val status: JsonField<Status>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("endpoint_url")
+            @JsonProperty("endpointUrl")
             @ExcludeMissing
             endpointUrl: JsonField<String> = JsonMissing.of(),
             @JsonProperty("events")
             @ExcludeMissing
             events: JsonField<List<EventType>> = JsonMissing.of(),
-            @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
             @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
-        ) : this(endpointUrl, events, status, name, mutableMapOf())
+            @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
+        ) : this(endpointUrl, events, name, status, mutableMapOf())
 
         /**
          * The endpoint URL of the webhook
@@ -366,21 +365,13 @@ private constructor(
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun endpointUrl(): String = endpointUrl.getRequired("endpoint_url")
+        fun endpointUrl(): String = endpointUrl.getRequired("endpointUrl")
 
         /**
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun events(): List<EventType> = events.getRequired("events")
-
-        /**
-         * The status of the webhook.
-         *
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun status(): Status = status.getRequired("status")
 
         /**
          * The name of the webhook
@@ -391,11 +382,19 @@ private constructor(
         fun name(): Optional<String> = name.getOptional("name")
 
         /**
+         * The status of the webhook.
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun status(): Optional<Status> = status.getOptional("status")
+
+        /**
          * Returns the raw JSON value of [endpointUrl].
          *
          * Unlike [endpointUrl], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("endpoint_url")
+        @JsonProperty("endpointUrl")
         @ExcludeMissing
         fun _endpointUrl(): JsonField<String> = endpointUrl
 
@@ -407,18 +406,18 @@ private constructor(
         @JsonProperty("events") @ExcludeMissing fun _events(): JsonField<List<EventType>> = events
 
         /**
-         * Returns the raw JSON value of [status].
-         *
-         * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
-
-        /**
          * Returns the raw JSON value of [name].
          *
          * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
+
+        /**
+         * Returns the raw JSON value of [status].
+         *
+         * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -441,7 +440,6 @@ private constructor(
              * ```java
              * .endpointUrl()
              * .events()
-             * .status()
              * ```
              */
             @JvmStatic fun builder() = Builder()
@@ -452,16 +450,16 @@ private constructor(
 
             private var endpointUrl: JsonField<String>? = null
             private var events: JsonField<MutableList<EventType>>? = null
-            private var status: JsonField<Status>? = null
             private var name: JsonField<String> = JsonMissing.of()
+            private var status: JsonField<Status> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
                 endpointUrl = body.endpointUrl
                 events = body.events.map { it.toMutableList() }
-                status = body.status
                 name = body.name
+                status = body.status
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -504,18 +502,6 @@ private constructor(
                     }
             }
 
-            /** The status of the webhook. */
-            fun status(status: Status) = status(JsonField.of(status))
-
-            /**
-             * Sets [Builder.status] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.status] with a well-typed [Status] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun status(status: JsonField<Status>) = apply { this.status = status }
-
             /** The name of the webhook */
             fun name(name: String) = name(JsonField.of(name))
 
@@ -527,6 +513,18 @@ private constructor(
              * value.
              */
             fun name(name: JsonField<String>) = apply { this.name = name }
+
+            /** The status of the webhook. */
+            fun status(status: Status) = status(JsonField.of(status))
+
+            /**
+             * Sets [Builder.status] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.status] with a well-typed [Status] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun status(status: JsonField<Status>) = apply { this.status = status }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -556,7 +554,6 @@ private constructor(
              * ```java
              * .endpointUrl()
              * .events()
-             * .status()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
@@ -565,8 +562,8 @@ private constructor(
                 Body(
                     checkRequired("endpointUrl", endpointUrl),
                     checkRequired("events", events).map { it.toImmutable() },
-                    checkRequired("status", status),
                     name,
+                    status,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -580,8 +577,8 @@ private constructor(
 
             endpointUrl()
             events().forEach { it.validate() }
-            status().validate()
             name()
+            status().ifPresent { it.validate() }
             validated = true
         }
 
@@ -603,8 +600,8 @@ private constructor(
         internal fun validity(): Int =
             (if (endpointUrl.asKnown().isPresent) 1 else 0) +
                 (events.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
-                (status.asKnown().getOrNull()?.validity() ?: 0) +
-                (if (name.asKnown().isPresent) 1 else 0)
+                (if (name.asKnown().isPresent) 1 else 0) +
+                (status.asKnown().getOrNull()?.validity() ?: 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -614,19 +611,19 @@ private constructor(
             return other is Body &&
                 endpointUrl == other.endpointUrl &&
                 events == other.events &&
-                status == other.status &&
                 name == other.name &&
+                status == other.status &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(endpointUrl, events, status, name, additionalProperties)
+            Objects.hash(endpointUrl, events, name, status, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{endpointUrl=$endpointUrl, events=$events, status=$status, name=$name, additionalProperties=$additionalProperties}"
+            "Body{endpointUrl=$endpointUrl, events=$events, name=$name, status=$status, additionalProperties=$additionalProperties}"
     }
 
     /** The status of the webhook. */

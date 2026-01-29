@@ -38,7 +38,10 @@ internal class EventServiceAsyncTest {
 
         val responseFuture =
             eventServiceAsync.deliveries(
-                EventDeliveriesParams.builder().id("id").eventId("event_id").build()
+                EventDeliveriesParams.builder()
+                    .id("wh_01ka8k8s80gvx9604cn9am5st4")
+                    .eventId("evt_01ka8k8s80gvx9604cn9am5st4")
+                    .build()
             )
 
         val response = responseFuture.get()
@@ -57,8 +60,8 @@ internal class EventServiceAsyncTest {
         val responseFuture =
             eventServiceAsync.replay(
                 EventReplayParams.builder()
-                    .id("wh_YNtYn86oYZmP1ZHbnUBvXXFt")
-                    .eventId("event_id")
+                    .id("wh_01ka8k8s80gvx9604cn9am5st4")
+                    .eventId("evt_01ka8k8s80gvx9604cn9am5st4")
                     .build()
             )
 

@@ -41,7 +41,7 @@ class BulkServiceAsyncImpl internal constructor(private val clientOptions: Clien
         params: BulkRetrieveParams,
         requestOptions: RequestOptions,
     ): CompletableFuture<BulkRetrieveResponse> =
-        // get /emails/bulk/{id}
+        // get /emails/bulk/{bulkId}
         withRawResponse().retrieve(params, requestOptions).thenApply { it.parse() }
 
     override fun send(
@@ -73,7 +73,7 @@ class BulkServiceAsyncImpl internal constructor(private val clientOptions: Clien
         ): CompletableFuture<HttpResponseFor<BulkRetrieveResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
-            checkRequired("id", params.id().getOrNull())
+            checkRequired("bulkId", params.bulkId().getOrNull())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)

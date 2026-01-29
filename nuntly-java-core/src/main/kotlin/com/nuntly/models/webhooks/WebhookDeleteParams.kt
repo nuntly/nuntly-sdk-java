@@ -11,7 +11,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Delete the webhook with the given ID */
+/** Delete a webhook */
 class WebhookDeleteParams
 private constructor(
     private val id: String?,
@@ -20,6 +20,7 @@ private constructor(
     private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
+    /** The id of the webhook */
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /** Additional body properties to send with the request. */
@@ -57,6 +58,7 @@ private constructor(
             additionalBodyProperties = webhookDeleteParams.additionalBodyProperties.toMutableMap()
         }
 
+        /** The id of the webhook */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */

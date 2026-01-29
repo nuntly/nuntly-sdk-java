@@ -12,48 +12,39 @@ import com.nuntly.core.JsonField
 import com.nuntly.core.JsonMissing
 import com.nuntly.core.JsonValue
 import com.nuntly.core.checkRequired
+import com.nuntly.core.toImmutable
 import com.nuntly.errors.NuntlyInvalidDataException
 import com.nuntly.models.shared.EventType
-import com.nuntly.models.webhooks.EmailBouncedEvent
-import com.nuntly.models.webhooks.EmailClickedEvent
-import com.nuntly.models.webhooks.EmailComplainedEvent
-import com.nuntly.models.webhooks.EmailDeliveredEvent
-import com.nuntly.models.webhooks.EmailDeliveryDelayedEvent
-import com.nuntly.models.webhooks.EmailFailedEvent
-import com.nuntly.models.webhooks.EmailOpenedEvent
-import com.nuntly.models.webhooks.EmailRejectedEvent
-import com.nuntly.models.webhooks.EmailSentEvent
-import com.nuntly.models.webhooks.Event
-import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
+import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class EventListResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
-    private val data: JsonField<Event>,
+    private val data: JsonField<Data>,
     private val event: JsonField<EventType>,
     private val orgId: JsonField<String>,
-    private val receivedAt: JsonField<OffsetDateTime>,
     private val status: JsonField<Status>,
     private val webhookId: JsonField<String>,
+    private val successfulAt: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("data") @ExcludeMissing data: JsonField<Event> = JsonMissing.of(),
+        @JsonProperty("data") @ExcludeMissing data: JsonField<Data> = JsonMissing.of(),
         @JsonProperty("event") @ExcludeMissing event: JsonField<EventType> = JsonMissing.of(),
-        @JsonProperty("org_id") @ExcludeMissing orgId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("received_at")
-        @ExcludeMissing
-        receivedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("orgId") @ExcludeMissing orgId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
-        @JsonProperty("webhook_id") @ExcludeMissing webhookId: JsonField<String> = JsonMissing.of(),
-    ) : this(id, data, event, orgId, receivedAt, status, webhookId, mutableMapOf())
+        @JsonProperty("webhookId") @ExcludeMissing webhookId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("successfulAt")
+        @ExcludeMissing
+        successfulAt: JsonField<String> = JsonMissing.of(),
+    ) : this(id, data, event, orgId, status, webhookId, successfulAt, mutableMapOf())
 
     /**
      * The id of the webhook event
@@ -64,15 +55,13 @@ private constructor(
     fun id(): String = id.getRequired("id")
 
     /**
-     * The event payload
-     *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun data(): Event = data.getRequired("data")
+    fun data(): Data = data.getRequired("data")
 
     /**
-     * Type of the event
+     * An event
      *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -85,15 +74,7 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun orgId(): String = orgId.getRequired("org_id")
-
-    /**
-     * The timestamp when the event was received by the webhook system
-     *
-     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun receivedAt(): OffsetDateTime = receivedAt.getRequired("received_at")
+    fun orgId(): String = orgId.getRequired("orgId")
 
     /**
      * Status of the webhook delivery attempt
@@ -109,7 +90,15 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun webhookId(): String = webhookId.getRequired("webhook_id")
+    fun webhookId(): String = webhookId.getRequired("webhookId")
+
+    /**
+     * The timestamp when the event was successfully delivered to the endpoint
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun successfulAt(): Optional<String> = successfulAt.getOptional("successfulAt")
 
     /**
      * Returns the raw JSON value of [id].
@@ -123,7 +112,7 @@ private constructor(
      *
      * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<Event> = data
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<Data> = data
 
     /**
      * Returns the raw JSON value of [event].
@@ -137,16 +126,7 @@ private constructor(
      *
      * Unlike [orgId], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("org_id") @ExcludeMissing fun _orgId(): JsonField<String> = orgId
-
-    /**
-     * Returns the raw JSON value of [receivedAt].
-     *
-     * Unlike [receivedAt], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("received_at")
-    @ExcludeMissing
-    fun _receivedAt(): JsonField<OffsetDateTime> = receivedAt
+    @JsonProperty("orgId") @ExcludeMissing fun _orgId(): JsonField<String> = orgId
 
     /**
      * Returns the raw JSON value of [status].
@@ -160,7 +140,16 @@ private constructor(
      *
      * Unlike [webhookId], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("webhook_id") @ExcludeMissing fun _webhookId(): JsonField<String> = webhookId
+    @JsonProperty("webhookId") @ExcludeMissing fun _webhookId(): JsonField<String> = webhookId
+
+    /**
+     * Returns the raw JSON value of [successfulAt].
+     *
+     * Unlike [successfulAt], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("successfulAt")
+    @ExcludeMissing
+    fun _successfulAt(): JsonField<String> = successfulAt
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -185,7 +174,6 @@ private constructor(
          * .data()
          * .event()
          * .orgId()
-         * .receivedAt()
          * .status()
          * .webhookId()
          * ```
@@ -197,12 +185,12 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
-        private var data: JsonField<Event>? = null
+        private var data: JsonField<Data>? = null
         private var event: JsonField<EventType>? = null
         private var orgId: JsonField<String>? = null
-        private var receivedAt: JsonField<OffsetDateTime>? = null
         private var status: JsonField<Status>? = null
         private var webhookId: JsonField<String>? = null
+        private var successfulAt: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -211,9 +199,9 @@ private constructor(
             data = eventListResponse.data
             event = eventListResponse.event
             orgId = eventListResponse.orgId
-            receivedAt = eventListResponse.receivedAt
             status = eventListResponse.status
             webhookId = eventListResponse.webhookId
+            successfulAt = eventListResponse.successfulAt
             additionalProperties = eventListResponse.additionalProperties.toMutableMap()
         }
 
@@ -228,47 +216,17 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
 
-        /** The event payload */
-        fun data(data: Event) = data(JsonField.of(data))
+        fun data(data: Data) = data(JsonField.of(data))
 
         /**
          * Sets [Builder.data] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.data] with a well-typed [Event] value instead. This
+         * You should usually call [Builder.data] with a well-typed [Data] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun data(data: JsonField<Event>) = apply { this.data = data }
+        fun data(data: JsonField<Data>) = apply { this.data = data }
 
-        /** Alias for calling [data] with `Event.ofEmailSent(emailSent)`. */
-        fun data(emailSent: EmailSentEvent) = data(Event.ofEmailSent(emailSent))
-
-        /** Alias for calling [data] with `Event.ofEmailDelivered(emailDelivered)`. */
-        fun data(emailDelivered: EmailDeliveredEvent) = data(Event.ofEmailDelivered(emailDelivered))
-
-        /** Alias for calling [data] with `Event.ofEmailOpened(emailOpened)`. */
-        fun data(emailOpened: EmailOpenedEvent) = data(Event.ofEmailOpened(emailOpened))
-
-        /** Alias for calling [data] with `Event.ofEmailClicked(emailClicked)`. */
-        fun data(emailClicked: EmailClickedEvent) = data(Event.ofEmailClicked(emailClicked))
-
-        /** Alias for calling [data] with `Event.ofEmailBounced(emailBounced)`. */
-        fun data(emailBounced: EmailBouncedEvent) = data(Event.ofEmailBounced(emailBounced))
-
-        /** Alias for calling [data] with `Event.ofEmailComplained(emailComplained)`. */
-        fun data(emailComplained: EmailComplainedEvent) =
-            data(Event.ofEmailComplained(emailComplained))
-
-        /** Alias for calling [data] with `Event.ofEmailRejected(emailRejected)`. */
-        fun data(emailRejected: EmailRejectedEvent) = data(Event.ofEmailRejected(emailRejected))
-
-        /** Alias for calling [data] with `Event.ofEmailDeliveryDelayed(emailDeliveryDelayed)`. */
-        fun data(emailDeliveryDelayed: EmailDeliveryDelayedEvent) =
-            data(Event.ofEmailDeliveryDelayed(emailDeliveryDelayed))
-
-        /** Alias for calling [data] with `Event.ofEmailFailed(emailFailed)`. */
-        fun data(emailFailed: EmailFailedEvent) = data(Event.ofEmailFailed(emailFailed))
-
-        /** Type of the event */
+        /** An event */
         fun event(event: EventType) = event(JsonField.of(event))
 
         /**
@@ -289,20 +247,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun orgId(orgId: JsonField<String>) = apply { this.orgId = orgId }
-
-        /** The timestamp when the event was received by the webhook system */
-        fun receivedAt(receivedAt: OffsetDateTime) = receivedAt(JsonField.of(receivedAt))
-
-        /**
-         * Sets [Builder.receivedAt] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.receivedAt] with a well-typed [OffsetDateTime] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun receivedAt(receivedAt: JsonField<OffsetDateTime>) = apply {
-            this.receivedAt = receivedAt
-        }
 
         /** Status of the webhook delivery attempt */
         fun status(status: Status) = status(JsonField.of(status))
@@ -326,6 +270,20 @@ private constructor(
          * value.
          */
         fun webhookId(webhookId: JsonField<String>) = apply { this.webhookId = webhookId }
+
+        /** The timestamp when the event was successfully delivered to the endpoint */
+        fun successfulAt(successfulAt: String) = successfulAt(JsonField.of(successfulAt))
+
+        /**
+         * Sets [Builder.successfulAt] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.successfulAt] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun successfulAt(successfulAt: JsonField<String>) = apply {
+            this.successfulAt = successfulAt
+        }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -357,7 +315,6 @@ private constructor(
          * .data()
          * .event()
          * .orgId()
-         * .receivedAt()
          * .status()
          * .webhookId()
          * ```
@@ -370,9 +327,9 @@ private constructor(
                 checkRequired("data", data),
                 checkRequired("event", event),
                 checkRequired("orgId", orgId),
-                checkRequired("receivedAt", receivedAt),
                 checkRequired("status", status),
                 checkRequired("webhookId", webhookId),
+                successfulAt,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -388,9 +345,9 @@ private constructor(
         data().validate()
         event().validate()
         orgId()
-        receivedAt()
         status().validate()
         webhookId()
+        successfulAt()
         validated = true
     }
 
@@ -413,9 +370,108 @@ private constructor(
             (data.asKnown().getOrNull()?.validity() ?: 0) +
             (event.asKnown().getOrNull()?.validity() ?: 0) +
             (if (orgId.asKnown().isPresent) 1 else 0) +
-            (if (receivedAt.asKnown().isPresent) 1 else 0) +
             (status.asKnown().getOrNull()?.validity() ?: 0) +
-            (if (webhookId.asKnown().isPresent) 1 else 0)
+            (if (webhookId.asKnown().isPresent) 1 else 0) +
+            (if (successfulAt.asKnown().isPresent) 1 else 0)
+
+    class Data
+    @JsonCreator
+    private constructor(
+        @com.fasterxml.jackson.annotation.JsonValue
+        private val additionalProperties: Map<String, JsonValue>
+    ) {
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [Data]. */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Data]. */
+        class Builder internal constructor() {
+
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(data: Data) = apply {
+                additionalProperties = data.additionalProperties.toMutableMap()
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Data].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): Data = Data(additionalProperties.toImmutable())
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): Data = apply {
+            if (validated) {
+                return@apply
+            }
+
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: NuntlyInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Data && additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() = "Data{additionalProperties=$additionalProperties}"
+    }
 
     /** Status of the webhook delivery attempt */
     class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -559,18 +615,18 @@ private constructor(
             data == other.data &&
             event == other.event &&
             orgId == other.orgId &&
-            receivedAt == other.receivedAt &&
             status == other.status &&
             webhookId == other.webhookId &&
+            successfulAt == other.successfulAt &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(id, data, event, orgId, receivedAt, status, webhookId, additionalProperties)
+        Objects.hash(id, data, event, orgId, status, webhookId, successfulAt, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "EventListResponse{id=$id, data=$data, event=$event, orgId=$orgId, receivedAt=$receivedAt, status=$status, webhookId=$webhookId, additionalProperties=$additionalProperties}"
+        "EventListResponse{id=$id, data=$data, event=$event, orgId=$orgId, status=$status, webhookId=$webhookId, successfulAt=$successfulAt, additionalProperties=$additionalProperties}"
 }

@@ -10,7 +10,7 @@ internal class DomainUpdateParamsTest {
     @Test
     fun create() {
         DomainUpdateParams.builder()
-            .id("dns_FdfQe2eZAzRrHCXKSr7VsxUz")
+            .id("dns_01kabn43yqyxn2bx4ve84mczd3")
             .clickTracking(true)
             .openTracking(true)
             .build()
@@ -18,9 +18,9 @@ internal class DomainUpdateParamsTest {
 
     @Test
     fun pathParams() {
-        val params = DomainUpdateParams.builder().id("dns_FdfQe2eZAzRrHCXKSr7VsxUz").build()
+        val params = DomainUpdateParams.builder().id("dns_01kabn43yqyxn2bx4ve84mczd3").build()
 
-        assertThat(params._pathParam(0)).isEqualTo("dns_FdfQe2eZAzRrHCXKSr7VsxUz")
+        assertThat(params._pathParam(0)).isEqualTo("dns_01kabn43yqyxn2bx4ve84mczd3")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }
@@ -29,7 +29,7 @@ internal class DomainUpdateParamsTest {
     fun body() {
         val params =
             DomainUpdateParams.builder()
-                .id("dns_FdfQe2eZAzRrHCXKSr7VsxUz")
+                .id("dns_01kabn43yqyxn2bx4ve84mczd3")
                 .clickTracking(true)
                 .openTracking(true)
                 .build()
@@ -42,7 +42,7 @@ internal class DomainUpdateParamsTest {
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = DomainUpdateParams.builder().id("dns_FdfQe2eZAzRrHCXKSr7VsxUz").build()
+        val params = DomainUpdateParams.builder().id("dns_01kabn43yqyxn2bx4ve84mczd3").build()
 
         val body = params._body()
     }

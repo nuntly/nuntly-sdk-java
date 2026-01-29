@@ -6,17 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.JsonValue
 import com.nuntly.core.jsonMapper
 import com.nuntly.errors.NuntlyInvalidDataException
-import com.nuntly.models.shared.BounceDetail
-import com.nuntly.models.shared.ClickDetail
-import com.nuntly.models.shared.ComplaintDetail
-import com.nuntly.models.shared.DeliveryDelayDetail
-import com.nuntly.models.shared.DeliveryDetail
-import com.nuntly.models.shared.EmailEvent
-import com.nuntly.models.shared.EventType
-import com.nuntly.models.shared.FailureDetail
-import com.nuntly.models.shared.OpenDetail
-import com.nuntly.models.shared.RejectDetail
-import com.nuntly.models.shared.SendDetail
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -26,42 +16,333 @@ import org.junit.jupiter.params.provider.EnumSource
 internal class UnwrapWebhookEventTest {
 
     @Test
+    fun ofEmailQueued() {
+        val emailQueued =
+            EmailQueuedEvent.builder()
+                .id("id")
+                .createdAt("createdAt")
+                .data(
+                    EmailQueuedEvent.Data.builder()
+                        .queue(JsonValue.from(mapOf<String, Any>()))
+                        .build()
+                )
+                .type(EmailQueuedEvent.Type.EMAIL_QUEUED)
+                .build()
+
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofEmailQueued(emailQueued)
+
+        assertThat(unwrapWebhookEvent.emailQueued()).contains(emailQueued)
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSent()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
+        assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
+        assertThat(unwrapWebhookEvent.emailClicked()).isEmpty
+        assertThat(unwrapWebhookEvent.emailBounced()).isEmpty
+        assertThat(unwrapWebhookEvent.emailComplained()).isEmpty
+        assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+    }
+
+    @Test
+    fun ofEmailQueuedRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofEmailQueued(
+                EmailQueuedEvent.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .data(
+                        EmailQueuedEvent.Data.builder()
+                            .queue(JsonValue.from(mapOf<String, Any>()))
+                            .build()
+                    )
+                    .type(EmailQueuedEvent.Type.EMAIL_QUEUED)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
+    fun ofEmailScheduled() {
+        val emailScheduled =
+            EmailScheduledEvent.builder()
+                .id("id")
+                .createdAt("createdAt")
+                .data(
+                    EmailScheduledEvent.Data.builder()
+                        .schedule(
+                            EmailScheduledEvent.Data.Schedule.builder()
+                                .scheduledAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .build()
+                        )
+                        .build()
+                )
+                .type(EmailScheduledEvent.Type.EMAIL_SCHEDULED)
+                .build()
+
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofEmailScheduled(emailScheduled)
+
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).contains(emailScheduled)
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSent()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
+        assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
+        assertThat(unwrapWebhookEvent.emailClicked()).isEmpty
+        assertThat(unwrapWebhookEvent.emailBounced()).isEmpty
+        assertThat(unwrapWebhookEvent.emailComplained()).isEmpty
+        assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+    }
+
+    @Test
+    fun ofEmailScheduledRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofEmailScheduled(
+                EmailScheduledEvent.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .data(
+                        EmailScheduledEvent.Data.builder()
+                            .schedule(
+                                EmailScheduledEvent.Data.Schedule.builder()
+                                    .scheduledAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .type(EmailScheduledEvent.Type.EMAIL_SCHEDULED)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
+    fun ofEmailProcessed() {
+        val emailProcessed =
+            EmailProcessedEvent.builder()
+                .id("id")
+                .createdAt("createdAt")
+                .data(
+                    EmailProcessedEvent.Data.builder()
+                        .processed(JsonValue.from(mapOf<String, Any>()))
+                        .build()
+                )
+                .type(EmailProcessedEvent.Type.EMAIL_PROCESSED)
+                .build()
+
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofEmailProcessed(emailProcessed)
+
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).contains(emailProcessed)
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSent()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
+        assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
+        assertThat(unwrapWebhookEvent.emailClicked()).isEmpty
+        assertThat(unwrapWebhookEvent.emailBounced()).isEmpty
+        assertThat(unwrapWebhookEvent.emailComplained()).isEmpty
+        assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+    }
+
+    @Test
+    fun ofEmailProcessedRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofEmailProcessed(
+                EmailProcessedEvent.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .data(
+                        EmailProcessedEvent.Data.builder()
+                            .processed(JsonValue.from(mapOf<String, Any>()))
+                            .build()
+                    )
+                    .type(EmailProcessedEvent.Type.EMAIL_PROCESSED)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
+    fun ofEmailSending() {
+        val emailSending =
+            EmailSendingEvent.builder()
+                .id("id")
+                .createdAt("createdAt")
+                .data(
+                    EmailSendingEvent.Data.builder()
+                        .id("id")
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .enqueuedAt("enqueuedAt")
+                        .from("from")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .sending(JsonValue.from(mapOf<String, Any>()))
+                        .sentAt("sentAt")
+                        .subject("subject")
+                        .to("string")
+                        .bcc("string")
+                        .bulkId("bulkId")
+                        .cc("string")
+                        .addHeader(
+                            EmailSendingEvent.Data.Header.builder()
+                                .name("name")
+                                .value("value")
+                                .build()
+                        )
+                        .replyTo("string")
+                        .tags(
+                            EmailSendingEvent.Data.Tags.builder()
+                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
+                                .build()
+                        )
+                        .build()
+                )
+                .type(EmailSendingEvent.Type.EMAIL_SENDING)
+                .build()
+
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofEmailSending(emailSending)
+
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).contains(emailSending)
+        assertThat(unwrapWebhookEvent.emailSent()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
+        assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
+        assertThat(unwrapWebhookEvent.emailClicked()).isEmpty
+        assertThat(unwrapWebhookEvent.emailBounced()).isEmpty
+        assertThat(unwrapWebhookEvent.emailComplained()).isEmpty
+        assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+    }
+
+    @Test
+    fun ofEmailSendingRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofEmailSending(
+                EmailSendingEvent.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .data(
+                        EmailSendingEvent.Data.builder()
+                            .id("id")
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .enqueuedAt("enqueuedAt")
+                            .from("from")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .sending(JsonValue.from(mapOf<String, Any>()))
+                            .sentAt("sentAt")
+                            .subject("subject")
+                            .to("string")
+                            .bcc("string")
+                            .bulkId("bulkId")
+                            .cc("string")
+                            .addHeader(
+                                EmailSendingEvent.Data.Header.builder()
+                                    .name("name")
+                                    .value("value")
+                                    .build()
+                            )
+                            .replyTo("string")
+                            .tags(
+                                EmailSendingEvent.Data.Tags.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .type(EmailSendingEvent.Type.EMAIL_SENDING)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
     fun ofEmailSent() {
         val emailSent =
             EmailSentEvent.builder()
                 .id("id")
-                .createdAt("created_at")
-                .type(EventType.EMAIL_SENT)
-                .kind(BaseEvent.Kind.EVENT)
+                .createdAt("createdAt")
                 .data(
                     EmailSentEvent.Data.builder()
                         .id("id")
-                        .domain("domain")
-                        .domainId("domain_id")
-                        .enqueueAt("enqueue_at")
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .enqueuedAt("enqueuedAt")
                         .from("from")
-                        .messageId("message_id")
-                        .orgId("org_id")
-                        .sentAt("sent_at")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .send(JsonValue.from(mapOf<String, Any>()))
+                        .sentAt("sentAt")
                         .subject("subject")
                         .to("string")
                         .bcc("string")
-                        .bulkId("bulk_id")
+                        .bulkId("bulkId")
                         .cc("string")
-                        .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
+                        .addHeader(
+                            EmailSentEvent.Data.Header.builder().name("name").value("value").build()
+                        )
                         .replyTo("string")
                         .tags(
-                            EmailEvent.Tags.builder()
+                            EmailSentEvent.Data.Tags.builder()
                                 .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                 .build()
                         )
-                        .send(SendDetail.builder().build())
                         .build()
                 )
+                .type(EmailSentEvent.Type.EMAIL_SENT)
                 .build()
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofEmailSent(emailSent)
 
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
         assertThat(unwrapWebhookEvent.emailSent()).contains(emailSent)
         assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
         assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
@@ -80,36 +361,38 @@ internal class UnwrapWebhookEventTest {
             UnwrapWebhookEvent.ofEmailSent(
                 EmailSentEvent.builder()
                     .id("id")
-                    .createdAt("created_at")
-                    .type(EventType.EMAIL_SENT)
-                    .kind(BaseEvent.Kind.EVENT)
+                    .createdAt("createdAt")
                     .data(
                         EmailSentEvent.Data.builder()
                             .id("id")
-                            .domain("domain")
-                            .domainId("domain_id")
-                            .enqueueAt("enqueue_at")
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .enqueuedAt("enqueuedAt")
                             .from("from")
-                            .messageId("message_id")
-                            .orgId("org_id")
-                            .sentAt("sent_at")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .send(JsonValue.from(mapOf<String, Any>()))
+                            .sentAt("sentAt")
                             .subject("subject")
                             .to("string")
                             .bcc("string")
-                            .bulkId("bulk_id")
+                            .bulkId("bulkId")
                             .cc("string")
                             .addHeader(
-                                EmailEvent.Header.builder().name("name").value("value").build()
+                                EmailSentEvent.Data.Header.builder()
+                                    .name("name")
+                                    .value("value")
+                                    .build()
                             )
                             .replyTo("string")
                             .tags(
-                                EmailEvent.Tags.builder()
+                                EmailSentEvent.Data.Tags.builder()
                                     .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                     .build()
                             )
-                            .send(SendDetail.builder().build())
                             .build()
                     )
+                    .type(EmailSentEvent.Type.EMAIL_SENT)
                     .build()
             )
 
@@ -127,47 +410,55 @@ internal class UnwrapWebhookEventTest {
         val emailDelivered =
             EmailDeliveredEvent.builder()
                 .id("id")
-                .createdAt("created_at")
-                .type(EventType.EMAIL_DELIVERED)
-                .kind(BaseEvent.Kind.EVENT)
+                .createdAt("createdAt")
                 .data(
                     EmailDeliveredEvent.Data.builder()
                         .id("id")
-                        .domain("domain")
-                        .domainId("domain_id")
-                        .enqueueAt("enqueue_at")
+                        .delivery(
+                            EmailDeliveredEvent.Data.Delivery.builder()
+                                .deliveredAt("deliveredAt")
+                                .addRecipient("string")
+                                .remoteMtaIp("remoteMtaIp")
+                                .reportingMta("reportingMta")
+                                .smtpResponse("smtpResponse")
+                                .processingTime(0.0)
+                                .build()
+                        )
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .enqueuedAt("enqueuedAt")
                         .from("from")
-                        .messageId("message_id")
-                        .orgId("org_id")
-                        .sentAt("sent_at")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .sentAt("sentAt")
                         .subject("subject")
                         .to("string")
                         .bcc("string")
-                        .bulkId("bulk_id")
+                        .bulkId("bulkId")
                         .cc("string")
-                        .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
-                        .replyTo("string")
-                        .tags(
-                            EmailEvent.Tags.builder()
-                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
+                        .addHeader(
+                            EmailDeliveredEvent.Data.Header.builder()
+                                .name("name")
+                                .value("value")
                                 .build()
                         )
-                        .delivery(
-                            DeliveryDetail.builder()
-                                .deliveredAt("delivered_at")
-                                .addRecipient("string")
-                                .remoteMtaIp("remote_mta_ip")
-                                .reportingMta("reporting_mta")
-                                .smtpResponse("smtp_response")
-                                .processingTime(0.0)
+                        .replyTo("string")
+                        .tags(
+                            EmailDeliveredEvent.Data.Tags.builder()
+                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                 .build()
                         )
                         .build()
                 )
+                .type(EmailDeliveredEvent.Type.EMAIL_DELIVERED)
                 .build()
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofEmailDelivered(emailDelivered)
 
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
         assertThat(unwrapWebhookEvent.emailSent()).isEmpty
         assertThat(unwrapWebhookEvent.emailDelivered()).contains(emailDelivered)
         assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
@@ -186,45 +477,47 @@ internal class UnwrapWebhookEventTest {
             UnwrapWebhookEvent.ofEmailDelivered(
                 EmailDeliveredEvent.builder()
                     .id("id")
-                    .createdAt("created_at")
-                    .type(EventType.EMAIL_DELIVERED)
-                    .kind(BaseEvent.Kind.EVENT)
+                    .createdAt("createdAt")
                     .data(
                         EmailDeliveredEvent.Data.builder()
                             .id("id")
-                            .domain("domain")
-                            .domainId("domain_id")
-                            .enqueueAt("enqueue_at")
+                            .delivery(
+                                EmailDeliveredEvent.Data.Delivery.builder()
+                                    .deliveredAt("deliveredAt")
+                                    .addRecipient("string")
+                                    .remoteMtaIp("remoteMtaIp")
+                                    .reportingMta("reportingMta")
+                                    .smtpResponse("smtpResponse")
+                                    .processingTime(0.0)
+                                    .build()
+                            )
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .enqueuedAt("enqueuedAt")
                             .from("from")
-                            .messageId("message_id")
-                            .orgId("org_id")
-                            .sentAt("sent_at")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .sentAt("sentAt")
                             .subject("subject")
                             .to("string")
                             .bcc("string")
-                            .bulkId("bulk_id")
+                            .bulkId("bulkId")
                             .cc("string")
                             .addHeader(
-                                EmailEvent.Header.builder().name("name").value("value").build()
+                                EmailDeliveredEvent.Data.Header.builder()
+                                    .name("name")
+                                    .value("value")
+                                    .build()
                             )
                             .replyTo("string")
                             .tags(
-                                EmailEvent.Tags.builder()
+                                EmailDeliveredEvent.Data.Tags.builder()
                                     .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
-                                    .build()
-                            )
-                            .delivery(
-                                DeliveryDetail.builder()
-                                    .deliveredAt("delivered_at")
-                                    .addRecipient("string")
-                                    .remoteMtaIp("remote_mta_ip")
-                                    .reportingMta("reporting_mta")
-                                    .smtpResponse("smtp_response")
-                                    .processingTime(0.0)
                                     .build()
                             )
                             .build()
                     )
+                    .type(EmailDeliveredEvent.Type.EMAIL_DELIVERED)
                     .build()
             )
 
@@ -242,43 +535,51 @@ internal class UnwrapWebhookEventTest {
         val emailOpened =
             EmailOpenedEvent.builder()
                 .id("id")
-                .createdAt("created_at")
-                .type(EventType.EMAIL_OPENED)
-                .kind(BaseEvent.Kind.EVENT)
+                .createdAt("createdAt")
                 .data(
                     EmailOpenedEvent.Data.builder()
                         .id("id")
-                        .domain("domain")
-                        .domainId("domain_id")
-                        .enqueueAt("enqueue_at")
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .enqueuedAt("enqueuedAt")
                         .from("from")
-                        .messageId("message_id")
-                        .orgId("org_id")
-                        .sentAt("sent_at")
+                        .messageId("messageId")
+                        .open(
+                            EmailOpenedEvent.Data.Open.builder()
+                                .openedAt("openedAt")
+                                .userAgent("userAgent")
+                                .build()
+                        )
+                        .orgId("orgId")
+                        .sentAt("sentAt")
                         .subject("subject")
                         .to("string")
                         .bcc("string")
-                        .bulkId("bulk_id")
+                        .bulkId("bulkId")
                         .cc("string")
-                        .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
-                        .replyTo("string")
-                        .tags(
-                            EmailEvent.Tags.builder()
-                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
+                        .addHeader(
+                            EmailOpenedEvent.Data.Header.builder()
+                                .name("name")
+                                .value("value")
                                 .build()
                         )
-                        .open(
-                            OpenDetail.builder()
-                                .openedAt("opened_at")
-                                .userAgent("user_agent")
+                        .replyTo("string")
+                        .tags(
+                            EmailOpenedEvent.Data.Tags.builder()
+                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                 .build()
                         )
                         .build()
                 )
+                .type(EmailOpenedEvent.Type.EMAIL_OPENED)
                 .build()
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofEmailOpened(emailOpened)
 
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
         assertThat(unwrapWebhookEvent.emailSent()).isEmpty
         assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
         assertThat(unwrapWebhookEvent.emailOpened()).contains(emailOpened)
@@ -297,41 +598,43 @@ internal class UnwrapWebhookEventTest {
             UnwrapWebhookEvent.ofEmailOpened(
                 EmailOpenedEvent.builder()
                     .id("id")
-                    .createdAt("created_at")
-                    .type(EventType.EMAIL_OPENED)
-                    .kind(BaseEvent.Kind.EVENT)
+                    .createdAt("createdAt")
                     .data(
                         EmailOpenedEvent.Data.builder()
                             .id("id")
-                            .domain("domain")
-                            .domainId("domain_id")
-                            .enqueueAt("enqueue_at")
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .enqueuedAt("enqueuedAt")
                             .from("from")
-                            .messageId("message_id")
-                            .orgId("org_id")
-                            .sentAt("sent_at")
+                            .messageId("messageId")
+                            .open(
+                                EmailOpenedEvent.Data.Open.builder()
+                                    .openedAt("openedAt")
+                                    .userAgent("userAgent")
+                                    .build()
+                            )
+                            .orgId("orgId")
+                            .sentAt("sentAt")
                             .subject("subject")
                             .to("string")
                             .bcc("string")
-                            .bulkId("bulk_id")
+                            .bulkId("bulkId")
                             .cc("string")
                             .addHeader(
-                                EmailEvent.Header.builder().name("name").value("value").build()
+                                EmailOpenedEvent.Data.Header.builder()
+                                    .name("name")
+                                    .value("value")
+                                    .build()
                             )
                             .replyTo("string")
                             .tags(
-                                EmailEvent.Tags.builder()
+                                EmailOpenedEvent.Data.Tags.builder()
                                     .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
-                                    .build()
-                            )
-                            .open(
-                                OpenDetail.builder()
-                                    .openedAt("opened_at")
-                                    .userAgent("user_agent")
                                     .build()
                             )
                             .build()
                     )
+                    .type(EmailOpenedEvent.Type.EMAIL_OPENED)
                     .build()
             )
 
@@ -349,44 +652,52 @@ internal class UnwrapWebhookEventTest {
         val emailClicked =
             EmailClickedEvent.builder()
                 .id("id")
-                .createdAt("created_at")
-                .type(EventType.EMAIL_CLICKED)
-                .kind(BaseEvent.Kind.EVENT)
+                .createdAt("createdAt")
                 .data(
                     EmailClickedEvent.Data.builder()
                         .id("id")
-                        .domain("domain")
-                        .domainId("domain_id")
-                        .enqueueAt("enqueue_at")
+                        .click(
+                            EmailClickedEvent.Data.Click.builder()
+                                .clickedAt("clickedAt")
+                                .link("link")
+                                .userAgent("userAgent")
+                                .build()
+                        )
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .enqueuedAt("enqueuedAt")
                         .from("from")
-                        .messageId("message_id")
-                        .orgId("org_id")
-                        .sentAt("sent_at")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .sentAt("sentAt")
                         .subject("subject")
                         .to("string")
                         .bcc("string")
-                        .bulkId("bulk_id")
+                        .bulkId("bulkId")
                         .cc("string")
-                        .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
-                        .replyTo("string")
-                        .tags(
-                            EmailEvent.Tags.builder()
-                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
+                        .addHeader(
+                            EmailClickedEvent.Data.Header.builder()
+                                .name("name")
+                                .value("value")
                                 .build()
                         )
-                        .click(
-                            ClickDetail.builder()
-                                .clickedAt("clicked_at")
-                                .link("link")
-                                .userAgent("user_agent")
+                        .replyTo("string")
+                        .tags(
+                            EmailClickedEvent.Data.Tags.builder()
+                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                 .build()
                         )
                         .build()
                 )
+                .type(EmailClickedEvent.Type.EMAIL_CLICKED)
                 .build()
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofEmailClicked(emailClicked)
 
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
         assertThat(unwrapWebhookEvent.emailSent()).isEmpty
         assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
         assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
@@ -405,42 +716,44 @@ internal class UnwrapWebhookEventTest {
             UnwrapWebhookEvent.ofEmailClicked(
                 EmailClickedEvent.builder()
                     .id("id")
-                    .createdAt("created_at")
-                    .type(EventType.EMAIL_CLICKED)
-                    .kind(BaseEvent.Kind.EVENT)
+                    .createdAt("createdAt")
                     .data(
                         EmailClickedEvent.Data.builder()
                             .id("id")
-                            .domain("domain")
-                            .domainId("domain_id")
-                            .enqueueAt("enqueue_at")
+                            .click(
+                                EmailClickedEvent.Data.Click.builder()
+                                    .clickedAt("clickedAt")
+                                    .link("link")
+                                    .userAgent("userAgent")
+                                    .build()
+                            )
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .enqueuedAt("enqueuedAt")
                             .from("from")
-                            .messageId("message_id")
-                            .orgId("org_id")
-                            .sentAt("sent_at")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .sentAt("sentAt")
                             .subject("subject")
                             .to("string")
                             .bcc("string")
-                            .bulkId("bulk_id")
+                            .bulkId("bulkId")
                             .cc("string")
                             .addHeader(
-                                EmailEvent.Header.builder().name("name").value("value").build()
+                                EmailClickedEvent.Data.Header.builder()
+                                    .name("name")
+                                    .value("value")
+                                    .build()
                             )
                             .replyTo("string")
                             .tags(
-                                EmailEvent.Tags.builder()
+                                EmailClickedEvent.Data.Tags.builder()
                                     .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
-                                    .build()
-                            )
-                            .click(
-                                ClickDetail.builder()
-                                    .clickedAt("clicked_at")
-                                    .link("link")
-                                    .userAgent("user_agent")
                                     .build()
                             )
                             .build()
                     )
+                    .type(EmailClickedEvent.Type.EMAIL_CLICKED)
                     .build()
             )
 
@@ -458,54 +771,64 @@ internal class UnwrapWebhookEventTest {
         val emailBounced =
             EmailBouncedEvent.builder()
                 .id("id")
-                .createdAt("created_at")
-                .type(EventType.EMAIL_BOUNCED)
-                .kind(BaseEvent.Kind.EVENT)
+                .createdAt("createdAt")
                 .data(
                     EmailBouncedEvent.Data.builder()
                         .id("id")
-                        .domain("domain")
-                        .domainId("domain_id")
-                        .enqueueAt("enqueue_at")
-                        .from("from")
-                        .messageId("message_id")
-                        .orgId("org_id")
-                        .sentAt("sent_at")
-                        .subject("subject")
-                        .to("string")
-                        .bcc("string")
-                        .bulkId("bulk_id")
-                        .cc("string")
-                        .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
-                        .replyTo("string")
-                        .tags(
-                            EmailEvent.Tags.builder()
-                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
-                                .build()
-                        )
                         .bounce(
-                            BounceDetail.builder()
-                                .bounceSubtype("bounce_subtype")
-                                .bounceType("bounce_type")
-                                .bouncedAt("bounced_at")
+                            EmailBouncedEvent.Data.Bounce.builder()
+                                .bouncedAt("bouncedAt")
                                 .addBouncedRecipient(
-                                    BounceDetail.BouncedRecipient.builder()
+                                    EmailBouncedEvent.Data.Bounce.BouncedRecipient.builder()
                                         .email("email")
                                         .action("action")
-                                        .diagnosticCode("diagnostic_code")
+                                        .diagnosticCode("diagnosticCode")
                                         .status("status")
                                         .build()
                                 )
-                                .feedbackId("feedback_id")
-                                .reportingMta("reporting_mta")
+                                .bounceSubType(
+                                    EmailBouncedEvent.Data.Bounce.BounceSubType.UNDETERMINED
+                                )
+                                .bounceType(EmailBouncedEvent.Data.Bounce.BounceType.PERMANENT)
+                                .feedbackId("feedbackId")
+                                .reportingMta("reportingMta")
+                                .build()
+                        )
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .enqueuedAt("enqueuedAt")
+                        .from("from")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .sentAt("sentAt")
+                        .subject("subject")
+                        .to("string")
+                        .bcc("string")
+                        .bulkId("bulkId")
+                        .cc("string")
+                        .addHeader(
+                            EmailBouncedEvent.Data.Header.builder()
+                                .name("name")
+                                .value("value")
+                                .build()
+                        )
+                        .replyTo("string")
+                        .tags(
+                            EmailBouncedEvent.Data.Tags.builder()
+                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                 .build()
                         )
                         .build()
                 )
+                .type(EmailBouncedEvent.Type.EMAIL_BOUNCED)
                 .build()
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofEmailBounced(emailBounced)
 
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
         assertThat(unwrapWebhookEvent.emailSent()).isEmpty
         assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
         assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
@@ -524,52 +847,56 @@ internal class UnwrapWebhookEventTest {
             UnwrapWebhookEvent.ofEmailBounced(
                 EmailBouncedEvent.builder()
                     .id("id")
-                    .createdAt("created_at")
-                    .type(EventType.EMAIL_BOUNCED)
-                    .kind(BaseEvent.Kind.EVENT)
+                    .createdAt("createdAt")
                     .data(
                         EmailBouncedEvent.Data.builder()
                             .id("id")
-                            .domain("domain")
-                            .domainId("domain_id")
-                            .enqueueAt("enqueue_at")
-                            .from("from")
-                            .messageId("message_id")
-                            .orgId("org_id")
-                            .sentAt("sent_at")
-                            .subject("subject")
-                            .to("string")
-                            .bcc("string")
-                            .bulkId("bulk_id")
-                            .cc("string")
-                            .addHeader(
-                                EmailEvent.Header.builder().name("name").value("value").build()
-                            )
-                            .replyTo("string")
-                            .tags(
-                                EmailEvent.Tags.builder()
-                                    .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
-                                    .build()
-                            )
                             .bounce(
-                                BounceDetail.builder()
-                                    .bounceSubtype("bounce_subtype")
-                                    .bounceType("bounce_type")
-                                    .bouncedAt("bounced_at")
+                                EmailBouncedEvent.Data.Bounce.builder()
+                                    .bouncedAt("bouncedAt")
                                     .addBouncedRecipient(
-                                        BounceDetail.BouncedRecipient.builder()
+                                        EmailBouncedEvent.Data.Bounce.BouncedRecipient.builder()
                                             .email("email")
                                             .action("action")
-                                            .diagnosticCode("diagnostic_code")
+                                            .diagnosticCode("diagnosticCode")
                                             .status("status")
                                             .build()
                                     )
-                                    .feedbackId("feedback_id")
-                                    .reportingMta("reporting_mta")
+                                    .bounceSubType(
+                                        EmailBouncedEvent.Data.Bounce.BounceSubType.UNDETERMINED
+                                    )
+                                    .bounceType(EmailBouncedEvent.Data.Bounce.BounceType.PERMANENT)
+                                    .feedbackId("feedbackId")
+                                    .reportingMta("reportingMta")
+                                    .build()
+                            )
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .enqueuedAt("enqueuedAt")
+                            .from("from")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .sentAt("sentAt")
+                            .subject("subject")
+                            .to("string")
+                            .bcc("string")
+                            .bulkId("bulkId")
+                            .cc("string")
+                            .addHeader(
+                                EmailBouncedEvent.Data.Header.builder()
+                                    .name("name")
+                                    .value("value")
+                                    .build()
+                            )
+                            .replyTo("string")
+                            .tags(
+                                EmailBouncedEvent.Data.Tags.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                     .build()
                             )
                             .build()
                     )
+                    .type(EmailBouncedEvent.Type.EMAIL_BOUNCED)
                     .build()
             )
 
@@ -587,52 +914,66 @@ internal class UnwrapWebhookEventTest {
         val emailComplained =
             EmailComplainedEvent.builder()
                 .id("id")
-                .createdAt("created_at")
-                .type(EventType.EMAIL_COMPLAINED)
-                .kind(BaseEvent.Kind.EVENT)
+                .createdAt("createdAt")
                 .data(
                     EmailComplainedEvent.Data.builder()
                         .id("id")
-                        .domain("domain")
-                        .domainId("domain_id")
-                        .enqueueAt("enqueue_at")
-                        .from("from")
-                        .messageId("message_id")
-                        .orgId("org_id")
-                        .sentAt("sent_at")
-                        .subject("subject")
-                        .to("string")
-                        .bcc("string")
-                        .bulkId("bulk_id")
-                        .cc("string")
-                        .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
-                        .replyTo("string")
-                        .tags(
-                            EmailEvent.Tags.builder()
-                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
-                                .build()
-                        )
                         .complaint(
-                            ComplaintDetail.builder()
-                                .complainedAt("complained_at")
-                                .feedbackId("feedback_id")
+                            EmailComplainedEvent.Data.Complaint.builder()
+                                .complainedAt("complainedAt")
+                                .feedbackId("feedbackId")
                                 .addComplainedRecipient(
-                                    ComplaintDetail.ComplainedRecipient.builder()
+                                    EmailComplainedEvent.Data.Complaint.ComplainedRecipient
+                                        .builder()
                                         .email("email")
                                         .build()
                                 )
-                                .complaintFeedbackType("complaint_feedback_type")
-                                .complaintSubtype("complaint_subtype")
-                                .receivedAt("received_at")
-                                .userAgent("user_agent")
+                                .complaintFeedbackType(
+                                    EmailComplainedEvent.Data.Complaint.ComplaintFeedbackType.ABUSE
+                                )
+                                .complaintSubType(
+                                    EmailComplainedEvent.Data.Complaint.ComplaintSubType
+                                        .ON_ACCOUNT_SUPPRESSION_LIST
+                                )
+                                .receivedAt("receivedAt")
+                                .userAgent("userAgent")
+                                .build()
+                        )
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .enqueuedAt("enqueuedAt")
+                        .from("from")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .sentAt("sentAt")
+                        .subject("subject")
+                        .to("string")
+                        .bcc("string")
+                        .bulkId("bulkId")
+                        .cc("string")
+                        .addHeader(
+                            EmailComplainedEvent.Data.Header.builder()
+                                .name("name")
+                                .value("value")
+                                .build()
+                        )
+                        .replyTo("string")
+                        .tags(
+                            EmailComplainedEvent.Data.Tags.builder()
+                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                 .build()
                         )
                         .build()
                 )
+                .type(EmailComplainedEvent.Type.EMAIL_COMPLAINED)
                 .build()
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofEmailComplained(emailComplained)
 
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
         assertThat(unwrapWebhookEvent.emailSent()).isEmpty
         assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
         assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
@@ -651,50 +992,59 @@ internal class UnwrapWebhookEventTest {
             UnwrapWebhookEvent.ofEmailComplained(
                 EmailComplainedEvent.builder()
                     .id("id")
-                    .createdAt("created_at")
-                    .type(EventType.EMAIL_COMPLAINED)
-                    .kind(BaseEvent.Kind.EVENT)
+                    .createdAt("createdAt")
                     .data(
                         EmailComplainedEvent.Data.builder()
                             .id("id")
-                            .domain("domain")
-                            .domainId("domain_id")
-                            .enqueueAt("enqueue_at")
-                            .from("from")
-                            .messageId("message_id")
-                            .orgId("org_id")
-                            .sentAt("sent_at")
-                            .subject("subject")
-                            .to("string")
-                            .bcc("string")
-                            .bulkId("bulk_id")
-                            .cc("string")
-                            .addHeader(
-                                EmailEvent.Header.builder().name("name").value("value").build()
-                            )
-                            .replyTo("string")
-                            .tags(
-                                EmailEvent.Tags.builder()
-                                    .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
-                                    .build()
-                            )
                             .complaint(
-                                ComplaintDetail.builder()
-                                    .complainedAt("complained_at")
-                                    .feedbackId("feedback_id")
+                                EmailComplainedEvent.Data.Complaint.builder()
+                                    .complainedAt("complainedAt")
+                                    .feedbackId("feedbackId")
                                     .addComplainedRecipient(
-                                        ComplaintDetail.ComplainedRecipient.builder()
+                                        EmailComplainedEvent.Data.Complaint.ComplainedRecipient
+                                            .builder()
                                             .email("email")
                                             .build()
                                     )
-                                    .complaintFeedbackType("complaint_feedback_type")
-                                    .complaintSubtype("complaint_subtype")
-                                    .receivedAt("received_at")
-                                    .userAgent("user_agent")
+                                    .complaintFeedbackType(
+                                        EmailComplainedEvent.Data.Complaint.ComplaintFeedbackType
+                                            .ABUSE
+                                    )
+                                    .complaintSubType(
+                                        EmailComplainedEvent.Data.Complaint.ComplaintSubType
+                                            .ON_ACCOUNT_SUPPRESSION_LIST
+                                    )
+                                    .receivedAt("receivedAt")
+                                    .userAgent("userAgent")
+                                    .build()
+                            )
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .enqueuedAt("enqueuedAt")
+                            .from("from")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .sentAt("sentAt")
+                            .subject("subject")
+                            .to("string")
+                            .bcc("string")
+                            .bulkId("bulkId")
+                            .cc("string")
+                            .addHeader(
+                                EmailComplainedEvent.Data.Header.builder()
+                                    .name("name")
+                                    .value("value")
+                                    .build()
+                            )
+                            .replyTo("string")
+                            .tags(
+                                EmailComplainedEvent.Data.Tags.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                     .build()
                             )
                             .build()
                     )
+                    .type(EmailComplainedEvent.Type.EMAIL_COMPLAINED)
                     .build()
             )
 
@@ -712,38 +1062,45 @@ internal class UnwrapWebhookEventTest {
         val emailRejected =
             EmailRejectedEvent.builder()
                 .id("id")
-                .createdAt("created_at")
-                .type(EventType.EMAIL_REJECTED)
-                .kind(BaseEvent.Kind.EVENT)
+                .createdAt("createdAt")
                 .data(
                     EmailRejectedEvent.Data.builder()
+                        .reject(EmailRejectedEvent.Data.Reject.builder().reason("reason").build())
                         .id("id")
-                        .domain("domain")
-                        .domainId("domain_id")
-                        .enqueueAt("enqueue_at")
-                        .from("from")
-                        .messageId("message_id")
-                        .orgId("org_id")
-                        .sentAt("sent_at")
-                        .subject("subject")
-                        .to("string")
                         .bcc("string")
-                        .bulkId("bulk_id")
+                        .bulkId("bulkId")
                         .cc("string")
-                        .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .enqueuedAt("enqueuedAt")
+                        .from("from")
+                        .addHeader(
+                            EmailRejectedEvent.Data.Header.builder()
+                                .name("name")
+                                .value("value")
+                                .build()
+                        )
+                        .messageId("messageId")
+                        .orgId("orgId")
                         .replyTo("string")
+                        .sentAt("sentAt")
+                        .subject("subject")
                         .tags(
-                            EmailEvent.Tags.builder()
+                            EmailRejectedEvent.Data.Tags.builder()
                                 .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                 .build()
                         )
-                        .reject(RejectDetail.builder().reason("reason").build())
+                        .to("string")
                         .build()
                 )
                 .build()
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofEmailRejected(emailRejected)
 
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
         assertThat(unwrapWebhookEvent.emailSent()).isEmpty
         assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
         assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
@@ -762,34 +1119,37 @@ internal class UnwrapWebhookEventTest {
             UnwrapWebhookEvent.ofEmailRejected(
                 EmailRejectedEvent.builder()
                     .id("id")
-                    .createdAt("created_at")
-                    .type(EventType.EMAIL_REJECTED)
-                    .kind(BaseEvent.Kind.EVENT)
+                    .createdAt("createdAt")
                     .data(
                         EmailRejectedEvent.Data.builder()
-                            .id("id")
-                            .domain("domain")
-                            .domainId("domain_id")
-                            .enqueueAt("enqueue_at")
-                            .from("from")
-                            .messageId("message_id")
-                            .orgId("org_id")
-                            .sentAt("sent_at")
-                            .subject("subject")
-                            .to("string")
-                            .bcc("string")
-                            .bulkId("bulk_id")
-                            .cc("string")
-                            .addHeader(
-                                EmailEvent.Header.builder().name("name").value("value").build()
+                            .reject(
+                                EmailRejectedEvent.Data.Reject.builder().reason("reason").build()
                             )
+                            .id("id")
+                            .bcc("string")
+                            .bulkId("bulkId")
+                            .cc("string")
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .enqueuedAt("enqueuedAt")
+                            .from("from")
+                            .addHeader(
+                                EmailRejectedEvent.Data.Header.builder()
+                                    .name("name")
+                                    .value("value")
+                                    .build()
+                            )
+                            .messageId("messageId")
+                            .orgId("orgId")
                             .replyTo("string")
+                            .sentAt("sentAt")
+                            .subject("subject")
                             .tags(
-                                EmailEvent.Tags.builder()
+                                EmailRejectedEvent.Data.Tags.builder()
                                     .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                     .build()
                             )
-                            .reject(RejectDetail.builder().reason("reason").build())
+                            .to("string")
                             .build()
                     )
                     .build()
@@ -809,52 +1169,64 @@ internal class UnwrapWebhookEventTest {
         val emailDeliveryDelayed =
             EmailDeliveryDelayedEvent.builder()
                 .id("id")
-                .createdAt("created_at")
-                .type(EventType.EMAIL_DELIVERY_DELAYED)
-                .kind(BaseEvent.Kind.EVENT)
+                .createdAt("createdAt")
                 .data(
                     EmailDeliveryDelayedEvent.Data.builder()
                         .id("id")
-                        .domain("domain")
-                        .domainId("domain_id")
-                        .enqueueAt("enqueue_at")
-                        .from("from")
-                        .messageId("message_id")
-                        .orgId("org_id")
-                        .sentAt("sent_at")
-                        .subject("subject")
-                        .to("string")
-                        .bcc("string")
-                        .bulkId("bulk_id")
-                        .cc("string")
-                        .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
-                        .replyTo("string")
-                        .tags(
-                            EmailEvent.Tags.builder()
-                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
-                                .build()
-                        )
                         .deliveryDelay(
-                            DeliveryDelayDetail.builder()
-                                .delayType("delay_type")
-                                .delayedAt("delayed_at")
+                            EmailDeliveryDelayedEvent.Data.DeliveryDelay.builder()
+                                .delayedAt("delayedAt")
                                 .addDelayedRecipient(
-                                    DeliveryDelayDetail.DelayedRecipient.builder()
+                                    EmailDeliveryDelayedEvent.Data.DeliveryDelay.DelayedRecipient
+                                        .builder()
                                         .email("email")
-                                        .diagnosticCode("diagnostic_code")
+                                        .diagnosticCode("diagnosticCode")
                                         .status("status")
                                         .build()
                                 )
-                                .deliveryStoppedAt("delivery_stopped_at")
-                                .reportingMta("reporting_mta")
+                                .delayType(
+                                    EmailDeliveryDelayedEvent.Data.DeliveryDelay.DelayType
+                                        .INTERNAL_FAILURE
+                                )
+                                .deliveryStoppedAt("deliveryStoppedAt")
+                                .reportingMta("reportingMta")
+                                .build()
+                        )
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .enqueuedAt("enqueuedAt")
+                        .from("from")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .sentAt("sentAt")
+                        .subject("subject")
+                        .to("string")
+                        .bcc("string")
+                        .bulkId("bulkId")
+                        .cc("string")
+                        .addHeader(
+                            EmailDeliveryDelayedEvent.Data.Header.builder()
+                                .name("name")
+                                .value("value")
+                                .build()
+                        )
+                        .replyTo("string")
+                        .tags(
+                            EmailDeliveryDelayedEvent.Data.Tags.builder()
+                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                 .build()
                         )
                         .build()
                 )
+                .type(EmailDeliveryDelayedEvent.Type.EMAIL_DELIVERY_DELAYED)
                 .build()
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofEmailDeliveryDelayed(emailDeliveryDelayed)
 
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
         assertThat(unwrapWebhookEvent.emailSent()).isEmpty
         assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
         assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
@@ -873,50 +1245,57 @@ internal class UnwrapWebhookEventTest {
             UnwrapWebhookEvent.ofEmailDeliveryDelayed(
                 EmailDeliveryDelayedEvent.builder()
                     .id("id")
-                    .createdAt("created_at")
-                    .type(EventType.EMAIL_DELIVERY_DELAYED)
-                    .kind(BaseEvent.Kind.EVENT)
+                    .createdAt("createdAt")
                     .data(
                         EmailDeliveryDelayedEvent.Data.builder()
                             .id("id")
-                            .domain("domain")
-                            .domainId("domain_id")
-                            .enqueueAt("enqueue_at")
-                            .from("from")
-                            .messageId("message_id")
-                            .orgId("org_id")
-                            .sentAt("sent_at")
-                            .subject("subject")
-                            .to("string")
-                            .bcc("string")
-                            .bulkId("bulk_id")
-                            .cc("string")
-                            .addHeader(
-                                EmailEvent.Header.builder().name("name").value("value").build()
-                            )
-                            .replyTo("string")
-                            .tags(
-                                EmailEvent.Tags.builder()
-                                    .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
-                                    .build()
-                            )
                             .deliveryDelay(
-                                DeliveryDelayDetail.builder()
-                                    .delayType("delay_type")
-                                    .delayedAt("delayed_at")
+                                EmailDeliveryDelayedEvent.Data.DeliveryDelay.builder()
+                                    .delayedAt("delayedAt")
                                     .addDelayedRecipient(
-                                        DeliveryDelayDetail.DelayedRecipient.builder()
+                                        EmailDeliveryDelayedEvent.Data.DeliveryDelay
+                                            .DelayedRecipient
+                                            .builder()
                                             .email("email")
-                                            .diagnosticCode("diagnostic_code")
+                                            .diagnosticCode("diagnosticCode")
                                             .status("status")
                                             .build()
                                     )
-                                    .deliveryStoppedAt("delivery_stopped_at")
-                                    .reportingMta("reporting_mta")
+                                    .delayType(
+                                        EmailDeliveryDelayedEvent.Data.DeliveryDelay.DelayType
+                                            .INTERNAL_FAILURE
+                                    )
+                                    .deliveryStoppedAt("deliveryStoppedAt")
+                                    .reportingMta("reportingMta")
+                                    .build()
+                            )
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .enqueuedAt("enqueuedAt")
+                            .from("from")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .sentAt("sentAt")
+                            .subject("subject")
+                            .to("string")
+                            .bcc("string")
+                            .bulkId("bulkId")
+                            .cc("string")
+                            .addHeader(
+                                EmailDeliveryDelayedEvent.Data.Header.builder()
+                                    .name("name")
+                                    .value("value")
+                                    .build()
+                            )
+                            .replyTo("string")
+                            .tags(
+                                EmailDeliveryDelayedEvent.Data.Tags.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                     .build()
                             )
                             .build()
                     )
+                    .type(EmailDeliveryDelayedEvent.Type.EMAIL_DELIVERY_DELAYED)
                     .build()
             )
 
@@ -934,34 +1313,37 @@ internal class UnwrapWebhookEventTest {
         val emailFailed =
             EmailFailedEvent.builder()
                 .id("id")
-                .createdAt("created_at")
-                .type(EventType.EMAIL_FAILED)
-                .kind(BaseEvent.Kind.EVENT)
+                .createdAt("createdAt")
                 .data(
                     EmailFailedEvent.Data.builder()
                         .id("id")
-                        .domain("domain")
-                        .domainId("domain_id")
-                        .enqueueAt("enqueue_at")
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .enqueuedAt("enqueuedAt")
+                        .failure(
+                            EmailFailedEvent.Data.Failure.builder()
+                                .error(JsonValue.from(mapOf<String, Any>()))
+                                .build()
+                        )
                         .from("from")
-                        .messageId("message_id")
-                        .orgId("org_id")
-                        .sentAt("sent_at")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .sentAt("sentAt")
                         .subject("subject")
                         .to("string")
                         .bcc("string")
-                        .bulkId("bulk_id")
+                        .bulkId("bulkId")
                         .cc("string")
-                        .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
-                        .replyTo("string")
-                        .tags(
-                            EmailEvent.Tags.builder()
-                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
+                        .addHeader(
+                            EmailFailedEvent.Data.Header.builder()
+                                .name("name")
+                                .value("value")
                                 .build()
                         )
-                        .failure(
-                            FailureDetail.builder()
-                                .error(JsonValue.from(mapOf<String, Any>()))
+                        .replyTo("string")
+                        .tags(
+                            EmailFailedEvent.Data.Tags.builder()
+                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                 .build()
                         )
                         .build()
@@ -970,6 +1352,10 @@ internal class UnwrapWebhookEventTest {
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofEmailFailed(emailFailed)
 
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
         assertThat(unwrapWebhookEvent.emailSent()).isEmpty
         assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
         assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
@@ -988,36 +1374,37 @@ internal class UnwrapWebhookEventTest {
             UnwrapWebhookEvent.ofEmailFailed(
                 EmailFailedEvent.builder()
                     .id("id")
-                    .createdAt("created_at")
-                    .type(EventType.EMAIL_FAILED)
-                    .kind(BaseEvent.Kind.EVENT)
+                    .createdAt("createdAt")
                     .data(
                         EmailFailedEvent.Data.builder()
                             .id("id")
-                            .domain("domain")
-                            .domainId("domain_id")
-                            .enqueueAt("enqueue_at")
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .enqueuedAt("enqueuedAt")
+                            .failure(
+                                EmailFailedEvent.Data.Failure.builder()
+                                    .error(JsonValue.from(mapOf<String, Any>()))
+                                    .build()
+                            )
                             .from("from")
-                            .messageId("message_id")
-                            .orgId("org_id")
-                            .sentAt("sent_at")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .sentAt("sentAt")
                             .subject("subject")
                             .to("string")
                             .bcc("string")
-                            .bulkId("bulk_id")
+                            .bulkId("bulkId")
                             .cc("string")
                             .addHeader(
-                                EmailEvent.Header.builder().name("name").value("value").build()
+                                EmailFailedEvent.Data.Header.builder()
+                                    .name("name")
+                                    .value("value")
+                                    .build()
                             )
                             .replyTo("string")
                             .tags(
-                                EmailEvent.Tags.builder()
+                                EmailFailedEvent.Data.Tags.builder()
                                     .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
-                                    .build()
-                            )
-                            .failure(
-                                FailureDetail.builder()
-                                    .error(JsonValue.from(mapOf<String, Any>()))
                                     .build()
                             )
                             .build()

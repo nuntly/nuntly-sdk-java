@@ -9,20 +9,14 @@ internal class EmailCancelParamsTest {
 
     @Test
     fun create() {
-        EmailCancelParams.builder()
-            .id("em_qiPSkLrTmXvDohbxCcYt3pFEMGgnjHD6kbDL8d4uGKvNGboT")
-            .build()
+        EmailCancelParams.builder().id("em_01ka8k8s80gvx9604cn9am5st4").build()
     }
 
     @Test
     fun pathParams() {
-        val params =
-            EmailCancelParams.builder()
-                .id("em_qiPSkLrTmXvDohbxCcYt3pFEMGgnjHD6kbDL8d4uGKvNGboT")
-                .build()
+        val params = EmailCancelParams.builder().id("em_01ka8k8s80gvx9604cn9am5st4").build()
 
-        assertThat(params._pathParam(0))
-            .isEqualTo("em_qiPSkLrTmXvDohbxCcYt3pFEMGgnjHD6kbDL8d4uGKvNGboT")
+        assertThat(params._pathParam(0)).isEqualTo("em_01ka8k8s80gvx9604cn9am5st4")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }

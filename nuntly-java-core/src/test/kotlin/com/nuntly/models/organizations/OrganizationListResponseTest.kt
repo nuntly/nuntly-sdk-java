@@ -4,7 +4,6 @@ package com.nuntly.models.organizations
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.jsonMapper
-import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,27 +13,15 @@ internal class OrganizationListResponseTest {
     fun create() {
         val organizationListResponse =
             OrganizationListResponse.builder()
-                .createdAt(OffsetDateTime.parse("2025-01-09T22:22:41.247Z"))
-                .displayName("Ray Tomlinson org")
-                .kind(OrganizationListResponse.Kind.ORGANIZATION)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .region(OrganizationListResponse.Region.EU_WEST_1)
-                .status(OrganizationListResponse.Status.ACTIVE)
-                .modifiedAt(OffsetDateTime.parse("2025-01-09T22:22:41.247Z"))
+                .id("org_01ka8k8s80gvx9604cn9am5st4")
+                .name("name")
+                .status(OrganizationListResponse.Status.ENABLED)
                 .build()
 
-        assertThat(organizationListResponse.createdAt())
-            .isEqualTo(OffsetDateTime.parse("2025-01-09T22:22:41.247Z"))
-        assertThat(organizationListResponse.displayName()).isEqualTo("Ray Tomlinson org")
-        assertThat(organizationListResponse.kind())
-            .isEqualTo(OrganizationListResponse.Kind.ORGANIZATION)
-        assertThat(organizationListResponse.orgId()).isEqualTo("org_01jh6jk82zjq9deye73h0mzcaq")
-        assertThat(organizationListResponse.region())
-            .isEqualTo(OrganizationListResponse.Region.EU_WEST_1)
+        assertThat(organizationListResponse.id()).isEqualTo("org_01ka8k8s80gvx9604cn9am5st4")
+        assertThat(organizationListResponse.name()).isEqualTo("name")
         assertThat(organizationListResponse.status())
-            .isEqualTo(OrganizationListResponse.Status.ACTIVE)
-        assertThat(organizationListResponse.modifiedAt())
-            .contains(OffsetDateTime.parse("2025-01-09T22:22:41.247Z"))
+            .isEqualTo(OrganizationListResponse.Status.ENABLED)
     }
 
     @Test
@@ -42,13 +29,9 @@ internal class OrganizationListResponseTest {
         val jsonMapper = jsonMapper()
         val organizationListResponse =
             OrganizationListResponse.builder()
-                .createdAt(OffsetDateTime.parse("2025-01-09T22:22:41.247Z"))
-                .displayName("Ray Tomlinson org")
-                .kind(OrganizationListResponse.Kind.ORGANIZATION)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .region(OrganizationListResponse.Region.EU_WEST_1)
-                .status(OrganizationListResponse.Status.ACTIVE)
-                .modifiedAt(OffsetDateTime.parse("2025-01-09T22:22:41.247Z"))
+                .id("org_01ka8k8s80gvx9604cn9am5st4")
+                .name("name")
+                .status(OrganizationListResponse.Status.ENABLED)
                 .build()
 
         val roundtrippedOrganizationListResponse =

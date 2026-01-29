@@ -10,11 +10,6 @@ import com.nuntly.models.organizations.OrganizationListPage
 import com.nuntly.models.organizations.OrganizationListParams
 import com.nuntly.models.organizations.OrganizationRetrieveParams
 import com.nuntly.models.organizations.OrganizationRetrieveResponse
-import com.nuntly.models.organizations.OrganizationUpdateParams
-import com.nuntly.models.organizations.OrganizationUpdateResponse
-import com.nuntly.services.blocking.organizations.InvitationService
-import com.nuntly.services.blocking.organizations.MembershipService
-import com.nuntly.services.blocking.organizations.SubscriptionService
 import com.nuntly.services.blocking.organizations.UsageService
 import java.util.function.Consumer
 
@@ -32,15 +27,9 @@ interface OrganizationService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): OrganizationService
 
-    fun memberships(): MembershipService
-
-    fun invitations(): InvitationService
-
-    fun subscriptions(): SubscriptionService
-
     fun usage(): UsageService
 
-    /** Return the organization */
+    /** Retrieve organization */
     fun retrieve(id: String): OrganizationRetrieveResponse =
         retrieve(id, OrganizationRetrieveParams.none())
 
@@ -71,28 +60,7 @@ interface OrganizationService {
     fun retrieve(id: String, requestOptions: RequestOptions): OrganizationRetrieveResponse =
         retrieve(id, OrganizationRetrieveParams.none(), requestOptions)
 
-    /** Patch the organization */
-    fun update(id: String, params: OrganizationUpdateParams): OrganizationUpdateResponse =
-        update(id, params, RequestOptions.none())
-
-    /** @see update */
-    fun update(
-        id: String,
-        params: OrganizationUpdateParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): OrganizationUpdateResponse = update(params.toBuilder().id(id).build(), requestOptions)
-
-    /** @see update */
-    fun update(params: OrganizationUpdateParams): OrganizationUpdateResponse =
-        update(params, RequestOptions.none())
-
-    /** @see update */
-    fun update(
-        params: OrganizationUpdateParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): OrganizationUpdateResponse
-
-    /** Return the organizations that the current user is a member */
+    /** Retrieve organizations */
     fun list(): OrganizationListPage = list(OrganizationListParams.none())
 
     /** @see list */
@@ -122,12 +90,6 @@ interface OrganizationService {
         fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): OrganizationService.WithRawResponse
-
-        fun memberships(): MembershipService.WithRawResponse
-
-        fun invitations(): InvitationService.WithRawResponse
-
-        fun subscriptions(): SubscriptionService.WithRawResponse
 
         fun usage(): UsageService.WithRawResponse
 
@@ -176,37 +138,6 @@ interface OrganizationService {
             requestOptions: RequestOptions,
         ): HttpResponseFor<OrganizationRetrieveResponse> =
             retrieve(id, OrganizationRetrieveParams.none(), requestOptions)
-
-        /**
-         * Returns a raw HTTP response for `patch /organizations/{id}`, but is otherwise the same as
-         * [OrganizationService.update].
-         */
-        @MustBeClosed
-        fun update(
-            id: String,
-            params: OrganizationUpdateParams,
-        ): HttpResponseFor<OrganizationUpdateResponse> = update(id, params, RequestOptions.none())
-
-        /** @see update */
-        @MustBeClosed
-        fun update(
-            id: String,
-            params: OrganizationUpdateParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<OrganizationUpdateResponse> =
-            update(params.toBuilder().id(id).build(), requestOptions)
-
-        /** @see update */
-        @MustBeClosed
-        fun update(params: OrganizationUpdateParams): HttpResponseFor<OrganizationUpdateResponse> =
-            update(params, RequestOptions.none())
-
-        /** @see update */
-        @MustBeClosed
-        fun update(
-            params: OrganizationUpdateParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<OrganizationUpdateResponse>
 
         /**
          * Returns a raw HTTP response for `get /organizations`, but is otherwise the same as

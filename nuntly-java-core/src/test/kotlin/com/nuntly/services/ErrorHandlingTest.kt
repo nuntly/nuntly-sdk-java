@@ -70,7 +70,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<BadRequestException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(400)
@@ -90,7 +95,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<BadRequestException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(400)
@@ -110,7 +120,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnauthorizedException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(401)
@@ -130,7 +145,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnauthorizedException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(401)
@@ -150,7 +170,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<PermissionDeniedException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(403)
@@ -170,7 +195,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<PermissionDeniedException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(403)
@@ -190,7 +220,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<NotFoundException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(404)
@@ -210,7 +245,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<NotFoundException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(404)
@@ -230,7 +270,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnprocessableEntityException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(422)
@@ -250,7 +295,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnprocessableEntityException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(422)
@@ -270,7 +320,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<RateLimitException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(429)
@@ -290,7 +345,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<RateLimitException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(429)
@@ -310,7 +370,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<InternalServerException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(500)
@@ -330,7 +395,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<InternalServerException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(500)
@@ -350,7 +420,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnexpectedStatusCodeException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(999)
@@ -370,7 +445,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnexpectedStatusCodeException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e.statusCode()).isEqualTo(999)
@@ -388,7 +468,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<NuntlyException> {
-                apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+                apiKeyService.create(
+                    ApiKeyCreateParams.builder()
+                        .name("name")
+                        .status(ApiKeyCreateParams.Status.ENABLED)
+                        .build()
+                )
             }
 
         assertThat(e).hasMessage("Error reading response")

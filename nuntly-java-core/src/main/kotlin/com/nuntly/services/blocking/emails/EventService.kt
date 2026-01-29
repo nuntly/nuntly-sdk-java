@@ -24,7 +24,7 @@ interface EventService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService
 
-    /** Return the events related to this email id */
+    /** Retrieve email events by email id */
     fun list(id: String): List<EventListResponse> = list(id, EventListParams.none())
 
     /** @see list */

@@ -4,8 +4,6 @@ package com.nuntly.client
 
 import com.nuntly.core.ClientOptions
 import com.nuntly.core.getPackageVersion
-import com.nuntly.services.blocking.AccountService
-import com.nuntly.services.blocking.AccountServiceImpl
 import com.nuntly.services.blocking.ApiKeyService
 import com.nuntly.services.blocking.ApiKeyServiceImpl
 import com.nuntly.services.blocking.DomainService
@@ -51,8 +49,6 @@ class NuntlyClientImpl(private val clientOptions: ClientOptions) : NuntlyClient 
         OrganizationServiceImpl(clientOptionsWithUserAgent)
     }
 
-    private val account: AccountService by lazy { AccountServiceImpl(clientOptionsWithUserAgent) }
-
     override fun async(): NuntlyClientAsync = async
 
     override fun withRawResponse(): NuntlyClient.WithRawResponse = withRawResponse
@@ -71,8 +67,6 @@ class NuntlyClientImpl(private val clientOptions: ClientOptions) : NuntlyClient 
     override fun webhooks(): WebhookService = webhooks
 
     override fun organizations(): OrganizationService = organizations
-
-    override fun account(): AccountService = account
 
     override fun close() = clientOptions.close()
 
@@ -103,10 +97,6 @@ class NuntlyClientImpl(private val clientOptions: ClientOptions) : NuntlyClient 
             OrganizationServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val account: AccountService.WithRawResponse by lazy {
-            AccountServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): NuntlyClient.WithRawResponse =
@@ -125,7 +115,5 @@ class NuntlyClientImpl(private val clientOptions: ClientOptions) : NuntlyClient 
         override fun webhooks(): WebhookService.WithRawResponse = webhooks
 
         override fun organizations(): OrganizationService.WithRawResponse = organizations
-
-        override fun account(): AccountService.WithRawResponse = account
     }
 }

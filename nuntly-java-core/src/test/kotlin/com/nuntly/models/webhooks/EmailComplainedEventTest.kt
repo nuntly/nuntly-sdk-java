@@ -5,9 +5,6 @@ package com.nuntly.models.webhooks
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.JsonValue
 import com.nuntly.core.jsonMapper
-import com.nuntly.models.shared.ComplaintDetail
-import com.nuntly.models.shared.EmailEvent
-import com.nuntly.models.shared.EventType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -18,92 +15,114 @@ internal class EmailComplainedEventTest {
         val emailComplainedEvent =
             EmailComplainedEvent.builder()
                 .id("id")
-                .createdAt("created_at")
-                .type(EventType.EMAIL_COMPLAINED)
-                .kind(BaseEvent.Kind.EVENT)
+                .createdAt("createdAt")
                 .data(
                     EmailComplainedEvent.Data.builder()
                         .id("id")
-                        .domain("domain")
-                        .domainId("domain_id")
-                        .enqueueAt("enqueue_at")
-                        .from("from")
-                        .messageId("message_id")
-                        .orgId("org_id")
-                        .sentAt("sent_at")
-                        .subject("subject")
-                        .to("string")
-                        .bcc("string")
-                        .bulkId("bulk_id")
-                        .cc("string")
-                        .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
-                        .replyTo("string")
-                        .tags(
-                            EmailEvent.Tags.builder()
-                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
-                                .build()
-                        )
                         .complaint(
-                            ComplaintDetail.builder()
-                                .complainedAt("complained_at")
-                                .feedbackId("feedback_id")
+                            EmailComplainedEvent.Data.Complaint.builder()
+                                .complainedAt("complainedAt")
+                                .feedbackId("feedbackId")
                                 .addComplainedRecipient(
-                                    ComplaintDetail.ComplainedRecipient.builder()
+                                    EmailComplainedEvent.Data.Complaint.ComplainedRecipient
+                                        .builder()
                                         .email("email")
                                         .build()
                                 )
-                                .complaintFeedbackType("complaint_feedback_type")
-                                .complaintSubtype("complaint_subtype")
-                                .receivedAt("received_at")
-                                .userAgent("user_agent")
+                                .complaintFeedbackType(
+                                    EmailComplainedEvent.Data.Complaint.ComplaintFeedbackType.ABUSE
+                                )
+                                .complaintSubType(
+                                    EmailComplainedEvent.Data.Complaint.ComplaintSubType
+                                        .ON_ACCOUNT_SUPPRESSION_LIST
+                                )
+                                .receivedAt("receivedAt")
+                                .userAgent("userAgent")
+                                .build()
+                        )
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .enqueuedAt("enqueuedAt")
+                        .from("from")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .sentAt("sentAt")
+                        .subject("subject")
+                        .to("string")
+                        .bcc("string")
+                        .bulkId("bulkId")
+                        .cc("string")
+                        .addHeader(
+                            EmailComplainedEvent.Data.Header.builder()
+                                .name("name")
+                                .value("value")
+                                .build()
+                        )
+                        .replyTo("string")
+                        .tags(
+                            EmailComplainedEvent.Data.Tags.builder()
+                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                 .build()
                         )
                         .build()
                 )
+                .type(EmailComplainedEvent.Type.EMAIL_COMPLAINED)
                 .build()
 
         assertThat(emailComplainedEvent.id()).isEqualTo("id")
-        assertThat(emailComplainedEvent.createdAt()).isEqualTo("created_at")
-        assertThat(emailComplainedEvent.type()).isEqualTo(EventType.EMAIL_COMPLAINED)
-        assertThat(emailComplainedEvent.kind()).contains(BaseEvent.Kind.EVENT)
+        assertThat(emailComplainedEvent.createdAt()).isEqualTo("createdAt")
         assertThat(emailComplainedEvent.data())
             .isEqualTo(
                 EmailComplainedEvent.Data.builder()
                     .id("id")
-                    .domain("domain")
-                    .domainId("domain_id")
-                    .enqueueAt("enqueue_at")
+                    .complaint(
+                        EmailComplainedEvent.Data.Complaint.builder()
+                            .complainedAt("complainedAt")
+                            .feedbackId("feedbackId")
+                            .addComplainedRecipient(
+                                EmailComplainedEvent.Data.Complaint.ComplainedRecipient.builder()
+                                    .email("email")
+                                    .build()
+                            )
+                            .complaintFeedbackType(
+                                EmailComplainedEvent.Data.Complaint.ComplaintFeedbackType.ABUSE
+                            )
+                            .complaintSubType(
+                                EmailComplainedEvent.Data.Complaint.ComplaintSubType
+                                    .ON_ACCOUNT_SUPPRESSION_LIST
+                            )
+                            .receivedAt("receivedAt")
+                            .userAgent("userAgent")
+                            .build()
+                    )
+                    .domainId("domainId")
+                    .domainName("domainName")
+                    .enqueuedAt("enqueuedAt")
                     .from("from")
-                    .messageId("message_id")
-                    .orgId("org_id")
-                    .sentAt("sent_at")
+                    .messageId("messageId")
+                    .orgId("orgId")
+                    .sentAt("sentAt")
                     .subject("subject")
                     .to("string")
                     .bcc("string")
-                    .bulkId("bulk_id")
+                    .bulkId("bulkId")
                     .cc("string")
-                    .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
-                    .replyTo("string")
-                    .tags(
-                        EmailEvent.Tags.builder()
-                            .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
+                    .addHeader(
+                        EmailComplainedEvent.Data.Header.builder()
+                            .name("name")
+                            .value("value")
                             .build()
                     )
-                    .complaint(
-                        ComplaintDetail.builder()
-                            .complainedAt("complained_at")
-                            .feedbackId("feedback_id")
-                            .addComplainedRecipient(
-                                ComplaintDetail.ComplainedRecipient.builder().email("email").build()
-                            )
-                            .complaintFeedbackType("complaint_feedback_type")
-                            .complaintSubtype("complaint_subtype")
-                            .receivedAt("received_at")
-                            .userAgent("user_agent")
+                    .replyTo("string")
+                    .tags(
+                        EmailComplainedEvent.Data.Tags.builder()
+                            .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                             .build()
                     )
                     .build()
             )
+        assertThat(emailComplainedEvent.type())
+            .isEqualTo(EmailComplainedEvent.Type.EMAIL_COMPLAINED)
     }
 
     @Test
@@ -112,48 +131,58 @@ internal class EmailComplainedEventTest {
         val emailComplainedEvent =
             EmailComplainedEvent.builder()
                 .id("id")
-                .createdAt("created_at")
-                .type(EventType.EMAIL_COMPLAINED)
-                .kind(BaseEvent.Kind.EVENT)
+                .createdAt("createdAt")
                 .data(
                     EmailComplainedEvent.Data.builder()
                         .id("id")
-                        .domain("domain")
-                        .domainId("domain_id")
-                        .enqueueAt("enqueue_at")
-                        .from("from")
-                        .messageId("message_id")
-                        .orgId("org_id")
-                        .sentAt("sent_at")
-                        .subject("subject")
-                        .to("string")
-                        .bcc("string")
-                        .bulkId("bulk_id")
-                        .cc("string")
-                        .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
-                        .replyTo("string")
-                        .tags(
-                            EmailEvent.Tags.builder()
-                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
-                                .build()
-                        )
                         .complaint(
-                            ComplaintDetail.builder()
-                                .complainedAt("complained_at")
-                                .feedbackId("feedback_id")
+                            EmailComplainedEvent.Data.Complaint.builder()
+                                .complainedAt("complainedAt")
+                                .feedbackId("feedbackId")
                                 .addComplainedRecipient(
-                                    ComplaintDetail.ComplainedRecipient.builder()
+                                    EmailComplainedEvent.Data.Complaint.ComplainedRecipient
+                                        .builder()
                                         .email("email")
                                         .build()
                                 )
-                                .complaintFeedbackType("complaint_feedback_type")
-                                .complaintSubtype("complaint_subtype")
-                                .receivedAt("received_at")
-                                .userAgent("user_agent")
+                                .complaintFeedbackType(
+                                    EmailComplainedEvent.Data.Complaint.ComplaintFeedbackType.ABUSE
+                                )
+                                .complaintSubType(
+                                    EmailComplainedEvent.Data.Complaint.ComplaintSubType
+                                        .ON_ACCOUNT_SUPPRESSION_LIST
+                                )
+                                .receivedAt("receivedAt")
+                                .userAgent("userAgent")
+                                .build()
+                        )
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .enqueuedAt("enqueuedAt")
+                        .from("from")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .sentAt("sentAt")
+                        .subject("subject")
+                        .to("string")
+                        .bcc("string")
+                        .bulkId("bulkId")
+                        .cc("string")
+                        .addHeader(
+                            EmailComplainedEvent.Data.Header.builder()
+                                .name("name")
+                                .value("value")
+                                .build()
+                        )
+                        .replyTo("string")
+                        .tags(
+                            EmailComplainedEvent.Data.Tags.builder()
+                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                 .build()
                         )
                         .build()
                 )
+                .type(EmailComplainedEvent.Type.EMAIL_COMPLAINED)
                 .build()
 
         val roundtrippedEmailComplainedEvent =

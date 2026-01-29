@@ -31,7 +31,7 @@ private constructor(
      *
      * @see DomainListPageResponse.nextCursor
      */
-    fun nextCursor(): Optional<String> = response._nextCursor().getOptional("next_cursor")
+    fun nextCursor(): Optional<String> = response._nextCursor().getOptional("nextCursor")
 
     override fun items(): List<DomainListResponse> = data()
 

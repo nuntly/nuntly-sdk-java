@@ -26,23 +26,23 @@ interface BulkServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): BulkServiceAsync
 
-    /** Return a list of emails */
-    fun retrieve(id: String): CompletableFuture<BulkRetrieveResponse> =
-        retrieve(id, BulkRetrieveParams.none())
+    /** Retrieve bulk emails */
+    fun retrieve(bulkId: String): CompletableFuture<BulkRetrieveResponse> =
+        retrieve(bulkId, BulkRetrieveParams.none())
 
     /** @see retrieve */
     fun retrieve(
-        id: String,
+        bulkId: String,
         params: BulkRetrieveParams = BulkRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<BulkRetrieveResponse> =
-        retrieve(params.toBuilder().id(id).build(), requestOptions)
+        retrieve(params.toBuilder().bulkId(bulkId).build(), requestOptions)
 
     /** @see retrieve */
     fun retrieve(
-        id: String,
+        bulkId: String,
         params: BulkRetrieveParams = BulkRetrieveParams.none(),
-    ): CompletableFuture<BulkRetrieveResponse> = retrieve(id, params, RequestOptions.none())
+    ): CompletableFuture<BulkRetrieveResponse> = retrieve(bulkId, params, RequestOptions.none())
 
     /** @see retrieve */
     fun retrieve(
@@ -56,12 +56,12 @@ interface BulkServiceAsync {
 
     /** @see retrieve */
     fun retrieve(
-        id: String,
+        bulkId: String,
         requestOptions: RequestOptions,
     ): CompletableFuture<BulkRetrieveResponse> =
-        retrieve(id, BulkRetrieveParams.none(), requestOptions)
+        retrieve(bulkId, BulkRetrieveParams.none(), requestOptions)
 
-    /** Send bulk emails */
+    /** Send bulk emails through Nuntly platform. */
     fun send(params: BulkSendParams): CompletableFuture<BulkSendResponse> =
         send(params, RequestOptions.none())
 
@@ -82,26 +82,26 @@ interface BulkServiceAsync {
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): BulkServiceAsync.WithRawResponse
 
         /**
-         * Returns a raw HTTP response for `get /emails/bulk/{id}`, but is otherwise the same as
+         * Returns a raw HTTP response for `get /emails/bulk/{bulkId}`, but is otherwise the same as
          * [BulkServiceAsync.retrieve].
          */
-        fun retrieve(id: String): CompletableFuture<HttpResponseFor<BulkRetrieveResponse>> =
-            retrieve(id, BulkRetrieveParams.none())
+        fun retrieve(bulkId: String): CompletableFuture<HttpResponseFor<BulkRetrieveResponse>> =
+            retrieve(bulkId, BulkRetrieveParams.none())
 
         /** @see retrieve */
         fun retrieve(
-            id: String,
+            bulkId: String,
             params: BulkRetrieveParams = BulkRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<BulkRetrieveResponse>> =
-            retrieve(params.toBuilder().id(id).build(), requestOptions)
+            retrieve(params.toBuilder().bulkId(bulkId).build(), requestOptions)
 
         /** @see retrieve */
         fun retrieve(
-            id: String,
+            bulkId: String,
             params: BulkRetrieveParams = BulkRetrieveParams.none(),
         ): CompletableFuture<HttpResponseFor<BulkRetrieveResponse>> =
-            retrieve(id, params, RequestOptions.none())
+            retrieve(bulkId, params, RequestOptions.none())
 
         /** @see retrieve */
         fun retrieve(
@@ -117,10 +117,10 @@ interface BulkServiceAsync {
 
         /** @see retrieve */
         fun retrieve(
-            id: String,
+            bulkId: String,
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<BulkRetrieveResponse>> =
-            retrieve(id, BulkRetrieveParams.none(), requestOptions)
+            retrieve(bulkId, BulkRetrieveParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /emails/bulk`, but is otherwise the same as

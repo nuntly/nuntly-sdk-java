@@ -3,8 +3,7 @@
 package com.nuntly.models.emails.bulk
 
 import com.nuntly.core.JsonValue
-import com.nuntly.models.shared.EmailHeaders
-import java.time.OffsetDateTime
+import com.nuntly.models.emails.Tag
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -15,66 +14,48 @@ internal class BulkSendParamsTest {
         BulkSendParams.builder()
             .addEmail(
                 BulkSendParams.Email.builder()
-                    .to("carlo43@gmail.com")
                     .bccOfStrings(listOf("string"))
                     .ccOfStrings(listOf("string"))
-                    .context(JsonValue.from(mapOf<String, Any>()))
-                    .from("ray@info.tomlinson.ai")
-                    .headers(
-                        EmailHeaders.builder()
+                    .context(
+                        BulkSendParams.Email.Context.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
-                    .html(
-                        "<html><body><p>Hi, Thank you for signing up! Please verify your email ...</p></body></html>"
-                    )
-                    .replyToOfStrings(listOf("string"))
-                    .scheduledAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .subject("Welcome to Tomlinson AI!")
-                    .addTag(BulkSendParams.Email.Tag.builder().name("name").value("value").build())
-                    .text("text")
-                    .build()
-            )
-            .addEmail(
-                BulkSendParams.Email.builder()
-                    .to("pink42@yahoo.com")
-                    .bccOfStrings(listOf("string"))
-                    .ccOfStrings(listOf("string"))
-                    .context(JsonValue.from(mapOf<String, Any>()))
-                    .from("ray@info.tomlinson.ai")
+                    .from("from")
                     .headers(
-                        EmailHeaders.builder()
+                        BulkSendParams.Email.Headers.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
-                    .html(
-                        "<html><body><p>Hi, Thank you for signing up! Please verify your email ...</p></body></html>"
-                    )
+                    .html("html")
                     .replyToOfStrings(listOf("string"))
-                    .scheduledAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .subject("Welcome to Tomlinson AI!")
-                    .addTag(BulkSendParams.Email.Tag.builder().name("name").value("value").build())
+                    .scheduledAt("scheduledAt")
+                    .subject("subject")
+                    .addTag(Tag.builder().name("name").value("value").build())
                     .text("text")
+                    .toOfStrings(listOf("string"))
                     .build()
             )
             .fallback(
                 BulkSendParams.Fallback.builder()
                     .bccOfStrings(listOf("string"))
                     .ccOfStrings(listOf("string"))
-                    .context(JsonValue.from(mapOf<String, Any>()))
+                    .context(
+                        BulkSendParams.Fallback.Context.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
                     .from("from")
                     .headers(
-                        EmailHeaders.builder()
+                        BulkSendParams.Fallback.Headers.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
                     .html("html")
                     .replyToOfStrings(listOf("string"))
-                    .scheduledAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .scheduledAt("scheduledAt")
                     .subject("subject")
-                    .addTag(
-                        BulkSendParams.Fallback.Tag.builder().name("name").value("value").build()
-                    )
+                    .addTag(Tag.builder().name("name").value("value").build())
                     .text("text")
                     .toOfStrings(listOf("string"))
                     .build()
@@ -88,73 +69,48 @@ internal class BulkSendParamsTest {
             BulkSendParams.builder()
                 .addEmail(
                     BulkSendParams.Email.builder()
-                        .to("carlo43@gmail.com")
                         .bccOfStrings(listOf("string"))
                         .ccOfStrings(listOf("string"))
-                        .context(JsonValue.from(mapOf<String, Any>()))
-                        .from("ray@info.tomlinson.ai")
-                        .headers(
-                            EmailHeaders.builder()
+                        .context(
+                            BulkSendParams.Email.Context.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
-                        .html(
-                            "<html><body><p>Hi, Thank you for signing up! Please verify your email ...</p></body></html>"
-                        )
-                        .replyToOfStrings(listOf("string"))
-                        .scheduledAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .subject("Welcome to Tomlinson AI!")
-                        .addTag(
-                            BulkSendParams.Email.Tag.builder().name("name").value("value").build()
-                        )
-                        .text("text")
-                        .build()
-                )
-                .addEmail(
-                    BulkSendParams.Email.builder()
-                        .to("pink42@yahoo.com")
-                        .bccOfStrings(listOf("string"))
-                        .ccOfStrings(listOf("string"))
-                        .context(JsonValue.from(mapOf<String, Any>()))
-                        .from("ray@info.tomlinson.ai")
+                        .from("from")
                         .headers(
-                            EmailHeaders.builder()
+                            BulkSendParams.Email.Headers.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
-                        .html(
-                            "<html><body><p>Hi, Thank you for signing up! Please verify your email ...</p></body></html>"
-                        )
+                        .html("html")
                         .replyToOfStrings(listOf("string"))
-                        .scheduledAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .subject("Welcome to Tomlinson AI!")
-                        .addTag(
-                            BulkSendParams.Email.Tag.builder().name("name").value("value").build()
-                        )
+                        .scheduledAt("scheduledAt")
+                        .subject("subject")
+                        .addTag(Tag.builder().name("name").value("value").build())
                         .text("text")
+                        .toOfStrings(listOf("string"))
                         .build()
                 )
                 .fallback(
                     BulkSendParams.Fallback.builder()
                         .bccOfStrings(listOf("string"))
                         .ccOfStrings(listOf("string"))
-                        .context(JsonValue.from(mapOf<String, Any>()))
+                        .context(
+                            BulkSendParams.Fallback.Context.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("string"))
+                                .build()
+                        )
                         .from("from")
                         .headers(
-                            EmailHeaders.builder()
+                            BulkSendParams.Fallback.Headers.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
                         .html("html")
                         .replyToOfStrings(listOf("string"))
-                        .scheduledAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .scheduledAt("scheduledAt")
                         .subject("subject")
-                        .addTag(
-                            BulkSendParams.Fallback.Tag.builder()
-                                .name("name")
-                                .value("value")
-                                .build()
-                        )
+                        .addTag(Tag.builder().name("name").value("value").build())
                         .text("text")
                         .toOfStrings(listOf("string"))
                         .build()
@@ -166,65 +122,49 @@ internal class BulkSendParamsTest {
         assertThat(body.emails())
             .containsExactly(
                 BulkSendParams.Email.builder()
-                    .to("carlo43@gmail.com")
                     .bccOfStrings(listOf("string"))
                     .ccOfStrings(listOf("string"))
-                    .context(JsonValue.from(mapOf<String, Any>()))
-                    .from("ray@info.tomlinson.ai")
-                    .headers(
-                        EmailHeaders.builder()
+                    .context(
+                        BulkSendParams.Email.Context.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
-                    .html(
-                        "<html><body><p>Hi, Thank you for signing up! Please verify your email ...</p></body></html>"
-                    )
-                    .replyToOfStrings(listOf("string"))
-                    .scheduledAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .subject("Welcome to Tomlinson AI!")
-                    .addTag(BulkSendParams.Email.Tag.builder().name("name").value("value").build())
-                    .text("text")
-                    .build(),
-                BulkSendParams.Email.builder()
-                    .to("pink42@yahoo.com")
-                    .bccOfStrings(listOf("string"))
-                    .ccOfStrings(listOf("string"))
-                    .context(JsonValue.from(mapOf<String, Any>()))
-                    .from("ray@info.tomlinson.ai")
+                    .from("from")
                     .headers(
-                        EmailHeaders.builder()
+                        BulkSendParams.Email.Headers.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
-                    .html(
-                        "<html><body><p>Hi, Thank you for signing up! Please verify your email ...</p></body></html>"
-                    )
+                    .html("html")
                     .replyToOfStrings(listOf("string"))
-                    .scheduledAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .subject("Welcome to Tomlinson AI!")
-                    .addTag(BulkSendParams.Email.Tag.builder().name("name").value("value").build())
+                    .scheduledAt("scheduledAt")
+                    .subject("subject")
+                    .addTag(Tag.builder().name("name").value("value").build())
                     .text("text")
-                    .build(),
+                    .toOfStrings(listOf("string"))
+                    .build()
             )
         assertThat(body.fallback())
             .contains(
                 BulkSendParams.Fallback.builder()
                     .bccOfStrings(listOf("string"))
                     .ccOfStrings(listOf("string"))
-                    .context(JsonValue.from(mapOf<String, Any>()))
+                    .context(
+                        BulkSendParams.Fallback.Context.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
                     .from("from")
                     .headers(
-                        EmailHeaders.builder()
+                        BulkSendParams.Fallback.Headers.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
                     .html("html")
                     .replyToOfStrings(listOf("string"))
-                    .scheduledAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .scheduledAt("scheduledAt")
                     .subject("subject")
-                    .addTag(
-                        BulkSendParams.Fallback.Tag.builder().name("name").value("value").build()
-                    )
+                    .addTag(Tag.builder().name("name").value("value").build())
                     .text("text")
                     .toOfStrings(listOf("string"))
                     .build()
@@ -234,17 +174,10 @@ internal class BulkSendParamsTest {
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
-            BulkSendParams.builder()
-                .addEmail(BulkSendParams.Email.builder().to("carlo43@gmail.com").build())
-                .addEmail(BulkSendParams.Email.builder().to("pink42@yahoo.com").build())
-                .build()
+            BulkSendParams.builder().addEmail(BulkSendParams.Email.builder().build()).build()
 
         val body = params._body()
 
-        assertThat(body.emails())
-            .containsExactly(
-                BulkSendParams.Email.builder().to("carlo43@gmail.com").build(),
-                BulkSendParams.Email.builder().to("pink42@yahoo.com").build(),
-            )
+        assertThat(body.emails()).containsExactly(BulkSendParams.Email.builder().build())
     }
 }

@@ -39,7 +39,7 @@ class BulkServiceImpl internal constructor(private val clientOptions: ClientOpti
         params: BulkRetrieveParams,
         requestOptions: RequestOptions,
     ): BulkRetrieveResponse =
-        // get /emails/bulk/{id}
+        // get /emails/bulk/{bulkId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
     override fun send(params: BulkSendParams, requestOptions: RequestOptions): BulkSendResponse =
@@ -68,7 +68,7 @@ class BulkServiceImpl internal constructor(private val clientOptions: ClientOpti
         ): HttpResponseFor<BulkRetrieveResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
-            checkRequired("id", params.id().getOrNull())
+            checkRequired("bulkId", params.bulkId().getOrNull())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)

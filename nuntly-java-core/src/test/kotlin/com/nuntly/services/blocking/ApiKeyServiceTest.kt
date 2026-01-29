@@ -21,7 +21,13 @@ internal class ApiKeyServiceTest {
                 .build()
         val apiKeyService = client.apiKeys()
 
-        val apiKey = apiKeyService.create(ApiKeyCreateParams.builder().name("My API key").build())
+        val apiKey =
+            apiKeyService.create(
+                ApiKeyCreateParams.builder()
+                    .name("name")
+                    .status(ApiKeyCreateParams.Status.ENABLED)
+                    .build()
+            )
 
         apiKey.validate()
     }
@@ -35,7 +41,7 @@ internal class ApiKeyServiceTest {
                 .build()
         val apiKeyService = client.apiKeys()
 
-        val apiKey = apiKeyService.retrieve("apk_pdGukGd4BTmHj8dscBDE5Mc9")
+        val apiKey = apiKeyService.retrieve("apk_01ka8k8s80gvx9604cn9am5st4")
 
         apiKey.validate()
     }
@@ -52,9 +58,9 @@ internal class ApiKeyServiceTest {
         val apiKey =
             apiKeyService.update(
                 ApiKeyUpdateParams.builder()
-                    .id("ak_pdGukGd4BTmHj8dscBDE5Mc9")
+                    .id("apk_01ka8k8s80gvx9604cn9am5st4")
                     .name("name")
-                    .status(ApiKeyUpdateParams.Status.DISABLED)
+                    .status(ApiKeyUpdateParams.Status.ENABLED)
                     .build()
             )
 
@@ -84,7 +90,7 @@ internal class ApiKeyServiceTest {
                 .build()
         val apiKeyService = client.apiKeys()
 
-        val apiKey = apiKeyService.delete("ak_pdGukGd4BTmHj8dscBDE5Mc9")
+        val apiKey = apiKeyService.delete("apk_01ka8k8s80gvx9604cn9am5st4")
 
         apiKey.validate()
     }

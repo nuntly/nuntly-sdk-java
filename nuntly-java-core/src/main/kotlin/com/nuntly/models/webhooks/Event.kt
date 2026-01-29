@@ -12,17 +12,24 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.BaseDeserializer
 import com.nuntly.core.BaseSerializer
 import com.nuntly.core.JsonValue
-import com.nuntly.core.allMaxBy
 import com.nuntly.core.getOrThrow
 import com.nuntly.errors.NuntlyInvalidDataException
 import java.util.Objects
 import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
-/** The event payload */
+/**
+ * Payload for webhook events representing email events, eg. sent, bounced, opened, clicked,
+ * complained, etc.
+ */
 @JsonDeserialize(using = Event.Deserializer::class)
 @JsonSerialize(using = Event.Serializer::class)
 class Event
 private constructor(
+    private val emailQueued: EmailQueuedEvent? = null,
+    private val emailScheduled: EmailScheduledEvent? = null,
+    private val emailProcessed: EmailProcessedEvent? = null,
+    private val emailSending: EmailSendingEvent? = null,
     private val emailSent: EmailSentEvent? = null,
     private val emailDelivered: EmailDeliveredEvent? = null,
     private val emailOpened: EmailOpenedEvent? = null,
@@ -35,24 +42,53 @@ private constructor(
     private val _json: JsonValue? = null,
 ) {
 
+    /** Event triggered when an email is queued for sending. */
+    fun emailQueued(): Optional<EmailQueuedEvent> = Optional.ofNullable(emailQueued)
+
+    /** Event triggered when an email is scheduled for sending. */
+    fun emailScheduled(): Optional<EmailScheduledEvent> = Optional.ofNullable(emailScheduled)
+
+    /** Event triggered when an email is processed. */
+    fun emailProcessed(): Optional<EmailProcessedEvent> = Optional.ofNullable(emailProcessed)
+
+    /** Event triggered when an email is being sent. */
+    fun emailSending(): Optional<EmailSendingEvent> = Optional.ofNullable(emailSending)
+
+    /** Event triggered when an email is sent successfully. */
     fun emailSent(): Optional<EmailSentEvent> = Optional.ofNullable(emailSent)
 
+    /** Event triggered when an email is delivered successfully. */
     fun emailDelivered(): Optional<EmailDeliveredEvent> = Optional.ofNullable(emailDelivered)
 
+    /** Event triggered when an email is opened by the recipient. */
     fun emailOpened(): Optional<EmailOpenedEvent> = Optional.ofNullable(emailOpened)
 
+    /** Event triggered when a link within an email is clicked by the recipient. */
     fun emailClicked(): Optional<EmailClickedEvent> = Optional.ofNullable(emailClicked)
 
+    /** Event triggered when an email bounces. */
     fun emailBounced(): Optional<EmailBouncedEvent> = Optional.ofNullable(emailBounced)
 
+    /** Event triggered when an email is marked as complained by the recipient. */
     fun emailComplained(): Optional<EmailComplainedEvent> = Optional.ofNullable(emailComplained)
 
+    /** Event triggered when an email is rejected. */
     fun emailRejected(): Optional<EmailRejectedEvent> = Optional.ofNullable(emailRejected)
 
+    /** Event triggered when an email delivery is delayed. */
     fun emailDeliveryDelayed(): Optional<EmailDeliveryDelayedEvent> =
         Optional.ofNullable(emailDeliveryDelayed)
 
+    /** Event triggered when an email fails to be sent. */
     fun emailFailed(): Optional<EmailFailedEvent> = Optional.ofNullable(emailFailed)
+
+    fun isEmailQueued(): Boolean = emailQueued != null
+
+    fun isEmailScheduled(): Boolean = emailScheduled != null
+
+    fun isEmailProcessed(): Boolean = emailProcessed != null
+
+    fun isEmailSending(): Boolean = emailSending != null
 
     fun isEmailSent(): Boolean = emailSent != null
 
@@ -72,29 +108,54 @@ private constructor(
 
     fun isEmailFailed(): Boolean = emailFailed != null
 
+    /** Event triggered when an email is queued for sending. */
+    fun asEmailQueued(): EmailQueuedEvent = emailQueued.getOrThrow("emailQueued")
+
+    /** Event triggered when an email is scheduled for sending. */
+    fun asEmailScheduled(): EmailScheduledEvent = emailScheduled.getOrThrow("emailScheduled")
+
+    /** Event triggered when an email is processed. */
+    fun asEmailProcessed(): EmailProcessedEvent = emailProcessed.getOrThrow("emailProcessed")
+
+    /** Event triggered when an email is being sent. */
+    fun asEmailSending(): EmailSendingEvent = emailSending.getOrThrow("emailSending")
+
+    /** Event triggered when an email is sent successfully. */
     fun asEmailSent(): EmailSentEvent = emailSent.getOrThrow("emailSent")
 
+    /** Event triggered when an email is delivered successfully. */
     fun asEmailDelivered(): EmailDeliveredEvent = emailDelivered.getOrThrow("emailDelivered")
 
+    /** Event triggered when an email is opened by the recipient. */
     fun asEmailOpened(): EmailOpenedEvent = emailOpened.getOrThrow("emailOpened")
 
+    /** Event triggered when a link within an email is clicked by the recipient. */
     fun asEmailClicked(): EmailClickedEvent = emailClicked.getOrThrow("emailClicked")
 
+    /** Event triggered when an email bounces. */
     fun asEmailBounced(): EmailBouncedEvent = emailBounced.getOrThrow("emailBounced")
 
+    /** Event triggered when an email is marked as complained by the recipient. */
     fun asEmailComplained(): EmailComplainedEvent = emailComplained.getOrThrow("emailComplained")
 
+    /** Event triggered when an email is rejected. */
     fun asEmailRejected(): EmailRejectedEvent = emailRejected.getOrThrow("emailRejected")
 
+    /** Event triggered when an email delivery is delayed. */
     fun asEmailDeliveryDelayed(): EmailDeliveryDelayedEvent =
         emailDeliveryDelayed.getOrThrow("emailDeliveryDelayed")
 
+    /** Event triggered when an email fails to be sent. */
     fun asEmailFailed(): EmailFailedEvent = emailFailed.getOrThrow("emailFailed")
 
     fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
     fun <T> accept(visitor: Visitor<T>): T =
         when {
+            emailQueued != null -> visitor.visitEmailQueued(emailQueued)
+            emailScheduled != null -> visitor.visitEmailScheduled(emailScheduled)
+            emailProcessed != null -> visitor.visitEmailProcessed(emailProcessed)
+            emailSending != null -> visitor.visitEmailSending(emailSending)
             emailSent != null -> visitor.visitEmailSent(emailSent)
             emailDelivered != null -> visitor.visitEmailDelivered(emailDelivered)
             emailOpened != null -> visitor.visitEmailOpened(emailOpened)
@@ -116,6 +177,22 @@ private constructor(
 
         accept(
             object : Visitor<Unit> {
+                override fun visitEmailQueued(emailQueued: EmailQueuedEvent) {
+                    emailQueued.validate()
+                }
+
+                override fun visitEmailScheduled(emailScheduled: EmailScheduledEvent) {
+                    emailScheduled.validate()
+                }
+
+                override fun visitEmailProcessed(emailProcessed: EmailProcessedEvent) {
+                    emailProcessed.validate()
+                }
+
+                override fun visitEmailSending(emailSending: EmailSendingEvent) {
+                    emailSending.validate()
+                }
+
                 override fun visitEmailSent(emailSent: EmailSentEvent) {
                     emailSent.validate()
                 }
@@ -175,6 +252,18 @@ private constructor(
     internal fun validity(): Int =
         accept(
             object : Visitor<Int> {
+                override fun visitEmailQueued(emailQueued: EmailQueuedEvent) =
+                    emailQueued.validity()
+
+                override fun visitEmailScheduled(emailScheduled: EmailScheduledEvent) =
+                    emailScheduled.validity()
+
+                override fun visitEmailProcessed(emailProcessed: EmailProcessedEvent) =
+                    emailProcessed.validity()
+
+                override fun visitEmailSending(emailSending: EmailSendingEvent) =
+                    emailSending.validity()
+
                 override fun visitEmailSent(emailSent: EmailSentEvent) = emailSent.validity()
 
                 override fun visitEmailDelivered(emailDelivered: EmailDeliveredEvent) =
@@ -212,6 +301,10 @@ private constructor(
         }
 
         return other is Event &&
+            emailQueued == other.emailQueued &&
+            emailScheduled == other.emailScheduled &&
+            emailProcessed == other.emailProcessed &&
+            emailSending == other.emailSending &&
             emailSent == other.emailSent &&
             emailDelivered == other.emailDelivered &&
             emailOpened == other.emailOpened &&
@@ -225,6 +318,10 @@ private constructor(
 
     override fun hashCode(): Int =
         Objects.hash(
+            emailQueued,
+            emailScheduled,
+            emailProcessed,
+            emailSending,
             emailSent,
             emailDelivered,
             emailOpened,
@@ -238,6 +335,10 @@ private constructor(
 
     override fun toString(): String =
         when {
+            emailQueued != null -> "Event{emailQueued=$emailQueued}"
+            emailScheduled != null -> "Event{emailScheduled=$emailScheduled}"
+            emailProcessed != null -> "Event{emailProcessed=$emailProcessed}"
+            emailSending != null -> "Event{emailSending=$emailSending}"
             emailSent != null -> "Event{emailSent=$emailSent}"
             emailDelivered != null -> "Event{emailDelivered=$emailDelivered}"
             emailOpened != null -> "Event{emailOpened=$emailOpened}"
@@ -253,33 +354,60 @@ private constructor(
 
     companion object {
 
+        /** Event triggered when an email is queued for sending. */
+        @JvmStatic
+        fun ofEmailQueued(emailQueued: EmailQueuedEvent) = Event(emailQueued = emailQueued)
+
+        /** Event triggered when an email is scheduled for sending. */
+        @JvmStatic
+        fun ofEmailScheduled(emailScheduled: EmailScheduledEvent) =
+            Event(emailScheduled = emailScheduled)
+
+        /** Event triggered when an email is processed. */
+        @JvmStatic
+        fun ofEmailProcessed(emailProcessed: EmailProcessedEvent) =
+            Event(emailProcessed = emailProcessed)
+
+        /** Event triggered when an email is being sent. */
+        @JvmStatic
+        fun ofEmailSending(emailSending: EmailSendingEvent) = Event(emailSending = emailSending)
+
+        /** Event triggered when an email is sent successfully. */
         @JvmStatic fun ofEmailSent(emailSent: EmailSentEvent) = Event(emailSent = emailSent)
 
+        /** Event triggered when an email is delivered successfully. */
         @JvmStatic
         fun ofEmailDelivered(emailDelivered: EmailDeliveredEvent) =
             Event(emailDelivered = emailDelivered)
 
+        /** Event triggered when an email is opened by the recipient. */
         @JvmStatic
         fun ofEmailOpened(emailOpened: EmailOpenedEvent) = Event(emailOpened = emailOpened)
 
+        /** Event triggered when a link within an email is clicked by the recipient. */
         @JvmStatic
         fun ofEmailClicked(emailClicked: EmailClickedEvent) = Event(emailClicked = emailClicked)
 
+        /** Event triggered when an email bounces. */
         @JvmStatic
         fun ofEmailBounced(emailBounced: EmailBouncedEvent) = Event(emailBounced = emailBounced)
 
+        /** Event triggered when an email is marked as complained by the recipient. */
         @JvmStatic
         fun ofEmailComplained(emailComplained: EmailComplainedEvent) =
             Event(emailComplained = emailComplained)
 
+        /** Event triggered when an email is rejected. */
         @JvmStatic
         fun ofEmailRejected(emailRejected: EmailRejectedEvent) =
             Event(emailRejected = emailRejected)
 
+        /** Event triggered when an email delivery is delayed. */
         @JvmStatic
         fun ofEmailDeliveryDelayed(emailDeliveryDelayed: EmailDeliveryDelayedEvent) =
             Event(emailDeliveryDelayed = emailDeliveryDelayed)
 
+        /** Event triggered when an email fails to be sent. */
         @JvmStatic
         fun ofEmailFailed(emailFailed: EmailFailedEvent) = Event(emailFailed = emailFailed)
     }
@@ -287,22 +415,43 @@ private constructor(
     /** An interface that defines how to map each variant of [Event] to a value of type [T]. */
     interface Visitor<out T> {
 
+        /** Event triggered when an email is queued for sending. */
+        fun visitEmailQueued(emailQueued: EmailQueuedEvent): T
+
+        /** Event triggered when an email is scheduled for sending. */
+        fun visitEmailScheduled(emailScheduled: EmailScheduledEvent): T
+
+        /** Event triggered when an email is processed. */
+        fun visitEmailProcessed(emailProcessed: EmailProcessedEvent): T
+
+        /** Event triggered when an email is being sent. */
+        fun visitEmailSending(emailSending: EmailSendingEvent): T
+
+        /** Event triggered when an email is sent successfully. */
         fun visitEmailSent(emailSent: EmailSentEvent): T
 
+        /** Event triggered when an email is delivered successfully. */
         fun visitEmailDelivered(emailDelivered: EmailDeliveredEvent): T
 
+        /** Event triggered when an email is opened by the recipient. */
         fun visitEmailOpened(emailOpened: EmailOpenedEvent): T
 
+        /** Event triggered when a link within an email is clicked by the recipient. */
         fun visitEmailClicked(emailClicked: EmailClickedEvent): T
 
+        /** Event triggered when an email bounces. */
         fun visitEmailBounced(emailBounced: EmailBouncedEvent): T
 
+        /** Event triggered when an email is marked as complained by the recipient. */
         fun visitEmailComplained(emailComplained: EmailComplainedEvent): T
 
+        /** Event triggered when an email is rejected. */
         fun visitEmailRejected(emailRejected: EmailRejectedEvent): T
 
+        /** Event triggered when an email delivery is delayed. */
         fun visitEmailDeliveryDelayed(emailDeliveryDelayed: EmailDeliveryDelayedEvent): T
 
+        /** Event triggered when an email fails to be sent. */
         fun visitEmailFailed(emailFailed: EmailFailedEvent): T
 
         /**
@@ -323,49 +472,77 @@ private constructor(
 
         override fun ObjectCodec.deserialize(node: JsonNode): Event {
             val json = JsonValue.fromJsonNode(node)
+            val type = json.asObject().getOrNull()?.get("type")?.asString()?.getOrNull()
 
-            val bestMatches =
-                sequenceOf(
-                        tryDeserialize(node, jacksonTypeRef<EmailSentEvent>())?.let {
-                            Event(emailSent = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<EmailDeliveredEvent>())?.let {
-                            Event(emailDelivered = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<EmailOpenedEvent>())?.let {
-                            Event(emailOpened = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<EmailClickedEvent>())?.let {
-                            Event(emailClicked = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<EmailBouncedEvent>())?.let {
-                            Event(emailBounced = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<EmailComplainedEvent>())?.let {
-                            Event(emailComplained = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<EmailRejectedEvent>())?.let {
-                            Event(emailRejected = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<EmailDeliveryDelayedEvent>())?.let {
-                            Event(emailDeliveryDelayed = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<EmailFailedEvent>())?.let {
-                            Event(emailFailed = it, _json = json)
-                        },
-                    )
-                    .filterNotNull()
-                    .allMaxBy { it.validity() }
-                    .toList()
-            return when (bestMatches.size) {
-                // This can happen if what we're deserializing is completely incompatible with all
-                // the possible variants (e.g. deserializing from boolean).
-                0 -> Event(_json = json)
-                1 -> bestMatches.single()
-                // If there's more than one match with the highest validity, then use the first
-                // completely valid match, or simply the first match if none are completely valid.
-                else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+            when (type) {
+                "email.queued" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailQueuedEvent>())?.let {
+                        Event(emailQueued = it, _json = json)
+                    } ?: Event(_json = json)
+                }
+                "email.scheduled" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailScheduledEvent>())?.let {
+                        Event(emailScheduled = it, _json = json)
+                    } ?: Event(_json = json)
+                }
+                "email.processed" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailProcessedEvent>())?.let {
+                        Event(emailProcessed = it, _json = json)
+                    } ?: Event(_json = json)
+                }
+                "email.sending" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailSendingEvent>())?.let {
+                        Event(emailSending = it, _json = json)
+                    } ?: Event(_json = json)
+                }
+                "email.sent" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailSentEvent>())?.let {
+                        Event(emailSent = it, _json = json)
+                    } ?: Event(_json = json)
+                }
+                "email.delivered" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailDeliveredEvent>())?.let {
+                        Event(emailDelivered = it, _json = json)
+                    } ?: Event(_json = json)
+                }
+                "email.opened" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailOpenedEvent>())?.let {
+                        Event(emailOpened = it, _json = json)
+                    } ?: Event(_json = json)
+                }
+                "email.clicked" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailClickedEvent>())?.let {
+                        Event(emailClicked = it, _json = json)
+                    } ?: Event(_json = json)
+                }
+                "email.bounced" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailBouncedEvent>())?.let {
+                        Event(emailBounced = it, _json = json)
+                    } ?: Event(_json = json)
+                }
+                "email.complained" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailComplainedEvent>())?.let {
+                        Event(emailComplained = it, _json = json)
+                    } ?: Event(_json = json)
+                }
+                "email.rejected" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailRejectedEvent>())?.let {
+                        Event(emailRejected = it, _json = json)
+                    } ?: Event(_json = json)
+                }
+                "email.deliveryDelayed" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailDeliveryDelayedEvent>())?.let {
+                        Event(emailDeliveryDelayed = it, _json = json)
+                    } ?: Event(_json = json)
+                }
+                "email.failed" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailFailedEvent>())?.let {
+                        Event(emailFailed = it, _json = json)
+                    } ?: Event(_json = json)
+                }
             }
+
+            return Event(_json = json)
         }
     }
 
@@ -377,6 +554,10 @@ private constructor(
             provider: SerializerProvider,
         ) {
             when {
+                value.emailQueued != null -> generator.writeObject(value.emailQueued)
+                value.emailScheduled != null -> generator.writeObject(value.emailScheduled)
+                value.emailProcessed != null -> generator.writeObject(value.emailProcessed)
+                value.emailSending != null -> generator.writeObject(value.emailSending)
                 value.emailSent != null -> generator.writeObject(value.emailSent)
                 value.emailDelivered != null -> generator.writeObject(value.emailDelivered)
                 value.emailOpened != null -> generator.writeObject(value.emailOpened)

@@ -4,8 +4,6 @@ package com.nuntly.models.organizations
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.jsonMapper
-import java.time.OffsetDateTime
-import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -17,31 +15,23 @@ internal class OrganizationListPageResponseTest {
             OrganizationListPageResponse.builder()
                 .addData(
                     OrganizationListResponse.builder()
-                        .createdAt(OffsetDateTime.parse("2025-01-09T22:22:41.247Z"))
-                        .displayName("Ray Tomlinson org")
-                        .kind(OrganizationListResponse.Kind.ORGANIZATION)
-                        .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                        .region(OrganizationListResponse.Region.EU_WEST_1)
-                        .status(OrganizationListResponse.Status.ACTIVE)
-                        .modifiedAt(OffsetDateTime.parse("2025-01-09T22:22:41.247Z"))
+                        .id("org_01ka8k8s80gvx9604cn9am5st4")
+                        .name("name")
+                        .status(OrganizationListResponse.Status.ENABLED)
                         .build()
                 )
-                .nextCursor("next_cursor")
+                .nextCursor("nextCursor")
                 .build()
 
-        assertThat(organizationListPageResponse.data().getOrNull())
+        assertThat(organizationListPageResponse.data())
             .containsExactly(
                 OrganizationListResponse.builder()
-                    .createdAt(OffsetDateTime.parse("2025-01-09T22:22:41.247Z"))
-                    .displayName("Ray Tomlinson org")
-                    .kind(OrganizationListResponse.Kind.ORGANIZATION)
-                    .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                    .region(OrganizationListResponse.Region.EU_WEST_1)
-                    .status(OrganizationListResponse.Status.ACTIVE)
-                    .modifiedAt(OffsetDateTime.parse("2025-01-09T22:22:41.247Z"))
+                    .id("org_01ka8k8s80gvx9604cn9am5st4")
+                    .name("name")
+                    .status(OrganizationListResponse.Status.ENABLED)
                     .build()
             )
-        assertThat(organizationListPageResponse.nextCursor()).contains("next_cursor")
+        assertThat(organizationListPageResponse.nextCursor()).contains("nextCursor")
     }
 
     @Test
@@ -51,16 +41,12 @@ internal class OrganizationListPageResponseTest {
             OrganizationListPageResponse.builder()
                 .addData(
                     OrganizationListResponse.builder()
-                        .createdAt(OffsetDateTime.parse("2025-01-09T22:22:41.247Z"))
-                        .displayName("Ray Tomlinson org")
-                        .kind(OrganizationListResponse.Kind.ORGANIZATION)
-                        .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                        .region(OrganizationListResponse.Region.EU_WEST_1)
-                        .status(OrganizationListResponse.Status.ACTIVE)
-                        .modifiedAt(OffsetDateTime.parse("2025-01-09T22:22:41.247Z"))
+                        .id("org_01ka8k8s80gvx9604cn9am5st4")
+                        .name("name")
+                        .status(OrganizationListResponse.Status.ENABLED)
                         .build()
                 )
-                .nextCursor("next_cursor")
+                .nextCursor("nextCursor")
                 .build()
 
         val roundtrippedOrganizationListPageResponse =

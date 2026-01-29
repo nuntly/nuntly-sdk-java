@@ -9,16 +9,21 @@ internal class ApiKeyCreateParamsTest {
 
     @Test
     fun create() {
-        ApiKeyCreateParams.builder().name("My API key").build()
+        ApiKeyCreateParams.builder().name("name").status(ApiKeyCreateParams.Status.ENABLED).build()
     }
 
     @Test
     fun body() {
-        val params = ApiKeyCreateParams.builder().name("My API key").build()
+        val params =
+            ApiKeyCreateParams.builder()
+                .name("name")
+                .status(ApiKeyCreateParams.Status.ENABLED)
+                .build()
 
         val body = params._body()
 
-        assertThat(body.name()).contains("My API key")
+        assertThat(body.name()).contains("name")
+        assertThat(body.status()).contains(ApiKeyCreateParams.Status.ENABLED)
     }
 
     @Test

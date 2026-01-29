@@ -3,7 +3,6 @@
 package com.nuntly.client
 
 import com.nuntly.core.ClientOptions
-import com.nuntly.services.blocking.AccountService
 import com.nuntly.services.blocking.ApiKeyService
 import com.nuntly.services.blocking.DomainService
 import com.nuntly.services.blocking.EmailService
@@ -60,8 +59,6 @@ interface NuntlyClient {
 
     fun organizations(): OrganizationService
 
-    fun account(): AccountService
-
     /**
      * Closes this client, relinquishing any underlying resources.
      *
@@ -96,7 +93,5 @@ interface NuntlyClient {
         fun webhooks(): WebhookService.WithRawResponse
 
         fun organizations(): OrganizationService.WithRawResponse
-
-        fun account(): AccountService.WithRawResponse
     }
 }

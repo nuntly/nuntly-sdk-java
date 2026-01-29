@@ -37,7 +37,7 @@ interface WebhookService {
 
     fun events(): EventService
 
-    /** Create a webhook so the endpoint is notified from Nuntly platform events (Emails events) */
+    /** Create a webhook */
     fun create(params: WebhookCreateParams): WebhookCreateResponse =
         create(params, RequestOptions.none())
 
@@ -47,7 +47,7 @@ interface WebhookService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): WebhookCreateResponse
 
-    /** Return the webhook with the given ID */
+    /** Retrieve a webhook */
     fun retrieve(id: String): WebhookRetrieveResponse = retrieve(id, WebhookRetrieveParams.none())
 
     /** @see retrieve */
@@ -77,7 +77,7 @@ interface WebhookService {
     fun retrieve(id: String, requestOptions: RequestOptions): WebhookRetrieveResponse =
         retrieve(id, WebhookRetrieveParams.none(), requestOptions)
 
-    /** Updates a webhook with the given ID */
+    /** Update a webhook */
     fun update(id: String): WebhookUpdateResponse = update(id, WebhookUpdateParams.none())
 
     /** @see update */
@@ -107,7 +107,7 @@ interface WebhookService {
     fun update(id: String, requestOptions: RequestOptions): WebhookUpdateResponse =
         update(id, WebhookUpdateParams.none(), requestOptions)
 
-    /** Return a list of your webhooks */
+    /** List webhooks */
     fun list(): WebhookListPage = list(WebhookListParams.none())
 
     /** @see list */
@@ -124,7 +124,7 @@ interface WebhookService {
     fun list(requestOptions: RequestOptions): WebhookListPage =
         list(WebhookListParams.none(), requestOptions)
 
-    /** Delete the webhook with the given ID */
+    /** Delete a webhook */
     fun delete(id: String): WebhookDeleteResponse = delete(id, WebhookDeleteParams.none())
 
     /** @see delete */

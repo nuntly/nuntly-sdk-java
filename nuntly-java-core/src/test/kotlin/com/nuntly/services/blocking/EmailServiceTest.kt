@@ -6,8 +6,7 @@ import com.nuntly.TestServerExtension
 import com.nuntly.client.okhttp.NuntlyOkHttpClient
 import com.nuntly.core.JsonValue
 import com.nuntly.models.emails.EmailSendParams
-import com.nuntly.models.shared.EmailHeaders
-import java.time.OffsetDateTime
+import com.nuntly.models.emails.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -23,7 +22,7 @@ internal class EmailServiceTest {
                 .build()
         val emailService = client.emails()
 
-        val email = emailService.retrieve("em_qiPSkLrTmXvDohbxCcYt3pFEMGgnjHD6kbDL8d4uGKvNGboT")
+        val email = emailService.retrieve("em_01ka8k8s80gvx9604cn9am5st4")
 
         email.validate()
     }
@@ -51,7 +50,7 @@ internal class EmailServiceTest {
                 .build()
         val emailService = client.emails()
 
-        val response = emailService.cancel("em_qiPSkLrTmXvDohbxCcYt3pFEMGgnjHD6kbDL8d4uGKvNGboT")
+        val response = emailService.cancel("em_01ka8k8s80gvx9604cn9am5st4")
 
         response.validate()
     }
@@ -68,30 +67,32 @@ internal class EmailServiceTest {
         val response =
             emailService.send(
                 EmailSendParams.builder()
-                    .from("ray@info.tomlinson.ai")
-                    .subject("Welcome to Tomlinson AI!")
-                    .to("carlo43@gmail.com")
+                    .from("from")
+                    .subject("subject")
+                    .toOfStrings(listOf("string"))
                     .addAttachment(
                         EmailSendParams.Attachment.builder()
                             .content("content")
-                            .contentType("content_type")
+                            .contentType("contentType")
                             .filename("filename")
                             .build()
                     )
                     .bccOfStrings(listOf("string"))
                     .ccOfStrings(listOf("string"))
-                    .context(JsonValue.from(mapOf<String, Any>()))
-                    .headers(
-                        EmailHeaders.builder()
+                    .context(
+                        EmailSendParams.Context.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
-                    .html(
-                        "<html><body><p>Hi, Thank you for signing up! Please verify your email ...</p></body></html>"
+                    .headers(
+                        EmailSendParams.Headers.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
                     )
+                    .html("html")
                     .replyToOfStrings(listOf("string"))
-                    .scheduledAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .addTag(EmailSendParams.Tag.builder().name("name").value("value").build())
+                    .scheduledAt("scheduledAt")
+                    .addTag(Tag.builder().name("name").value("value").build())
                     .text("text")
                     .build()
             )

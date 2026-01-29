@@ -5,7 +5,6 @@ package com.nuntly.models.webhooks
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.jsonMapper
 import com.nuntly.models.shared.EventType
-import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -15,35 +14,21 @@ internal class WebhookRetrieveResponseTest {
     fun create() {
         val webhookRetrieveResponse =
             WebhookRetrieveResponse.builder()
-                .id("wh_01jne5c7gr2mhwrqg4zqwf48y2")
-                .createdAt(OffsetDateTime.parse("2025-03-03T14:08:22.552Z"))
-                .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-                .addEvent(EventType.EMAIL_DELIVERED)
-                .addEvent(EventType.EMAIL_SENT)
-                .kind(WebhookRetrieveResponse.Kind.WEBHOOK)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .region(WebhookRetrieveResponse.Region.EU_WEST_1)
+                .id("wh_01ka8k8s80gvx9604cn9am5st4")
+                .createdAt("createdAt")
+                .endpointUrl("https://example.com")
+                .addEvent(EventType.EMAIL_QUEUED)
                 .status(WebhookRetrieveResponse.Status.ENABLED)
-                .modifiedAt(OffsetDateTime.parse("2025-03-03T14:08:22.552Z"))
-                .name("My webhook")
+                .name("name")
                 .build()
 
-        assertThat(webhookRetrieveResponse.id()).isEqualTo("wh_01jne5c7gr2mhwrqg4zqwf48y2")
-        assertThat(webhookRetrieveResponse.createdAt())
-            .isEqualTo(OffsetDateTime.parse("2025-03-03T14:08:22.552Z"))
-        assertThat(webhookRetrieveResponse.endpointUrl())
-            .isEqualTo("https://webhook.site/12345678-1234-5678-1234-123456789012")
-        assertThat(webhookRetrieveResponse.events())
-            .containsExactly(EventType.EMAIL_DELIVERED, EventType.EMAIL_SENT)
-        assertThat(webhookRetrieveResponse.kind()).isEqualTo(WebhookRetrieveResponse.Kind.WEBHOOK)
-        assertThat(webhookRetrieveResponse.orgId()).isEqualTo("org_01jh6jk82zjq9deye73h0mzcaq")
-        assertThat(webhookRetrieveResponse.region())
-            .isEqualTo(WebhookRetrieveResponse.Region.EU_WEST_1)
+        assertThat(webhookRetrieveResponse.id()).isEqualTo("wh_01ka8k8s80gvx9604cn9am5st4")
+        assertThat(webhookRetrieveResponse.createdAt()).isEqualTo("createdAt")
+        assertThat(webhookRetrieveResponse.endpointUrl()).isEqualTo("https://example.com")
+        assertThat(webhookRetrieveResponse.events()).containsExactly(EventType.EMAIL_QUEUED)
         assertThat(webhookRetrieveResponse.status())
             .isEqualTo(WebhookRetrieveResponse.Status.ENABLED)
-        assertThat(webhookRetrieveResponse.modifiedAt())
-            .contains(OffsetDateTime.parse("2025-03-03T14:08:22.552Z"))
-        assertThat(webhookRetrieveResponse.name()).contains("My webhook")
+        assertThat(webhookRetrieveResponse.name()).contains("name")
     }
 
     @Test
@@ -51,17 +36,12 @@ internal class WebhookRetrieveResponseTest {
         val jsonMapper = jsonMapper()
         val webhookRetrieveResponse =
             WebhookRetrieveResponse.builder()
-                .id("wh_01jne5c7gr2mhwrqg4zqwf48y2")
-                .createdAt(OffsetDateTime.parse("2025-03-03T14:08:22.552Z"))
-                .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-                .addEvent(EventType.EMAIL_DELIVERED)
-                .addEvent(EventType.EMAIL_SENT)
-                .kind(WebhookRetrieveResponse.Kind.WEBHOOK)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .region(WebhookRetrieveResponse.Region.EU_WEST_1)
+                .id("wh_01ka8k8s80gvx9604cn9am5st4")
+                .createdAt("createdAt")
+                .endpointUrl("https://example.com")
+                .addEvent(EventType.EMAIL_QUEUED)
                 .status(WebhookRetrieveResponse.Status.ENABLED)
-                .modifiedAt(OffsetDateTime.parse("2025-03-03T14:08:22.552Z"))
-                .name("My webhook")
+                .name("name")
                 .build()
 
         val roundtrippedWebhookRetrieveResponse =

@@ -4,8 +4,6 @@ package com.nuntly.client
 
 import com.nuntly.core.ClientOptions
 import com.nuntly.core.getPackageVersion
-import com.nuntly.services.async.AccountServiceAsync
-import com.nuntly.services.async.AccountServiceAsyncImpl
 import com.nuntly.services.async.ApiKeyServiceAsync
 import com.nuntly.services.async.ApiKeyServiceAsyncImpl
 import com.nuntly.services.async.DomainServiceAsync
@@ -61,10 +59,6 @@ class NuntlyClientAsyncImpl(private val clientOptions: ClientOptions) : NuntlyCl
         OrganizationServiceAsyncImpl(clientOptionsWithUserAgent)
     }
 
-    private val account: AccountServiceAsync by lazy {
-        AccountServiceAsyncImpl(clientOptionsWithUserAgent)
-    }
-
     override fun sync(): NuntlyClient = sync
 
     override fun withRawResponse(): NuntlyClientAsync.WithRawResponse = withRawResponse
@@ -83,8 +77,6 @@ class NuntlyClientAsyncImpl(private val clientOptions: ClientOptions) : NuntlyCl
     override fun webhooks(): WebhookServiceAsync = webhooks
 
     override fun organizations(): OrganizationServiceAsync = organizations
-
-    override fun account(): AccountServiceAsync = account
 
     override fun close() = clientOptions.close()
 
@@ -115,10 +107,6 @@ class NuntlyClientAsyncImpl(private val clientOptions: ClientOptions) : NuntlyCl
             OrganizationServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val account: AccountServiceAsync.WithRawResponse by lazy {
-            AccountServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): NuntlyClientAsync.WithRawResponse =
@@ -137,7 +125,5 @@ class NuntlyClientAsyncImpl(private val clientOptions: ClientOptions) : NuntlyCl
         override fun webhooks(): WebhookServiceAsync.WithRawResponse = webhooks
 
         override fun organizations(): OrganizationServiceAsync.WithRawResponse = organizations
-
-        override fun account(): AccountServiceAsync.WithRawResponse = account
     }
 }

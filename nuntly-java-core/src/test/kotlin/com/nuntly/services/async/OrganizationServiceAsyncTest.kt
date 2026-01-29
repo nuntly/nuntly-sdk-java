@@ -4,7 +4,6 @@ package com.nuntly.services.async
 
 import com.nuntly.TestServerExtension
 import com.nuntly.client.okhttp.NuntlyOkHttpClientAsync
-import com.nuntly.models.organizations.OrganizationUpdateParams
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -20,28 +19,7 @@ internal class OrganizationServiceAsyncTest {
                 .build()
         val organizationServiceAsync = client.organizations()
 
-        val organizationFuture = organizationServiceAsync.retrieve("org_9UTZz2PisZ68YwE3NJu9urQ9")
-
-        val organization = organizationFuture.get()
-        organization.validate()
-    }
-
-    @Test
-    fun update() {
-        val client =
-            NuntlyOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
-        val organizationServiceAsync = client.organizations()
-
-        val organizationFuture =
-            organizationServiceAsync.update(
-                OrganizationUpdateParams.builder()
-                    .id("org_9UTZz2PisZ68YwE3NJu9urQ9")
-                    .displayName("Ray Tomlinson org.")
-                    .build()
-            )
+        val organizationFuture = organizationServiceAsync.retrieve("org_01ka8k8s80gvx9604cn9am5st4")
 
         val organization = organizationFuture.get()
         organization.validate()

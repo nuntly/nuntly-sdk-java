@@ -9,11 +9,6 @@ import com.nuntly.models.organizations.OrganizationListPageAsync
 import com.nuntly.models.organizations.OrganizationListParams
 import com.nuntly.models.organizations.OrganizationRetrieveParams
 import com.nuntly.models.organizations.OrganizationRetrieveResponse
-import com.nuntly.models.organizations.OrganizationUpdateParams
-import com.nuntly.models.organizations.OrganizationUpdateResponse
-import com.nuntly.services.async.organizations.InvitationServiceAsync
-import com.nuntly.services.async.organizations.MembershipServiceAsync
-import com.nuntly.services.async.organizations.SubscriptionServiceAsync
 import com.nuntly.services.async.organizations.UsageServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
@@ -32,15 +27,9 @@ interface OrganizationServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): OrganizationServiceAsync
 
-    fun memberships(): MembershipServiceAsync
-
-    fun invitations(): InvitationServiceAsync
-
-    fun subscriptions(): SubscriptionServiceAsync
-
     fun usage(): UsageServiceAsync
 
-    /** Return the organization */
+    /** Retrieve organization */
     fun retrieve(id: String): CompletableFuture<OrganizationRetrieveResponse> =
         retrieve(id, OrganizationRetrieveParams.none())
 
@@ -76,31 +65,7 @@ interface OrganizationServiceAsync {
     ): CompletableFuture<OrganizationRetrieveResponse> =
         retrieve(id, OrganizationRetrieveParams.none(), requestOptions)
 
-    /** Patch the organization */
-    fun update(
-        id: String,
-        params: OrganizationUpdateParams,
-    ): CompletableFuture<OrganizationUpdateResponse> = update(id, params, RequestOptions.none())
-
-    /** @see update */
-    fun update(
-        id: String,
-        params: OrganizationUpdateParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<OrganizationUpdateResponse> =
-        update(params.toBuilder().id(id).build(), requestOptions)
-
-    /** @see update */
-    fun update(params: OrganizationUpdateParams): CompletableFuture<OrganizationUpdateResponse> =
-        update(params, RequestOptions.none())
-
-    /** @see update */
-    fun update(
-        params: OrganizationUpdateParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<OrganizationUpdateResponse>
-
-    /** Return the organizations that the current user is a member */
+    /** Retrieve organizations */
     fun list(): CompletableFuture<OrganizationListPageAsync> = list(OrganizationListParams.none())
 
     /** @see list */
@@ -132,12 +97,6 @@ interface OrganizationServiceAsync {
         fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): OrganizationServiceAsync.WithRawResponse
-
-        fun memberships(): MembershipServiceAsync.WithRawResponse
-
-        fun invitations(): InvitationServiceAsync.WithRawResponse
-
-        fun subscriptions(): SubscriptionServiceAsync.WithRawResponse
 
         fun usage(): UsageServiceAsync.WithRawResponse
 
@@ -181,36 +140,6 @@ interface OrganizationServiceAsync {
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<OrganizationRetrieveResponse>> =
             retrieve(id, OrganizationRetrieveParams.none(), requestOptions)
-
-        /**
-         * Returns a raw HTTP response for `patch /organizations/{id}`, but is otherwise the same as
-         * [OrganizationServiceAsync.update].
-         */
-        fun update(
-            id: String,
-            params: OrganizationUpdateParams,
-        ): CompletableFuture<HttpResponseFor<OrganizationUpdateResponse>> =
-            update(id, params, RequestOptions.none())
-
-        /** @see update */
-        fun update(
-            id: String,
-            params: OrganizationUpdateParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<OrganizationUpdateResponse>> =
-            update(params.toBuilder().id(id).build(), requestOptions)
-
-        /** @see update */
-        fun update(
-            params: OrganizationUpdateParams
-        ): CompletableFuture<HttpResponseFor<OrganizationUpdateResponse>> =
-            update(params, RequestOptions.none())
-
-        /** @see update */
-        fun update(
-            params: OrganizationUpdateParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<OrganizationUpdateResponse>>
 
         /**
          * Returns a raw HTTP response for `get /organizations`, but is otherwise the same as

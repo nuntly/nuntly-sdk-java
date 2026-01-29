@@ -13,14 +13,12 @@ internal class EmailCancelResponseTest {
     fun create() {
         val emailCancelResponse =
             EmailCancelResponse.builder()
-                .id("em_01jnvnn9avq52k5mrhn1gab0ch")
-                .kind(EmailCancelResponse.Kind.EMAIL)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
+                .id("em_01ka8k8s80gvx9604cn9am5st4")
+                .status(Status.QUEUED)
                 .build()
 
-        assertThat(emailCancelResponse.id()).isEqualTo("em_01jnvnn9avq52k5mrhn1gab0ch")
-        assertThat(emailCancelResponse.kind()).isEqualTo(EmailCancelResponse.Kind.EMAIL)
-        assertThat(emailCancelResponse.orgId()).isEqualTo("org_01jh6jk82zjq9deye73h0mzcaq")
+        assertThat(emailCancelResponse.id()).isEqualTo("em_01ka8k8s80gvx9604cn9am5st4")
+        assertThat(emailCancelResponse.status()).isEqualTo(Status.QUEUED)
     }
 
     @Test
@@ -28,9 +26,8 @@ internal class EmailCancelResponseTest {
         val jsonMapper = jsonMapper()
         val emailCancelResponse =
             EmailCancelResponse.builder()
-                .id("em_01jnvnn9avq52k5mrhn1gab0ch")
-                .kind(EmailCancelResponse.Kind.EMAIL)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
+                .id("em_01ka8k8s80gvx9604cn9am5st4")
+                .status(Status.QUEUED)
                 .build()
 
         val roundtrippedEmailCancelResponse =

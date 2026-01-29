@@ -32,7 +32,7 @@ interface ApiKeyService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ApiKeyService
 
-    /** Create a new api key */
+    /** Create an API key */
     fun create(): ApiKeyCreateResponse = create(ApiKeyCreateParams.none())
 
     /** @see create */
@@ -49,7 +49,7 @@ interface ApiKeyService {
     fun create(requestOptions: RequestOptions): ApiKeyCreateResponse =
         create(ApiKeyCreateParams.none(), requestOptions)
 
-    /** Return the api-key with the given ID */
+    /** Retrieve an API key */
     fun retrieve(id: String): ApiKeyRetrieveResponse = retrieve(id, ApiKeyRetrieveParams.none())
 
     /** @see retrieve */
@@ -79,7 +79,7 @@ interface ApiKeyService {
     fun retrieve(id: String, requestOptions: RequestOptions): ApiKeyRetrieveResponse =
         retrieve(id, ApiKeyRetrieveParams.none(), requestOptions)
 
-    /** Updates partial api key fields with the given id */
+    /** Update an API key */
     fun update(id: String): ApiKeyUpdateResponse = update(id, ApiKeyUpdateParams.none())
 
     /** @see update */
@@ -109,7 +109,7 @@ interface ApiKeyService {
     fun update(id: String, requestOptions: RequestOptions): ApiKeyUpdateResponse =
         update(id, ApiKeyUpdateParams.none(), requestOptions)
 
-    /** Return a list of your api keys */
+    /** List API keys */
     fun list(): ApiKeyListPage = list(ApiKeyListParams.none())
 
     /** @see list */
@@ -126,7 +126,7 @@ interface ApiKeyService {
     fun list(requestOptions: RequestOptions): ApiKeyListPage =
         list(ApiKeyListParams.none(), requestOptions)
 
-    /** Delete the api key with the given ID */
+    /** Delete an API key */
     fun delete(id: String): ApiKeyDeleteResponse = delete(id, ApiKeyDeleteParams.none())
 
     /** @see delete */

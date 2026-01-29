@@ -9,7 +9,6 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Return a list of your domains */
 class DomainListParams
 private constructor(
     private val cursor: String?,
@@ -18,10 +17,10 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** The cursor to use for pagination */
+    /** The cursor to retrieve the next page of results */
     fun cursor(): Optional<String> = Optional.ofNullable(cursor)
 
-    /** The maximum number of items to return */
+    /** The maximum number of results to return */
     fun limit(): Optional<Double> = Optional.ofNullable(limit)
 
     /** Additional headers to send with the request. */
@@ -56,13 +55,13 @@ private constructor(
             additionalQueryParams = domainListParams.additionalQueryParams.toBuilder()
         }
 
-        /** The cursor to use for pagination */
+        /** The cursor to retrieve the next page of results */
         fun cursor(cursor: String?) = apply { this.cursor = cursor }
 
         /** Alias for calling [Builder.cursor] with `cursor.orElse(null)`. */
         fun cursor(cursor: Optional<String>) = cursor(cursor.getOrNull())
 
-        /** The maximum number of items to return */
+        /** The maximum number of results to return */
         fun limit(limit: Double?) = apply { this.limit = limit }
 
         /**

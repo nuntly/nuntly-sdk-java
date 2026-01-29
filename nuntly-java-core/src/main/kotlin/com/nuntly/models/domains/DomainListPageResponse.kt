@@ -11,6 +11,7 @@ import com.nuntly.core.JsonField
 import com.nuntly.core.JsonMissing
 import com.nuntly.core.JsonValue
 import com.nuntly.core.checkKnown
+import com.nuntly.core.checkRequired
 import com.nuntly.core.toImmutable
 import com.nuntly.errors.NuntlyInvalidDataException
 import java.util.Collections
@@ -18,6 +19,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
+/** The list of domains for the organization */
 class DomainListPageResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -31,24 +33,20 @@ private constructor(
         @JsonProperty("data")
         @ExcludeMissing
         data: JsonField<List<DomainListResponse>> = JsonMissing.of(),
-        @JsonProperty("next_cursor")
-        @ExcludeMissing
-        nextCursor: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("nextCursor") @ExcludeMissing nextCursor: JsonField<String> = JsonMissing.of(),
     ) : this(data, nextCursor, mutableMapOf())
 
     /**
-     * The domains registered in your account
-     *
-     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun data(): Optional<List<DomainListResponse>> = data.getOptional("data")
+    fun data(): List<DomainListResponse> = data.getRequired("data")
 
     /**
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun nextCursor(): Optional<String> = nextCursor.getOptional("next_cursor")
+    fun nextCursor(): Optional<String> = nextCursor.getOptional("nextCursor")
 
     /**
      * Returns the raw JSON value of [data].
@@ -62,7 +60,7 @@ private constructor(
      *
      * Unlike [nextCursor], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("next_cursor") @ExcludeMissing fun _nextCursor(): JsonField<String> = nextCursor
+    @JsonProperty("nextCursor") @ExcludeMissing fun _nextCursor(): JsonField<String> = nextCursor
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -78,7 +76,14 @@ private constructor(
 
     companion object {
 
-        /** Returns a mutable builder for constructing an instance of [DomainListPageResponse]. */
+        /**
+         * Returns a mutable builder for constructing an instance of [DomainListPageResponse].
+         *
+         * The following fields are required:
+         * ```java
+         * .data()
+         * ```
+         */
         @JvmStatic fun builder() = Builder()
     }
 
@@ -96,7 +101,6 @@ private constructor(
             additionalProperties = domainListPageResponse.additionalProperties.toMutableMap()
         }
 
-        /** The domains registered in your account */
         fun data(data: List<DomainListResponse>) = data(JsonField.of(data))
 
         /**
@@ -122,10 +126,7 @@ private constructor(
                 }
         }
 
-        fun nextCursor(nextCursor: String?) = nextCursor(JsonField.ofNullable(nextCursor))
-
-        /** Alias for calling [Builder.nextCursor] with `nextCursor.orElse(null)`. */
-        fun nextCursor(nextCursor: Optional<String>) = nextCursor(nextCursor.getOrNull())
+        fun nextCursor(nextCursor: String) = nextCursor(JsonField.of(nextCursor))
 
         /**
          * Sets [Builder.nextCursor] to an arbitrary JSON value.
@@ -159,10 +160,17 @@ private constructor(
          * Returns an immutable instance of [DomainListPageResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```java
+         * .data()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): DomainListPageResponse =
             DomainListPageResponse(
-                (data ?: JsonMissing.of()).map { it.toImmutable() },
+                checkRequired("data", data).map { it.toImmutable() },
                 nextCursor,
                 additionalProperties.toMutableMap(),
             )
@@ -175,7 +183,7 @@ private constructor(
             return@apply
         }
 
-        data().ifPresent { it.forEach { it.validate() } }
+        data().forEach { it.validate() }
         nextCursor()
         validated = true
     }

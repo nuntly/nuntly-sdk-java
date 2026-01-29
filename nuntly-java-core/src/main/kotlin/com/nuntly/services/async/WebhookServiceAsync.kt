@@ -37,7 +37,7 @@ interface WebhookServiceAsync {
 
     fun events(): EventServiceAsync
 
-    /** Create a webhook so the endpoint is notified from Nuntly platform events (Emails events) */
+    /** Create a webhook */
     fun create(params: WebhookCreateParams): CompletableFuture<WebhookCreateResponse> =
         create(params, RequestOptions.none())
 
@@ -47,7 +47,7 @@ interface WebhookServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<WebhookCreateResponse>
 
-    /** Return the webhook with the given ID */
+    /** Retrieve a webhook */
     fun retrieve(id: String): CompletableFuture<WebhookRetrieveResponse> =
         retrieve(id, WebhookRetrieveParams.none())
 
@@ -82,7 +82,7 @@ interface WebhookServiceAsync {
     ): CompletableFuture<WebhookRetrieveResponse> =
         retrieve(id, WebhookRetrieveParams.none(), requestOptions)
 
-    /** Updates a webhook with the given ID */
+    /** Update a webhook */
     fun update(id: String): CompletableFuture<WebhookUpdateResponse> =
         update(id, WebhookUpdateParams.none())
 
@@ -117,7 +117,7 @@ interface WebhookServiceAsync {
     ): CompletableFuture<WebhookUpdateResponse> =
         update(id, WebhookUpdateParams.none(), requestOptions)
 
-    /** Return a list of your webhooks */
+    /** List webhooks */
     fun list(): CompletableFuture<WebhookListPageAsync> = list(WebhookListParams.none())
 
     /** @see list */
@@ -135,7 +135,7 @@ interface WebhookServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<WebhookListPageAsync> =
         list(WebhookListParams.none(), requestOptions)
 
-    /** Delete the webhook with the given ID */
+    /** Delete a webhook */
     fun delete(id: String): CompletableFuture<WebhookDeleteResponse> =
         delete(id, WebhookDeleteParams.none())
 
