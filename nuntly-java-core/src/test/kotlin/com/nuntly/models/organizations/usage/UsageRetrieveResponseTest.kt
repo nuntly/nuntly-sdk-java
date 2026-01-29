@@ -13,52 +13,39 @@ internal class UsageRetrieveResponseTest {
     fun create() {
         val usageRetrieveResponse =
             UsageRetrieveResponse.builder()
-                .daily(
-                    UsageRetrieveResponse.Daily.builder()
-                        .consumed(
-                            UsageRetrieveResponse.Daily.Consumed.builder()
-                                .transacEmails(0.0)
+                .transactional(
+                    UsageRetrieveResponse.Transactional.builder()
+                        .limits(
+                            UsageRetrieveResponse.Transactional.Limits.builder()
+                                .daily(0.0)
+                                .monthly(0.0)
                                 .build()
                         )
-                        .period("period")
-                        .quota(
-                            UsageRetrieveResponse.Daily.Quota.builder().transacEmails(0.0).build()
-                        )
-                        .build()
-                )
-                .monthly(
-                    UsageRetrieveResponse.Monthly.builder()
-                        .consumed(
-                            UsageRetrieveResponse.Monthly.Consumed.builder()
-                                .transacEmails(0.0)
+                        .usage(
+                            UsageRetrieveResponse.Transactional.Usage.builder()
+                                .daily(0.0)
+                                .monthly(0.0)
                                 .build()
-                        )
-                        .period("period")
-                        .quota(
-                            UsageRetrieveResponse.Monthly.Quota.builder().transacEmails(0.0).build()
                         )
                         .build()
                 )
                 .build()
 
-        assertThat(usageRetrieveResponse.daily())
+        assertThat(usageRetrieveResponse.transactional())
             .isEqualTo(
-                UsageRetrieveResponse.Daily.builder()
-                    .consumed(
-                        UsageRetrieveResponse.Daily.Consumed.builder().transacEmails(0.0).build()
+                UsageRetrieveResponse.Transactional.builder()
+                    .limits(
+                        UsageRetrieveResponse.Transactional.Limits.builder()
+                            .daily(0.0)
+                            .monthly(0.0)
+                            .build()
                     )
-                    .period("period")
-                    .quota(UsageRetrieveResponse.Daily.Quota.builder().transacEmails(0.0).build())
-                    .build()
-            )
-        assertThat(usageRetrieveResponse.monthly())
-            .isEqualTo(
-                UsageRetrieveResponse.Monthly.builder()
-                    .consumed(
-                        UsageRetrieveResponse.Monthly.Consumed.builder().transacEmails(0.0).build()
+                    .usage(
+                        UsageRetrieveResponse.Transactional.Usage.builder()
+                            .daily(0.0)
+                            .monthly(0.0)
+                            .build()
                     )
-                    .period("period")
-                    .quota(UsageRetrieveResponse.Monthly.Quota.builder().transacEmails(0.0).build())
                     .build()
             )
     }
@@ -68,29 +55,19 @@ internal class UsageRetrieveResponseTest {
         val jsonMapper = jsonMapper()
         val usageRetrieveResponse =
             UsageRetrieveResponse.builder()
-                .daily(
-                    UsageRetrieveResponse.Daily.builder()
-                        .consumed(
-                            UsageRetrieveResponse.Daily.Consumed.builder()
-                                .transacEmails(0.0)
+                .transactional(
+                    UsageRetrieveResponse.Transactional.builder()
+                        .limits(
+                            UsageRetrieveResponse.Transactional.Limits.builder()
+                                .daily(0.0)
+                                .monthly(0.0)
                                 .build()
                         )
-                        .period("period")
-                        .quota(
-                            UsageRetrieveResponse.Daily.Quota.builder().transacEmails(0.0).build()
-                        )
-                        .build()
-                )
-                .monthly(
-                    UsageRetrieveResponse.Monthly.builder()
-                        .consumed(
-                            UsageRetrieveResponse.Monthly.Consumed.builder()
-                                .transacEmails(0.0)
+                        .usage(
+                            UsageRetrieveResponse.Transactional.Usage.builder()
+                                .daily(0.0)
+                                .monthly(0.0)
                                 .build()
-                        )
-                        .period("period")
-                        .quota(
-                            UsageRetrieveResponse.Monthly.Quota.builder().transacEmails(0.0).build()
                         )
                         .build()
                 )

@@ -9,14 +9,14 @@ internal class DomainRetrieveParamsTest {
 
     @Test
     fun create() {
-        DomainRetrieveParams.builder().id("dns_FdfQe2eZAzRrHCXKSr7VsxUz").build()
+        DomainRetrieveParams.builder().id("dns_01kabn43yqyxn2bx4ve84mczd3").build()
     }
 
     @Test
     fun pathParams() {
-        val params = DomainRetrieveParams.builder().id("dns_FdfQe2eZAzRrHCXKSr7VsxUz").build()
+        val params = DomainRetrieveParams.builder().id("dns_01kabn43yqyxn2bx4ve84mczd3").build()
 
-        assertThat(params._pathParam(0)).isEqualTo("dns_FdfQe2eZAzRrHCXKSr7VsxUz")
+        assertThat(params._pathParam(0)).isEqualTo("dns_01kabn43yqyxn2bx4ve84mczd3")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }

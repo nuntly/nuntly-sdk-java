@@ -9,14 +9,15 @@ internal class OrganizationRetrieveParamsTest {
 
     @Test
     fun create() {
-        OrganizationRetrieveParams.builder().id("org_9UTZz2PisZ68YwE3NJu9urQ9").build()
+        OrganizationRetrieveParams.builder().id("org_01ka8k8s80gvx9604cn9am5st4").build()
     }
 
     @Test
     fun pathParams() {
-        val params = OrganizationRetrieveParams.builder().id("org_9UTZz2PisZ68YwE3NJu9urQ9").build()
+        val params =
+            OrganizationRetrieveParams.builder().id("org_01ka8k8s80gvx9604cn9am5st4").build()
 
-        assertThat(params._pathParam(0)).isEqualTo("org_9UTZz2PisZ68YwE3NJu9urQ9")
+        assertThat(params._pathParam(0)).isEqualTo("org_01ka8k8s80gvx9604cn9am5st4")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }

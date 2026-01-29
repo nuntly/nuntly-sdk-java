@@ -9,15 +9,16 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Return a list of emails */
+/** Retrieve bulk emails */
 class BulkRetrieveParams
 private constructor(
-    private val id: String?,
+    private val bulkId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    fun id(): Optional<String> = Optional.ofNullable(id)
+    /** The bulk id */
+    fun bulkId(): Optional<String> = Optional.ofNullable(bulkId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -38,21 +39,22 @@ private constructor(
     /** A builder for [BulkRetrieveParams]. */
     class Builder internal constructor() {
 
-        private var id: String? = null
+        private var bulkId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
         internal fun from(bulkRetrieveParams: BulkRetrieveParams) = apply {
-            id = bulkRetrieveParams.id
+            bulkId = bulkRetrieveParams.bulkId
             additionalHeaders = bulkRetrieveParams.additionalHeaders.toBuilder()
             additionalQueryParams = bulkRetrieveParams.additionalQueryParams.toBuilder()
         }
 
-        fun id(id: String?) = apply { this.id = id }
+        /** The bulk id */
+        fun bulkId(bulkId: String?) = apply { this.bulkId = bulkId }
 
-        /** Alias for calling [Builder.id] with `id.orElse(null)`. */
-        fun id(id: Optional<String>) = id(id.getOrNull())
+        /** Alias for calling [Builder.bulkId] with `bulkId.orElse(null)`. */
+        fun bulkId(bulkId: Optional<String>) = bulkId(bulkId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -158,12 +160,12 @@ private constructor(
          * Further updates to this [Builder] will not mutate the returned instance.
          */
         fun build(): BulkRetrieveParams =
-            BulkRetrieveParams(id, additionalHeaders.build(), additionalQueryParams.build())
+            BulkRetrieveParams(bulkId, additionalHeaders.build(), additionalQueryParams.build())
     }
 
     fun _pathParam(index: Int): String =
         when (index) {
-            0 -> id ?: ""
+            0 -> bulkId ?: ""
             else -> ""
         }
 
@@ -177,13 +179,13 @@ private constructor(
         }
 
         return other is BulkRetrieveParams &&
-            id == other.id &&
+            bulkId == other.bulkId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int = Objects.hash(id, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int = Objects.hash(bulkId, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "BulkRetrieveParams{id=$id, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "BulkRetrieveParams{bulkId=$bulkId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

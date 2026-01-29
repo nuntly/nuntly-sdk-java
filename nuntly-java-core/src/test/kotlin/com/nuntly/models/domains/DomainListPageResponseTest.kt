@@ -4,8 +4,6 @@ package com.nuntly.models.domains
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.jsonMapper
-import java.time.OffsetDateTime
-import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -17,37 +15,29 @@ internal class DomainListPageResponseTest {
             DomainListPageResponse.builder()
                 .addData(
                     DomainListResponse.builder()
-                        .id("dns_01jh8xggryggczvjv4xfff4rwn")
-                        .createdAt(OffsetDateTime.parse("2025-01-10T20:11:55.038Z"))
-                        .kind(DomainListResponse.Kind.DOMAIN)
-                        .name("info.tomlinson.ai")
-                        .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
+                        .id("dns_01kabn43yqyxn2bx4ve84mczd3")
+                        .createdAt("createdAt")
+                        .name("name")
                         .region(DomainListResponse.Region.EU_WEST_1)
-                        .sendingStatus(DomainListResponse.SendingStatus.DISABLED)
+                        .sendingStatus(DomainListResponse.SendingStatus.ENABLED)
                         .status(DomainListResponse.Status.BOOTSTRAPPING)
-                        .statusAt("2025-01-10T20:11:55.038Z")
-                        .modifiedAt(OffsetDateTime.parse("2025-01-10T20:11:55.038Z"))
                         .build()
                 )
-                .nextCursor("next_cursor")
+                .nextCursor("nextCursor")
                 .build()
 
-        assertThat(domainListPageResponse.data().getOrNull())
+        assertThat(domainListPageResponse.data())
             .containsExactly(
                 DomainListResponse.builder()
-                    .id("dns_01jh8xggryggczvjv4xfff4rwn")
-                    .createdAt(OffsetDateTime.parse("2025-01-10T20:11:55.038Z"))
-                    .kind(DomainListResponse.Kind.DOMAIN)
-                    .name("info.tomlinson.ai")
-                    .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
+                    .id("dns_01kabn43yqyxn2bx4ve84mczd3")
+                    .createdAt("createdAt")
+                    .name("name")
                     .region(DomainListResponse.Region.EU_WEST_1)
-                    .sendingStatus(DomainListResponse.SendingStatus.DISABLED)
+                    .sendingStatus(DomainListResponse.SendingStatus.ENABLED)
                     .status(DomainListResponse.Status.BOOTSTRAPPING)
-                    .statusAt("2025-01-10T20:11:55.038Z")
-                    .modifiedAt(OffsetDateTime.parse("2025-01-10T20:11:55.038Z"))
                     .build()
             )
-        assertThat(domainListPageResponse.nextCursor()).contains("next_cursor")
+        assertThat(domainListPageResponse.nextCursor()).contains("nextCursor")
     }
 
     @Test
@@ -57,19 +47,15 @@ internal class DomainListPageResponseTest {
             DomainListPageResponse.builder()
                 .addData(
                     DomainListResponse.builder()
-                        .id("dns_01jh8xggryggczvjv4xfff4rwn")
-                        .createdAt(OffsetDateTime.parse("2025-01-10T20:11:55.038Z"))
-                        .kind(DomainListResponse.Kind.DOMAIN)
-                        .name("info.tomlinson.ai")
-                        .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
+                        .id("dns_01kabn43yqyxn2bx4ve84mczd3")
+                        .createdAt("createdAt")
+                        .name("name")
                         .region(DomainListResponse.Region.EU_WEST_1)
-                        .sendingStatus(DomainListResponse.SendingStatus.DISABLED)
+                        .sendingStatus(DomainListResponse.SendingStatus.ENABLED)
                         .status(DomainListResponse.Status.BOOTSTRAPPING)
-                        .statusAt("2025-01-10T20:11:55.038Z")
-                        .modifiedAt(OffsetDateTime.parse("2025-01-10T20:11:55.038Z"))
                         .build()
                 )
-                .nextCursor("next_cursor")
+                .nextCursor("nextCursor")
                 .build()
 
         val roundtrippedDomainListPageResponse =

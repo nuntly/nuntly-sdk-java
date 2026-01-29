@@ -51,14 +51,14 @@ class EventServiceAsyncImpl internal constructor(private val clientOptions: Clie
         params: EventDeliveriesParams,
         requestOptions: RequestOptions,
     ): CompletableFuture<List<EventDeliveriesResponse>> =
-        // get /webhooks/{id}/events/{event_id}/deliveries
+        // get /webhooks/{id}/events/{eventId}/deliveries
         withRawResponse().deliveries(params, requestOptions).thenApply { it.parse() }
 
     override fun replay(
         params: EventReplayParams,
         requestOptions: RequestOptions,
     ): CompletableFuture<EventReplayResponse> =
-        // post /webhooks/{id}/events/{event_id}/replay
+        // post /webhooks/{id}/events/{eventId}/replay
         withRawResponse().replay(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :

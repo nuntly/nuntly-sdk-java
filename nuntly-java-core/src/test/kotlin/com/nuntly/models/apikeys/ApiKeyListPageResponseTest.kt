@@ -4,8 +4,6 @@ package com.nuntly.models.apikeys
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.jsonMapper
-import java.time.OffsetDateTime
-import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -17,37 +15,27 @@ internal class ApiKeyListPageResponseTest {
             ApiKeyListPageResponse.builder()
                 .addData(
                     ApiKeyListResponse.builder()
-                        .id("apk_01jnx372zj49s3zqnn7ew8hzpk")
-                        .apikeyTruncated("GGvLoL")
-                        .createdAt(OffsetDateTime.parse("2025-03-09T09:19:13.394Z"))
-                        .kind(ApiKeyListResponse.Kind.API_KEY)
-                        .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                        .region(ApiKeyListResponse.Region.EU_WEST_1)
+                        .id("apk_01ka8k8s80gvx9604cn9am5st4")
+                        .createdAt("createdAt")
+                        .shortToken("shortToken")
                         .status(ApiKeyListResponse.Status.ENABLED)
-                        .userId("user_01jh6jk831bzen14edngw38we9")
-                        .modifiedAt(OffsetDateTime.parse("2025-03-09T09:19:13.394Z"))
-                        .name("My API key")
+                        .name("name")
                         .build()
                 )
-                .nextCursor("next_cursor")
+                .nextCursor("nextCursor")
                 .build()
 
-        assertThat(apiKeyListPageResponse.data().getOrNull())
+        assertThat(apiKeyListPageResponse.data())
             .containsExactly(
                 ApiKeyListResponse.builder()
-                    .id("apk_01jnx372zj49s3zqnn7ew8hzpk")
-                    .apikeyTruncated("GGvLoL")
-                    .createdAt(OffsetDateTime.parse("2025-03-09T09:19:13.394Z"))
-                    .kind(ApiKeyListResponse.Kind.API_KEY)
-                    .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                    .region(ApiKeyListResponse.Region.EU_WEST_1)
+                    .id("apk_01ka8k8s80gvx9604cn9am5st4")
+                    .createdAt("createdAt")
+                    .shortToken("shortToken")
                     .status(ApiKeyListResponse.Status.ENABLED)
-                    .userId("user_01jh6jk831bzen14edngw38we9")
-                    .modifiedAt(OffsetDateTime.parse("2025-03-09T09:19:13.394Z"))
-                    .name("My API key")
+                    .name("name")
                     .build()
             )
-        assertThat(apiKeyListPageResponse.nextCursor()).contains("next_cursor")
+        assertThat(apiKeyListPageResponse.nextCursor()).contains("nextCursor")
     }
 
     @Test
@@ -57,19 +45,14 @@ internal class ApiKeyListPageResponseTest {
             ApiKeyListPageResponse.builder()
                 .addData(
                     ApiKeyListResponse.builder()
-                        .id("apk_01jnx372zj49s3zqnn7ew8hzpk")
-                        .apikeyTruncated("GGvLoL")
-                        .createdAt(OffsetDateTime.parse("2025-03-09T09:19:13.394Z"))
-                        .kind(ApiKeyListResponse.Kind.API_KEY)
-                        .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                        .region(ApiKeyListResponse.Region.EU_WEST_1)
+                        .id("apk_01ka8k8s80gvx9604cn9am5st4")
+                        .createdAt("createdAt")
+                        .shortToken("shortToken")
                         .status(ApiKeyListResponse.Status.ENABLED)
-                        .userId("user_01jh6jk831bzen14edngw38we9")
-                        .modifiedAt(OffsetDateTime.parse("2025-03-09T09:19:13.394Z"))
-                        .name("My API key")
+                        .name("name")
                         .build()
                 )
-                .nextCursor("next_cursor")
+                .nextCursor("nextCursor")
                 .build()
 
         val roundtrippedApiKeyListPageResponse =

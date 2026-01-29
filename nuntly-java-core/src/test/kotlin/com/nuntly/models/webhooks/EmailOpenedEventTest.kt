@@ -5,9 +5,6 @@ package com.nuntly.models.webhooks
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.JsonValue
 import com.nuntly.core.jsonMapper
-import com.nuntly.models.shared.EmailEvent
-import com.nuntly.models.shared.EventType
-import com.nuntly.models.shared.OpenDetail
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -18,73 +15,81 @@ internal class EmailOpenedEventTest {
         val emailOpenedEvent =
             EmailOpenedEvent.builder()
                 .id("id")
-                .createdAt("created_at")
-                .type(EventType.EMAIL_OPENED)
-                .kind(BaseEvent.Kind.EVENT)
+                .createdAt("createdAt")
                 .data(
                     EmailOpenedEvent.Data.builder()
                         .id("id")
-                        .domain("domain")
-                        .domainId("domain_id")
-                        .enqueueAt("enqueue_at")
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .enqueuedAt("enqueuedAt")
                         .from("from")
-                        .messageId("message_id")
-                        .orgId("org_id")
-                        .sentAt("sent_at")
+                        .messageId("messageId")
+                        .open(
+                            EmailOpenedEvent.Data.Open.builder()
+                                .openedAt("openedAt")
+                                .userAgent("userAgent")
+                                .build()
+                        )
+                        .orgId("orgId")
+                        .sentAt("sentAt")
                         .subject("subject")
                         .to("string")
                         .bcc("string")
-                        .bulkId("bulk_id")
+                        .bulkId("bulkId")
                         .cc("string")
-                        .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
-                        .replyTo("string")
-                        .tags(
-                            EmailEvent.Tags.builder()
-                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
+                        .addHeader(
+                            EmailOpenedEvent.Data.Header.builder()
+                                .name("name")
+                                .value("value")
                                 .build()
                         )
-                        .open(
-                            OpenDetail.builder()
-                                .openedAt("opened_at")
-                                .userAgent("user_agent")
+                        .replyTo("string")
+                        .tags(
+                            EmailOpenedEvent.Data.Tags.builder()
+                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                 .build()
                         )
                         .build()
                 )
+                .type(EmailOpenedEvent.Type.EMAIL_OPENED)
                 .build()
 
         assertThat(emailOpenedEvent.id()).isEqualTo("id")
-        assertThat(emailOpenedEvent.createdAt()).isEqualTo("created_at")
-        assertThat(emailOpenedEvent.type()).isEqualTo(EventType.EMAIL_OPENED)
-        assertThat(emailOpenedEvent.kind()).contains(BaseEvent.Kind.EVENT)
+        assertThat(emailOpenedEvent.createdAt()).isEqualTo("createdAt")
         assertThat(emailOpenedEvent.data())
             .isEqualTo(
                 EmailOpenedEvent.Data.builder()
                     .id("id")
-                    .domain("domain")
-                    .domainId("domain_id")
-                    .enqueueAt("enqueue_at")
+                    .domainId("domainId")
+                    .domainName("domainName")
+                    .enqueuedAt("enqueuedAt")
                     .from("from")
-                    .messageId("message_id")
-                    .orgId("org_id")
-                    .sentAt("sent_at")
+                    .messageId("messageId")
+                    .open(
+                        EmailOpenedEvent.Data.Open.builder()
+                            .openedAt("openedAt")
+                            .userAgent("userAgent")
+                            .build()
+                    )
+                    .orgId("orgId")
+                    .sentAt("sentAt")
                     .subject("subject")
                     .to("string")
                     .bcc("string")
-                    .bulkId("bulk_id")
+                    .bulkId("bulkId")
                     .cc("string")
-                    .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
+                    .addHeader(
+                        EmailOpenedEvent.Data.Header.builder().name("name").value("value").build()
+                    )
                     .replyTo("string")
                     .tags(
-                        EmailEvent.Tags.builder()
+                        EmailOpenedEvent.Data.Tags.builder()
                             .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                             .build()
                     )
-                    .open(
-                        OpenDetail.builder().openedAt("opened_at").userAgent("user_agent").build()
-                    )
                     .build()
             )
+        assertThat(emailOpenedEvent.type()).isEqualTo(EmailOpenedEvent.Type.EMAIL_OPENED)
     }
 
     @Test
@@ -93,39 +98,43 @@ internal class EmailOpenedEventTest {
         val emailOpenedEvent =
             EmailOpenedEvent.builder()
                 .id("id")
-                .createdAt("created_at")
-                .type(EventType.EMAIL_OPENED)
-                .kind(BaseEvent.Kind.EVENT)
+                .createdAt("createdAt")
                 .data(
                     EmailOpenedEvent.Data.builder()
                         .id("id")
-                        .domain("domain")
-                        .domainId("domain_id")
-                        .enqueueAt("enqueue_at")
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .enqueuedAt("enqueuedAt")
                         .from("from")
-                        .messageId("message_id")
-                        .orgId("org_id")
-                        .sentAt("sent_at")
+                        .messageId("messageId")
+                        .open(
+                            EmailOpenedEvent.Data.Open.builder()
+                                .openedAt("openedAt")
+                                .userAgent("userAgent")
+                                .build()
+                        )
+                        .orgId("orgId")
+                        .sentAt("sentAt")
                         .subject("subject")
                         .to("string")
                         .bcc("string")
-                        .bulkId("bulk_id")
+                        .bulkId("bulkId")
                         .cc("string")
-                        .addHeader(EmailEvent.Header.builder().name("name").value("value").build())
-                        .replyTo("string")
-                        .tags(
-                            EmailEvent.Tags.builder()
-                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
+                        .addHeader(
+                            EmailOpenedEvent.Data.Header.builder()
+                                .name("name")
+                                .value("value")
                                 .build()
                         )
-                        .open(
-                            OpenDetail.builder()
-                                .openedAt("opened_at")
-                                .userAgent("user_agent")
+                        .replyTo("string")
+                        .tags(
+                            EmailOpenedEvent.Data.Tags.builder()
+                                .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                 .build()
                         )
                         .build()
                 )
+                .type(EmailOpenedEvent.Type.EMAIL_OPENED)
                 .build()
 
         val roundtrippedEmailOpenedEvent =

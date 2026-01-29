@@ -113,10 +113,10 @@ NuntlyClient client = NuntlyOkHttpClient.builder()
 
 See this table for the available options:
 
-| Setter    | System property  | Environment variable | Required | Default value                 |
-| --------- | ---------------- | -------------------- | -------- | ----------------------------- |
-| `apiKey`  | `nuntly.apiKey`  | `NUNTLY_API_KEY`     | false    | -                             |
-| `baseUrl` | `nuntly.baseUrl` | `NUNTLY_BASE_URL`    | true     | `"https://api.eu.nuntly.com"` |
+| Setter    | System property  | Environment variable | Required | Default value              |
+| --------- | ---------------- | -------------------- | -------- | -------------------------- |
+| `apiKey`  | `nuntly.apiKey`  | `NUNTLY_API_KEY`     | false    | -                          |
+| `baseUrl` | `nuntly.baseUrl` | `NUNTLY_BASE_URL`    | true     | `"https://api.nuntly.com"` |
 
 System properties take precedence over environment variables.
 
@@ -613,10 +613,11 @@ To forcibly omit a required parameter or property, pass [`JsonMissing`](nuntly-j
 ```java
 import com.nuntly.core.JsonMissing;
 import com.nuntly.models.emails.EmailSendParams;
+import java.util.List;
 
 EmailSendParams params = EmailSendParams.builder()
-    .subject("Welcome to Tomlinson AI!")
-    .to("carlo43@gmail.com")
+    .subject("subject")
+    .toOfStrings(List.of("string"))
     .from(JsonMissing.of())
     .build();
 ```

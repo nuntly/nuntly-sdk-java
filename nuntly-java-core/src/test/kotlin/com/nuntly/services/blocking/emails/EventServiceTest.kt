@@ -4,7 +4,6 @@ package com.nuntly.services.blocking.emails
 
 import com.nuntly.TestServerExtension
 import com.nuntly.client.okhttp.NuntlyOkHttpClient
-import com.nuntly.models.emails.events.EventListParams
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -20,14 +19,7 @@ internal class EventServiceTest {
                 .build()
         val eventService = client.emails().events()
 
-        val events =
-            eventService.list(
-                EventListParams.builder()
-                    .id("em_qiPSkLrTmXvDohbxCcYt3pFEMGgnjHD6kbDL8d4uGKvNGboT")
-                    .cursor("cursor")
-                    .limit(1.0)
-                    .build()
-            )
+        val events = eventService.list("em_01ka8k8s80gvx9604cn9am5st4")
 
         events.forEach { it.validate() }
     }

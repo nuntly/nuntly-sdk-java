@@ -20,6 +20,7 @@ private constructor(
     private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
+    /** The id of the email */
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /** Additional body properties to send with the request. */
@@ -57,6 +58,7 @@ private constructor(
             additionalBodyProperties = emailCancelParams.additionalBodyProperties.toMutableMap()
         }
 
+        /** The id of the email */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */

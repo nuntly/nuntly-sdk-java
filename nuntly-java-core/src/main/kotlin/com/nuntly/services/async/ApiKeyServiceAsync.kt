@@ -32,7 +32,7 @@ interface ApiKeyServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ApiKeyServiceAsync
 
-    /** Create a new api key */
+    /** Create an API key */
     fun create(): CompletableFuture<ApiKeyCreateResponse> = create(ApiKeyCreateParams.none())
 
     /** @see create */
@@ -50,7 +50,7 @@ interface ApiKeyServiceAsync {
     fun create(requestOptions: RequestOptions): CompletableFuture<ApiKeyCreateResponse> =
         create(ApiKeyCreateParams.none(), requestOptions)
 
-    /** Return the api-key with the given ID */
+    /** Retrieve an API key */
     fun retrieve(id: String): CompletableFuture<ApiKeyRetrieveResponse> =
         retrieve(id, ApiKeyRetrieveParams.none())
 
@@ -85,7 +85,7 @@ interface ApiKeyServiceAsync {
     ): CompletableFuture<ApiKeyRetrieveResponse> =
         retrieve(id, ApiKeyRetrieveParams.none(), requestOptions)
 
-    /** Updates partial api key fields with the given id */
+    /** Update an API key */
     fun update(id: String): CompletableFuture<ApiKeyUpdateResponse> =
         update(id, ApiKeyUpdateParams.none())
 
@@ -120,7 +120,7 @@ interface ApiKeyServiceAsync {
     ): CompletableFuture<ApiKeyUpdateResponse> =
         update(id, ApiKeyUpdateParams.none(), requestOptions)
 
-    /** Return a list of your api keys */
+    /** List API keys */
     fun list(): CompletableFuture<ApiKeyListPageAsync> = list(ApiKeyListParams.none())
 
     /** @see list */
@@ -138,7 +138,7 @@ interface ApiKeyServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<ApiKeyListPageAsync> =
         list(ApiKeyListParams.none(), requestOptions)
 
-    /** Delete the api key with the given ID */
+    /** Delete an API key */
     fun delete(id: String): CompletableFuture<ApiKeyDeleteResponse> =
         delete(id, ApiKeyDeleteParams.none())
 

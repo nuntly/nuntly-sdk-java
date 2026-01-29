@@ -11,11 +11,10 @@ internal class WebhookCreateParamsTest {
     @Test
     fun create() {
         WebhookCreateParams.builder()
-            .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-            .addEvent(EventType.EMAIL_DELIVERED)
-            .addEvent(EventType.EMAIL_SENT)
+            .endpointUrl("https://example.com")
+            .addEvent(EventType.EMAIL_QUEUED)
+            .name("name")
             .status(WebhookCreateParams.Status.ENABLED)
-            .name("My webhook")
             .build()
     }
 
@@ -23,37 +22,31 @@ internal class WebhookCreateParamsTest {
     fun body() {
         val params =
             WebhookCreateParams.builder()
-                .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-                .addEvent(EventType.EMAIL_DELIVERED)
-                .addEvent(EventType.EMAIL_SENT)
+                .endpointUrl("https://example.com")
+                .addEvent(EventType.EMAIL_QUEUED)
+                .name("name")
                 .status(WebhookCreateParams.Status.ENABLED)
-                .name("My webhook")
                 .build()
 
         val body = params._body()
 
-        assertThat(body.endpointUrl())
-            .isEqualTo("https://webhook.site/12345678-1234-5678-1234-123456789012")
-        assertThat(body.events()).containsExactly(EventType.EMAIL_DELIVERED, EventType.EMAIL_SENT)
-        assertThat(body.status()).isEqualTo(WebhookCreateParams.Status.ENABLED)
-        assertThat(body.name()).contains("My webhook")
+        assertThat(body.endpointUrl()).isEqualTo("https://example.com")
+        assertThat(body.events()).containsExactly(EventType.EMAIL_QUEUED)
+        assertThat(body.name()).contains("name")
+        assertThat(body.status()).contains(WebhookCreateParams.Status.ENABLED)
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
             WebhookCreateParams.builder()
-                .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-                .addEvent(EventType.EMAIL_DELIVERED)
-                .addEvent(EventType.EMAIL_SENT)
-                .status(WebhookCreateParams.Status.ENABLED)
+                .endpointUrl("https://example.com")
+                .addEvent(EventType.EMAIL_QUEUED)
                 .build()
 
         val body = params._body()
 
-        assertThat(body.endpointUrl())
-            .isEqualTo("https://webhook.site/12345678-1234-5678-1234-123456789012")
-        assertThat(body.events()).containsExactly(EventType.EMAIL_DELIVERED, EventType.EMAIL_SENT)
-        assertThat(body.status()).isEqualTo(WebhookCreateParams.Status.ENABLED)
+        assertThat(body.endpointUrl()).isEqualTo("https://example.com")
+        assertThat(body.events()).containsExactly(EventType.EMAIL_QUEUED)
     }
 }
