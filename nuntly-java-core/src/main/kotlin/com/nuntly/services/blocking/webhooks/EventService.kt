@@ -28,7 +28,7 @@ interface EventService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService
 
-    /** List webhooks events */
+    /** List webhook events */
     fun list(): EventListPage = list(EventListParams.none())
 
     /** @see list */
