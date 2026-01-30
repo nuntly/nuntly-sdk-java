@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Return a list of recent emails */
+/** Return a list of recent emails. */
 class EmailListParams
 private constructor(
     private val cursor: String?,
