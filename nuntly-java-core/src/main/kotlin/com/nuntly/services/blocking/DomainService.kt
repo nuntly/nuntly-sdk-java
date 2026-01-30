@@ -102,6 +102,7 @@ interface DomainService {
     fun update(id: String, requestOptions: RequestOptions): DomainUpdateResponse =
         update(id, DomainUpdateParams.none(), requestOptions)
 
+    /** List all domains */
     fun list(): DomainListPage = list(DomainListParams.none())
 
     /** @see list */
