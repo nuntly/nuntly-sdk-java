@@ -72,7 +72,7 @@ interface EmailService {
     fun retrieve(id: String, requestOptions: RequestOptions): EmailRetrieveResponse =
         retrieve(id, EmailRetrieveParams.none(), requestOptions)
 
-    /** Return a list of recent emails */
+    /** Return a list of recent emails. */
     fun list(): EmailListPage = list(EmailListParams.none())
 
     /** @see list */

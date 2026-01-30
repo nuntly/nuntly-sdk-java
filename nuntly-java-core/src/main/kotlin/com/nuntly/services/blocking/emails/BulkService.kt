@@ -56,7 +56,7 @@ interface BulkService {
     fun retrieve(bulkId: String, requestOptions: RequestOptions): BulkRetrieveResponse =
         retrieve(bulkId, BulkRetrieveParams.none(), requestOptions)
 
-    /** Send bulk emails through Nuntly platform. */
+    /** Send bulk emails. */
     fun send(params: BulkSendParams): BulkSendResponse = send(params, RequestOptions.none())
 
     /** @see send */

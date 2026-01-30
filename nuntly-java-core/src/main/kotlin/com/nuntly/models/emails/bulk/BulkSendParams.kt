@@ -34,7 +34,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Send bulk emails through Nuntly platform. */
+/** Send bulk emails. */
 class BulkSendParams
 private constructor(
     private val body: Body,

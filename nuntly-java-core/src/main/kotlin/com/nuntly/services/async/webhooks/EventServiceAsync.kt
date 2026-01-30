@@ -28,7 +28,7 @@ interface EventServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventServiceAsync
 
-    /** List webhooks events */
+    /** List webhook events */
     fun list(): CompletableFuture<EventListPageAsync> = list(EventListParams.none())
 
     /** @see list */

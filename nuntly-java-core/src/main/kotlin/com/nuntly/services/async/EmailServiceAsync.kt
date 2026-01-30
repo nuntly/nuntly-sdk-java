@@ -77,7 +77,7 @@ interface EmailServiceAsync {
     ): CompletableFuture<EmailRetrieveResponse> =
         retrieve(id, EmailRetrieveParams.none(), requestOptions)
 
-    /** Return a list of recent emails */
+    /** Return a list of recent emails. */
     fun list(): CompletableFuture<EmailListPageAsync> = list(EmailListParams.none())
 
     /** @see list */

@@ -61,7 +61,7 @@ interface BulkServiceAsync {
     ): CompletableFuture<BulkRetrieveResponse> =
         retrieve(bulkId, BulkRetrieveParams.none(), requestOptions)
 
-    /** Send bulk emails through Nuntly platform. */
+    /** Send bulk emails. */
     fun send(params: BulkSendParams): CompletableFuture<BulkSendResponse> =
         send(params, RequestOptions.none())
 

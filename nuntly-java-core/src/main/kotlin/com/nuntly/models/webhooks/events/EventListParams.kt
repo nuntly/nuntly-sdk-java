@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** List webhooks events */
+/** List webhook events */
 class EventListParams
 private constructor(
     private val cursor: String?,
