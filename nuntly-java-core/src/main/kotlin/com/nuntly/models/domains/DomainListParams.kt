@@ -9,6 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
+/** List all domains */
 class DomainListParams
 private constructor(
     private val cursor: String?,

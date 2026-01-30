@@ -112,6 +112,7 @@ interface DomainServiceAsync {
     ): CompletableFuture<DomainUpdateResponse> =
         update(id, DomainUpdateParams.none(), requestOptions)
 
+    /** List all domains */
     fun list(): CompletableFuture<DomainListPageAsync> = list(DomainListParams.none())
 
     /** @see list */
