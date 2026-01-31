@@ -1,5 +1,47 @@
 # Changelog
 
+## 0.4.0 (2026-01-31)
+
+Full Changelog: [v0.3.0...v0.4.0](https://github.com/nuntly/nuntly-sdk-java/compare/v0.3.0...v0.4.0)
+
+### Features
+
+* **api:** config update for obazoud/dev ([2287287](https://github.com/nuntly/nuntly-sdk-java/commit/228728703999328d30933ef425d9397872aacb51))
+* **api:** manual updates ([9a51a9f](https://github.com/nuntly/nuntly-sdk-java/commit/9a51a9f6a32bb37d5b2574fd0f283a7f8e61f705))
+* **api:** manual updates ([856589c](https://github.com/nuntly/nuntly-sdk-java/commit/856589c8fd9278a41855d9cf29f1b570cdc74779))
+* **api:** Move EmailHeaders in shared ([b420f5c](https://github.com/nuntly/nuntly-sdk-java/commit/b420f5cd739ca8fbb3d4109aa8680e55c21c0622))
+* **api:** prepare the next version of the API ([ba42466](https://github.com/nuntly/nuntly-sdk-java/commit/ba42466c7ad2f6724c2384c658dcd001089ace86))
+* **api:** rename retry to replay ([e295c3a](https://github.com/nuntly/nuntly-sdk-java/commit/e295c3ab9e13712ede33787d1f536d97acdcde0f))
+* **api:** rotate webhook signing secret ([f58af50](https://github.com/nuntly/nuntly-sdk-java/commit/f58af50178dea5f14c17913d38632f9ee1c49a38))
+* **api:** webhook events, retry and deliveries ([84fad04](https://github.com/nuntly/nuntly-sdk-java/commit/84fad040680615efe58a5803a7ac23185b49f002))
+* **client:** expose sleeper option ([2500e45](https://github.com/nuntly/nuntly-sdk-java/commit/2500e452729d298249a260b5c0864e947e74e342))
+
+
+### Bug Fixes
+
+* **client:** deserialization of empty objects ([16224a8](https://github.com/nuntly/nuntly-sdk-java/commit/16224a8645365fb447dbc9ba19f205477bc0e060))
+* **client:** ensure single timer is created per client ([2500e45](https://github.com/nuntly/nuntly-sdk-java/commit/2500e452729d298249a260b5c0864e947e74e342))
+* **client:** incorrect `getPackageVersion` impl ([a1caba1](https://github.com/nuntly/nuntly-sdk-java/commit/a1caba15908cc1f4736e5e6ddee39ab7dbc0738a))
+* **client:** multi-value header serialization ([fe5e7b4](https://github.com/nuntly/nuntly-sdk-java/commit/fe5e7b4e87d0df3ed144f6f02fdb14e6ee52bd42))
+
+
+### Chores
+
+* configure new SDK language ([b7ac23b](https://github.com/nuntly/nuntly-sdk-java/commit/b7ac23b4d084a55623a36881e96a1b9f1c551ad4))
+* improve example values ([b3b0a61](https://github.com/nuntly/nuntly-sdk-java/commit/b3b0a61fddafe48f08c8c28ff8c8308f60164c58))
+* improve formatter performance ([871d0ca](https://github.com/nuntly/nuntly-sdk-java/commit/871d0caed79a8aa74508a2370b63df2bbb7f2b31))
+* improve formatter performance ([d595019](https://github.com/nuntly/nuntly-sdk-java/commit/d595019c6c10b4c8d9b9a9517caf398b5857e083))
+* **internal:** allow passing args to `./scripts/test` ([3b520fc](https://github.com/nuntly/nuntly-sdk-java/commit/3b520fc0c72bbcc256e404f12aba7e68424d5a90))
+* **internal:** codegen related update ([e86d29e](https://github.com/nuntly/nuntly-sdk-java/commit/e86d29e3b4390731ee96b93f4b60c809eadd7042))
+* **internal:** codegen related update ([c08b0fc](https://github.com/nuntly/nuntly-sdk-java/commit/c08b0fc06742787fc7f1ee694848807638001e8a))
+* **internal:** codegen related update ([712e89b](https://github.com/nuntly/nuntly-sdk-java/commit/712e89be587b48ce61bf77d988970f30bb7572bd))
+* update SDK settings ([74d4425](https://github.com/nuntly/nuntly-sdk-java/commit/74d44258da58136ea71237d4067bd2fe93100033))
+
+
+### Documentation
+
+* **client:** update readme timeout snippet ([b0b46ed](https://github.com/nuntly/nuntly-sdk-java/commit/b0b46ed7cb7cd24181a4df41435ce813fb68ecc6))
+
 ## 0.3.0 (2026-01-29)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/nuntly/nuntly-sdk-java/compare/v0.2.0...v0.3.0)
