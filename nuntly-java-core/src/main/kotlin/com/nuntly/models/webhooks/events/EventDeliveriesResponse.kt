@@ -16,7 +16,6 @@ import com.nuntly.core.toImmutable
 import com.nuntly.errors.NuntlyInvalidDataException
 import java.util.Collections
 import java.util.Objects
-import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class EventDeliveriesResponse
@@ -34,7 +33,7 @@ private constructor(
     private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
         @JsonProperty("code") @ExcludeMissing code: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("delivered_at")
+        @JsonProperty("deliveredAt")
         @ExcludeMissing
         deliveredAt: JsonField<String> = JsonMissing.of(),
         @JsonProperty("response") @ExcludeMissing response: JsonField<Response> = JsonMissing.of(),
@@ -57,13 +56,13 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun deliveredAt(): String = deliveredAt.getRequired("delivered_at")
+    fun deliveredAt(): String = deliveredAt.getRequired("deliveredAt")
 
     /**
-     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun response(): Optional<Response> = response.getOptional("response")
+    fun response(): Response = response.getRequired("response")
 
     /**
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
@@ -90,9 +89,7 @@ private constructor(
      *
      * Unlike [deliveredAt], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("delivered_at")
-    @ExcludeMissing
-    fun _deliveredAt(): JsonField<String> = deliveredAt
+    @JsonProperty("deliveredAt") @ExcludeMissing fun _deliveredAt(): JsonField<String> = deliveredAt
 
     /**
      * Returns the raw JSON value of [response].
@@ -188,10 +185,7 @@ private constructor(
          */
         fun deliveredAt(deliveredAt: JsonField<String>) = apply { this.deliveredAt = deliveredAt }
 
-        fun response(response: Response?) = response(JsonField.ofNullable(response))
-
-        /** Alias for calling [Builder.response] with `response.orElse(null)`. */
-        fun response(response: Optional<Response>) = response(response.getOrNull())
+        fun response(response: Response) = response(JsonField.of(response))
 
         /**
          * Sets [Builder.response] to an arbitrary JSON value.
@@ -268,7 +262,7 @@ private constructor(
         id()
         code()
         deliveredAt()
-        response().ifPresent { it.validate() }
+        response().validate()
         status().validate()
         validated = true
     }

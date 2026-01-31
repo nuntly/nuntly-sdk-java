@@ -4,7 +4,7 @@ package com.nuntly.models.emails.bulk
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.jsonMapper
-import com.nuntly.models.shared.EmailStatus
+import com.nuntly.models.emails.Status
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,48 +14,25 @@ internal class BulkRetrieveResponseTest {
     fun create() {
         val bulkRetrieveResponse =
             BulkRetrieveResponse.builder()
-                .id("blk_E9usgNhRPB8n11YujfZUHMSUztadfFDYUDWBp4zxVamsF18Y")
+                .id("id")
                 .addEmail(
                     BulkRetrieveResponse.Email.builder()
-                        .id("em_01jnvnn9avq52k5mrhn1gab0ci")
-                        .kind(BulkRetrieveResponse.Email.Kind.EMAIL)
-                        .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                        .status(EmailStatus.DELIVERED)
-                        .statusAt("2025-03-08T20:03:04.155Z")
+                        .id("em_01ka8k8s80gvx9604cn9am5st4")
+                        .status(Status.QUEUED)
+                        .detail("detail")
                         .build()
                 )
-                .addEmail(
-                    BulkRetrieveResponse.Email.builder()
-                        .id("em_01jnvnn9avq52k5mrhn1gab0cj")
-                        .kind(BulkRetrieveResponse.Email.Kind.EMAIL)
-                        .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                        .status(EmailStatus.DELIVERED)
-                        .statusAt("2025-03-08T20:03:04.155Z")
-                        .build()
-                )
-                .kind(BulkRetrieveResponse.Kind.BULK_EMAIL)
                 .build()
 
-        assertThat(bulkRetrieveResponse.id())
-            .isEqualTo("blk_E9usgNhRPB8n11YujfZUHMSUztadfFDYUDWBp4zxVamsF18Y")
+        assertThat(bulkRetrieveResponse.id()).isEqualTo("id")
         assertThat(bulkRetrieveResponse.emails())
             .containsExactly(
                 BulkRetrieveResponse.Email.builder()
-                    .id("em_01jnvnn9avq52k5mrhn1gab0ci")
-                    .kind(BulkRetrieveResponse.Email.Kind.EMAIL)
-                    .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                    .status(EmailStatus.DELIVERED)
-                    .statusAt("2025-03-08T20:03:04.155Z")
-                    .build(),
-                BulkRetrieveResponse.Email.builder()
-                    .id("em_01jnvnn9avq52k5mrhn1gab0cj")
-                    .kind(BulkRetrieveResponse.Email.Kind.EMAIL)
-                    .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                    .status(EmailStatus.DELIVERED)
-                    .statusAt("2025-03-08T20:03:04.155Z")
-                    .build(),
+                    .id("em_01ka8k8s80gvx9604cn9am5st4")
+                    .status(Status.QUEUED)
+                    .detail("detail")
+                    .build()
             )
-        assertThat(bulkRetrieveResponse.kind()).isEqualTo(BulkRetrieveResponse.Kind.BULK_EMAIL)
     }
 
     @Test
@@ -63,26 +40,14 @@ internal class BulkRetrieveResponseTest {
         val jsonMapper = jsonMapper()
         val bulkRetrieveResponse =
             BulkRetrieveResponse.builder()
-                .id("blk_E9usgNhRPB8n11YujfZUHMSUztadfFDYUDWBp4zxVamsF18Y")
+                .id("id")
                 .addEmail(
                     BulkRetrieveResponse.Email.builder()
-                        .id("em_01jnvnn9avq52k5mrhn1gab0ci")
-                        .kind(BulkRetrieveResponse.Email.Kind.EMAIL)
-                        .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                        .status(EmailStatus.DELIVERED)
-                        .statusAt("2025-03-08T20:03:04.155Z")
+                        .id("em_01ka8k8s80gvx9604cn9am5st4")
+                        .status(Status.QUEUED)
+                        .detail("detail")
                         .build()
                 )
-                .addEmail(
-                    BulkRetrieveResponse.Email.builder()
-                        .id("em_01jnvnn9avq52k5mrhn1gab0cj")
-                        .kind(BulkRetrieveResponse.Email.Kind.EMAIL)
-                        .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                        .status(EmailStatus.DELIVERED)
-                        .statusAt("2025-03-08T20:03:04.155Z")
-                        .build()
-                )
-                .kind(BulkRetrieveResponse.Kind.BULK_EMAIL)
                 .build()
 
         val roundtrippedBulkRetrieveResponse =

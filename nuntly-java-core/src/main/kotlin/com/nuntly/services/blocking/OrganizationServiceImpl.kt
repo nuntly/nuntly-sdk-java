@@ -13,7 +13,6 @@ import com.nuntly.core.http.HttpRequest
 import com.nuntly.core.http.HttpResponse
 import com.nuntly.core.http.HttpResponse.Handler
 import com.nuntly.core.http.HttpResponseFor
-import com.nuntly.core.http.json
 import com.nuntly.core.http.parseable
 import com.nuntly.core.prepare
 import com.nuntly.models.DataEnvelope
@@ -22,14 +21,6 @@ import com.nuntly.models.organizations.OrganizationListPageResponse
 import com.nuntly.models.organizations.OrganizationListParams
 import com.nuntly.models.organizations.OrganizationRetrieveParams
 import com.nuntly.models.organizations.OrganizationRetrieveResponse
-import com.nuntly.models.organizations.OrganizationUpdateParams
-import com.nuntly.models.organizations.OrganizationUpdateResponse
-import com.nuntly.services.blocking.organizations.InvitationService
-import com.nuntly.services.blocking.organizations.InvitationServiceImpl
-import com.nuntly.services.blocking.organizations.MembershipService
-import com.nuntly.services.blocking.organizations.MembershipServiceImpl
-import com.nuntly.services.blocking.organizations.SubscriptionService
-import com.nuntly.services.blocking.organizations.SubscriptionServiceImpl
 import com.nuntly.services.blocking.organizations.UsageService
 import com.nuntly.services.blocking.organizations.UsageServiceImpl
 import java.util.function.Consumer
@@ -42,26 +33,12 @@ class OrganizationServiceImpl internal constructor(private val clientOptions: Cl
         WithRawResponseImpl(clientOptions)
     }
 
-    private val memberships: MembershipService by lazy { MembershipServiceImpl(clientOptions) }
-
-    private val invitations: InvitationService by lazy { InvitationServiceImpl(clientOptions) }
-
-    private val subscriptions: SubscriptionService by lazy {
-        SubscriptionServiceImpl(clientOptions)
-    }
-
     private val usage: UsageService by lazy { UsageServiceImpl(clientOptions) }
 
     override fun withRawResponse(): OrganizationService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): OrganizationService =
         OrganizationServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
-
-    override fun memberships(): MembershipService = memberships
-
-    override fun invitations(): InvitationService = invitations
-
-    override fun subscriptions(): SubscriptionService = subscriptions
 
     override fun usage(): UsageService = usage
 
@@ -71,13 +48,6 @@ class OrganizationServiceImpl internal constructor(private val clientOptions: Cl
     ): OrganizationRetrieveResponse =
         // get /organizations/{id}
         withRawResponse().retrieve(params, requestOptions).parse()
-
-    override fun update(
-        params: OrganizationUpdateParams,
-        requestOptions: RequestOptions,
-    ): OrganizationUpdateResponse =
-        // patch /organizations/{id}
-        withRawResponse().update(params, requestOptions).parse()
 
     override fun list(
         params: OrganizationListParams,
@@ -92,18 +62,6 @@ class OrganizationServiceImpl internal constructor(private val clientOptions: Cl
         private val errorHandler: Handler<HttpResponse> =
             errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
-        private val memberships: MembershipService.WithRawResponse by lazy {
-            MembershipServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
-        private val invitations: InvitationService.WithRawResponse by lazy {
-            InvitationServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
-        private val subscriptions: SubscriptionService.WithRawResponse by lazy {
-            SubscriptionServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         private val usage: UsageService.WithRawResponse by lazy {
             UsageServiceImpl.WithRawResponseImpl(clientOptions)
         }
@@ -114,12 +72,6 @@ class OrganizationServiceImpl internal constructor(private val clientOptions: Cl
             OrganizationServiceImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
-
-        override fun memberships(): MembershipService.WithRawResponse = memberships
-
-        override fun invitations(): InvitationService.WithRawResponse = invitations
-
-        override fun subscriptions(): SubscriptionService.WithRawResponse = subscriptions
 
         override fun usage(): UsageService.WithRawResponse = usage
 
@@ -145,38 +97,6 @@ class OrganizationServiceImpl internal constructor(private val clientOptions: Cl
             return errorHandler.handle(response).parseable {
                 response
                     .use { retrieveHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-                    .data()
-            }
-        }
-
-        private val updateHandler: Handler<DataEnvelope<OrganizationUpdateResponse>> =
-            jsonHandler<DataEnvelope<OrganizationUpdateResponse>>(clientOptions.jsonMapper)
-
-        override fun update(
-            params: OrganizationUpdateParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<OrganizationUpdateResponse> {
-            // We check here instead of in the params builder because this can be specified
-            // positionally or in the params class.
-            checkRequired("id", params.id().getOrNull())
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.PATCH)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("organizations", params._pathParam(0))
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepare(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { updateHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

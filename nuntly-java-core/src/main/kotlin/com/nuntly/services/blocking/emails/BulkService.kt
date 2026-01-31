@@ -26,21 +26,21 @@ interface BulkService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): BulkService
 
-    /** Return a list of emails */
-    fun retrieve(id: String): BulkRetrieveResponse = retrieve(id, BulkRetrieveParams.none())
+    /** Retrieve bulk emails */
+    fun retrieve(bulkId: String): BulkRetrieveResponse = retrieve(bulkId, BulkRetrieveParams.none())
 
     /** @see retrieve */
     fun retrieve(
-        id: String,
+        bulkId: String,
         params: BulkRetrieveParams = BulkRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): BulkRetrieveResponse = retrieve(params.toBuilder().id(id).build(), requestOptions)
+    ): BulkRetrieveResponse = retrieve(params.toBuilder().bulkId(bulkId).build(), requestOptions)
 
     /** @see retrieve */
     fun retrieve(
-        id: String,
+        bulkId: String,
         params: BulkRetrieveParams = BulkRetrieveParams.none(),
-    ): BulkRetrieveResponse = retrieve(id, params, RequestOptions.none())
+    ): BulkRetrieveResponse = retrieve(bulkId, params, RequestOptions.none())
 
     /** @see retrieve */
     fun retrieve(
@@ -53,10 +53,10 @@ interface BulkService {
         retrieve(params, RequestOptions.none())
 
     /** @see retrieve */
-    fun retrieve(id: String, requestOptions: RequestOptions): BulkRetrieveResponse =
-        retrieve(id, BulkRetrieveParams.none(), requestOptions)
+    fun retrieve(bulkId: String, requestOptions: RequestOptions): BulkRetrieveResponse =
+        retrieve(bulkId, BulkRetrieveParams.none(), requestOptions)
 
-    /** Send bulk emails */
+    /** Send bulk emails. */
     fun send(params: BulkSendParams): BulkSendResponse = send(params, RequestOptions.none())
 
     /** @see send */
@@ -76,28 +76,28 @@ interface BulkService {
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): BulkService.WithRawResponse
 
         /**
-         * Returns a raw HTTP response for `get /emails/bulk/{id}`, but is otherwise the same as
+         * Returns a raw HTTP response for `get /emails/bulk/{bulkId}`, but is otherwise the same as
          * [BulkService.retrieve].
          */
         @MustBeClosed
-        fun retrieve(id: String): HttpResponseFor<BulkRetrieveResponse> =
-            retrieve(id, BulkRetrieveParams.none())
+        fun retrieve(bulkId: String): HttpResponseFor<BulkRetrieveResponse> =
+            retrieve(bulkId, BulkRetrieveParams.none())
 
         /** @see retrieve */
         @MustBeClosed
         fun retrieve(
-            id: String,
+            bulkId: String,
             params: BulkRetrieveParams = BulkRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<BulkRetrieveResponse> =
-            retrieve(params.toBuilder().id(id).build(), requestOptions)
+            retrieve(params.toBuilder().bulkId(bulkId).build(), requestOptions)
 
         /** @see retrieve */
         @MustBeClosed
         fun retrieve(
-            id: String,
+            bulkId: String,
             params: BulkRetrieveParams = BulkRetrieveParams.none(),
-        ): HttpResponseFor<BulkRetrieveResponse> = retrieve(id, params, RequestOptions.none())
+        ): HttpResponseFor<BulkRetrieveResponse> = retrieve(bulkId, params, RequestOptions.none())
 
         /** @see retrieve */
         @MustBeClosed
@@ -114,10 +114,10 @@ interface BulkService {
         /** @see retrieve */
         @MustBeClosed
         fun retrieve(
-            id: String,
+            bulkId: String,
             requestOptions: RequestOptions,
         ): HttpResponseFor<BulkRetrieveResponse> =
-            retrieve(id, BulkRetrieveParams.none(), requestOptions)
+            retrieve(bulkId, BulkRetrieveParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /emails/bulk`, but is otherwise the same as

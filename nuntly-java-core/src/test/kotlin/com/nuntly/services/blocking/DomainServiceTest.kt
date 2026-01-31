@@ -21,13 +21,7 @@ internal class DomainServiceTest {
                 .build()
         val domainService = client.domains()
 
-        val domain =
-            domainService.create(
-                DomainCreateParams.builder()
-                    .name("acme.com")
-                    .region(DomainCreateParams.Region.EU_WEST_1)
-                    .build()
-            )
+        val domain = domainService.create(DomainCreateParams.builder().name("name").build())
 
         domain.validate()
     }
@@ -41,7 +35,7 @@ internal class DomainServiceTest {
                 .build()
         val domainService = client.domains()
 
-        val domain = domainService.retrieve("dns_FdfQe2eZAzRrHCXKSr7VsxUz")
+        val domain = domainService.retrieve("dns_01kabn43yqyxn2bx4ve84mczd3")
 
         domain.validate()
     }
@@ -58,7 +52,7 @@ internal class DomainServiceTest {
         val domain =
             domainService.update(
                 DomainUpdateParams.builder()
-                    .id("dns_FdfQe2eZAzRrHCXKSr7VsxUz")
+                    .id("dns_01kabn43yqyxn2bx4ve84mczd3")
                     .clickTracking(true)
                     .openTracking(true)
                     .build()
@@ -90,7 +84,7 @@ internal class DomainServiceTest {
                 .build()
         val domainService = client.domains()
 
-        val domain = domainService.delete("dns_FdfQe2eZAzRrHCXKSr7VsxUz")
+        val domain = domainService.delete("dns_01kabn43yqyxn2bx4ve84mczd3")
 
         domain.validate()
     }

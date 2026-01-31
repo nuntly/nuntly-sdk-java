@@ -28,7 +28,7 @@ interface EventService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService
 
-    /** Return the last events sent by webhooks */
+    /** List webhook events */
     fun list(): EventListPage = list(EventListParams.none())
 
     /** @see list */
@@ -45,7 +45,7 @@ interface EventService {
     fun list(requestOptions: RequestOptions): EventListPage =
         list(EventListParams.none(), requestOptions)
 
-    /** Return the delivery attempts for the given webhook event ID */
+    /** List webhook event deliveries */
     fun deliveries(eventId: String, params: EventDeliveriesParams): List<EventDeliveriesResponse> =
         deliveries(eventId, params, RequestOptions.none())
 
@@ -67,7 +67,7 @@ interface EventService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): List<EventDeliveriesResponse>
 
-    /** Replay the webhook event */
+    /** Replay a webhook event */
     fun replay(eventId: String, params: EventReplayParams): EventReplayResponse =
         replay(eventId, params, RequestOptions.none())
 
@@ -122,7 +122,7 @@ interface EventService {
             list(EventListParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `get /webhooks/{id}/events/{event_id}/deliveries`, but is
+         * Returns a raw HTTP response for `get /webhooks/{id}/events/{eventId}/deliveries`, but is
          * otherwise the same as [EventService.deliveries].
          */
         @MustBeClosed
@@ -156,7 +156,7 @@ interface EventService {
         ): HttpResponseFor<List<EventDeliveriesResponse>>
 
         /**
-         * Returns a raw HTTP response for `post /webhooks/{id}/events/{event_id}/replay`, but is
+         * Returns a raw HTTP response for `post /webhooks/{id}/events/{eventId}/replay`, but is
          * otherwise the same as [EventService.replay].
          */
         @MustBeClosed

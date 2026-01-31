@@ -25,11 +25,10 @@ internal class WebhookServiceAsyncTest {
         val webhookFuture =
             webhookServiceAsync.create(
                 WebhookCreateParams.builder()
-                    .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-                    .addEvent(EventType.EMAIL_DELIVERED)
-                    .addEvent(EventType.EMAIL_SENT)
+                    .endpointUrl("https://example.com")
+                    .addEvent(EventType.EMAIL_QUEUED)
+                    .name("name")
                     .status(WebhookCreateParams.Status.ENABLED)
-                    .name("My webhook")
                     .build()
             )
 
@@ -46,7 +45,7 @@ internal class WebhookServiceAsyncTest {
                 .build()
         val webhookServiceAsync = client.webhooks()
 
-        val webhookFuture = webhookServiceAsync.retrieve("wh_YNtYn86oYZmP1ZHbnUBvXXFt")
+        val webhookFuture = webhookServiceAsync.retrieve("wh_01ka8k8s80gvx9604cn9am5st4")
 
         val webhook = webhookFuture.get()
         webhook.validate()
@@ -64,11 +63,10 @@ internal class WebhookServiceAsyncTest {
         val webhookFuture =
             webhookServiceAsync.update(
                 WebhookUpdateParams.builder()
-                    .id("wh_YNtYn86oYZmP1ZHbnUBvXXFt")
-                    .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-                    .addEvent(EventType.EMAIL_DELIVERED)
-                    .addEvent(EventType.EMAIL_SENT)
-                    .name("My webhook")
+                    .id("wh_01ka8k8s80gvx9604cn9am5st4")
+                    .endpointUrl("https://example.com")
+                    .addEvent(EventType.EMAIL_QUEUED)
+                    .name("name")
                     .rotateSecret(true)
                     .status(WebhookUpdateParams.Status.ENABLED)
                     .build()
@@ -102,7 +100,7 @@ internal class WebhookServiceAsyncTest {
                 .build()
         val webhookServiceAsync = client.webhooks()
 
-        val webhookFuture = webhookServiceAsync.delete("wh_YNtYn86oYZmP1ZHbnUBvXXFt")
+        val webhookFuture = webhookServiceAsync.delete("wh_01ka8k8s80gvx9604cn9am5st4")
 
         val webhook = webhookFuture.get()
         webhook.validate()

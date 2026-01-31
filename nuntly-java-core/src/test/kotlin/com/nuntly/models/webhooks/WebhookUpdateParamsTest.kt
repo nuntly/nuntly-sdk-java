@@ -12,11 +12,10 @@ internal class WebhookUpdateParamsTest {
     @Test
     fun create() {
         WebhookUpdateParams.builder()
-            .id("wh_YNtYn86oYZmP1ZHbnUBvXXFt")
-            .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-            .addEvent(EventType.EMAIL_DELIVERED)
-            .addEvent(EventType.EMAIL_SENT)
-            .name("My webhook")
+            .id("wh_01ka8k8s80gvx9604cn9am5st4")
+            .endpointUrl("https://example.com")
+            .addEvent(EventType.EMAIL_QUEUED)
+            .name("name")
             .rotateSecret(true)
             .status(WebhookUpdateParams.Status.ENABLED)
             .build()
@@ -24,9 +23,9 @@ internal class WebhookUpdateParamsTest {
 
     @Test
     fun pathParams() {
-        val params = WebhookUpdateParams.builder().id("wh_YNtYn86oYZmP1ZHbnUBvXXFt").build()
+        val params = WebhookUpdateParams.builder().id("wh_01ka8k8s80gvx9604cn9am5st4").build()
 
-        assertThat(params._pathParam(0)).isEqualTo("wh_YNtYn86oYZmP1ZHbnUBvXXFt")
+        assertThat(params._pathParam(0)).isEqualTo("wh_01ka8k8s80gvx9604cn9am5st4")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }
@@ -35,29 +34,26 @@ internal class WebhookUpdateParamsTest {
     fun body() {
         val params =
             WebhookUpdateParams.builder()
-                .id("wh_YNtYn86oYZmP1ZHbnUBvXXFt")
-                .endpointUrl("https://webhook.site/12345678-1234-5678-1234-123456789012")
-                .addEvent(EventType.EMAIL_DELIVERED)
-                .addEvent(EventType.EMAIL_SENT)
-                .name("My webhook")
+                .id("wh_01ka8k8s80gvx9604cn9am5st4")
+                .endpointUrl("https://example.com")
+                .addEvent(EventType.EMAIL_QUEUED)
+                .name("name")
                 .rotateSecret(true)
                 .status(WebhookUpdateParams.Status.ENABLED)
                 .build()
 
         val body = params._body()
 
-        assertThat(body.endpointUrl())
-            .contains("https://webhook.site/12345678-1234-5678-1234-123456789012")
-        assertThat(body.events().getOrNull())
-            .containsExactly(EventType.EMAIL_DELIVERED, EventType.EMAIL_SENT)
-        assertThat(body.name()).contains("My webhook")
+        assertThat(body.endpointUrl()).contains("https://example.com")
+        assertThat(body.events().getOrNull()).containsExactly(EventType.EMAIL_QUEUED)
+        assertThat(body.name()).contains("name")
         assertThat(body.rotateSecret()).contains(true)
         assertThat(body.status()).contains(WebhookUpdateParams.Status.ENABLED)
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = WebhookUpdateParams.builder().id("wh_YNtYn86oYZmP1ZHbnUBvXXFt").build()
+        val params = WebhookUpdateParams.builder().id("wh_01ka8k8s80gvx9604cn9am5st4").build()
 
         val body = params._body()
     }

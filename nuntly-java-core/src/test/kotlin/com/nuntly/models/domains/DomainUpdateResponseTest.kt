@@ -13,18 +13,14 @@ internal class DomainUpdateResponseTest {
     fun create() {
         val domainUpdateResponse =
             DomainUpdateResponse.builder()
-                .id("dns_01jh8xggryggczvjv4xfff4rwn")
-                .kind(DomainUpdateResponse.Kind.DOMAIN)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
+                .id("dns_01kabn43yqyxn2bx4ve84mczd3")
                 .clickTracking(true)
                 .openTracking(true)
                 .build()
 
-        assertThat(domainUpdateResponse.id()).isEqualTo("dns_01jh8xggryggczvjv4xfff4rwn")
-        assertThat(domainUpdateResponse.kind()).isEqualTo(DomainUpdateResponse.Kind.DOMAIN)
-        assertThat(domainUpdateResponse.orgId()).isEqualTo("org_01jh6jk82zjq9deye73h0mzcaq")
-        assertThat(domainUpdateResponse.clickTracking()).contains(true)
-        assertThat(domainUpdateResponse.openTracking()).contains(true)
+        assertThat(domainUpdateResponse.id()).isEqualTo("dns_01kabn43yqyxn2bx4ve84mczd3")
+        assertThat(domainUpdateResponse.clickTracking()).isEqualTo(true)
+        assertThat(domainUpdateResponse.openTracking()).isEqualTo(true)
     }
 
     @Test
@@ -32,9 +28,7 @@ internal class DomainUpdateResponseTest {
         val jsonMapper = jsonMapper()
         val domainUpdateResponse =
             DomainUpdateResponse.builder()
-                .id("dns_01jh8xggryggczvjv4xfff4rwn")
-                .kind(DomainUpdateResponse.Kind.DOMAIN)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
+                .id("dns_01kabn43yqyxn2bx4ve84mczd3")
                 .clickTracking(true)
                 .openTracking(true)
                 .build()

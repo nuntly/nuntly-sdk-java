@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.nuntly/nuntly-java)](https://central.sonatype.com/artifact/com.nuntly/nuntly-java/0.3.0)
-[![javadoc](https://javadoc.io/badge2/com.nuntly/nuntly-java/0.3.0/javadoc.svg)](https://javadoc.io/doc/com.nuntly/nuntly-java/0.3.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.nuntly/nuntly-java)](https://central.sonatype.com/artifact/com.nuntly/nuntly-java/0.4.0)
+[![javadoc](https://javadoc.io/badge2/com.nuntly/nuntly-java/0.4.0/javadoc.svg)](https://javadoc.io/doc/com.nuntly/nuntly-java/0.4.0)
 
 <!-- x-release-please-end -->
 
@@ -22,7 +22,7 @@ Use the Nuntly MCP Server to enable AI assistants to interact with this API, all
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [developers.nuntly.com](http://developers.nuntly.com). Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.nuntly/nuntly-java/0.3.0).
+The REST API documentation can be found on [developers.nuntly.com](http://developers.nuntly.com). Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.nuntly/nuntly-java/0.4.0).
 
 <!-- x-release-please-end -->
 
@@ -33,7 +33,7 @@ The REST API documentation can be found on [developers.nuntly.com](http://develo
 ### Gradle
 
 ```kotlin
-implementation("com.nuntly:nuntly-java:0.3.0")
+implementation("com.nuntly:nuntly-java:0.4.0")
 ```
 
 ### Maven
@@ -42,7 +42,7 @@ implementation("com.nuntly:nuntly-java:0.3.0")
 <dependency>
   <groupId>com.nuntly</groupId>
   <artifactId>nuntly-java</artifactId>
-  <version>0.3.0</version>
+  <version>0.4.0</version>
 </dependency>
 ```
 
@@ -113,10 +113,10 @@ NuntlyClient client = NuntlyOkHttpClient.builder()
 
 See this table for the available options:
 
-| Setter    | System property  | Environment variable | Required | Default value                 |
-| --------- | ---------------- | -------------------- | -------- | ----------------------------- |
-| `apiKey`  | `nuntly.apiKey`  | `NUNTLY_API_KEY`     | false    | -                             |
-| `baseUrl` | `nuntly.baseUrl` | `NUNTLY_BASE_URL`    | true     | `"https://api.eu.nuntly.com"` |
+| Setter    | System property  | Environment variable | Required | Default value              |
+| --------- | ---------------- | -------------------- | -------- | -------------------------- |
+| `apiKey`  | `nuntly.apiKey`  | `NUNTLY_API_KEY`     | false    | -                          |
+| `baseUrl` | `nuntly.baseUrl` | `NUNTLY_BASE_URL`    | true     | `"https://api.nuntly.com"` |
 
 System properties take precedence over environment variables.
 
@@ -613,10 +613,11 @@ To forcibly omit a required parameter or property, pass [`JsonMissing`](nuntly-j
 ```java
 import com.nuntly.core.JsonMissing;
 import com.nuntly.models.emails.EmailSendParams;
+import java.util.List;
 
 EmailSendParams params = EmailSendParams.builder()
-    .subject("Welcome to Tomlinson AI!")
-    .to("carlo43@gmail.com")
+    .subject("subject")
+    .toOfStrings(List.of("string"))
     .from(JsonMissing.of())
     .build();
 ```

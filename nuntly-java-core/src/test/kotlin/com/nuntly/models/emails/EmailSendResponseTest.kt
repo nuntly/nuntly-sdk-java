@@ -13,16 +13,12 @@ internal class EmailSendResponseTest {
     fun create() {
         val emailSendResponse =
             EmailSendResponse.builder()
-                .id("em_01jnvnn9avq52k5mrhn1gab0ch")
-                .kind(EmailSendResponse.Kind.EMAIL)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .status(EmailSendResponse.Status.QUEUED)
+                .id("em_01ka8k8s80gvx9604cn9am5st4")
+                .status(Status.QUEUED)
                 .build()
 
-        assertThat(emailSendResponse.id()).isEqualTo("em_01jnvnn9avq52k5mrhn1gab0ch")
-        assertThat(emailSendResponse.kind()).isEqualTo(EmailSendResponse.Kind.EMAIL)
-        assertThat(emailSendResponse.orgId()).isEqualTo("org_01jh6jk82zjq9deye73h0mzcaq")
-        assertThat(emailSendResponse.status()).isEqualTo(EmailSendResponse.Status.QUEUED)
+        assertThat(emailSendResponse.id()).isEqualTo("em_01ka8k8s80gvx9604cn9am5st4")
+        assertThat(emailSendResponse.status()).isEqualTo(Status.QUEUED)
     }
 
     @Test
@@ -30,10 +26,8 @@ internal class EmailSendResponseTest {
         val jsonMapper = jsonMapper()
         val emailSendResponse =
             EmailSendResponse.builder()
-                .id("em_01jnvnn9avq52k5mrhn1gab0ch")
-                .kind(EmailSendResponse.Kind.EMAIL)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .status(EmailSendResponse.Status.QUEUED)
+                .id("em_01ka8k8s80gvx9604cn9am5st4")
+                .status(Status.QUEUED)
                 .build()
 
         val roundtrippedEmailSendResponse =

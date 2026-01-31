@@ -12,26 +12,16 @@ internal class WebhookDeleteResponseTest {
     @Test
     fun create() {
         val webhookDeleteResponse =
-            WebhookDeleteResponse.builder()
-                .id("wh_01jne5c7gr2mhwrqg4zqwf48y2")
-                .kind(WebhookDeleteResponse.Kind.WEBHOOK)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .build()
+            WebhookDeleteResponse.builder().id("wh_01ka8k8s80gvx9604cn9am5st4").build()
 
-        assertThat(webhookDeleteResponse.id()).isEqualTo("wh_01jne5c7gr2mhwrqg4zqwf48y2")
-        assertThat(webhookDeleteResponse.kind()).isEqualTo(WebhookDeleteResponse.Kind.WEBHOOK)
-        assertThat(webhookDeleteResponse.orgId()).isEqualTo("org_01jh6jk82zjq9deye73h0mzcaq")
+        assertThat(webhookDeleteResponse.id()).isEqualTo("wh_01ka8k8s80gvx9604cn9am5st4")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
         val webhookDeleteResponse =
-            WebhookDeleteResponse.builder()
-                .id("wh_01jne5c7gr2mhwrqg4zqwf48y2")
-                .kind(WebhookDeleteResponse.Kind.WEBHOOK)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .build()
+            WebhookDeleteResponse.builder().id("wh_01ka8k8s80gvx9604cn9am5st4").build()
 
         val roundtrippedWebhookDeleteResponse =
             jsonMapper.readValue(

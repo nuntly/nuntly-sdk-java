@@ -12,7 +12,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Replay the webhook event */
+/** Replay a webhook event */
 class EventReplayParams
 private constructor(
     private val id: String,
@@ -22,8 +22,10 @@ private constructor(
     private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
+    /** The id of the webhook */
     fun id(): String = id
 
+    /** The id of the webhook event */
     fun eventId(): Optional<String> = Optional.ofNullable(eventId)
 
     /** Additional body properties to send with the request. */
@@ -68,8 +70,10 @@ private constructor(
             additionalBodyProperties = eventReplayParams.additionalBodyProperties.toMutableMap()
         }
 
+        /** The id of the webhook */
         fun id(id: String) = apply { this.id = id }
 
+        /** The id of the webhook event */
         fun eventId(eventId: String?) = apply { this.eventId = eventId }
 
         /** Alias for calling [Builder.eventId] with `eventId.orElse(null)`. */

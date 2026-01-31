@@ -32,7 +32,7 @@ interface DomainService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): DomainService
 
-    /** Return the domain with the given ID */
+    /** Create a domain */
     fun create(params: DomainCreateParams): DomainCreateResponse =
         create(params, RequestOptions.none())
 
@@ -42,7 +42,7 @@ interface DomainService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): DomainCreateResponse
 
-    /** Return the domain with the given id */
+    /** Retrieve a domain */
     fun retrieve(id: String): DomainRetrieveResponse = retrieve(id, DomainRetrieveParams.none())
 
     /** @see retrieve */
@@ -72,7 +72,7 @@ interface DomainService {
     fun retrieve(id: String, requestOptions: RequestOptions): DomainRetrieveResponse =
         retrieve(id, DomainRetrieveParams.none(), requestOptions)
 
-    /** Updates domain tracking settings */
+    /** Update a domain */
     fun update(id: String): DomainUpdateResponse = update(id, DomainUpdateParams.none())
 
     /** @see update */
@@ -102,7 +102,7 @@ interface DomainService {
     fun update(id: String, requestOptions: RequestOptions): DomainUpdateResponse =
         update(id, DomainUpdateParams.none(), requestOptions)
 
-    /** Return a list of your domains */
+    /** List all domains */
     fun list(): DomainListPage = list(DomainListParams.none())
 
     /** @see list */
@@ -119,7 +119,7 @@ interface DomainService {
     fun list(requestOptions: RequestOptions): DomainListPage =
         list(DomainListParams.none(), requestOptions)
 
-    /** Delete the domain with the given ID */
+    /** Delete a domain */
     fun delete(id: String): DomainDeleteResponse = delete(id, DomainDeleteParams.none())
 
     /** @see delete */

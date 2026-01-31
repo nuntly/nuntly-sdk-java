@@ -20,7 +20,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Updates partial api key fields with the given id */
+/** Update an API key */
 class ApiKeyUpdateParams
 private constructor(
     private val id: String?,
@@ -29,6 +29,7 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
+    /** The id of the api key */
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /**
@@ -40,8 +41,6 @@ private constructor(
     fun name(): Optional<String> = body.name()
 
     /**
-     * The status of the api key
-     *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -95,6 +94,7 @@ private constructor(
             additionalQueryParams = apiKeyUpdateParams.additionalQueryParams.toBuilder()
         }
 
+        /** The id of the api key */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */
@@ -121,7 +121,6 @@ private constructor(
          */
         fun name(name: JsonField<String>) = apply { body.name(name) }
 
-        /** The status of the api key */
         fun status(status: Status) = apply { body.status(status) }
 
         /**
@@ -298,8 +297,6 @@ private constructor(
         fun name(): Optional<String> = name.getOptional("name")
 
         /**
-         * The status of the api key
-         *
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
@@ -363,7 +360,6 @@ private constructor(
              */
             fun name(name: JsonField<String>) = apply { this.name = name }
 
-            /** The status of the api key */
             fun status(status: Status) = status(JsonField.of(status))
 
             /**
@@ -452,7 +448,6 @@ private constructor(
             "Body{name=$name, status=$status, additionalProperties=$additionalProperties}"
     }
 
-    /** The status of the api key */
     class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**

@@ -22,12 +22,7 @@ internal class DomainServiceAsyncTest {
         val domainServiceAsync = client.domains()
 
         val domainFuture =
-            domainServiceAsync.create(
-                DomainCreateParams.builder()
-                    .name("acme.com")
-                    .region(DomainCreateParams.Region.EU_WEST_1)
-                    .build()
-            )
+            domainServiceAsync.create(DomainCreateParams.builder().name("name").build())
 
         val domain = domainFuture.get()
         domain.validate()
@@ -42,7 +37,7 @@ internal class DomainServiceAsyncTest {
                 .build()
         val domainServiceAsync = client.domains()
 
-        val domainFuture = domainServiceAsync.retrieve("dns_FdfQe2eZAzRrHCXKSr7VsxUz")
+        val domainFuture = domainServiceAsync.retrieve("dns_01kabn43yqyxn2bx4ve84mczd3")
 
         val domain = domainFuture.get()
         domain.validate()
@@ -60,7 +55,7 @@ internal class DomainServiceAsyncTest {
         val domainFuture =
             domainServiceAsync.update(
                 DomainUpdateParams.builder()
-                    .id("dns_FdfQe2eZAzRrHCXKSr7VsxUz")
+                    .id("dns_01kabn43yqyxn2bx4ve84mczd3")
                     .clickTracking(true)
                     .openTracking(true)
                     .build()
@@ -94,7 +89,7 @@ internal class DomainServiceAsyncTest {
                 .build()
         val domainServiceAsync = client.domains()
 
-        val domainFuture = domainServiceAsync.delete("dns_FdfQe2eZAzRrHCXKSr7VsxUz")
+        val domainFuture = domainServiceAsync.delete("dns_01kabn43yqyxn2bx4ve84mczd3")
 
         val domain = domainFuture.get()
         domain.validate()

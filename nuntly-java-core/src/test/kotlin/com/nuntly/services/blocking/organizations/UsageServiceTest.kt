@@ -19,7 +19,7 @@ internal class UsageServiceTest {
                 .build()
         val usageService = client.organizations().usage()
 
-        val usage = usageService.retrieve("id")
+        val usage = usageService.retrieve("org_01ka8k8s80gvx9604cn9am5st4")
 
         usage.validate()
     }

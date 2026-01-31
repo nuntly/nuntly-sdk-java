@@ -14,6 +14,7 @@ import com.nuntly.models.emails.EmailRetrieveResponse
 import com.nuntly.models.emails.EmailSendParams
 import com.nuntly.models.emails.EmailSendResponse
 import com.nuntly.services.async.emails.BulkServiceAsync
+import com.nuntly.services.async.emails.ContentServiceAsync
 import com.nuntly.services.async.emails.EventServiceAsync
 import com.nuntly.services.async.emails.StatServiceAsync
 import java.util.concurrent.CompletableFuture
@@ -37,9 +38,11 @@ interface EmailServiceAsync {
 
     fun events(): EventServiceAsync
 
+    fun content(): ContentServiceAsync
+
     fun stats(): StatServiceAsync
 
-    /** Return the email with the given id */
+    /** Retrieve an email by its id */
     fun retrieve(id: String): CompletableFuture<EmailRetrieveResponse> =
         retrieve(id, EmailRetrieveParams.none())
 
@@ -74,7 +77,7 @@ interface EmailServiceAsync {
     ): CompletableFuture<EmailRetrieveResponse> =
         retrieve(id, EmailRetrieveParams.none(), requestOptions)
 
-    /** Return a list of your last emails */
+    /** Return a list of recent emails. */
     fun list(): CompletableFuture<EmailListPageAsync> = list(EmailListParams.none())
 
     /** @see list */
@@ -125,8 +128,8 @@ interface EmailServiceAsync {
         cancel(id, EmailCancelParams.none(), requestOptions)
 
     /**
-     * Send transactional emails through the Nuntly platform. It supports HTML and plain-text
-     * emails, attachments, labels, custom headers and scheduling.
+     * Send transactional emails through Nuntly platform. It supports HTML and plain-text emails,
+     * attachments, labels, custom headers and scheduling.
      */
     fun send(params: EmailSendParams): CompletableFuture<EmailSendResponse> =
         send(params, RequestOptions.none())
@@ -152,6 +155,8 @@ interface EmailServiceAsync {
         fun bulk(): BulkServiceAsync.WithRawResponse
 
         fun events(): EventServiceAsync.WithRawResponse
+
+        fun content(): ContentServiceAsync.WithRawResponse
 
         fun stats(): StatServiceAsync.WithRawResponse
 

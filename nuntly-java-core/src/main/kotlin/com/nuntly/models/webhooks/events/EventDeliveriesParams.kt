@@ -10,7 +10,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Return the delivery attempts for the given webhook event ID */
+/** List webhook event deliveries */
 class EventDeliveriesParams
 private constructor(
     private val id: String,
@@ -19,8 +19,10 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
+    /** The id of the webhook */
     fun id(): String = id
 
+    /** The id of the webhook event */
     fun eventId(): Optional<String> = Optional.ofNullable(eventId)
 
     /** Additional headers to send with the request. */
@@ -60,8 +62,10 @@ private constructor(
             additionalQueryParams = eventDeliveriesParams.additionalQueryParams.toBuilder()
         }
 
+        /** The id of the webhook */
         fun id(id: String) = apply { this.id = id }
 
+        /** The id of the webhook event */
         fun eventId(eventId: String?) = apply { this.eventId = eventId }
 
         /** Alias for calling [Builder.eventId] with `eventId.orElse(null)`. */

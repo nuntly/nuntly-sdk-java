@@ -12,26 +12,16 @@ internal class ApiKeyDeleteResponseTest {
     @Test
     fun create() {
         val apiKeyDeleteResponse =
-            ApiKeyDeleteResponse.builder()
-                .id("apk_01jnx372zj49s3zqnn7ew8hzpk")
-                .kind(ApiKeyDeleteResponse.Kind.API_KEY)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .build()
+            ApiKeyDeleteResponse.builder().id("apk_01ka8k8s80gvx9604cn9am5st4").build()
 
-        assertThat(apiKeyDeleteResponse.id()).isEqualTo("apk_01jnx372zj49s3zqnn7ew8hzpk")
-        assertThat(apiKeyDeleteResponse.kind()).isEqualTo(ApiKeyDeleteResponse.Kind.API_KEY)
-        assertThat(apiKeyDeleteResponse.orgId()).isEqualTo("org_01jh6jk82zjq9deye73h0mzcaq")
+        assertThat(apiKeyDeleteResponse.id()).isEqualTo("apk_01ka8k8s80gvx9604cn9am5st4")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
         val apiKeyDeleteResponse =
-            ApiKeyDeleteResponse.builder()
-                .id("apk_01jnx372zj49s3zqnn7ew8hzpk")
-                .kind(ApiKeyDeleteResponse.Kind.API_KEY)
-                .orgId("org_01jh6jk82zjq9deye73h0mzcaq")
-                .build()
+            ApiKeyDeleteResponse.builder().id("apk_01ka8k8s80gvx9604cn9am5st4").build()
 
         val roundtrippedApiKeyDeleteResponse =
             jsonMapper.readValue(

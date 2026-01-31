@@ -15,6 +15,7 @@ import com.nuntly.models.emails.EmailRetrieveResponse
 import com.nuntly.models.emails.EmailSendParams
 import com.nuntly.models.emails.EmailSendResponse
 import com.nuntly.services.blocking.emails.BulkService
+import com.nuntly.services.blocking.emails.ContentService
 import com.nuntly.services.blocking.emails.EventService
 import com.nuntly.services.blocking.emails.StatService
 import java.util.function.Consumer
@@ -37,9 +38,11 @@ interface EmailService {
 
     fun events(): EventService
 
+    fun content(): ContentService
+
     fun stats(): StatService
 
-    /** Return the email with the given id */
+    /** Retrieve an email by its id */
     fun retrieve(id: String): EmailRetrieveResponse = retrieve(id, EmailRetrieveParams.none())
 
     /** @see retrieve */
@@ -69,7 +72,7 @@ interface EmailService {
     fun retrieve(id: String, requestOptions: RequestOptions): EmailRetrieveResponse =
         retrieve(id, EmailRetrieveParams.none(), requestOptions)
 
-    /** Return a list of your last emails */
+    /** Return a list of recent emails. */
     fun list(): EmailListPage = list(EmailListParams.none())
 
     /** @see list */
@@ -117,8 +120,8 @@ interface EmailService {
         cancel(id, EmailCancelParams.none(), requestOptions)
 
     /**
-     * Send transactional emails through the Nuntly platform. It supports HTML and plain-text
-     * emails, attachments, labels, custom headers and scheduling.
+     * Send transactional emails through Nuntly platform. It supports HTML and plain-text emails,
+     * attachments, labels, custom headers and scheduling.
      */
     fun send(params: EmailSendParams): EmailSendResponse = send(params, RequestOptions.none())
 
@@ -141,6 +144,8 @@ interface EmailService {
         fun bulk(): BulkService.WithRawResponse
 
         fun events(): EventService.WithRawResponse
+
+        fun content(): ContentService.WithRawResponse
 
         fun stats(): StatService.WithRawResponse
 

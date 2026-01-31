@@ -28,15 +28,13 @@ import com.nuntly.core.http.Headers
 import com.nuntly.core.http.QueryParams
 import com.nuntly.core.toImmutable
 import com.nuntly.errors.NuntlyInvalidDataException
-import com.nuntly.models.shared.EmailHeaders
-import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Send transactional emails through the Nuntly platform. It supports HTML and plain-text emails,
+ * Send transactional emails through Nuntly platform. It supports HTML and plain-text emails,
  * attachments, labels, custom headers and scheduling.
  */
 class EmailSendParams
@@ -97,12 +95,10 @@ private constructor(
     /**
      * The context for the template
      *
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```java
-     * MyClass myObject = emailSendParams.context().convert(MyClass.class);
-     * ```
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
      */
-    fun _context(): JsonValue = body._context()
+    fun context(): Optional<Context> = body.context()
 
     /**
      * The headers to add to the email
@@ -110,7 +106,7 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun headers(): Optional<EmailHeaders> = body.headers()
+    fun headers(): Optional<Headers> = body.headers()
 
     /**
      * The HTML version of the email
@@ -135,7 +131,7 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun scheduledAt(): Optional<OffsetDateTime> = body.scheduledAt()
+    fun scheduledAt(): Optional<String> = body.scheduledAt()
 
     /**
      * The tags to add to the email
@@ -196,11 +192,18 @@ private constructor(
     fun _cc(): JsonField<Cc> = body._cc()
 
     /**
+     * Returns the raw JSON value of [context].
+     *
+     * Unlike [context], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _context(): JsonField<Context> = body._context()
+
+    /**
      * Returns the raw JSON value of [headers].
      *
      * Unlike [headers], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun _headers_(): JsonField<EmailHeaders> = body._headers_()
+    fun _headers_(): JsonField<Headers> = body._headers_()
 
     /**
      * Returns the raw JSON value of [html].
@@ -221,7 +224,7 @@ private constructor(
      *
      * Unlike [scheduledAt], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun _scheduledAt(): JsonField<OffsetDateTime> = body._scheduledAt()
+    fun _scheduledAt(): JsonField<String> = body._scheduledAt()
 
     /**
      * Returns the raw JSON value of [tags].
@@ -385,19 +388,26 @@ private constructor(
         fun cc(string: String) = apply { body.cc(string) }
 
         /** The context for the template */
-        fun context(context: JsonValue) = apply { body.context(context) }
+        fun context(context: Context) = apply { body.context(context) }
+
+        /**
+         * Sets [Builder.context] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.context] with a well-typed [Context] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun context(context: JsonField<Context>) = apply { body.context(context) }
 
         /** The headers to add to the email */
-        fun headers(headers: EmailHeaders) = apply { body.headers(headers) }
+        fun headers(headers: Headers) = apply { body.headers(headers) }
 
         /**
          * Sets [Builder.headers] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.headers] with a well-typed [EmailHeaders] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
+         * You should usually call [Builder.headers] with a well-typed [Headers] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun headers(headers: JsonField<EmailHeaders>) = apply { body.headers(headers) }
+        fun headers(headers: JsonField<Headers>) = apply { body.headers(headers) }
 
         /** The HTML version of the email */
         fun html(html: String) = apply { body.html(html) }
@@ -431,18 +441,16 @@ private constructor(
         fun replyTo(string: String) = apply { body.replyTo(string) }
 
         /** The date at which the email is scheduled to be sent */
-        fun scheduledAt(scheduledAt: OffsetDateTime) = apply { body.scheduledAt(scheduledAt) }
+        fun scheduledAt(scheduledAt: String) = apply { body.scheduledAt(scheduledAt) }
 
         /**
          * Sets [Builder.scheduledAt] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.scheduledAt] with a well-typed [OffsetDateTime] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.scheduledAt] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
          */
-        fun scheduledAt(scheduledAt: JsonField<OffsetDateTime>) = apply {
-            body.scheduledAt(scheduledAt)
-        }
+        fun scheduledAt(scheduledAt: JsonField<String>) = apply { body.scheduledAt(scheduledAt) }
 
         /** The tags to add to the email */
         fun tags(tags: List<Tag>) = apply { body.tags(tags) }
@@ -623,11 +631,11 @@ private constructor(
         private val attachments: JsonField<List<Attachment>>,
         private val bcc: JsonField<Bcc>,
         private val cc: JsonField<Cc>,
-        private val context: JsonValue,
-        private val headers: JsonField<EmailHeaders>,
+        private val context: JsonField<Context>,
+        private val headers: JsonField<Headers>,
         private val html: JsonField<String>,
         private val replyTo: JsonField<ReplyTo>,
-        private val scheduledAt: JsonField<OffsetDateTime>,
+        private val scheduledAt: JsonField<String>,
         private val tags: JsonField<List<Tag>>,
         private val text: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -643,17 +651,13 @@ private constructor(
             attachments: JsonField<List<Attachment>> = JsonMissing.of(),
             @JsonProperty("bcc") @ExcludeMissing bcc: JsonField<Bcc> = JsonMissing.of(),
             @JsonProperty("cc") @ExcludeMissing cc: JsonField<Cc> = JsonMissing.of(),
-            @JsonProperty("context") @ExcludeMissing context: JsonValue = JsonMissing.of(),
-            @JsonProperty("headers")
-            @ExcludeMissing
-            headers: JsonField<EmailHeaders> = JsonMissing.of(),
+            @JsonProperty("context") @ExcludeMissing context: JsonField<Context> = JsonMissing.of(),
+            @JsonProperty("headers") @ExcludeMissing headers: JsonField<Headers> = JsonMissing.of(),
             @JsonProperty("html") @ExcludeMissing html: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("reply_to")
+            @JsonProperty("replyTo") @ExcludeMissing replyTo: JsonField<ReplyTo> = JsonMissing.of(),
+            @JsonProperty("scheduledAt")
             @ExcludeMissing
-            replyTo: JsonField<ReplyTo> = JsonMissing.of(),
-            @JsonProperty("scheduled_at")
-            @ExcludeMissing
-            scheduledAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+            scheduledAt: JsonField<String> = JsonMissing.of(),
             @JsonProperty("tags") @ExcludeMissing tags: JsonField<List<Tag>> = JsonMissing.of(),
             @JsonProperty("text") @ExcludeMissing text: JsonField<String> = JsonMissing.of(),
         ) : this(
@@ -724,12 +728,10 @@ private constructor(
         /**
          * The context for the template
          *
-         * This arbitrary value can be deserialized into a custom type using the `convert` method:
-         * ```java
-         * MyClass myObject = body.context().convert(MyClass.class);
-         * ```
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
          */
-        @JsonProperty("context") @ExcludeMissing fun _context(): JsonValue = context
+        fun context(): Optional<Context> = context.getOptional("context")
 
         /**
          * The headers to add to the email
@@ -737,7 +739,7 @@ private constructor(
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun headers(): Optional<EmailHeaders> = headers.getOptional("headers")
+        fun headers(): Optional<Headers> = headers.getOptional("headers")
 
         /**
          * The HTML version of the email
@@ -754,7 +756,7 @@ private constructor(
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun replyTo(): Optional<ReplyTo> = replyTo.getOptional("reply_to")
+        fun replyTo(): Optional<ReplyTo> = replyTo.getOptional("replyTo")
 
         /**
          * The date at which the email is scheduled to be sent
@@ -762,7 +764,7 @@ private constructor(
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun scheduledAt(): Optional<OffsetDateTime> = scheduledAt.getOptional("scheduled_at")
+        fun scheduledAt(): Optional<String> = scheduledAt.getOptional("scheduledAt")
 
         /**
          * The tags to add to the email
@@ -825,11 +827,18 @@ private constructor(
         @JsonProperty("cc") @ExcludeMissing fun _cc(): JsonField<Cc> = cc
 
         /**
+         * Returns the raw JSON value of [context].
+         *
+         * Unlike [context], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("context") @ExcludeMissing fun _context(): JsonField<Context> = context
+
+        /**
          * Returns the raw JSON value of [headers].
          *
          * Unlike [headers], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("headers") @ExcludeMissing fun _headers_(): JsonField<EmailHeaders> = headers
+        @JsonProperty("headers") @ExcludeMissing fun _headers_(): JsonField<Headers> = headers
 
         /**
          * Returns the raw JSON value of [html].
@@ -843,16 +852,16 @@ private constructor(
          *
          * Unlike [replyTo], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("reply_to") @ExcludeMissing fun _replyTo(): JsonField<ReplyTo> = replyTo
+        @JsonProperty("replyTo") @ExcludeMissing fun _replyTo(): JsonField<ReplyTo> = replyTo
 
         /**
          * Returns the raw JSON value of [scheduledAt].
          *
          * Unlike [scheduledAt], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("scheduled_at")
+        @JsonProperty("scheduledAt")
         @ExcludeMissing
-        fun _scheduledAt(): JsonField<OffsetDateTime> = scheduledAt
+        fun _scheduledAt(): JsonField<String> = scheduledAt
 
         /**
          * Returns the raw JSON value of [tags].
@@ -904,11 +913,11 @@ private constructor(
             private var attachments: JsonField<MutableList<Attachment>>? = null
             private var bcc: JsonField<Bcc> = JsonMissing.of()
             private var cc: JsonField<Cc> = JsonMissing.of()
-            private var context: JsonValue = JsonMissing.of()
-            private var headers: JsonField<EmailHeaders> = JsonMissing.of()
+            private var context: JsonField<Context> = JsonMissing.of()
+            private var headers: JsonField<Headers> = JsonMissing.of()
             private var html: JsonField<String> = JsonMissing.of()
             private var replyTo: JsonField<ReplyTo> = JsonMissing.of()
-            private var scheduledAt: JsonField<OffsetDateTime> = JsonMissing.of()
+            private var scheduledAt: JsonField<String> = JsonMissing.of()
             private var tags: JsonField<MutableList<Tag>>? = null
             private var text: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -1036,19 +1045,28 @@ private constructor(
             fun cc(string: String) = cc(Cc.ofString(string))
 
             /** The context for the template */
-            fun context(context: JsonValue) = apply { this.context = context }
+            fun context(context: Context) = context(JsonField.of(context))
+
+            /**
+             * Sets [Builder.context] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.context] with a well-typed [Context] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun context(context: JsonField<Context>) = apply { this.context = context }
 
             /** The headers to add to the email */
-            fun headers(headers: EmailHeaders) = headers(JsonField.of(headers))
+            fun headers(headers: Headers) = headers(JsonField.of(headers))
 
             /**
              * Sets [Builder.headers] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.headers] with a well-typed [EmailHeaders] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.headers] with a well-typed [Headers] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun headers(headers: JsonField<EmailHeaders>) = apply { this.headers = headers }
+            fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
 
             /** The HTML version of the email */
             fun html(html: String) = html(JsonField.of(html))
@@ -1084,16 +1102,16 @@ private constructor(
             fun replyTo(string: String) = replyTo(ReplyTo.ofString(string))
 
             /** The date at which the email is scheduled to be sent */
-            fun scheduledAt(scheduledAt: OffsetDateTime) = scheduledAt(JsonField.of(scheduledAt))
+            fun scheduledAt(scheduledAt: String) = scheduledAt(JsonField.of(scheduledAt))
 
             /**
              * Sets [Builder.scheduledAt] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.scheduledAt] with a well-typed [OffsetDateTime]
-             * value instead. This method is primarily for setting the field to an undocumented or
-             * not yet supported value.
+             * You should usually call [Builder.scheduledAt] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
              */
-            fun scheduledAt(scheduledAt: JsonField<OffsetDateTime>) = apply {
+            fun scheduledAt(scheduledAt: JsonField<String>) = apply {
                 this.scheduledAt = scheduledAt
             }
 
@@ -1198,6 +1216,7 @@ private constructor(
             attachments().ifPresent { it.forEach { it.validate() } }
             bcc().ifPresent { it.validate() }
             cc().ifPresent { it.validate() }
+            context().ifPresent { it.validate() }
             headers().ifPresent { it.validate() }
             html()
             replyTo().ifPresent { it.validate() }
@@ -1229,6 +1248,7 @@ private constructor(
                 (attachments.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (bcc.asKnown().getOrNull()?.validity() ?: 0) +
                 (cc.asKnown().getOrNull()?.validity() ?: 0) +
+                (context.asKnown().getOrNull()?.validity() ?: 0) +
                 (headers.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (html.asKnown().isPresent) 1 else 0) +
                 (replyTo.asKnown().getOrNull()?.validity() ?: 0) +
@@ -1450,7 +1470,6 @@ private constructor(
         }
     }
 
-    /** The attachment */
     class Attachment
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -1463,7 +1482,7 @@ private constructor(
         @JsonCreator
         private constructor(
             @JsonProperty("content") @ExcludeMissing content: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("content_type")
+            @JsonProperty("contentType")
             @ExcludeMissing
             contentType: JsonField<String> = JsonMissing.of(),
             @JsonProperty("filename") @ExcludeMissing filename: JsonField<String> = JsonMissing.of(),
@@ -1472,10 +1491,10 @@ private constructor(
         /**
          * The base64-encoded content of the attachment
          *
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun content(): Optional<String> = content.getOptional("content")
+        fun content(): String = content.getRequired("content")
 
         /**
          * Content type of the attachment (the MIME type)
@@ -1483,7 +1502,7 @@ private constructor(
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun contentType(): Optional<String> = contentType.getOptional("content_type")
+        fun contentType(): Optional<String> = contentType.getOptional("contentType")
 
         /**
          * The name of the attached file to be displayed to the recipient
@@ -1505,7 +1524,7 @@ private constructor(
          *
          * Unlike [contentType], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("content_type")
+        @JsonProperty("contentType")
         @ExcludeMissing
         fun _contentType(): JsonField<String> = contentType
 
@@ -1530,14 +1549,21 @@ private constructor(
 
         companion object {
 
-            /** Returns a mutable builder for constructing an instance of [Attachment]. */
+            /**
+             * Returns a mutable builder for constructing an instance of [Attachment].
+             *
+             * The following fields are required:
+             * ```java
+             * .content()
+             * ```
+             */
             @JvmStatic fun builder() = Builder()
         }
 
         /** A builder for [Attachment]. */
         class Builder internal constructor() {
 
-            private var content: JsonField<String> = JsonMissing.of()
+            private var content: JsonField<String>? = null
             private var contentType: JsonField<String> = JsonMissing.of()
             private var filename: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -1611,9 +1637,21 @@ private constructor(
              * Returns an immutable instance of [Attachment].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```java
+             * .content()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
              */
             fun build(): Attachment =
-                Attachment(content, contentType, filename, additionalProperties.toMutableMap())
+                Attachment(
+                    checkRequired("content", content),
+                    contentType,
+                    filename,
+                    additionalProperties.toMutableMap(),
+                )
         }
 
         private var validated: Boolean = false
@@ -2005,6 +2043,206 @@ private constructor(
         }
     }
 
+    /** The context for the template */
+    class Context
+    @JsonCreator
+    private constructor(
+        @com.fasterxml.jackson.annotation.JsonValue
+        private val additionalProperties: Map<String, JsonValue>
+    ) {
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [Context]. */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Context]. */
+        class Builder internal constructor() {
+
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(context: Context) = apply {
+                additionalProperties = context.additionalProperties.toMutableMap()
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Context].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): Context = Context(additionalProperties.toImmutable())
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): Context = apply {
+            if (validated) {
+                return@apply
+            }
+
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: NuntlyInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Context && additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() = "Context{additionalProperties=$additionalProperties}"
+    }
+
+    /** The headers to add to the email */
+    class Headers
+    @JsonCreator
+    private constructor(
+        @com.fasterxml.jackson.annotation.JsonValue
+        private val additionalProperties: Map<String, JsonValue>
+    ) {
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [Headers]. */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Headers]. */
+        class Builder internal constructor() {
+
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(headers: Headers) = apply {
+                additionalProperties = headers.additionalProperties.toMutableMap()
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Headers].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): Headers = Headers(additionalProperties.toImmutable())
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): Headers = apply {
+            if (validated) {
+                return@apply
+            }
+
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: NuntlyInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Headers && additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() = "Headers{additionalProperties=$additionalProperties}"
+    }
+
     /**
      * The email address where replies should be sent. If a recipient replies, the response will go
      * to this address instead of the sender's email address
@@ -2177,204 +2415,6 @@ private constructor(
                 }
             }
         }
-    }
-
-    /** The tag to add to the email and you can get via email id or in webhook events */
-    class Tag
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-    private constructor(
-        private val name: JsonField<String>,
-        private val value: JsonField<String>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
-    ) {
-
-        @JsonCreator
-        private constructor(
-            @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("value") @ExcludeMissing value: JsonField<String> = JsonMissing.of(),
-        ) : this(name, value, mutableMapOf())
-
-        /**
-         * The name of the tag
-         *
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun name(): String = name.getRequired("name")
-
-        /**
-         * The tag to add to the email
-         *
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun value(): String = value.getRequired("value")
-
-        /**
-         * Returns the raw JSON value of [name].
-         *
-         * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
-
-        /**
-         * Returns the raw JSON value of [value].
-         *
-         * Unlike [value], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("value") @ExcludeMissing fun _value(): JsonField<String> = value
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /**
-             * Returns a mutable builder for constructing an instance of [Tag].
-             *
-             * The following fields are required:
-             * ```java
-             * .name()
-             * .value()
-             * ```
-             */
-            @JvmStatic fun builder() = Builder()
-        }
-
-        /** A builder for [Tag]. */
-        class Builder internal constructor() {
-
-            private var name: JsonField<String>? = null
-            private var value: JsonField<String>? = null
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            @JvmSynthetic
-            internal fun from(tag: Tag) = apply {
-                name = tag.name
-                value = tag.value
-                additionalProperties = tag.additionalProperties.toMutableMap()
-            }
-
-            /** The name of the tag */
-            fun name(name: String) = name(JsonField.of(name))
-
-            /**
-             * Sets [Builder.name] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.name] with a well-typed [String] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun name(name: JsonField<String>) = apply { this.name = name }
-
-            /** The tag to add to the email */
-            fun value(value: String) = value(JsonField.of(value))
-
-            /**
-             * Sets [Builder.value] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.value] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun value(value: JsonField<String>) = apply { this.value = value }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [Tag].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```java
-             * .name()
-             * .value()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
-             */
-            fun build(): Tag =
-                Tag(
-                    checkRequired("name", name),
-                    checkRequired("value", value),
-                    additionalProperties.toMutableMap(),
-                )
-        }
-
-        private var validated: Boolean = false
-
-        fun validate(): Tag = apply {
-            if (validated) {
-                return@apply
-            }
-
-            name()
-            value()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: NuntlyInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        @JvmSynthetic
-        internal fun validity(): Int =
-            (if (name.asKnown().isPresent) 1 else 0) + (if (value.asKnown().isPresent) 1 else 0)
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Tag &&
-                name == other.name &&
-                value == other.value &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy { Objects.hash(name, value, additionalProperties) }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "Tag{name=$name, value=$value, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

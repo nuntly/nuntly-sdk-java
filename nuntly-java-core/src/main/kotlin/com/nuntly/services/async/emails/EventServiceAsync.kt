@@ -24,7 +24,7 @@ interface EventServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventServiceAsync
 
-    /** Return the events related to this email id */
+    /** Retrieve email events by email id */
     fun list(id: String): CompletableFuture<List<EventListResponse>> =
         list(id, EventListParams.none())
 

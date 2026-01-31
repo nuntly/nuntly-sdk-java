@@ -19,7 +19,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Updates domain tracking settings */
+/** Update a domain */
 class DomainUpdateParams
 private constructor(
     private val id: String?,
@@ -28,6 +28,7 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
+    /** The id of the domain */
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /**
@@ -94,6 +95,7 @@ private constructor(
             additionalQueryParams = domainUpdateParams.additionalQueryParams.toBuilder()
         }
 
+        /** The id of the domain */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */
@@ -290,10 +292,10 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("click_tracking")
+            @JsonProperty("clickTracking")
             @ExcludeMissing
             clickTracking: JsonField<Boolean> = JsonMissing.of(),
-            @JsonProperty("open_tracking")
+            @JsonProperty("openTracking")
             @ExcludeMissing
             openTracking: JsonField<Boolean> = JsonMissing.of(),
         ) : this(clickTracking, openTracking, mutableMapOf())
@@ -304,7 +306,7 @@ private constructor(
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun clickTracking(): Optional<Boolean> = clickTracking.getOptional("click_tracking")
+        fun clickTracking(): Optional<Boolean> = clickTracking.getOptional("clickTracking")
 
         /**
          * Emit an event for each recipient opens an email their email client
@@ -312,7 +314,7 @@ private constructor(
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun openTracking(): Optional<Boolean> = openTracking.getOptional("open_tracking")
+        fun openTracking(): Optional<Boolean> = openTracking.getOptional("openTracking")
 
         /**
          * Returns the raw JSON value of [clickTracking].
@@ -320,7 +322,7 @@ private constructor(
          * Unlike [clickTracking], this method doesn't throw if the JSON field has an unexpected
          * type.
          */
-        @JsonProperty("click_tracking")
+        @JsonProperty("clickTracking")
         @ExcludeMissing
         fun _clickTracking(): JsonField<Boolean> = clickTracking
 
@@ -330,7 +332,7 @@ private constructor(
          * Unlike [openTracking], this method doesn't throw if the JSON field has an unexpected
          * type.
          */
-        @JsonProperty("open_tracking")
+        @JsonProperty("openTracking")
         @ExcludeMissing
         fun _openTracking(): JsonField<Boolean> = openTracking
 

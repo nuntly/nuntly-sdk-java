@@ -24,7 +24,7 @@ interface UsageService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): UsageService
 
-    /** Return the organization usage */
+    /** Retrieve organization usage */
     fun retrieve(id: String): UsageRetrieveResponse = retrieve(id, UsageRetrieveParams.none())
 
     /** @see retrieve */

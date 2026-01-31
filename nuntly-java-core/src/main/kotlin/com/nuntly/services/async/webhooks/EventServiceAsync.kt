@@ -28,7 +28,7 @@ interface EventServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventServiceAsync
 
-    /** Return the last events sent by webhooks */
+    /** List webhook events */
     fun list(): CompletableFuture<EventListPageAsync> = list(EventListParams.none())
 
     /** @see list */
@@ -46,7 +46,7 @@ interface EventServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<EventListPageAsync> =
         list(EventListParams.none(), requestOptions)
 
-    /** Return the delivery attempts for the given webhook event ID */
+    /** List webhook event deliveries */
     fun deliveries(
         eventId: String,
         params: EventDeliveriesParams,
@@ -72,7 +72,7 @@ interface EventServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<List<EventDeliveriesResponse>>
 
-    /** Replay the webhook event */
+    /** Replay a webhook event */
     fun replay(eventId: String, params: EventReplayParams): CompletableFuture<EventReplayResponse> =
         replay(eventId, params, RequestOptions.none())
 
@@ -132,7 +132,7 @@ interface EventServiceAsync {
             list(EventListParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `get /webhooks/{id}/events/{event_id}/deliveries`, but is
+         * Returns a raw HTTP response for `get /webhooks/{id}/events/{eventId}/deliveries`, but is
          * otherwise the same as [EventServiceAsync.deliveries].
          */
         fun deliveries(
@@ -162,7 +162,7 @@ interface EventServiceAsync {
         ): CompletableFuture<HttpResponseFor<List<EventDeliveriesResponse>>>
 
         /**
-         * Returns a raw HTTP response for `post /webhooks/{id}/events/{event_id}/replay`, but is
+         * Returns a raw HTTP response for `post /webhooks/{id}/events/{eventId}/replay`, but is
          * otherwise the same as [EventServiceAsync.replay].
          */
         fun replay(

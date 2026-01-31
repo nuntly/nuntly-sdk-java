@@ -15,7 +15,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.BaseDeserializer
 import com.nuntly.core.BaseSerializer
-import com.nuntly.core.Enum
 import com.nuntly.core.ExcludeMissing
 import com.nuntly.core.JsonField
 import com.nuntly.core.JsonMissing
@@ -26,9 +25,6 @@ import com.nuntly.core.checkRequired
 import com.nuntly.core.getOrThrow
 import com.nuntly.core.toImmutable
 import com.nuntly.errors.NuntlyInvalidDataException
-import com.nuntly.models.shared.EmailHeaders
-import com.nuntly.models.shared.EmailStatus
-import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
@@ -38,25 +34,21 @@ class EmailRetrieveResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
-    private val createdAt: JsonField<OffsetDateTime>,
+    private val createdAt: JsonField<String>,
     private val from: JsonField<String>,
-    private val kind: JsonField<Kind>,
     private val orgId: JsonField<String>,
-    private val region: JsonField<Region>,
-    private val status: JsonField<EmailStatus>,
-    private val statusAt: JsonField<String>,
+    private val status: JsonField<Status>,
     private val subject: JsonField<String>,
     private val to: JsonField<To>,
     private val attachments: JsonField<List<Attachment>>,
     private val bcc: JsonField<Bcc>,
     private val bulkId: JsonField<String>,
     private val cc: JsonField<Cc>,
-    private val context: JsonValue,
-    private val headers: JsonField<EmailHeaders>,
+    private val context: JsonField<Context>,
+    private val headers: JsonField<Headers>,
     private val messageId: JsonField<String>,
-    private val modifiedAt: JsonField<OffsetDateTime>,
     private val replyTo: JsonField<ReplyTo>,
-    private val scheduledAt: JsonField<OffsetDateTime>,
+    private val scheduledAt: JsonField<String>,
     private val statusReason: JsonField<StatusReason>,
     private val tags: JsonField<List<Tag>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -65,36 +57,26 @@ private constructor(
     @JsonCreator
     private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("created_at")
-        @ExcludeMissing
-        createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("createdAt") @ExcludeMissing createdAt: JsonField<String> = JsonMissing.of(),
         @JsonProperty("from") @ExcludeMissing from: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("kind") @ExcludeMissing kind: JsonField<Kind> = JsonMissing.of(),
-        @JsonProperty("org_id") @ExcludeMissing orgId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("region") @ExcludeMissing region: JsonField<Region> = JsonMissing.of(),
-        @JsonProperty("status") @ExcludeMissing status: JsonField<EmailStatus> = JsonMissing.of(),
-        @JsonProperty("status_at") @ExcludeMissing statusAt: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("orgId") @ExcludeMissing orgId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
         @JsonProperty("subject") @ExcludeMissing subject: JsonField<String> = JsonMissing.of(),
         @JsonProperty("to") @ExcludeMissing to: JsonField<To> = JsonMissing.of(),
         @JsonProperty("attachments")
         @ExcludeMissing
         attachments: JsonField<List<Attachment>> = JsonMissing.of(),
         @JsonProperty("bcc") @ExcludeMissing bcc: JsonField<Bcc> = JsonMissing.of(),
-        @JsonProperty("bulk_id") @ExcludeMissing bulkId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("bulkId") @ExcludeMissing bulkId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("cc") @ExcludeMissing cc: JsonField<Cc> = JsonMissing.of(),
-        @JsonProperty("context") @ExcludeMissing context: JsonValue = JsonMissing.of(),
-        @JsonProperty("headers")
+        @JsonProperty("context") @ExcludeMissing context: JsonField<Context> = JsonMissing.of(),
+        @JsonProperty("headers") @ExcludeMissing headers: JsonField<Headers> = JsonMissing.of(),
+        @JsonProperty("messageId") @ExcludeMissing messageId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("replyTo") @ExcludeMissing replyTo: JsonField<ReplyTo> = JsonMissing.of(),
+        @JsonProperty("scheduledAt")
         @ExcludeMissing
-        headers: JsonField<EmailHeaders> = JsonMissing.of(),
-        @JsonProperty("message_id") @ExcludeMissing messageId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("modified_at")
-        @ExcludeMissing
-        modifiedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("reply_to") @ExcludeMissing replyTo: JsonField<ReplyTo> = JsonMissing.of(),
-        @JsonProperty("scheduled_at")
-        @ExcludeMissing
-        scheduledAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("status_reason")
+        scheduledAt: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("statusReason")
         @ExcludeMissing
         statusReason: JsonField<StatusReason> = JsonMissing.of(),
         @JsonProperty("tags") @ExcludeMissing tags: JsonField<List<Tag>> = JsonMissing.of(),
@@ -102,11 +84,8 @@ private constructor(
         id,
         createdAt,
         from,
-        kind,
         orgId,
-        region,
         status,
-        statusAt,
         subject,
         to,
         attachments,
@@ -116,7 +95,6 @@ private constructor(
         context,
         headers,
         messageId,
-        modifiedAt,
         replyTo,
         scheduledAt,
         statusReason,
@@ -138,7 +116,7 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun createdAt(): OffsetDateTime = createdAt.getRequired("created_at")
+    fun createdAt(): String = createdAt.getRequired("createdAt")
 
     /**
      * The e-mail address of the sender
@@ -149,28 +127,12 @@ private constructor(
     fun from(): String = from.getRequired("from")
 
     /**
-     * The kind of object returned
-     *
-     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun kind(): Kind = kind.getRequired("kind")
-
-    /**
      * The id of the organization
      *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun orgId(): String = orgId.getRequired("org_id")
-
-    /**
-     * The region of the related data
-     *
-     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun region(): Region = region.getRequired("region")
+    fun orgId(): String = orgId.getRequired("orgId")
 
     /**
      * The status of the email.
@@ -178,15 +140,7 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun status(): EmailStatus = status.getRequired("status")
-
-    /**
-     * Date xhen the status changed
-     *
-     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun statusAt(): String = statusAt.getRequired("status_at")
+    fun status(): Status = status.getRequired("status")
 
     /**
      * The subject of the e-mail
@@ -226,7 +180,7 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun bulkId(): Optional<String> = bulkId.getOptional("bulk_id")
+    fun bulkId(): Optional<String> = bulkId.getOptional("bulkId")
 
     /**
      * The carbon copy recipient(s) of the email
@@ -239,12 +193,10 @@ private constructor(
     /**
      * The context for the template
      *
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```java
-     * MyClass myObject = emailRetrieveResponse.context().convert(MyClass.class);
-     * ```
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
      */
-    @JsonProperty("context") @ExcludeMissing fun _context(): JsonValue = context
+    fun context(): Optional<Context> = context.getOptional("context")
 
     /**
      * The headers to add to the email
@@ -252,7 +204,7 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun headers(): Optional<EmailHeaders> = headers.getOptional("headers")
+    fun headers(): Optional<Headers> = headers.getOptional("headers")
 
     /**
      * The id from email provider
@@ -260,15 +212,7 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun messageId(): Optional<String> = messageId.getOptional("message_id")
-
-    /**
-     * Date at which the object was modified (ISO 8601 format)
-     *
-     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun modifiedAt(): Optional<OffsetDateTime> = modifiedAt.getOptional("modified_at")
+    fun messageId(): Optional<String> = messageId.getOptional("messageId")
 
     /**
      * The email address where replies should be sent. If a recipient replies, the response will go
@@ -277,7 +221,7 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun replyTo(): Optional<ReplyTo> = replyTo.getOptional("reply_to")
+    fun replyTo(): Optional<ReplyTo> = replyTo.getOptional("replyTo")
 
     /**
      * The date at which the email is scheduled to be sent
@@ -285,7 +229,7 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun scheduledAt(): Optional<OffsetDateTime> = scheduledAt.getOptional("scheduled_at")
+    fun scheduledAt(): Optional<String> = scheduledAt.getOptional("scheduledAt")
 
     /**
      * May provide more informations about the status
@@ -293,7 +237,7 @@ private constructor(
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun statusReason(): Optional<StatusReason> = statusReason.getOptional("status_reason")
+    fun statusReason(): Optional<StatusReason> = statusReason.getOptional("statusReason")
 
     /**
      * The tags to add to the email
@@ -315,9 +259,7 @@ private constructor(
      *
      * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("created_at")
-    @ExcludeMissing
-    fun _createdAt(): JsonField<OffsetDateTime> = createdAt
+    @JsonProperty("createdAt") @ExcludeMissing fun _createdAt(): JsonField<String> = createdAt
 
     /**
      * Returns the raw JSON value of [from].
@@ -327,39 +269,18 @@ private constructor(
     @JsonProperty("from") @ExcludeMissing fun _from(): JsonField<String> = from
 
     /**
-     * Returns the raw JSON value of [kind].
-     *
-     * Unlike [kind], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("kind") @ExcludeMissing fun _kind(): JsonField<Kind> = kind
-
-    /**
      * Returns the raw JSON value of [orgId].
      *
      * Unlike [orgId], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("org_id") @ExcludeMissing fun _orgId(): JsonField<String> = orgId
-
-    /**
-     * Returns the raw JSON value of [region].
-     *
-     * Unlike [region], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("region") @ExcludeMissing fun _region(): JsonField<Region> = region
+    @JsonProperty("orgId") @ExcludeMissing fun _orgId(): JsonField<String> = orgId
 
     /**
      * Returns the raw JSON value of [status].
      *
      * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<EmailStatus> = status
-
-    /**
-     * Returns the raw JSON value of [statusAt].
-     *
-     * Unlike [statusAt], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("status_at") @ExcludeMissing fun _statusAt(): JsonField<String> = statusAt
+    @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
 
     /**
      * Returns the raw JSON value of [subject].
@@ -396,7 +317,7 @@ private constructor(
      *
      * Unlike [bulkId], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("bulk_id") @ExcludeMissing fun _bulkId(): JsonField<String> = bulkId
+    @JsonProperty("bulkId") @ExcludeMissing fun _bulkId(): JsonField<String> = bulkId
 
     /**
      * Returns the raw JSON value of [cc].
@@ -406,50 +327,46 @@ private constructor(
     @JsonProperty("cc") @ExcludeMissing fun _cc(): JsonField<Cc> = cc
 
     /**
+     * Returns the raw JSON value of [context].
+     *
+     * Unlike [context], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("context") @ExcludeMissing fun _context(): JsonField<Context> = context
+
+    /**
      * Returns the raw JSON value of [headers].
      *
      * Unlike [headers], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("headers") @ExcludeMissing fun _headers(): JsonField<EmailHeaders> = headers
+    @JsonProperty("headers") @ExcludeMissing fun _headers(): JsonField<Headers> = headers
 
     /**
      * Returns the raw JSON value of [messageId].
      *
      * Unlike [messageId], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("message_id") @ExcludeMissing fun _messageId(): JsonField<String> = messageId
-
-    /**
-     * Returns the raw JSON value of [modifiedAt].
-     *
-     * Unlike [modifiedAt], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("modified_at")
-    @ExcludeMissing
-    fun _modifiedAt(): JsonField<OffsetDateTime> = modifiedAt
+    @JsonProperty("messageId") @ExcludeMissing fun _messageId(): JsonField<String> = messageId
 
     /**
      * Returns the raw JSON value of [replyTo].
      *
      * Unlike [replyTo], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("reply_to") @ExcludeMissing fun _replyTo(): JsonField<ReplyTo> = replyTo
+    @JsonProperty("replyTo") @ExcludeMissing fun _replyTo(): JsonField<ReplyTo> = replyTo
 
     /**
      * Returns the raw JSON value of [scheduledAt].
      *
      * Unlike [scheduledAt], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("scheduled_at")
-    @ExcludeMissing
-    fun _scheduledAt(): JsonField<OffsetDateTime> = scheduledAt
+    @JsonProperty("scheduledAt") @ExcludeMissing fun _scheduledAt(): JsonField<String> = scheduledAt
 
     /**
      * Returns the raw JSON value of [statusReason].
      *
      * Unlike [statusReason], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("status_reason")
+    @JsonProperty("statusReason")
     @ExcludeMissing
     fun _statusReason(): JsonField<StatusReason> = statusReason
 
@@ -482,11 +399,8 @@ private constructor(
          * .id()
          * .createdAt()
          * .from()
-         * .kind()
          * .orgId()
-         * .region()
          * .status()
-         * .statusAt()
          * .subject()
          * .to()
          * ```
@@ -498,25 +412,21 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
-        private var createdAt: JsonField<OffsetDateTime>? = null
+        private var createdAt: JsonField<String>? = null
         private var from: JsonField<String>? = null
-        private var kind: JsonField<Kind>? = null
         private var orgId: JsonField<String>? = null
-        private var region: JsonField<Region>? = null
-        private var status: JsonField<EmailStatus>? = null
-        private var statusAt: JsonField<String>? = null
+        private var status: JsonField<Status>? = null
         private var subject: JsonField<String>? = null
         private var to: JsonField<To>? = null
         private var attachments: JsonField<MutableList<Attachment>>? = null
         private var bcc: JsonField<Bcc> = JsonMissing.of()
         private var bulkId: JsonField<String> = JsonMissing.of()
         private var cc: JsonField<Cc> = JsonMissing.of()
-        private var context: JsonValue = JsonMissing.of()
-        private var headers: JsonField<EmailHeaders> = JsonMissing.of()
+        private var context: JsonField<Context> = JsonMissing.of()
+        private var headers: JsonField<Headers> = JsonMissing.of()
         private var messageId: JsonField<String> = JsonMissing.of()
-        private var modifiedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var replyTo: JsonField<ReplyTo> = JsonMissing.of()
-        private var scheduledAt: JsonField<OffsetDateTime> = JsonMissing.of()
+        private var scheduledAt: JsonField<String> = JsonMissing.of()
         private var statusReason: JsonField<StatusReason> = JsonMissing.of()
         private var tags: JsonField<MutableList<Tag>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -526,11 +436,8 @@ private constructor(
             id = emailRetrieveResponse.id
             createdAt = emailRetrieveResponse.createdAt
             from = emailRetrieveResponse.from
-            kind = emailRetrieveResponse.kind
             orgId = emailRetrieveResponse.orgId
-            region = emailRetrieveResponse.region
             status = emailRetrieveResponse.status
-            statusAt = emailRetrieveResponse.statusAt
             subject = emailRetrieveResponse.subject
             to = emailRetrieveResponse.to
             attachments = emailRetrieveResponse.attachments.map { it.toMutableList() }
@@ -540,7 +447,6 @@ private constructor(
             context = emailRetrieveResponse.context
             headers = emailRetrieveResponse.headers
             messageId = emailRetrieveResponse.messageId
-            modifiedAt = emailRetrieveResponse.modifiedAt
             replyTo = emailRetrieveResponse.replyTo
             scheduledAt = emailRetrieveResponse.scheduledAt
             statusReason = emailRetrieveResponse.statusReason
@@ -560,16 +466,16 @@ private constructor(
         fun id(id: JsonField<String>) = apply { this.id = id }
 
         /** Date at which the object was created (ISO 8601 format) */
-        fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
+        fun createdAt(createdAt: String) = createdAt(JsonField.of(createdAt))
 
         /**
          * Sets [Builder.createdAt] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.createdAt] with a well-typed [OffsetDateTime] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.createdAt] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
          */
-        fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
+        fun createdAt(createdAt: JsonField<String>) = apply { this.createdAt = createdAt }
 
         /** The e-mail address of the sender */
         fun from(from: String) = from(JsonField.of(from))
@@ -582,17 +488,6 @@ private constructor(
          */
         fun from(from: JsonField<String>) = apply { this.from = from }
 
-        /** The kind of object returned */
-        fun kind(kind: Kind) = kind(JsonField.of(kind))
-
-        /**
-         * Sets [Builder.kind] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.kind] with a well-typed [Kind] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun kind(kind: JsonField<Kind>) = apply { this.kind = kind }
-
         /** The id of the organization */
         fun orgId(orgId: String) = orgId(JsonField.of(orgId))
 
@@ -604,39 +499,16 @@ private constructor(
          */
         fun orgId(orgId: JsonField<String>) = apply { this.orgId = orgId }
 
-        /** The region of the related data */
-        fun region(region: Region) = region(JsonField.of(region))
-
-        /**
-         * Sets [Builder.region] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.region] with a well-typed [Region] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun region(region: JsonField<Region>) = apply { this.region = region }
-
         /** The status of the email. */
-        fun status(status: EmailStatus) = status(JsonField.of(status))
+        fun status(status: Status) = status(JsonField.of(status))
 
         /**
          * Sets [Builder.status] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.status] with a well-typed [EmailStatus] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun status(status: JsonField<EmailStatus>) = apply { this.status = status }
-
-        /** Date xhen the status changed */
-        fun statusAt(statusAt: String) = statusAt(JsonField.of(statusAt))
-
-        /**
-         * Sets [Builder.statusAt] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.statusAt] with a well-typed [String] value instead. This
+         * You should usually call [Builder.status] with a well-typed [Status] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun statusAt(statusAt: JsonField<String>) = apply { this.statusAt = statusAt }
+        fun status(status: JsonField<Status>) = apply { this.status = status }
 
         /** The subject of the e-mail */
         fun subject(subject: String) = subject(JsonField.of(subject))
@@ -738,19 +610,26 @@ private constructor(
         fun cc(string: String) = cc(Cc.ofString(string))
 
         /** The context for the template */
-        fun context(context: JsonValue) = apply { this.context = context }
+        fun context(context: Context) = context(JsonField.of(context))
+
+        /**
+         * Sets [Builder.context] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.context] with a well-typed [Context] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun context(context: JsonField<Context>) = apply { this.context = context }
 
         /** The headers to add to the email */
-        fun headers(headers: EmailHeaders) = headers(JsonField.of(headers))
+        fun headers(headers: Headers) = headers(JsonField.of(headers))
 
         /**
          * Sets [Builder.headers] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.headers] with a well-typed [EmailHeaders] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
+         * You should usually call [Builder.headers] with a well-typed [Headers] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun headers(headers: JsonField<EmailHeaders>) = apply { this.headers = headers }
+        fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
 
         /** The id from email provider */
         fun messageId(messageId: String) = messageId(JsonField.of(messageId))
@@ -763,20 +642,6 @@ private constructor(
          * value.
          */
         fun messageId(messageId: JsonField<String>) = apply { this.messageId = messageId }
-
-        /** Date at which the object was modified (ISO 8601 format) */
-        fun modifiedAt(modifiedAt: OffsetDateTime) = modifiedAt(JsonField.of(modifiedAt))
-
-        /**
-         * Sets [Builder.modifiedAt] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.modifiedAt] with a well-typed [OffsetDateTime] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun modifiedAt(modifiedAt: JsonField<OffsetDateTime>) = apply {
-            this.modifiedAt = modifiedAt
-        }
 
         /**
          * The email address where replies should be sent. If a recipient replies, the response will
@@ -799,18 +664,16 @@ private constructor(
         fun replyTo(string: String) = replyTo(ReplyTo.ofString(string))
 
         /** The date at which the email is scheduled to be sent */
-        fun scheduledAt(scheduledAt: OffsetDateTime) = scheduledAt(JsonField.of(scheduledAt))
+        fun scheduledAt(scheduledAt: String) = scheduledAt(JsonField.of(scheduledAt))
 
         /**
          * Sets [Builder.scheduledAt] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.scheduledAt] with a well-typed [OffsetDateTime] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.scheduledAt] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
          */
-        fun scheduledAt(scheduledAt: JsonField<OffsetDateTime>) = apply {
-            this.scheduledAt = scheduledAt
-        }
+        fun scheduledAt(scheduledAt: JsonField<String>) = apply { this.scheduledAt = scheduledAt }
 
         /** May provide more informations about the status */
         fun statusReason(statusReason: StatusReason) = statusReason(JsonField.of(statusReason))
@@ -875,11 +738,8 @@ private constructor(
          * .id()
          * .createdAt()
          * .from()
-         * .kind()
          * .orgId()
-         * .region()
          * .status()
-         * .statusAt()
          * .subject()
          * .to()
          * ```
@@ -891,11 +751,8 @@ private constructor(
                 checkRequired("id", id),
                 checkRequired("createdAt", createdAt),
                 checkRequired("from", from),
-                checkRequired("kind", kind),
                 checkRequired("orgId", orgId),
-                checkRequired("region", region),
                 checkRequired("status", status),
-                checkRequired("statusAt", statusAt),
                 checkRequired("subject", subject),
                 checkRequired("to", to),
                 (attachments ?: JsonMissing.of()).map { it.toImmutable() },
@@ -905,7 +762,6 @@ private constructor(
                 context,
                 headers,
                 messageId,
-                modifiedAt,
                 replyTo,
                 scheduledAt,
                 statusReason,
@@ -924,20 +780,17 @@ private constructor(
         id()
         createdAt()
         from()
-        kind().validate()
         orgId()
-        region().validate()
         status().validate()
-        statusAt()
         subject()
         to().validate()
         attachments().ifPresent { it.forEach { it.validate() } }
         bcc().ifPresent { it.validate() }
         bulkId()
         cc().ifPresent { it.validate() }
+        context().ifPresent { it.validate() }
         headers().ifPresent { it.validate() }
         messageId()
-        modifiedAt()
         replyTo().ifPresent { it.validate() }
         scheduledAt()
         statusReason().ifPresent { it.validate() }
@@ -963,264 +816,21 @@ private constructor(
         (if (id.asKnown().isPresent) 1 else 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
             (if (from.asKnown().isPresent) 1 else 0) +
-            (kind.asKnown().getOrNull()?.validity() ?: 0) +
             (if (orgId.asKnown().isPresent) 1 else 0) +
-            (region.asKnown().getOrNull()?.validity() ?: 0) +
             (status.asKnown().getOrNull()?.validity() ?: 0) +
-            (if (statusAt.asKnown().isPresent) 1 else 0) +
             (if (subject.asKnown().isPresent) 1 else 0) +
             (to.asKnown().getOrNull()?.validity() ?: 0) +
             (attachments.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (bcc.asKnown().getOrNull()?.validity() ?: 0) +
             (if (bulkId.asKnown().isPresent) 1 else 0) +
             (cc.asKnown().getOrNull()?.validity() ?: 0) +
+            (context.asKnown().getOrNull()?.validity() ?: 0) +
             (headers.asKnown().getOrNull()?.validity() ?: 0) +
             (if (messageId.asKnown().isPresent) 1 else 0) +
-            (if (modifiedAt.asKnown().isPresent) 1 else 0) +
             (replyTo.asKnown().getOrNull()?.validity() ?: 0) +
             (if (scheduledAt.asKnown().isPresent) 1 else 0) +
             (statusReason.asKnown().getOrNull()?.validity() ?: 0) +
             (tags.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
-
-    /** The kind of object returned */
-    class Kind @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-        companion object {
-
-            @JvmField val EMAIL = of("email")
-
-            @JvmStatic fun of(value: String) = Kind(JsonField.of(value))
-        }
-
-        /** An enum containing [Kind]'s known values. */
-        enum class Known {
-            EMAIL
-        }
-
-        /**
-         * An enum containing [Kind]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [Kind] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            EMAIL,
-            /** An enum member indicating that [Kind] was instantiated with an unknown value. */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                EMAIL -> Value.EMAIL
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws NuntlyInvalidDataException if this class instance's value is a not a known
-         *   member.
-         */
-        fun known(): Known =
-            when (this) {
-                EMAIL -> Known.EMAIL
-                else -> throw NuntlyInvalidDataException("Unknown Kind: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws NuntlyInvalidDataException if this class instance's value does not have the
-         *   expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString().orElseThrow { NuntlyInvalidDataException("Value is not a String") }
-
-        private var validated: Boolean = false
-
-        fun validate(): Kind = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: NuntlyInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Kind && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
-
-    /** The region of the related data */
-    class Region @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-        companion object {
-
-            @JvmField val EU_WEST_1 = of("eu-west-1")
-
-            @JvmStatic fun of(value: String) = Region(JsonField.of(value))
-        }
-
-        /** An enum containing [Region]'s known values. */
-        enum class Known {
-            EU_WEST_1
-        }
-
-        /**
-         * An enum containing [Region]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [Region] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            EU_WEST_1,
-            /** An enum member indicating that [Region] was instantiated with an unknown value. */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                EU_WEST_1 -> Value.EU_WEST_1
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws NuntlyInvalidDataException if this class instance's value is a not a known
-         *   member.
-         */
-        fun known(): Known =
-            when (this) {
-                EU_WEST_1 -> Known.EU_WEST_1
-                else -> throw NuntlyInvalidDataException("Unknown Region: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws NuntlyInvalidDataException if this class instance's value does not have the
-         *   expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString().orElseThrow { NuntlyInvalidDataException("Value is not a String") }
-
-        private var validated: Boolean = false
-
-        fun validate(): Region = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: NuntlyInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Region && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
 
     /** The primary recipient(s) of the email */
     @JsonDeserialize(using = To.Deserializer::class)
@@ -1389,22 +999,25 @@ private constructor(
         }
     }
 
-    /** The attachment */
     class Attachment
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val contentType: JsonField<String>,
         private val filename: JsonField<String>,
+        private val size: JsonField<Double>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("content_type")
+            @JsonProperty("contentType")
             @ExcludeMissing
             contentType: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("filename") @ExcludeMissing filename: JsonField<String> = JsonMissing.of(),
-        ) : this(contentType, filename, mutableMapOf())
+            @JsonProperty("filename")
+            @ExcludeMissing
+            filename: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("size") @ExcludeMissing size: JsonField<Double> = JsonMissing.of(),
+        ) : this(contentType, filename, size, mutableMapOf())
 
         /**
          * Content type of the attachment (the MIME type)
@@ -1412,7 +1025,7 @@ private constructor(
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun contentType(): Optional<String> = contentType.getOptional("content_type")
+        fun contentType(): Optional<String> = contentType.getOptional("contentType")
 
         /**
          * The name of the attached file to be displayed to the recipient
@@ -1423,11 +1036,19 @@ private constructor(
         fun filename(): Optional<String> = filename.getOptional("filename")
 
         /**
+         * The size of the attachment in bytes
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun size(): Optional<Double> = size.getOptional("size")
+
+        /**
          * Returns the raw JSON value of [contentType].
          *
          * Unlike [contentType], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("content_type")
+        @JsonProperty("contentType")
         @ExcludeMissing
         fun _contentType(): JsonField<String> = contentType
 
@@ -1437,6 +1058,13 @@ private constructor(
          * Unlike [filename], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("filename") @ExcludeMissing fun _filename(): JsonField<String> = filename
+
+        /**
+         * Returns the raw JSON value of [size].
+         *
+         * Unlike [size], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("size") @ExcludeMissing fun _size(): JsonField<Double> = size
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -1461,12 +1089,14 @@ private constructor(
 
             private var contentType: JsonField<String> = JsonMissing.of()
             private var filename: JsonField<String> = JsonMissing.of()
+            private var size: JsonField<Double> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(attachment: Attachment) = apply {
                 contentType = attachment.contentType
                 filename = attachment.filename
+                size = attachment.size
                 additionalProperties = attachment.additionalProperties.toMutableMap()
             }
 
@@ -1496,6 +1126,18 @@ private constructor(
              */
             fun filename(filename: JsonField<String>) = apply { this.filename = filename }
 
+            /** The size of the attachment in bytes */
+            fun size(size: Double) = size(JsonField.of(size))
+
+            /**
+             * Sets [Builder.size] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.size] with a well-typed [Double] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun size(size: JsonField<Double>) = apply { this.size = size }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -1521,7 +1163,7 @@ private constructor(
              * Further updates to this [Builder] will not mutate the returned instance.
              */
             fun build(): Attachment =
-                Attachment(contentType, filename, additionalProperties.toMutableMap())
+                Attachment(contentType, filename, size, additionalProperties.toMutableMap())
         }
 
         private var validated: Boolean = false
@@ -1533,6 +1175,7 @@ private constructor(
 
             contentType()
             filename()
+            size()
             validated = true
         }
 
@@ -1553,7 +1196,8 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (if (contentType.asKnown().isPresent) 1 else 0) +
-                (if (filename.asKnown().isPresent) 1 else 0)
+                (if (filename.asKnown().isPresent) 1 else 0) +
+                (if (size.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -1563,17 +1207,18 @@ private constructor(
             return other is Attachment &&
                 contentType == other.contentType &&
                 filename == other.filename &&
+                size == other.size &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(contentType, filename, additionalProperties)
+            Objects.hash(contentType, filename, size, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Attachment{contentType=$contentType, filename=$filename, additionalProperties=$additionalProperties}"
+            "Attachment{contentType=$contentType, filename=$filename, size=$size, additionalProperties=$additionalProperties}"
     }
 
     /** The blind carbon copy recipient(s) of the email */
@@ -1910,6 +1555,206 @@ private constructor(
         }
     }
 
+    /** The context for the template */
+    class Context
+    @JsonCreator
+    private constructor(
+        @com.fasterxml.jackson.annotation.JsonValue
+        private val additionalProperties: Map<String, JsonValue>
+    ) {
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [Context]. */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Context]. */
+        class Builder internal constructor() {
+
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(context: Context) = apply {
+                additionalProperties = context.additionalProperties.toMutableMap()
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Context].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): Context = Context(additionalProperties.toImmutable())
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): Context = apply {
+            if (validated) {
+                return@apply
+            }
+
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: NuntlyInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Context && additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() = "Context{additionalProperties=$additionalProperties}"
+    }
+
+    /** The headers to add to the email */
+    class Headers
+    @JsonCreator
+    private constructor(
+        @com.fasterxml.jackson.annotation.JsonValue
+        private val additionalProperties: Map<String, JsonValue>
+    ) {
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [Headers]. */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Headers]. */
+        class Builder internal constructor() {
+
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(headers: Headers) = apply {
+                additionalProperties = headers.additionalProperties.toMutableMap()
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Headers].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): Headers = Headers(additionalProperties.toImmutable())
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): Headers = apply {
+            if (validated) {
+                return@apply
+            }
+
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: NuntlyInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Headers && additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() = "Headers{additionalProperties=$additionalProperties}"
+    }
+
     /**
      * The email address where replies should be sent. If a recipient replies, the response will go
      * to this address instead of the sender's email address
@@ -2184,204 +2029,6 @@ private constructor(
         override fun toString() = "StatusReason{additionalProperties=$additionalProperties}"
     }
 
-    /** The tag to add to the email and you can get via email id or in webhook events */
-    class Tag
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-    private constructor(
-        private val name: JsonField<String>,
-        private val value: JsonField<String>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
-    ) {
-
-        @JsonCreator
-        private constructor(
-            @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("value") @ExcludeMissing value: JsonField<String> = JsonMissing.of(),
-        ) : this(name, value, mutableMapOf())
-
-        /**
-         * The name of the tag
-         *
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun name(): String = name.getRequired("name")
-
-        /**
-         * The tag to add to the email
-         *
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun value(): String = value.getRequired("value")
-
-        /**
-         * Returns the raw JSON value of [name].
-         *
-         * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
-
-        /**
-         * Returns the raw JSON value of [value].
-         *
-         * Unlike [value], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("value") @ExcludeMissing fun _value(): JsonField<String> = value
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /**
-             * Returns a mutable builder for constructing an instance of [Tag].
-             *
-             * The following fields are required:
-             * ```java
-             * .name()
-             * .value()
-             * ```
-             */
-            @JvmStatic fun builder() = Builder()
-        }
-
-        /** A builder for [Tag]. */
-        class Builder internal constructor() {
-
-            private var name: JsonField<String>? = null
-            private var value: JsonField<String>? = null
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            @JvmSynthetic
-            internal fun from(tag: Tag) = apply {
-                name = tag.name
-                value = tag.value
-                additionalProperties = tag.additionalProperties.toMutableMap()
-            }
-
-            /** The name of the tag */
-            fun name(name: String) = name(JsonField.of(name))
-
-            /**
-             * Sets [Builder.name] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.name] with a well-typed [String] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun name(name: JsonField<String>) = apply { this.name = name }
-
-            /** The tag to add to the email */
-            fun value(value: String) = value(JsonField.of(value))
-
-            /**
-             * Sets [Builder.value] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.value] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun value(value: JsonField<String>) = apply { this.value = value }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [Tag].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```java
-             * .name()
-             * .value()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
-             */
-            fun build(): Tag =
-                Tag(
-                    checkRequired("name", name),
-                    checkRequired("value", value),
-                    additionalProperties.toMutableMap(),
-                )
-        }
-
-        private var validated: Boolean = false
-
-        fun validate(): Tag = apply {
-            if (validated) {
-                return@apply
-            }
-
-            name()
-            value()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: NuntlyInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        @JvmSynthetic
-        internal fun validity(): Int =
-            (if (name.asKnown().isPresent) 1 else 0) + (if (value.asKnown().isPresent) 1 else 0)
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Tag &&
-                name == other.name &&
-                value == other.value &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy { Objects.hash(name, value, additionalProperties) }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "Tag{name=$name, value=$value, additionalProperties=$additionalProperties}"
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -2391,11 +2038,8 @@ private constructor(
             id == other.id &&
             createdAt == other.createdAt &&
             from == other.from &&
-            kind == other.kind &&
             orgId == other.orgId &&
-            region == other.region &&
             status == other.status &&
-            statusAt == other.statusAt &&
             subject == other.subject &&
             to == other.to &&
             attachments == other.attachments &&
@@ -2405,7 +2049,6 @@ private constructor(
             context == other.context &&
             headers == other.headers &&
             messageId == other.messageId &&
-            modifiedAt == other.modifiedAt &&
             replyTo == other.replyTo &&
             scheduledAt == other.scheduledAt &&
             statusReason == other.statusReason &&
@@ -2418,11 +2061,8 @@ private constructor(
             id,
             createdAt,
             from,
-            kind,
             orgId,
-            region,
             status,
-            statusAt,
             subject,
             to,
             attachments,
@@ -2432,7 +2072,6 @@ private constructor(
             context,
             headers,
             messageId,
-            modifiedAt,
             replyTo,
             scheduledAt,
             statusReason,
@@ -2444,5 +2083,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "EmailRetrieveResponse{id=$id, createdAt=$createdAt, from=$from, kind=$kind, orgId=$orgId, region=$region, status=$status, statusAt=$statusAt, subject=$subject, to=$to, attachments=$attachments, bcc=$bcc, bulkId=$bulkId, cc=$cc, context=$context, headers=$headers, messageId=$messageId, modifiedAt=$modifiedAt, replyTo=$replyTo, scheduledAt=$scheduledAt, statusReason=$statusReason, tags=$tags, additionalProperties=$additionalProperties}"
+        "EmailRetrieveResponse{id=$id, createdAt=$createdAt, from=$from, orgId=$orgId, status=$status, subject=$subject, to=$to, attachments=$attachments, bcc=$bcc, bulkId=$bulkId, cc=$cc, context=$context, headers=$headers, messageId=$messageId, replyTo=$replyTo, scheduledAt=$scheduledAt, statusReason=$statusReason, tags=$tags, additionalProperties=$additionalProperties}"
 }
