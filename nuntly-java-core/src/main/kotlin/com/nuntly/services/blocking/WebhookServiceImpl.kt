@@ -84,11 +84,6 @@ class WebhookServiceImpl internal constructor(private val clientOptions: ClientO
         // delete /webhooks/{id}
         withRawResponse().delete(params, requestOptions).parse()
 
-    /**
-     * Unwraps a webhook event from its JSON representation.
-     *
-     * @throws NuntlyInvalidDataException if the body could not be parsed.
-     */
     override fun unwrap(body: String): UnwrapWebhookEvent =
         try {
             clientOptions.jsonMapper.readValue(body, jacksonTypeRef<UnwrapWebhookEvent>())
