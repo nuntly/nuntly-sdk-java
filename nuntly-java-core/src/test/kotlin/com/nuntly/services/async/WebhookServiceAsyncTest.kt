@@ -4,6 +4,7 @@ package com.nuntly.services.async
 
 import com.nuntly.TestServerExtension
 import com.nuntly.client.okhttp.NuntlyOkHttpClientAsync
+import com.nuntly.core.http.Headers
 import com.nuntly.models.shared.EventType
 import com.nuntly.models.webhooks.WebhookCreateParams
 import com.nuntly.models.webhooks.WebhookUpdateParams
@@ -104,5 +105,22 @@ internal class WebhookServiceAsyncTest {
 
         val webhook = webhookFuture.get()
         webhook.validate()
+    }
+
+    @Test
+    fun unwrap() {
+        val client =
+            NuntlyOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val webhookServiceAsync = client.webhooks()
+
+        val payload =
+            "{\"id\":\"id\",\"createdAt\":\"createdAt\",\"data\":{\"queue\":{}},\"type\":\"email.queued\"}"
+        val webhookSecret = "whsec_c2VjcmV0Cg=="
+        val headers = Headers.builder().build()
+
+        webhookServiceAsync.unwrap(payload).validate()
     }
 }

@@ -4,6 +4,7 @@ package com.nuntly.services.blocking
 
 import com.nuntly.TestServerExtension
 import com.nuntly.client.okhttp.NuntlyOkHttpClient
+import com.nuntly.core.http.Headers
 import com.nuntly.models.shared.EventType
 import com.nuntly.models.webhooks.WebhookCreateParams
 import com.nuntly.models.webhooks.WebhookUpdateParams
@@ -99,5 +100,22 @@ internal class WebhookServiceTest {
         val webhook = webhookService.delete("wh_01ka8k8s80gvx9604cn9am5st4")
 
         webhook.validate()
+    }
+
+    @Test
+    fun unwrap() {
+        val client =
+            NuntlyOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val webhookService = client.webhooks()
+
+        val payload =
+            "{\"id\":\"id\",\"createdAt\":\"createdAt\",\"data\":{\"queue\":{}},\"type\":\"email.queued\"}"
+        val webhookSecret = "whsec_c2VjcmV0Cg=="
+        val headers = Headers.builder().build()
+
+        webhookService.unwrap(payload).validate()
     }
 }

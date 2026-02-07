@@ -16,7 +16,6 @@ import com.nuntly.core.http.HttpResponseFor
 import com.nuntly.core.http.json
 import com.nuntly.core.http.parseable
 import com.nuntly.core.prepareAsync
-import com.nuntly.errors.NuntlyInvalidDataException
 import com.nuntly.models.DataEnvelope
 import com.nuntly.models.webhooks.UnwrapWebhookEvent
 import com.nuntly.models.webhooks.WebhookCreateParams
@@ -88,11 +87,6 @@ class WebhookServiceAsyncImpl internal constructor(private val clientOptions: Cl
         // delete /webhooks/{id}
         withRawResponse().delete(params, requestOptions).thenApply { it.parse() }
 
-    /**
-     * Unwraps a webhook event from its JSON representation.
-     *
-     * @throws NuntlyInvalidDataException if the body could not be parsed.
-     */
     override fun unwrap(body: String): UnwrapWebhookEvent =
         WebhookServiceImpl(clientOptions).unwrap(body)
 
