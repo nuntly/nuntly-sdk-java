@@ -104,11 +104,7 @@ internal class WebhookServiceTest {
 
     @Test
     fun unwrap() {
-        val client =
-            NuntlyOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = NuntlyOkHttpClient.builder().apiKey("My API Key").build()
         val webhookService = client.webhooks()
 
         val payload =
