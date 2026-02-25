@@ -1,3 +1,5 @@
+// File generated from our OpenAPI spec by Stainless.
+
 package com.nuntly.core.http
 
 import com.nuntly.core.DefaultSleeper
