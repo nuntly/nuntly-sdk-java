@@ -22,6 +22,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to Email management */
 class ContentServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     ContentServiceAsync {
 

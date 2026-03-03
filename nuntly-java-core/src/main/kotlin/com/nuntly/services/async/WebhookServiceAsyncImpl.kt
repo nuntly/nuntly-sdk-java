@@ -36,6 +36,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to Webhook management */
 class WebhookServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     WebhookServiceAsync {
 
@@ -50,6 +51,7 @@ class WebhookServiceAsyncImpl internal constructor(private val clientOptions: Cl
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): WebhookServiceAsync =
         WebhookServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    /** Operations related to Webhook Events management */
     override fun events(): EventServiceAsync = events
 
     override fun create(
@@ -107,6 +109,7 @@ class WebhookServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
+        /** Operations related to Webhook Events management */
         override fun events(): EventServiceAsync.WithRawResponse = events
 
         private val createHandler: Handler<DataEnvelope<WebhookCreateResponse>> =

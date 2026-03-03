@@ -38,6 +38,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to Email management */
 class EmailServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     EmailServiceAsync {
 
@@ -58,12 +59,16 @@ class EmailServiceAsyncImpl internal constructor(private val clientOptions: Clie
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EmailServiceAsync =
         EmailServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    /** Operations related to Email management */
     override fun bulk(): BulkServiceAsync = bulk
 
+    /** Operations related to Email management */
     override fun events(): EventServiceAsync = events
 
+    /** Operations related to Email management */
     override fun content(): ContentServiceAsync = content
 
+    /** Operations related to Email management */
     override fun stats(): StatServiceAsync = stats
 
     override fun retrieve(
@@ -123,12 +128,16 @@ class EmailServiceAsyncImpl internal constructor(private val clientOptions: Clie
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
+        /** Operations related to Email management */
         override fun bulk(): BulkServiceAsync.WithRawResponse = bulk
 
+        /** Operations related to Email management */
         override fun events(): EventServiceAsync.WithRawResponse = events
 
+        /** Operations related to Email management */
         override fun content(): ContentServiceAsync.WithRawResponse = content
 
+        /** Operations related to Email management */
         override fun stats(): StatServiceAsync.WithRawResponse = stats
 
         private val retrieveHandler: Handler<DataEnvelope<EmailRetrieveResponse>> =

@@ -20,6 +20,7 @@ import com.nuntly.models.emails.stats.StatListResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
+/** Operations related to Email management */
 class StatServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     StatServiceAsync {
 

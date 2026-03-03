@@ -10,6 +10,7 @@ import com.nuntly.models.emails.stats.StatListParams
 import com.nuntly.models.emails.stats.StatListResponse
 import java.util.function.Consumer
 
+/** Operations related to Email management */
 interface StatService {
 
     /**

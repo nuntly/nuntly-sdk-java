@@ -32,6 +32,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to API keys management */
 class ApiKeyServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     ApiKeyServiceAsync {
 

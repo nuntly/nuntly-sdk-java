@@ -10,6 +10,7 @@ import com.nuntly.models.organizations.usage.UsageRetrieveResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
+/** Operations related to Organization management */
 interface UsageServiceAsync {
 
     /**

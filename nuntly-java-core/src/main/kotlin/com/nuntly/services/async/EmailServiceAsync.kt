@@ -20,6 +20,7 @@ import com.nuntly.services.async.emails.StatServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
+/** Operations related to Email management */
 interface EmailServiceAsync {
 
     /**
@@ -34,12 +35,16 @@ interface EmailServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EmailServiceAsync
 
+    /** Operations related to Email management */
     fun bulk(): BulkServiceAsync
 
+    /** Operations related to Email management */
     fun events(): EventServiceAsync
 
+    /** Operations related to Email management */
     fun content(): ContentServiceAsync
 
+    /** Operations related to Email management */
     fun stats(): StatServiceAsync
 
     /** Retrieve an email by its id */
@@ -152,12 +157,16 @@ interface EmailServiceAsync {
             modifier: Consumer<ClientOptions.Builder>
         ): EmailServiceAsync.WithRawResponse
 
+        /** Operations related to Email management */
         fun bulk(): BulkServiceAsync.WithRawResponse
 
+        /** Operations related to Email management */
         fun events(): EventServiceAsync.WithRawResponse
 
+        /** Operations related to Email management */
         fun content(): ContentServiceAsync.WithRawResponse
 
+        /** Operations related to Email management */
         fun stats(): StatServiceAsync.WithRawResponse
 
         /**

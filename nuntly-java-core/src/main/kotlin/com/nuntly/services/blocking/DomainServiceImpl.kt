@@ -31,6 +31,7 @@ import com.nuntly.models.domains.DomainUpdateResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to Domain management */
 class DomainServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     DomainService {
 

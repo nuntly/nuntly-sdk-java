@@ -10,6 +10,7 @@ import com.nuntly.models.emails.content.ContentRetrieveParams
 import com.nuntly.models.emails.content.ContentRetrieveResponse
 import java.util.function.Consumer
 
+/** Operations related to Email management */
 interface ContentService {
 
     /**

@@ -24,6 +24,7 @@ import com.nuntly.models.emails.bulk.BulkSendResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to Email management */
 class BulkServiceImpl internal constructor(private val clientOptions: ClientOptions) : BulkService {
 
     private val withRawResponse: BulkService.WithRawResponse by lazy {

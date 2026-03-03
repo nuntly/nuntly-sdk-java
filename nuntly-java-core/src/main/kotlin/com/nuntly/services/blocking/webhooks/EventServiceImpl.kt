@@ -27,6 +27,7 @@ import com.nuntly.models.webhooks.events.EventReplayResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to Webhook Events management */
 class EventServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     EventService {
 

@@ -18,6 +18,7 @@ import com.nuntly.models.apikeys.ApiKeyUpdateParams
 import com.nuntly.models.apikeys.ApiKeyUpdateResponse
 import java.util.function.Consumer
 
+/** Operations related to API keys management */
 interface ApiKeyService {
 
     /**
