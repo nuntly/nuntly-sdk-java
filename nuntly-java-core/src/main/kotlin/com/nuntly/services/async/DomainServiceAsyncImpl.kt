@@ -32,6 +32,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to Domain management */
 class DomainServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     DomainServiceAsync {
 

@@ -49,14 +49,19 @@ interface NuntlyClient {
 
     fun shared(): SharedService
 
+    /** Operations related to API keys management */
     fun apiKeys(): ApiKeyService
 
+    /** Operations related to Domain management */
     fun domains(): DomainService
 
+    /** Operations related to Email management */
     fun emails(): EmailService
 
+    /** Operations related to Webhook management */
     fun webhooks(): WebhookService
 
+    /** Operations related to Organization management */
     fun organizations(): OrganizationService
 
     /**
@@ -84,14 +89,19 @@ interface NuntlyClient {
 
         fun shared(): SharedService.WithRawResponse
 
+        /** Operations related to API keys management */
         fun apiKeys(): ApiKeyService.WithRawResponse
 
+        /** Operations related to Domain management */
         fun domains(): DomainService.WithRawResponse
 
+        /** Operations related to Email management */
         fun emails(): EmailService.WithRawResponse
 
+        /** Operations related to Webhook management */
         fun webhooks(): WebhookService.WithRawResponse
 
+        /** Operations related to Organization management */
         fun organizations(): OrganizationService.WithRawResponse
     }
 }

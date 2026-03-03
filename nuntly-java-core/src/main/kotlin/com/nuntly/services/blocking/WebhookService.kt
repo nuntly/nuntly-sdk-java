@@ -21,6 +21,7 @@ import com.nuntly.models.webhooks.WebhookUpdateResponse
 import com.nuntly.services.blocking.webhooks.EventService
 import java.util.function.Consumer
 
+/** Operations related to Webhook management */
 interface WebhookService {
 
     /**
@@ -35,6 +36,7 @@ interface WebhookService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): WebhookService
 
+    /** Operations related to Webhook Events management */
     fun events(): EventService
 
     /** Create a webhook */
@@ -171,6 +173,7 @@ interface WebhookService {
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): WebhookService.WithRawResponse
 
+        /** Operations related to Webhook Events management */
         fun events(): EventService.WithRawResponse
 
         /**

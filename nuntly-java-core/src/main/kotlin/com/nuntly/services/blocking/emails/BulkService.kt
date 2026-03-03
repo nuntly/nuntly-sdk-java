@@ -12,6 +12,7 @@ import com.nuntly.models.emails.bulk.BulkSendParams
 import com.nuntly.models.emails.bulk.BulkSendResponse
 import java.util.function.Consumer
 
+/** Operations related to Email management */
 interface BulkService {
 
     /**

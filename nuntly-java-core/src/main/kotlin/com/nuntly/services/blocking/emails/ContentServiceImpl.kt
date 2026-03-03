@@ -21,6 +21,7 @@ import com.nuntly.models.emails.content.ContentRetrieveResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to Email management */
 class ContentServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     ContentService {
 

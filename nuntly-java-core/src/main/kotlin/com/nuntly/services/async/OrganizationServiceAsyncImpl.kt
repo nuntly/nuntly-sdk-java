@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to Organization management */
 class OrganizationServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     OrganizationServiceAsync {
 
@@ -41,6 +42,7 @@ class OrganizationServiceAsyncImpl internal constructor(private val clientOption
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): OrganizationServiceAsync =
         OrganizationServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    /** Operations related to Organization management */
     override fun usage(): UsageServiceAsync = usage
 
     override fun retrieve(
@@ -74,6 +76,7 @@ class OrganizationServiceAsyncImpl internal constructor(private val clientOption
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
+        /** Operations related to Organization management */
         override fun usage(): UsageServiceAsync.WithRawResponse = usage
 
         private val retrieveHandler: Handler<DataEnvelope<OrganizationRetrieveResponse>> =

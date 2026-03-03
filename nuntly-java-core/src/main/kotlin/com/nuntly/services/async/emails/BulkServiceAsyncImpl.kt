@@ -25,6 +25,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to Email management */
 class BulkServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     BulkServiceAsync {
 
