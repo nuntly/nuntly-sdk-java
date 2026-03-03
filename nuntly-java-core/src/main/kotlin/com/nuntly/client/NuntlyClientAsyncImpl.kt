@@ -68,14 +68,19 @@ class NuntlyClientAsyncImpl(private val clientOptions: ClientOptions) : NuntlyCl
 
     override fun shared(): SharedServiceAsync = shared
 
+    /** Operations related to API keys management */
     override fun apiKeys(): ApiKeyServiceAsync = apiKeys
 
+    /** Operations related to Domain management */
     override fun domains(): DomainServiceAsync = domains
 
+    /** Operations related to Email management */
     override fun emails(): EmailServiceAsync = emails
 
+    /** Operations related to Webhook management */
     override fun webhooks(): WebhookServiceAsync = webhooks
 
+    /** Operations related to Organization management */
     override fun organizations(): OrganizationServiceAsync = organizations
 
     override fun close() = clientOptions.close()
@@ -116,14 +121,19 @@ class NuntlyClientAsyncImpl(private val clientOptions: ClientOptions) : NuntlyCl
 
         override fun shared(): SharedServiceAsync.WithRawResponse = shared
 
+        /** Operations related to API keys management */
         override fun apiKeys(): ApiKeyServiceAsync.WithRawResponse = apiKeys
 
+        /** Operations related to Domain management */
         override fun domains(): DomainServiceAsync.WithRawResponse = domains
 
+        /** Operations related to Email management */
         override fun emails(): EmailServiceAsync.WithRawResponse = emails
 
+        /** Operations related to Webhook management */
         override fun webhooks(): WebhookServiceAsync.WithRawResponse = webhooks
 
+        /** Operations related to Organization management */
         override fun organizations(): OrganizationServiceAsync.WithRawResponse = organizations
     }
 }

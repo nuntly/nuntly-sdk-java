@@ -31,6 +31,7 @@ import com.nuntly.models.apikeys.ApiKeyUpdateResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to API keys management */
 class ApiKeyServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     ApiKeyService {
 

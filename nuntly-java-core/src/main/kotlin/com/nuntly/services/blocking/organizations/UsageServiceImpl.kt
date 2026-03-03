@@ -21,6 +21,7 @@ import com.nuntly.models.organizations.usage.UsageRetrieveResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to Organization management */
 class UsageServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     UsageService {
 

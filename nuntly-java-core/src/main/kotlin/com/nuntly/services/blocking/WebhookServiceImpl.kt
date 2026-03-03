@@ -36,6 +36,7 @@ import com.nuntly.services.blocking.webhooks.EventServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to Webhook management */
 class WebhookServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     WebhookService {
 
@@ -50,6 +51,7 @@ class WebhookServiceImpl internal constructor(private val clientOptions: ClientO
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): WebhookService =
         WebhookServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    /** Operations related to Webhook Events management */
     override fun events(): EventService = events
 
     override fun create(
@@ -108,6 +110,7 @@ class WebhookServiceImpl internal constructor(private val clientOptions: ClientO
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
+        /** Operations related to Webhook Events management */
         override fun events(): EventService.WithRawResponse = events
 
         private val createHandler: Handler<DataEnvelope<WebhookCreateResponse>> =

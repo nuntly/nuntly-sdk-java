@@ -21,6 +21,7 @@ import com.nuntly.models.emails.events.EventListResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to Email management */
 class EventServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     EventService {
 

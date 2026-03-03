@@ -13,6 +13,7 @@ import com.nuntly.models.organizations.OrganizationRetrieveResponse
 import com.nuntly.services.blocking.organizations.UsageService
 import java.util.function.Consumer
 
+/** Operations related to Organization management */
 interface OrganizationService {
 
     /**
@@ -27,6 +28,7 @@ interface OrganizationService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): OrganizationService
 
+    /** Operations related to Organization management */
     fun usage(): UsageService
 
     /** Retrieve organization */
@@ -91,6 +93,7 @@ interface OrganizationService {
             modifier: Consumer<ClientOptions.Builder>
         ): OrganizationService.WithRawResponse
 
+        /** Operations related to Organization management */
         fun usage(): UsageService.WithRawResponse
 
         /**

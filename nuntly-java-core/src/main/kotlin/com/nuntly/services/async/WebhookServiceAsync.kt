@@ -21,6 +21,7 @@ import com.nuntly.services.async.webhooks.EventServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
+/** Operations related to Webhook management */
 interface WebhookServiceAsync {
 
     /**
@@ -35,6 +36,7 @@ interface WebhookServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): WebhookServiceAsync
 
+    /** Operations related to Webhook Events management */
     fun events(): EventServiceAsync
 
     /** Create a webhook */
@@ -191,6 +193,7 @@ interface WebhookServiceAsync {
             modifier: Consumer<ClientOptions.Builder>
         ): WebhookServiceAsync.WithRawResponse
 
+        /** Operations related to Webhook Events management */
         fun events(): EventServiceAsync.WithRawResponse
 
         /**

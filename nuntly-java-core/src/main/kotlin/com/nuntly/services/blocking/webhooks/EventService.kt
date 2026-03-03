@@ -14,6 +14,7 @@ import com.nuntly.models.webhooks.events.EventReplayParams
 import com.nuntly.models.webhooks.events.EventReplayResponse
 import java.util.function.Consumer
 
+/** Operations related to Webhook Events management */
 interface EventService {
 
     /**

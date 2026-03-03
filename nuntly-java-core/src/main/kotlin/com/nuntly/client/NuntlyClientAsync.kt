@@ -49,14 +49,19 @@ interface NuntlyClientAsync {
 
     fun shared(): SharedServiceAsync
 
+    /** Operations related to API keys management */
     fun apiKeys(): ApiKeyServiceAsync
 
+    /** Operations related to Domain management */
     fun domains(): DomainServiceAsync
 
+    /** Operations related to Email management */
     fun emails(): EmailServiceAsync
 
+    /** Operations related to Webhook management */
     fun webhooks(): WebhookServiceAsync
 
+    /** Operations related to Organization management */
     fun organizations(): OrganizationServiceAsync
 
     /**
@@ -86,14 +91,19 @@ interface NuntlyClientAsync {
 
         fun shared(): SharedServiceAsync.WithRawResponse
 
+        /** Operations related to API keys management */
         fun apiKeys(): ApiKeyServiceAsync.WithRawResponse
 
+        /** Operations related to Domain management */
         fun domains(): DomainServiceAsync.WithRawResponse
 
+        /** Operations related to Email management */
         fun emails(): EmailServiceAsync.WithRawResponse
 
+        /** Operations related to Webhook management */
         fun webhooks(): WebhookServiceAsync.WithRawResponse
 
+        /** Operations related to Organization management */
         fun organizations(): OrganizationServiceAsync.WithRawResponse
     }
 }

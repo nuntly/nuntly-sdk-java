@@ -18,6 +18,7 @@ import com.nuntly.models.domains.DomainUpdateParams
 import com.nuntly.models.domains.DomainUpdateResponse
 import java.util.function.Consumer
 
+/** Operations related to Domain management */
 interface DomainService {
 
     /**

@@ -37,6 +37,7 @@ import com.nuntly.services.blocking.emails.StatServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to Email management */
 class EmailServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     EmailService {
 
@@ -57,12 +58,16 @@ class EmailServiceImpl internal constructor(private val clientOptions: ClientOpt
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EmailService =
         EmailServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    /** Operations related to Email management */
     override fun bulk(): BulkService = bulk
 
+    /** Operations related to Email management */
     override fun events(): EventService = events
 
+    /** Operations related to Email management */
     override fun content(): ContentService = content
 
+    /** Operations related to Email management */
     override fun stats(): StatService = stats
 
     override fun retrieve(
@@ -116,12 +121,16 @@ class EmailServiceImpl internal constructor(private val clientOptions: ClientOpt
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
+        /** Operations related to Email management */
         override fun bulk(): BulkService.WithRawResponse = bulk
 
+        /** Operations related to Email management */
         override fun events(): EventService.WithRawResponse = events
 
+        /** Operations related to Email management */
         override fun content(): ContentService.WithRawResponse = content
 
+        /** Operations related to Email management */
         override fun stats(): StatService.WithRawResponse = stats
 
         private val retrieveHandler: Handler<DataEnvelope<EmailRetrieveResponse>> =

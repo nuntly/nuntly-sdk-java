@@ -20,6 +20,7 @@ import com.nuntly.services.blocking.emails.EventService
 import com.nuntly.services.blocking.emails.StatService
 import java.util.function.Consumer
 
+/** Operations related to Email management */
 interface EmailService {
 
     /**
@@ -34,12 +35,16 @@ interface EmailService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EmailService
 
+    /** Operations related to Email management */
     fun bulk(): BulkService
 
+    /** Operations related to Email management */
     fun events(): EventService
 
+    /** Operations related to Email management */
     fun content(): ContentService
 
+    /** Operations related to Email management */
     fun stats(): StatService
 
     /** Retrieve an email by its id */
@@ -141,12 +146,16 @@ interface EmailService {
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): EmailService.WithRawResponse
 
+        /** Operations related to Email management */
         fun bulk(): BulkService.WithRawResponse
 
+        /** Operations related to Email management */
         fun events(): EventService.WithRawResponse
 
+        /** Operations related to Email management */
         fun content(): ContentService.WithRawResponse
 
+        /** Operations related to Email management */
         fun stats(): StatService.WithRawResponse
 
         /**

@@ -13,6 +13,7 @@ import com.nuntly.services.async.organizations.UsageServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
+/** Operations related to Organization management */
 interface OrganizationServiceAsync {
 
     /**
@@ -27,6 +28,7 @@ interface OrganizationServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): OrganizationServiceAsync
 
+    /** Operations related to Organization management */
     fun usage(): UsageServiceAsync
 
     /** Retrieve organization */
@@ -98,6 +100,7 @@ interface OrganizationServiceAsync {
             modifier: Consumer<ClientOptions.Builder>
         ): OrganizationServiceAsync.WithRawResponse
 
+        /** Operations related to Organization management */
         fun usage(): UsageServiceAsync.WithRawResponse
 
         /**
