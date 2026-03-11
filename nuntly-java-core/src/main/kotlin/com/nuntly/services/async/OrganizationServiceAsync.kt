@@ -13,7 +13,7 @@ import com.nuntly.services.async.organizations.UsageServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Operations related to Organization management */
+/** Manage your organization profile, team members, and account-level settings. */
 interface OrganizationServiceAsync {
 
     /**
@@ -28,10 +28,10 @@ interface OrganizationServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): OrganizationServiceAsync
 
-    /** Operations related to Organization management */
+    /** Manage your organization profile, team members, and account-level settings. */
     fun usage(): UsageServiceAsync
 
-    /** Retrieve organization */
+    /** Returns the organization's profile, plan, region, and account status. */
     fun retrieve(id: String): CompletableFuture<OrganizationRetrieveResponse> =
         retrieve(id, OrganizationRetrieveParams.none())
 
@@ -67,7 +67,7 @@ interface OrganizationServiceAsync {
     ): CompletableFuture<OrganizationRetrieveResponse> =
         retrieve(id, OrganizationRetrieveParams.none(), requestOptions)
 
-    /** Retrieve organizations */
+    /** Returns all organizations the authenticated user belongs to. */
     fun list(): CompletableFuture<OrganizationListPageAsync> = list(OrganizationListParams.none())
 
     /** @see list */
@@ -100,7 +100,7 @@ interface OrganizationServiceAsync {
             modifier: Consumer<ClientOptions.Builder>
         ): OrganizationServiceAsync.WithRawResponse
 
-        /** Operations related to Organization management */
+        /** Manage your organization profile, team members, and account-level settings. */
         fun usage(): UsageServiceAsync.WithRawResponse
 
         /**

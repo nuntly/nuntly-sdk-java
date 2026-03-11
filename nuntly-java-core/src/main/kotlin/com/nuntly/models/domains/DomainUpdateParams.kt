@@ -19,7 +19,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Update a domain */
+/** Toggle sending, receiving, open tracking, or click tracking capabilities for a domain. */
 class DomainUpdateParams
 private constructor(
     private val id: String?,
@@ -28,7 +28,6 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** The id of the domain */
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /**
@@ -48,6 +47,22 @@ private constructor(
     fun openTracking(): Optional<Boolean> = body.openTracking()
 
     /**
+     * Enable or disable receiving
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun receiving(): Optional<Boolean> = body.receiving()
+
+    /**
+     * Enable or disable sending
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun sending(): Optional<Boolean> = body.sending()
+
+    /**
      * Returns the raw JSON value of [clickTracking].
      *
      * Unlike [clickTracking], this method doesn't throw if the JSON field has an unexpected type.
@@ -60,6 +75,20 @@ private constructor(
      * Unlike [openTracking], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _openTracking(): JsonField<Boolean> = body._openTracking()
+
+    /**
+     * Returns the raw JSON value of [receiving].
+     *
+     * Unlike [receiving], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _receiving(): JsonField<Boolean> = body._receiving()
+
+    /**
+     * Returns the raw JSON value of [sending].
+     *
+     * Unlike [sending], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _sending(): JsonField<Boolean> = body._sending()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -95,7 +124,6 @@ private constructor(
             additionalQueryParams = domainUpdateParams.additionalQueryParams.toBuilder()
         }
 
-        /** The id of the domain */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */
@@ -108,6 +136,8 @@ private constructor(
          * Otherwise, it's more convenient to use the top-level setters instead:
          * - [clickTracking]
          * - [openTracking]
+         * - [receiving]
+         * - [sending]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
@@ -138,6 +168,29 @@ private constructor(
         fun openTracking(openTracking: JsonField<Boolean>) = apply {
             body.openTracking(openTracking)
         }
+
+        /** Enable or disable receiving */
+        fun receiving(receiving: Boolean) = apply { body.receiving(receiving) }
+
+        /**
+         * Sets [Builder.receiving] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.receiving] with a well-typed [Boolean] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun receiving(receiving: JsonField<Boolean>) = apply { body.receiving(receiving) }
+
+        /** Enable or disable sending */
+        fun sending(sending: Boolean) = apply { body.sending(sending) }
+
+        /**
+         * Sets [Builder.sending] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.sending] with a well-typed [Boolean] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun sending(sending: JsonField<Boolean>) = apply { body.sending(sending) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -287,6 +340,8 @@ private constructor(
     private constructor(
         private val clickTracking: JsonField<Boolean>,
         private val openTracking: JsonField<Boolean>,
+        private val receiving: JsonField<Boolean>,
+        private val sending: JsonField<Boolean>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -298,7 +353,11 @@ private constructor(
             @JsonProperty("openTracking")
             @ExcludeMissing
             openTracking: JsonField<Boolean> = JsonMissing.of(),
-        ) : this(clickTracking, openTracking, mutableMapOf())
+            @JsonProperty("receiving")
+            @ExcludeMissing
+            receiving: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("sending") @ExcludeMissing sending: JsonField<Boolean> = JsonMissing.of(),
+        ) : this(clickTracking, openTracking, receiving, sending, mutableMapOf())
 
         /**
          * Emit an event for each time the recipient clicks a link in the email
@@ -315,6 +374,22 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun openTracking(): Optional<Boolean> = openTracking.getOptional("openTracking")
+
+        /**
+         * Enable or disable receiving
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun receiving(): Optional<Boolean> = receiving.getOptional("receiving")
+
+        /**
+         * Enable or disable sending
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun sending(): Optional<Boolean> = sending.getOptional("sending")
 
         /**
          * Returns the raw JSON value of [clickTracking].
@@ -335,6 +410,20 @@ private constructor(
         @JsonProperty("openTracking")
         @ExcludeMissing
         fun _openTracking(): JsonField<Boolean> = openTracking
+
+        /**
+         * Returns the raw JSON value of [receiving].
+         *
+         * Unlike [receiving], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("receiving") @ExcludeMissing fun _receiving(): JsonField<Boolean> = receiving
+
+        /**
+         * Returns the raw JSON value of [sending].
+         *
+         * Unlike [sending], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("sending") @ExcludeMissing fun _sending(): JsonField<Boolean> = sending
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -359,12 +448,16 @@ private constructor(
 
             private var clickTracking: JsonField<Boolean> = JsonMissing.of()
             private var openTracking: JsonField<Boolean> = JsonMissing.of()
+            private var receiving: JsonField<Boolean> = JsonMissing.of()
+            private var sending: JsonField<Boolean> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
                 clickTracking = body.clickTracking
                 openTracking = body.openTracking
+                receiving = body.receiving
+                sending = body.sending
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -396,6 +489,30 @@ private constructor(
                 this.openTracking = openTracking
             }
 
+            /** Enable or disable receiving */
+            fun receiving(receiving: Boolean) = receiving(JsonField.of(receiving))
+
+            /**
+             * Sets [Builder.receiving] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.receiving] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun receiving(receiving: JsonField<Boolean>) = apply { this.receiving = receiving }
+
+            /** Enable or disable sending */
+            fun sending(sending: Boolean) = sending(JsonField.of(sending))
+
+            /**
+             * Sets [Builder.sending] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.sending] with a well-typed [Boolean] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun sending(sending: JsonField<Boolean>) = apply { this.sending = sending }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -421,7 +538,13 @@ private constructor(
              * Further updates to this [Builder] will not mutate the returned instance.
              */
             fun build(): Body =
-                Body(clickTracking, openTracking, additionalProperties.toMutableMap())
+                Body(
+                    clickTracking,
+                    openTracking,
+                    receiving,
+                    sending,
+                    additionalProperties.toMutableMap(),
+                )
         }
 
         private var validated: Boolean = false
@@ -433,6 +556,8 @@ private constructor(
 
             clickTracking()
             openTracking()
+            receiving()
+            sending()
             validated = true
         }
 
@@ -453,7 +578,9 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (if (clickTracking.asKnown().isPresent) 1 else 0) +
-                (if (openTracking.asKnown().isPresent) 1 else 0)
+                (if (openTracking.asKnown().isPresent) 1 else 0) +
+                (if (receiving.asKnown().isPresent) 1 else 0) +
+                (if (sending.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -463,17 +590,19 @@ private constructor(
             return other is Body &&
                 clickTracking == other.clickTracking &&
                 openTracking == other.openTracking &&
+                receiving == other.receiving &&
+                sending == other.sending &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(clickTracking, openTracking, additionalProperties)
+            Objects.hash(clickTracking, openTracking, receiving, sending, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{clickTracking=$clickTracking, openTracking=$openTracking, additionalProperties=$additionalProperties}"
+            "Body{clickTracking=$clickTracking, openTracking=$openTracking, receiving=$receiving, sending=$sending, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

@@ -23,6 +23,7 @@ private constructor(
     private val id: JsonField<String>,
     private val createdAt: JsonField<String>,
     private val name: JsonField<String>,
+    private val receivingStatus: JsonField<ReceivingStatus>,
     private val region: JsonField<Region>,
     private val sendingStatus: JsonField<SendingStatus>,
     private val status: JsonField<Status>,
@@ -34,12 +35,15 @@ private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
         @JsonProperty("createdAt") @ExcludeMissing createdAt: JsonField<String> = JsonMissing.of(),
         @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("receivingStatus")
+        @ExcludeMissing
+        receivingStatus: JsonField<ReceivingStatus> = JsonMissing.of(),
         @JsonProperty("region") @ExcludeMissing region: JsonField<Region> = JsonMissing.of(),
         @JsonProperty("sendingStatus")
         @ExcludeMissing
         sendingStatus: JsonField<SendingStatus> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
-    ) : this(id, createdAt, name, region, sendingStatus, status, mutableMapOf())
+    ) : this(id, createdAt, name, receivingStatus, region, sendingStatus, status, mutableMapOf())
 
     /**
      * The id of the domain
@@ -64,6 +68,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun name(): String = name.getRequired("name")
+
+    /**
+     * The receiving status for the domain
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun receivingStatus(): ReceivingStatus = receivingStatus.getRequired("receivingStatus")
 
     /**
      * The region of the domain data
@@ -111,6 +123,15 @@ private constructor(
     @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
 
     /**
+     * Returns the raw JSON value of [receivingStatus].
+     *
+     * Unlike [receivingStatus], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("receivingStatus")
+    @ExcludeMissing
+    fun _receivingStatus(): JsonField<ReceivingStatus> = receivingStatus
+
+    /**
      * Returns the raw JSON value of [region].
      *
      * Unlike [region], this method doesn't throw if the JSON field has an unexpected type.
@@ -155,6 +176,7 @@ private constructor(
          * .id()
          * .createdAt()
          * .name()
+         * .receivingStatus()
          * .region()
          * .sendingStatus()
          * .status()
@@ -169,6 +191,7 @@ private constructor(
         private var id: JsonField<String>? = null
         private var createdAt: JsonField<String>? = null
         private var name: JsonField<String>? = null
+        private var receivingStatus: JsonField<ReceivingStatus>? = null
         private var region: JsonField<Region>? = null
         private var sendingStatus: JsonField<SendingStatus>? = null
         private var status: JsonField<Status>? = null
@@ -179,6 +202,7 @@ private constructor(
             id = domainListResponse.id
             createdAt = domainListResponse.createdAt
             name = domainListResponse.name
+            receivingStatus = domainListResponse.receivingStatus
             region = domainListResponse.region
             sendingStatus = domainListResponse.sendingStatus
             status = domainListResponse.status
@@ -218,6 +242,21 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun name(name: JsonField<String>) = apply { this.name = name }
+
+        /** The receiving status for the domain */
+        fun receivingStatus(receivingStatus: ReceivingStatus) =
+            receivingStatus(JsonField.of(receivingStatus))
+
+        /**
+         * Sets [Builder.receivingStatus] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.receivingStatus] with a well-typed [ReceivingStatus]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun receivingStatus(receivingStatus: JsonField<ReceivingStatus>) = apply {
+            this.receivingStatus = receivingStatus
+        }
 
         /** The region of the domain data */
         fun region(region: Region) = region(JsonField.of(region))
@@ -284,6 +323,7 @@ private constructor(
          * .id()
          * .createdAt()
          * .name()
+         * .receivingStatus()
          * .region()
          * .sendingStatus()
          * .status()
@@ -296,6 +336,7 @@ private constructor(
                 checkRequired("id", id),
                 checkRequired("createdAt", createdAt),
                 checkRequired("name", name),
+                checkRequired("receivingStatus", receivingStatus),
                 checkRequired("region", region),
                 checkRequired("sendingStatus", sendingStatus),
                 checkRequired("status", status),
@@ -313,6 +354,7 @@ private constructor(
         id()
         createdAt()
         name()
+        receivingStatus().validate()
         region().validate()
         sendingStatus().validate()
         status().validate()
@@ -337,9 +379,158 @@ private constructor(
         (if (id.asKnown().isPresent) 1 else 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
+            (receivingStatus.asKnown().getOrNull()?.validity() ?: 0) +
             (region.asKnown().getOrNull()?.validity() ?: 0) +
             (sendingStatus.asKnown().getOrNull()?.validity() ?: 0) +
             (status.asKnown().getOrNull()?.validity() ?: 0)
+
+    /** The receiving status for the domain */
+    class ReceivingStatus @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val DISABLED = of("disabled")
+
+            @JvmField val BOOTSTRAPPING = of("bootstrapping")
+
+            @JvmField val PENDING = of("pending")
+
+            @JvmField val ACTIVE = of("active")
+
+            @JvmField val FAILED = of("failed")
+
+            @JvmStatic fun of(value: String) = ReceivingStatus(JsonField.of(value))
+        }
+
+        /** An enum containing [ReceivingStatus]'s known values. */
+        enum class Known {
+            DISABLED,
+            BOOTSTRAPPING,
+            PENDING,
+            ACTIVE,
+            FAILED,
+        }
+
+        /**
+         * An enum containing [ReceivingStatus]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [ReceivingStatus] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            DISABLED,
+            BOOTSTRAPPING,
+            PENDING,
+            ACTIVE,
+            FAILED,
+            /**
+             * An enum member indicating that [ReceivingStatus] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                DISABLED -> Value.DISABLED
+                BOOTSTRAPPING -> Value.BOOTSTRAPPING
+                PENDING -> Value.PENDING
+                ACTIVE -> Value.ACTIVE
+                FAILED -> Value.FAILED
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws NuntlyInvalidDataException if this class instance's value is a not a known
+         *   member.
+         */
+        fun known(): Known =
+            when (this) {
+                DISABLED -> Known.DISABLED
+                BOOTSTRAPPING -> Known.BOOTSTRAPPING
+                PENDING -> Known.PENDING
+                ACTIVE -> Known.ACTIVE
+                FAILED -> Known.FAILED
+                else -> throw NuntlyInvalidDataException("Unknown ReceivingStatus: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws NuntlyInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow { NuntlyInvalidDataException("Value is not a String") }
+
+        private var validated: Boolean = false
+
+        fun validate(): ReceivingStatus = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: NuntlyInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is ReceivingStatus && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     /** The region of the domain data */
     class Region @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -744,6 +935,7 @@ private constructor(
             id == other.id &&
             createdAt == other.createdAt &&
             name == other.name &&
+            receivingStatus == other.receivingStatus &&
             region == other.region &&
             sendingStatus == other.sendingStatus &&
             status == other.status &&
@@ -751,11 +943,20 @@ private constructor(
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(id, createdAt, name, region, sendingStatus, status, additionalProperties)
+        Objects.hash(
+            id,
+            createdAt,
+            name,
+            receivingStatus,
+            region,
+            sendingStatus,
+            status,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "DomainListResponse{id=$id, createdAt=$createdAt, name=$name, region=$region, sendingStatus=$sendingStatus, status=$status, additionalProperties=$additionalProperties}"
+        "DomainListResponse{id=$id, createdAt=$createdAt, name=$name, receivingStatus=$receivingStatus, region=$region, sendingStatus=$sendingStatus, status=$status, additionalProperties=$additionalProperties}"
 }

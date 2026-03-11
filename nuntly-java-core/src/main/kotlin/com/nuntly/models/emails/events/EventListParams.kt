@@ -9,7 +9,9 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieve email events by email id */
+/**
+ * Returns the full delivery event history for an email (sent, delivered, opened, bounced, etc.).
+ */
 class EventListParams
 private constructor(
     private val id: String?,
@@ -17,7 +19,6 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** The id of the email */
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /** Additional headers to send with the request. */
@@ -50,7 +51,6 @@ private constructor(
             additionalQueryParams = eventListParams.additionalQueryParams.toBuilder()
         }
 
-        /** The id of the email */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */

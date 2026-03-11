@@ -28,9 +28,14 @@ private constructor(
     private val createdAt: JsonField<String>,
     private val name: JsonField<String>,
     private val openTracking: JsonField<Boolean>,
+    private val receiving: JsonField<Boolean>,
+    private val receivingStatus: JsonField<ReceivingStatus>,
+    private val receivingStatusAt: JsonField<String>,
+    private val records: JsonField<List<Record>>,
     private val region: JsonField<Region>,
-    private val sendingRecords: JsonField<List<SendingRecord>>,
+    private val sending: JsonField<Boolean>,
     private val sendingStatus: JsonField<SendingStatus>,
+    private val sendingStatusAt: JsonField<String>,
     private val status: JsonField<Status>,
     private val statusAt: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -47,13 +52,24 @@ private constructor(
         @JsonProperty("openTracking")
         @ExcludeMissing
         openTracking: JsonField<Boolean> = JsonMissing.of(),
-        @JsonProperty("region") @ExcludeMissing region: JsonField<Region> = JsonMissing.of(),
-        @JsonProperty("sendingRecords")
+        @JsonProperty("receiving") @ExcludeMissing receiving: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("receivingStatus")
         @ExcludeMissing
-        sendingRecords: JsonField<List<SendingRecord>> = JsonMissing.of(),
+        receivingStatus: JsonField<ReceivingStatus> = JsonMissing.of(),
+        @JsonProperty("receivingStatusAt")
+        @ExcludeMissing
+        receivingStatusAt: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("records")
+        @ExcludeMissing
+        records: JsonField<List<Record>> = JsonMissing.of(),
+        @JsonProperty("region") @ExcludeMissing region: JsonField<Region> = JsonMissing.of(),
+        @JsonProperty("sending") @ExcludeMissing sending: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("sendingStatus")
         @ExcludeMissing
         sendingStatus: JsonField<SendingStatus> = JsonMissing.of(),
+        @JsonProperty("sendingStatusAt")
+        @ExcludeMissing
+        sendingStatusAt: JsonField<String> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
         @JsonProperty("statusAt") @ExcludeMissing statusAt: JsonField<String> = JsonMissing.of(),
     ) : this(
@@ -62,9 +78,14 @@ private constructor(
         createdAt,
         name,
         openTracking,
+        receiving,
+        receivingStatus,
+        receivingStatusAt,
+        records,
         region,
-        sendingRecords,
+        sending,
         sendingStatus,
+        sendingStatusAt,
         status,
         statusAt,
         mutableMapOf(),
@@ -111,6 +132,38 @@ private constructor(
     fun openTracking(): Boolean = openTracking.getRequired("openTracking")
 
     /**
+     * Whether receiving is enabled for the domain
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun receiving(): Boolean = receiving.getRequired("receiving")
+
+    /**
+     * The receiving status for the domain
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun receivingStatus(): ReceivingStatus = receivingStatus.getRequired("receivingStatus")
+
+    /**
+     * The date of the latest receiving status change
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun receivingStatusAt(): String = receivingStatusAt.getRequired("receivingStatusAt")
+
+    /**
+     * The DNS records for your domain.
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun records(): List<Record> = records.getRequired("records")
+
+    /**
      * The region of the domain data
      *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
@@ -119,12 +172,12 @@ private constructor(
     fun region(): Region = region.getRequired("region")
 
     /**
-     * The records for your domain
+     * Whether sending is enabled for the domain
      *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun sendingRecords(): List<SendingRecord> = sendingRecords.getRequired("sendingRecords")
+    fun sending(): Boolean = sending.getRequired("sending")
 
     /**
      * The sending status for the domain
@@ -133,6 +186,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun sendingStatus(): SendingStatus = sendingStatus.getRequired("sendingStatus")
+
+    /**
+     * The date of the latest sending status change
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun sendingStatusAt(): String = sendingStatusAt.getRequired("sendingStatusAt")
 
     /**
      * The status for the domain
@@ -190,6 +251,39 @@ private constructor(
     fun _openTracking(): JsonField<Boolean> = openTracking
 
     /**
+     * Returns the raw JSON value of [receiving].
+     *
+     * Unlike [receiving], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("receiving") @ExcludeMissing fun _receiving(): JsonField<Boolean> = receiving
+
+    /**
+     * Returns the raw JSON value of [receivingStatus].
+     *
+     * Unlike [receivingStatus], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("receivingStatus")
+    @ExcludeMissing
+    fun _receivingStatus(): JsonField<ReceivingStatus> = receivingStatus
+
+    /**
+     * Returns the raw JSON value of [receivingStatusAt].
+     *
+     * Unlike [receivingStatusAt], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("receivingStatusAt")
+    @ExcludeMissing
+    fun _receivingStatusAt(): JsonField<String> = receivingStatusAt
+
+    /**
+     * Returns the raw JSON value of [records].
+     *
+     * Unlike [records], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("records") @ExcludeMissing fun _records(): JsonField<List<Record>> = records
+
+    /**
      * Returns the raw JSON value of [region].
      *
      * Unlike [region], this method doesn't throw if the JSON field has an unexpected type.
@@ -197,13 +291,11 @@ private constructor(
     @JsonProperty("region") @ExcludeMissing fun _region(): JsonField<Region> = region
 
     /**
-     * Returns the raw JSON value of [sendingRecords].
+     * Returns the raw JSON value of [sending].
      *
-     * Unlike [sendingRecords], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [sending], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("sendingRecords")
-    @ExcludeMissing
-    fun _sendingRecords(): JsonField<List<SendingRecord>> = sendingRecords
+    @JsonProperty("sending") @ExcludeMissing fun _sending(): JsonField<Boolean> = sending
 
     /**
      * Returns the raw JSON value of [sendingStatus].
@@ -213,6 +305,15 @@ private constructor(
     @JsonProperty("sendingStatus")
     @ExcludeMissing
     fun _sendingStatus(): JsonField<SendingStatus> = sendingStatus
+
+    /**
+     * Returns the raw JSON value of [sendingStatusAt].
+     *
+     * Unlike [sendingStatusAt], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("sendingStatusAt")
+    @ExcludeMissing
+    fun _sendingStatusAt(): JsonField<String> = sendingStatusAt
 
     /**
      * Returns the raw JSON value of [status].
@@ -252,9 +353,14 @@ private constructor(
          * .createdAt()
          * .name()
          * .openTracking()
+         * .receiving()
+         * .receivingStatus()
+         * .receivingStatusAt()
+         * .records()
          * .region()
-         * .sendingRecords()
+         * .sending()
          * .sendingStatus()
+         * .sendingStatusAt()
          * .status()
          * .statusAt()
          * ```
@@ -270,9 +376,14 @@ private constructor(
         private var createdAt: JsonField<String>? = null
         private var name: JsonField<String>? = null
         private var openTracking: JsonField<Boolean>? = null
+        private var receiving: JsonField<Boolean>? = null
+        private var receivingStatus: JsonField<ReceivingStatus>? = null
+        private var receivingStatusAt: JsonField<String>? = null
+        private var records: JsonField<MutableList<Record>>? = null
         private var region: JsonField<Region>? = null
-        private var sendingRecords: JsonField<MutableList<SendingRecord>>? = null
+        private var sending: JsonField<Boolean>? = null
         private var sendingStatus: JsonField<SendingStatus>? = null
+        private var sendingStatusAt: JsonField<String>? = null
         private var status: JsonField<Status>? = null
         private var statusAt: JsonField<String>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -284,9 +395,14 @@ private constructor(
             createdAt = domainRetrieveResponse.createdAt
             name = domainRetrieveResponse.name
             openTracking = domainRetrieveResponse.openTracking
+            receiving = domainRetrieveResponse.receiving
+            receivingStatus = domainRetrieveResponse.receivingStatus
+            receivingStatusAt = domainRetrieveResponse.receivingStatusAt
+            records = domainRetrieveResponse.records.map { it.toMutableList() }
             region = domainRetrieveResponse.region
-            sendingRecords = domainRetrieveResponse.sendingRecords.map { it.toMutableList() }
+            sending = domainRetrieveResponse.sending
             sendingStatus = domainRetrieveResponse.sendingStatus
+            sendingStatusAt = domainRetrieveResponse.sendingStatusAt
             status = domainRetrieveResponse.status
             statusAt = domainRetrieveResponse.statusAt
             additionalProperties = domainRetrieveResponse.additionalProperties.toMutableMap()
@@ -354,6 +470,74 @@ private constructor(
             this.openTracking = openTracking
         }
 
+        /** Whether receiving is enabled for the domain */
+        fun receiving(receiving: Boolean) = receiving(JsonField.of(receiving))
+
+        /**
+         * Sets [Builder.receiving] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.receiving] with a well-typed [Boolean] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun receiving(receiving: JsonField<Boolean>) = apply { this.receiving = receiving }
+
+        /** The receiving status for the domain */
+        fun receivingStatus(receivingStatus: ReceivingStatus) =
+            receivingStatus(JsonField.of(receivingStatus))
+
+        /**
+         * Sets [Builder.receivingStatus] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.receivingStatus] with a well-typed [ReceivingStatus]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun receivingStatus(receivingStatus: JsonField<ReceivingStatus>) = apply {
+            this.receivingStatus = receivingStatus
+        }
+
+        /** The date of the latest receiving status change */
+        fun receivingStatusAt(receivingStatusAt: String) =
+            receivingStatusAt(JsonField.of(receivingStatusAt))
+
+        /**
+         * Sets [Builder.receivingStatusAt] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.receivingStatusAt] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun receivingStatusAt(receivingStatusAt: JsonField<String>) = apply {
+            this.receivingStatusAt = receivingStatusAt
+        }
+
+        /** The DNS records for your domain. */
+        fun records(records: List<Record>) = records(JsonField.of(records))
+
+        /**
+         * Sets [Builder.records] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.records] with a well-typed `List<Record>` value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun records(records: JsonField<List<Record>>) = apply {
+            this.records = records.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [Record] to [records].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addRecord(record: Record) = apply {
+            records =
+                (records ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("records", it).add(record)
+                }
+        }
+
         /** The region of the domain data */
         fun region(region: Region) = region(JsonField.of(region))
 
@@ -365,32 +549,16 @@ private constructor(
          */
         fun region(region: JsonField<Region>) = apply { this.region = region }
 
-        /** The records for your domain */
-        fun sendingRecords(sendingRecords: List<SendingRecord>) =
-            sendingRecords(JsonField.of(sendingRecords))
+        /** Whether sending is enabled for the domain */
+        fun sending(sending: Boolean) = sending(JsonField.of(sending))
 
         /**
-         * Sets [Builder.sendingRecords] to an arbitrary JSON value.
+         * Sets [Builder.sending] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.sendingRecords] with a well-typed `List<SendingRecord>`
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
+         * You should usually call [Builder.sending] with a well-typed [Boolean] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun sendingRecords(sendingRecords: JsonField<List<SendingRecord>>) = apply {
-            this.sendingRecords = sendingRecords.map { it.toMutableList() }
-        }
-
-        /**
-         * Adds a single [SendingRecord] to [sendingRecords].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
-         */
-        fun addSendingRecord(sendingRecord: SendingRecord) = apply {
-            sendingRecords =
-                (sendingRecords ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("sendingRecords", it).add(sendingRecord)
-                }
-        }
+        fun sending(sending: JsonField<Boolean>) = apply { this.sending = sending }
 
         /** The sending status for the domain */
         fun sendingStatus(sendingStatus: SendingStatus) = sendingStatus(JsonField.of(sendingStatus))
@@ -404,6 +572,21 @@ private constructor(
          */
         fun sendingStatus(sendingStatus: JsonField<SendingStatus>) = apply {
             this.sendingStatus = sendingStatus
+        }
+
+        /** The date of the latest sending status change */
+        fun sendingStatusAt(sendingStatusAt: String) =
+            sendingStatusAt(JsonField.of(sendingStatusAt))
+
+        /**
+         * Sets [Builder.sendingStatusAt] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.sendingStatusAt] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun sendingStatusAt(sendingStatusAt: JsonField<String>) = apply {
+            this.sendingStatusAt = sendingStatusAt
         }
 
         /** The status for the domain */
@@ -459,9 +642,14 @@ private constructor(
          * .createdAt()
          * .name()
          * .openTracking()
+         * .receiving()
+         * .receivingStatus()
+         * .receivingStatusAt()
+         * .records()
          * .region()
-         * .sendingRecords()
+         * .sending()
          * .sendingStatus()
+         * .sendingStatusAt()
          * .status()
          * .statusAt()
          * ```
@@ -475,9 +663,14 @@ private constructor(
                 checkRequired("createdAt", createdAt),
                 checkRequired("name", name),
                 checkRequired("openTracking", openTracking),
+                checkRequired("receiving", receiving),
+                checkRequired("receivingStatus", receivingStatus),
+                checkRequired("receivingStatusAt", receivingStatusAt),
+                checkRequired("records", records).map { it.toImmutable() },
                 checkRequired("region", region),
-                checkRequired("sendingRecords", sendingRecords).map { it.toImmutable() },
+                checkRequired("sending", sending),
                 checkRequired("sendingStatus", sendingStatus),
+                checkRequired("sendingStatusAt", sendingStatusAt),
                 checkRequired("status", status),
                 checkRequired("statusAt", statusAt),
                 additionalProperties.toMutableMap(),
@@ -496,9 +689,14 @@ private constructor(
         createdAt()
         name()
         openTracking()
+        receiving()
+        receivingStatus().validate()
+        receivingStatusAt()
+        records().forEach { it.validate() }
         region().validate()
-        sendingRecords().forEach { it.validate() }
+        sending()
         sendingStatus().validate()
+        sendingStatusAt()
         status().validate()
         statusAt()
         validated = true
@@ -524,14 +722,20 @@ private constructor(
             (if (createdAt.asKnown().isPresent) 1 else 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
             (if (openTracking.asKnown().isPresent) 1 else 0) +
+            (if (receiving.asKnown().isPresent) 1 else 0) +
+            (receivingStatus.asKnown().getOrNull()?.validity() ?: 0) +
+            (if (receivingStatusAt.asKnown().isPresent) 1 else 0) +
+            (records.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (region.asKnown().getOrNull()?.validity() ?: 0) +
-            (sendingRecords.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
+            (if (sending.asKnown().isPresent) 1 else 0) +
             (sendingStatus.asKnown().getOrNull()?.validity() ?: 0) +
+            (if (sendingStatusAt.asKnown().isPresent) 1 else 0) +
             (status.asKnown().getOrNull()?.validity() ?: 0) +
             (if (statusAt.asKnown().isPresent) 1 else 0)
 
-    /** The region of the domain data */
-    class Region @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+    /** The receiving status for the domain */
+    class ReceivingStatus @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
 
         /**
          * Returns this class instance's raw value.
@@ -545,28 +749,47 @@ private constructor(
 
         companion object {
 
-            @JvmField val EU_WEST_1 = of("eu-west-1")
+            @JvmField val DISABLED = of("disabled")
 
-            @JvmStatic fun of(value: String) = Region(JsonField.of(value))
+            @JvmField val BOOTSTRAPPING = of("bootstrapping")
+
+            @JvmField val PENDING = of("pending")
+
+            @JvmField val ACTIVE = of("active")
+
+            @JvmField val FAILED = of("failed")
+
+            @JvmStatic fun of(value: String) = ReceivingStatus(JsonField.of(value))
         }
 
-        /** An enum containing [Region]'s known values. */
+        /** An enum containing [ReceivingStatus]'s known values. */
         enum class Known {
-            EU_WEST_1
+            DISABLED,
+            BOOTSTRAPPING,
+            PENDING,
+            ACTIVE,
+            FAILED,
         }
 
         /**
-         * An enum containing [Region]'s known values, as well as an [_UNKNOWN] member.
+         * An enum containing [ReceivingStatus]'s known values, as well as an [_UNKNOWN] member.
          *
-         * An instance of [Region] can contain an unknown value in a couple of cases:
+         * An instance of [ReceivingStatus] can contain an unknown value in a couple of cases:
          * - It was deserialized from data that doesn't match any known member. For example, if the
          *   SDK is on an older version than the API, then the API may respond with new members that
          *   the SDK is unaware of.
          * - It was constructed with an arbitrary value using the [of] method.
          */
         enum class Value {
-            EU_WEST_1,
-            /** An enum member indicating that [Region] was instantiated with an unknown value. */
+            DISABLED,
+            BOOTSTRAPPING,
+            PENDING,
+            ACTIVE,
+            FAILED,
+            /**
+             * An enum member indicating that [ReceivingStatus] was instantiated with an unknown
+             * value.
+             */
             _UNKNOWN,
         }
 
@@ -579,7 +802,11 @@ private constructor(
          */
         fun value(): Value =
             when (this) {
-                EU_WEST_1 -> Value.EU_WEST_1
+                DISABLED -> Value.DISABLED
+                BOOTSTRAPPING -> Value.BOOTSTRAPPING
+                PENDING -> Value.PENDING
+                ACTIVE -> Value.ACTIVE
+                FAILED -> Value.FAILED
                 else -> Value._UNKNOWN
             }
 
@@ -594,8 +821,12 @@ private constructor(
          */
         fun known(): Known =
             when (this) {
-                EU_WEST_1 -> Known.EU_WEST_1
-                else -> throw NuntlyInvalidDataException("Unknown Region: $value")
+                DISABLED -> Known.DISABLED
+                BOOTSTRAPPING -> Known.BOOTSTRAPPING
+                PENDING -> Known.PENDING
+                ACTIVE -> Known.ACTIVE
+                FAILED -> Known.FAILED
+                else -> throw NuntlyInvalidDataException("Unknown ReceivingStatus: $value")
             }
 
         /**
@@ -612,7 +843,7 @@ private constructor(
 
         private var validated: Boolean = false
 
-        fun validate(): Region = apply {
+        fun validate(): ReceivingStatus = apply {
             if (validated) {
                 return@apply
             }
@@ -642,7 +873,7 @@ private constructor(
                 return true
             }
 
-            return other is Region && value == other.value
+            return other is ReceivingStatus && value == other.value
         }
 
         override fun hashCode() = value.hashCode()
@@ -650,7 +881,7 @@ private constructor(
         override fun toString() = value.toString()
     }
 
-    class SendingRecord
+    class Record
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val fullname: JsonField<String>,
@@ -870,7 +1101,7 @@ private constructor(
         companion object {
 
             /**
-             * Returns a mutable builder for constructing an instance of [SendingRecord].
+             * Returns a mutable builder for constructing an instance of [Record].
              *
              * The following fields are required:
              * ```java
@@ -887,7 +1118,7 @@ private constructor(
             @JvmStatic fun builder() = Builder()
         }
 
-        /** A builder for [SendingRecord]. */
+        /** A builder for [Record]. */
         class Builder internal constructor() {
 
             private var fullname: JsonField<String>? = null
@@ -903,18 +1134,18 @@ private constructor(
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
-            internal fun from(sendingRecord: SendingRecord) = apply {
-                fullname = sendingRecord.fullname
-                group = sendingRecord.group
-                name = sendingRecord.name
-                recordType = sendingRecord.recordType
-                status = sendingRecord.status
-                statusAt = sendingRecord.statusAt
-                ttl = sendingRecord.ttl
-                value = sendingRecord.value
-                priority = sendingRecord.priority
-                selector = sendingRecord.selector
-                additionalProperties = sendingRecord.additionalProperties.toMutableMap()
+            internal fun from(record: Record) = apply {
+                fullname = record.fullname
+                group = record.group
+                name = record.name
+                recordType = record.recordType
+                status = record.status
+                statusAt = record.statusAt
+                ttl = record.ttl
+                value = record.value
+                priority = record.priority
+                selector = record.selector
+                additionalProperties = record.additionalProperties.toMutableMap()
             }
 
             /** The FQDN of the domain record */
@@ -1068,7 +1299,7 @@ private constructor(
             }
 
             /**
-             * Returns an immutable instance of [SendingRecord].
+             * Returns an immutable instance of [Record].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
              *
@@ -1086,8 +1317,8 @@ private constructor(
              *
              * @throws IllegalStateException if any required field is unset.
              */
-            fun build(): SendingRecord =
-                SendingRecord(
+            fun build(): Record =
+                Record(
                     checkRequired("fullname", fullname),
                     checkRequired("group", group),
                     checkRequired("name", name),
@@ -1104,7 +1335,7 @@ private constructor(
 
         private var validated: Boolean = false
 
-        fun validate(): SendingRecord = apply {
+        fun validate(): Record = apply {
             if (validated) {
                 return@apply
             }
@@ -1172,6 +1403,8 @@ private constructor(
 
                 @JvmField val DMARC = of("DMARC")
 
+                @JvmField val MX_RECEIVING = of("MX_RECEIVING")
+
                 @JvmStatic fun of(value: String) = Group(JsonField.of(value))
             }
 
@@ -1181,6 +1414,7 @@ private constructor(
                 SPF,
                 MX,
                 DMARC,
+                MX_RECEIVING,
             }
 
             /**
@@ -1197,6 +1431,7 @@ private constructor(
                 SPF,
                 MX,
                 DMARC,
+                MX_RECEIVING,
                 /**
                  * An enum member indicating that [Group] was instantiated with an unknown value.
                  */
@@ -1216,6 +1451,7 @@ private constructor(
                     SPF -> Value.SPF
                     MX -> Value.MX
                     DMARC -> Value.DMARC
+                    MX_RECEIVING -> Value.MX_RECEIVING
                     else -> Value._UNKNOWN
                 }
 
@@ -1234,6 +1470,7 @@ private constructor(
                     SPF -> Known.SPF
                     MX -> Known.MX
                     DMARC -> Known.DMARC
+                    MX_RECEIVING -> Known.MX_RECEIVING
                     else -> throw NuntlyInvalidDataException("Unknown Group: $value")
                 }
 
@@ -1582,7 +1819,7 @@ private constructor(
                 return true
             }
 
-            return other is SendingRecord &&
+            return other is Record &&
                 fullname == other.fullname &&
                 group == other.group &&
                 name == other.name &&
@@ -1615,7 +1852,127 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "SendingRecord{fullname=$fullname, group=$group, name=$name, recordType=$recordType, status=$status, statusAt=$statusAt, ttl=$ttl, value=$value, priority=$priority, selector=$selector, additionalProperties=$additionalProperties}"
+            "Record{fullname=$fullname, group=$group, name=$name, recordType=$recordType, status=$status, statusAt=$statusAt, ttl=$ttl, value=$value, priority=$priority, selector=$selector, additionalProperties=$additionalProperties}"
+    }
+
+    /** The region of the domain data */
+    class Region @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val EU_WEST_1 = of("eu-west-1")
+
+            @JvmStatic fun of(value: String) = Region(JsonField.of(value))
+        }
+
+        /** An enum containing [Region]'s known values. */
+        enum class Known {
+            EU_WEST_1
+        }
+
+        /**
+         * An enum containing [Region]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Region] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            EU_WEST_1,
+            /** An enum member indicating that [Region] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                EU_WEST_1 -> Value.EU_WEST_1
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws NuntlyInvalidDataException if this class instance's value is a not a known
+         *   member.
+         */
+        fun known(): Known =
+            when (this) {
+                EU_WEST_1 -> Known.EU_WEST_1
+                else -> throw NuntlyInvalidDataException("Unknown Region: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws NuntlyInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow { NuntlyInvalidDataException("Value is not a String") }
+
+        private var validated: Boolean = false
+
+        fun validate(): Region = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: NuntlyInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Region && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
     }
 
     /** The sending status for the domain */
@@ -1903,9 +2260,14 @@ private constructor(
             createdAt == other.createdAt &&
             name == other.name &&
             openTracking == other.openTracking &&
+            receiving == other.receiving &&
+            receivingStatus == other.receivingStatus &&
+            receivingStatusAt == other.receivingStatusAt &&
+            records == other.records &&
             region == other.region &&
-            sendingRecords == other.sendingRecords &&
+            sending == other.sending &&
             sendingStatus == other.sendingStatus &&
+            sendingStatusAt == other.sendingStatusAt &&
             status == other.status &&
             statusAt == other.statusAt &&
             additionalProperties == other.additionalProperties
@@ -1918,9 +2280,14 @@ private constructor(
             createdAt,
             name,
             openTracking,
+            receiving,
+            receivingStatus,
+            receivingStatusAt,
+            records,
             region,
-            sendingRecords,
+            sending,
             sendingStatus,
+            sendingStatusAt,
             status,
             statusAt,
             additionalProperties,
@@ -1930,5 +2297,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "DomainRetrieveResponse{id=$id, clickTracking=$clickTracking, createdAt=$createdAt, name=$name, openTracking=$openTracking, region=$region, sendingRecords=$sendingRecords, sendingStatus=$sendingStatus, status=$status, statusAt=$statusAt, additionalProperties=$additionalProperties}"
+        "DomainRetrieveResponse{id=$id, clickTracking=$clickTracking, createdAt=$createdAt, name=$name, openTracking=$openTracking, receiving=$receiving, receivingStatus=$receivingStatus, receivingStatusAt=$receivingStatusAt, records=$records, region=$region, sending=$sending, sendingStatus=$sendingStatus, sendingStatusAt=$sendingStatusAt, status=$status, statusAt=$statusAt, additionalProperties=$additionalProperties}"
 }

@@ -26,7 +26,7 @@ import com.nuntly.services.blocking.organizations.UsageServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Operations related to Organization management */
+/** Manage your organization profile, team members, and account-level settings. */
 class OrganizationServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     OrganizationService {
 
@@ -41,7 +41,7 @@ class OrganizationServiceImpl internal constructor(private val clientOptions: Cl
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): OrganizationService =
         OrganizationServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /** Operations related to Organization management */
+    /** Manage your organization profile, team members, and account-level settings. */
     override fun usage(): UsageService = usage
 
     override fun retrieve(
@@ -75,7 +75,7 @@ class OrganizationServiceImpl internal constructor(private val clientOptions: Cl
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /** Operations related to Organization management */
+        /** Manage your organization profile, team members, and account-level settings. */
         override fun usage(): UsageService.WithRawResponse = usage
 
         private val retrieveHandler: Handler<DataEnvelope<OrganizationRetrieveResponse>> =

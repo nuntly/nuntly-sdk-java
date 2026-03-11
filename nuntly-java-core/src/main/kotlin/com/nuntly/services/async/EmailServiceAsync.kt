@@ -20,7 +20,7 @@ import com.nuntly.services.async.emails.StatServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Operations related to Email management */
+/** Send transactional emails, retrieve sending history, and track delivery status per message. */
 interface EmailServiceAsync {
 
     /**
@@ -35,19 +35,27 @@ interface EmailServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EmailServiceAsync
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     fun bulk(): BulkServiceAsync
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     fun events(): EventServiceAsync
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     fun content(): ContentServiceAsync
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     fun stats(): StatServiceAsync
 
-    /** Retrieve an email by its id */
+    /** Returns an email with its current delivery status and metadata. */
     fun retrieve(id: String): CompletableFuture<EmailRetrieveResponse> =
         retrieve(id, EmailRetrieveParams.none())
 
@@ -82,7 +90,7 @@ interface EmailServiceAsync {
     ): CompletableFuture<EmailRetrieveResponse> =
         retrieve(id, EmailRetrieveParams.none(), requestOptions)
 
-    /** Return a list of recent emails. */
+    /** Returns sent emails ordered by submission date, newest first. */
     fun list(): CompletableFuture<EmailListPageAsync> = list(EmailListParams.none())
 
     /** @see list */
@@ -100,7 +108,10 @@ interface EmailServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<EmailListPageAsync> =
         list(EmailListParams.none(), requestOptions)
 
-    /** Cancel a scheduled email */
+    /**
+     * Cancel a scheduled email before delivery. Only emails with `scheduled` status can be
+     * cancelled.
+     */
     fun cancel(id: String): CompletableFuture<EmailCancelResponse> =
         cancel(id, EmailCancelParams.none())
 
@@ -157,16 +168,28 @@ interface EmailServiceAsync {
             modifier: Consumer<ClientOptions.Builder>
         ): EmailServiceAsync.WithRawResponse
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         fun bulk(): BulkServiceAsync.WithRawResponse
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         fun events(): EventServiceAsync.WithRawResponse
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         fun content(): ContentServiceAsync.WithRawResponse
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         fun stats(): StatServiceAsync.WithRawResponse
 
         /**

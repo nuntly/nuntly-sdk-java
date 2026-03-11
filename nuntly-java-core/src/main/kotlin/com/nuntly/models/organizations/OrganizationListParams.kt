@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieve organizations */
+/** Returns all organizations the authenticated user belongs to. */
 class OrganizationListParams
 private constructor(
     private val cursor: String?,

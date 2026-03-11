@@ -44,6 +44,11 @@ internal class EventTest {
         assertThat(event.emailRejected()).isEmpty
         assertThat(event.emailDeliveryDelayed()).isEmpty
         assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
     }
 
     @Test
@@ -102,6 +107,11 @@ internal class EventTest {
         assertThat(event.emailRejected()).isEmpty
         assertThat(event.emailDeliveryDelayed()).isEmpty
         assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
     }
 
     @Test
@@ -160,6 +170,11 @@ internal class EventTest {
         assertThat(event.emailRejected()).isEmpty
         assertThat(event.emailDeliveryDelayed()).isEmpty
         assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
     }
 
     @Test
@@ -239,6 +254,11 @@ internal class EventTest {
         assertThat(event.emailRejected()).isEmpty
         assertThat(event.emailDeliveryDelayed()).isEmpty
         assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
     }
 
     @Test
@@ -340,6 +360,11 @@ internal class EventTest {
         assertThat(event.emailRejected()).isEmpty
         assertThat(event.emailDeliveryDelayed()).isEmpty
         assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
     }
 
     @Test
@@ -453,6 +478,11 @@ internal class EventTest {
         assertThat(event.emailRejected()).isEmpty
         assertThat(event.emailDeliveryDelayed()).isEmpty
         assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
     }
 
     @Test
@@ -571,6 +601,11 @@ internal class EventTest {
         assertThat(event.emailRejected()).isEmpty
         assertThat(event.emailDeliveryDelayed()).isEmpty
         assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
     }
 
     @Test
@@ -686,6 +721,11 @@ internal class EventTest {
         assertThat(event.emailRejected()).isEmpty
         assertThat(event.emailDeliveryDelayed()).isEmpty
         assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
     }
 
     @Test
@@ -814,6 +854,11 @@ internal class EventTest {
         assertThat(event.emailRejected()).isEmpty
         assertThat(event.emailDeliveryDelayed()).isEmpty
         assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
     }
 
     @Test
@@ -956,6 +1001,11 @@ internal class EventTest {
         assertThat(event.emailRejected()).isEmpty
         assertThat(event.emailDeliveryDelayed()).isEmpty
         assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
     }
 
     @Test
@@ -1080,6 +1130,11 @@ internal class EventTest {
         assertThat(event.emailRejected()).contains(emailRejected)
         assertThat(event.emailDeliveryDelayed()).isEmpty
         assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
     }
 
     @Test
@@ -1203,6 +1258,11 @@ internal class EventTest {
         assertThat(event.emailRejected()).isEmpty
         assertThat(event.emailDeliveryDelayed()).contains(emailDeliveryDelayed)
         assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
     }
 
     @Test
@@ -1329,6 +1389,11 @@ internal class EventTest {
         assertThat(event.emailRejected()).isEmpty
         assertThat(event.emailDeliveryDelayed()).isEmpty
         assertThat(event.emailFailed()).contains(emailFailed)
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
     }
 
     @Test
@@ -1371,6 +1436,375 @@ internal class EventTest {
                                     .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                     .build()
                             )
+                            .build()
+                    )
+                    .build()
+            )
+
+        val roundtrippedEvent =
+            jsonMapper.readValue(jsonMapper.writeValueAsString(event), jacksonTypeRef<Event>())
+
+        assertThat(roundtrippedEvent).isEqualTo(event)
+    }
+
+    @Test
+    fun ofMessageReceived() {
+        val messageReceived =
+            MessageReceivedEvent.builder()
+                .id("id")
+                .createdAt("createdAt")
+                .data(
+                    MessageReceivedEvent.Data.builder()
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .from("from")
+                        .inboxId("inboxId")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .subject("subject")
+                        .threadId("threadId")
+                        .agentId("agentId")
+                        .build()
+                )
+                .type(MessageReceivedEvent.Type.MESSAGE_RECEIVED)
+                .build()
+
+        val event = Event.ofMessageReceived(messageReceived)
+
+        assertThat(event.emailQueued()).isEmpty
+        assertThat(event.emailScheduled()).isEmpty
+        assertThat(event.emailProcessed()).isEmpty
+        assertThat(event.emailSending()).isEmpty
+        assertThat(event.emailSent()).isEmpty
+        assertThat(event.emailDelivered()).isEmpty
+        assertThat(event.emailOpened()).isEmpty
+        assertThat(event.emailClicked()).isEmpty
+        assertThat(event.emailBounced()).isEmpty
+        assertThat(event.emailComplained()).isEmpty
+        assertThat(event.emailRejected()).isEmpty
+        assertThat(event.emailDeliveryDelayed()).isEmpty
+        assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).contains(messageReceived)
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
+    }
+
+    @Test
+    fun ofMessageReceivedRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val event =
+            Event.ofMessageReceived(
+                MessageReceivedEvent.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .data(
+                        MessageReceivedEvent.Data.builder()
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .from("from")
+                            .inboxId("inboxId")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .subject("subject")
+                            .threadId("threadId")
+                            .agentId("agentId")
+                            .build()
+                    )
+                    .type(MessageReceivedEvent.Type.MESSAGE_RECEIVED)
+                    .build()
+            )
+
+        val roundtrippedEvent =
+            jsonMapper.readValue(jsonMapper.writeValueAsString(event), jacksonTypeRef<Event>())
+
+        assertThat(roundtrippedEvent).isEqualTo(event)
+    }
+
+    @Test
+    fun ofMessageSecurityFlagged() {
+        val messageSecurityFlagged =
+            MessageSecurityFlaggedEvent.builder()
+                .id("id")
+                .createdAt("createdAt")
+                .data(
+                    MessageSecurityFlaggedEvent.Data.builder()
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .from("from")
+                        .inboxId("inboxId")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .subject("subject")
+                        .threadId("threadId")
+                        .agentId("agentId")
+                        .build()
+                )
+                .type(MessageSecurityFlaggedEvent.Type.MESSAGE_SECURITY_FLAGGED)
+                .build()
+
+        val event = Event.ofMessageSecurityFlagged(messageSecurityFlagged)
+
+        assertThat(event.emailQueued()).isEmpty
+        assertThat(event.emailScheduled()).isEmpty
+        assertThat(event.emailProcessed()).isEmpty
+        assertThat(event.emailSending()).isEmpty
+        assertThat(event.emailSent()).isEmpty
+        assertThat(event.emailDelivered()).isEmpty
+        assertThat(event.emailOpened()).isEmpty
+        assertThat(event.emailClicked()).isEmpty
+        assertThat(event.emailBounced()).isEmpty
+        assertThat(event.emailComplained()).isEmpty
+        assertThat(event.emailRejected()).isEmpty
+        assertThat(event.emailDeliveryDelayed()).isEmpty
+        assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).contains(messageSecurityFlagged)
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
+    }
+
+    @Test
+    fun ofMessageSecurityFlaggedRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val event =
+            Event.ofMessageSecurityFlagged(
+                MessageSecurityFlaggedEvent.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .data(
+                        MessageSecurityFlaggedEvent.Data.builder()
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .from("from")
+                            .inboxId("inboxId")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .subject("subject")
+                            .threadId("threadId")
+                            .agentId("agentId")
+                            .build()
+                    )
+                    .type(MessageSecurityFlaggedEvent.Type.MESSAGE_SECURITY_FLAGGED)
+                    .build()
+            )
+
+        val roundtrippedEvent =
+            jsonMapper.readValue(jsonMapper.writeValueAsString(event), jacksonTypeRef<Event>())
+
+        assertThat(roundtrippedEvent).isEqualTo(event)
+    }
+
+    @Test
+    fun ofMessageAgentTriggered() {
+        val messageAgentTriggered =
+            MessageAgentTriggeredEvent.builder()
+                .id("id")
+                .createdAt("createdAt")
+                .data(
+                    MessageAgentTriggeredEvent.Data.builder()
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .from("from")
+                        .inboxId("inboxId")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .subject("subject")
+                        .threadId("threadId")
+                        .agentId("agentId")
+                        .build()
+                )
+                .type(MessageAgentTriggeredEvent.Type.MESSAGE_AGENT_TRIGGERED)
+                .build()
+
+        val event = Event.ofMessageAgentTriggered(messageAgentTriggered)
+
+        assertThat(event.emailQueued()).isEmpty
+        assertThat(event.emailScheduled()).isEmpty
+        assertThat(event.emailProcessed()).isEmpty
+        assertThat(event.emailSending()).isEmpty
+        assertThat(event.emailSent()).isEmpty
+        assertThat(event.emailDelivered()).isEmpty
+        assertThat(event.emailOpened()).isEmpty
+        assertThat(event.emailClicked()).isEmpty
+        assertThat(event.emailBounced()).isEmpty
+        assertThat(event.emailComplained()).isEmpty
+        assertThat(event.emailRejected()).isEmpty
+        assertThat(event.emailDeliveryDelayed()).isEmpty
+        assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).contains(messageAgentTriggered)
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).isEmpty
+    }
+
+    @Test
+    fun ofMessageAgentTriggeredRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val event =
+            Event.ofMessageAgentTriggered(
+                MessageAgentTriggeredEvent.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .data(
+                        MessageAgentTriggeredEvent.Data.builder()
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .from("from")
+                            .inboxId("inboxId")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .subject("subject")
+                            .threadId("threadId")
+                            .agentId("agentId")
+                            .build()
+                    )
+                    .type(MessageAgentTriggeredEvent.Type.MESSAGE_AGENT_TRIGGERED)
+                    .build()
+            )
+
+        val roundtrippedEvent =
+            jsonMapper.readValue(jsonMapper.writeValueAsString(event), jacksonTypeRef<Event>())
+
+        assertThat(roundtrippedEvent).isEqualTo(event)
+    }
+
+    @Test
+    fun ofMessageSent() {
+        val messageSent =
+            MessageSentEvent.builder()
+                .id("id")
+                .createdAt("createdAt")
+                .data(
+                    MessageSentEvent.Data.builder()
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .from("from")
+                        .inboxId("inboxId")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .subject("subject")
+                        .threadId("threadId")
+                        .agentId("agentId")
+                        .build()
+                )
+                .type(MessageSentEvent.Type.MESSAGE_SENT)
+                .build()
+
+        val event = Event.ofMessageSent(messageSent)
+
+        assertThat(event.emailQueued()).isEmpty
+        assertThat(event.emailScheduled()).isEmpty
+        assertThat(event.emailProcessed()).isEmpty
+        assertThat(event.emailSending()).isEmpty
+        assertThat(event.emailSent()).isEmpty
+        assertThat(event.emailDelivered()).isEmpty
+        assertThat(event.emailOpened()).isEmpty
+        assertThat(event.emailClicked()).isEmpty
+        assertThat(event.emailBounced()).isEmpty
+        assertThat(event.emailComplained()).isEmpty
+        assertThat(event.emailRejected()).isEmpty
+        assertThat(event.emailDeliveryDelayed()).isEmpty
+        assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).contains(messageSent)
+        assertThat(event.messageRejected()).isEmpty
+    }
+
+    @Test
+    fun ofMessageSentRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val event =
+            Event.ofMessageSent(
+                MessageSentEvent.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .data(
+                        MessageSentEvent.Data.builder()
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .from("from")
+                            .inboxId("inboxId")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .subject("subject")
+                            .threadId("threadId")
+                            .agentId("agentId")
+                            .build()
+                    )
+                    .type(MessageSentEvent.Type.MESSAGE_SENT)
+                    .build()
+            )
+
+        val roundtrippedEvent =
+            jsonMapper.readValue(jsonMapper.writeValueAsString(event), jacksonTypeRef<Event>())
+
+        assertThat(roundtrippedEvent).isEqualTo(event)
+    }
+
+    @Test
+    fun ofMessageRejected() {
+        val messageRejected =
+            Event.MessageRejected.builder()
+                .id("id")
+                .createdAt("createdAt")
+                .data(
+                    Event.MessageRejected.Data.builder()
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .from("from")
+                        .inboxId("inboxId")
+                        .orgId("orgId")
+                        .reason(Event.MessageRejected.Data.Reason.INBOX_STORAGE_LIMIT_EXCEEDED)
+                        .subject("subject")
+                        .build()
+                )
+                .build()
+
+        val event = Event.ofMessageRejected(messageRejected)
+
+        assertThat(event.emailQueued()).isEmpty
+        assertThat(event.emailScheduled()).isEmpty
+        assertThat(event.emailProcessed()).isEmpty
+        assertThat(event.emailSending()).isEmpty
+        assertThat(event.emailSent()).isEmpty
+        assertThat(event.emailDelivered()).isEmpty
+        assertThat(event.emailOpened()).isEmpty
+        assertThat(event.emailClicked()).isEmpty
+        assertThat(event.emailBounced()).isEmpty
+        assertThat(event.emailComplained()).isEmpty
+        assertThat(event.emailRejected()).isEmpty
+        assertThat(event.emailDeliveryDelayed()).isEmpty
+        assertThat(event.emailFailed()).isEmpty
+        assertThat(event.messageReceived()).isEmpty
+        assertThat(event.messageSecurityFlagged()).isEmpty
+        assertThat(event.messageAgentTriggered()).isEmpty
+        assertThat(event.messageSent()).isEmpty
+        assertThat(event.messageRejected()).contains(messageRejected)
+    }
+
+    @Test
+    fun ofMessageRejectedRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val event =
+            Event.ofMessageRejected(
+                Event.MessageRejected.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .data(
+                        Event.MessageRejected.Data.builder()
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .from("from")
+                            .inboxId("inboxId")
+                            .orgId("orgId")
+                            .reason(Event.MessageRejected.Data.Reason.INBOX_STORAGE_LIMIT_EXCEEDED)
+                            .subject("subject")
                             .build()
                     )
                     .build()

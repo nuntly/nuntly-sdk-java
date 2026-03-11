@@ -22,7 +22,9 @@ internal class DomainServiceAsyncTest {
         val domainServiceAsync = client.domains()
 
         val domainFuture =
-            domainServiceAsync.create(DomainCreateParams.builder().name("name").build())
+            domainServiceAsync.create(
+                DomainCreateParams.builder().name("name").receiving(true).sending(true).build()
+            )
 
         val domain = domainFuture.get()
         domain.validate()
@@ -58,6 +60,8 @@ internal class DomainServiceAsyncTest {
                     .id("dns_01kabn43yqyxn2bx4ve84mczd3")
                     .clickTracking(true)
                     .openTracking(true)
+                    .receiving(true)
+                    .sending(true)
                     .build()
             )
 

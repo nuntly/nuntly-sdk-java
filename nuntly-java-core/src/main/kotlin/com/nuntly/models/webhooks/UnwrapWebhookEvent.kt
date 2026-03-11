@@ -2,6 +2,10 @@
 
 package com.nuntly.models.webhooks
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter
+import com.fasterxml.jackson.annotation.JsonAnySetter
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.ObjectCodec
 import com.fasterxml.jackson.databind.JsonNode
@@ -11,16 +15,22 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.BaseDeserializer
 import com.nuntly.core.BaseSerializer
+import com.nuntly.core.Enum
+import com.nuntly.core.ExcludeMissing
+import com.nuntly.core.JsonField
+import com.nuntly.core.JsonMissing
 import com.nuntly.core.JsonValue
+import com.nuntly.core.checkRequired
 import com.nuntly.core.getOrThrow
 import com.nuntly.errors.NuntlyInvalidDataException
+import java.util.Collections
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Payload for webhook events representing email events, eg. sent, bounced, opened, clicked,
- * complained, etc.
+ * Payload for webhook events representing email and inbound events, eg. sent, bounced, opened,
+ * clicked, complained, received, etc.
  */
 @JsonDeserialize(using = UnwrapWebhookEvent.Deserializer::class)
 @JsonSerialize(using = UnwrapWebhookEvent.Serializer::class)
@@ -39,6 +49,11 @@ private constructor(
     private val emailRejected: EmailRejectedEvent? = null,
     private val emailDeliveryDelayed: EmailDeliveryDelayedEvent? = null,
     private val emailFailed: EmailFailedEvent? = null,
+    private val messageReceived: MessageReceivedEvent? = null,
+    private val messageSecurityFlagged: MessageSecurityFlaggedEvent? = null,
+    private val messageAgentTriggered: MessageAgentTriggeredEvent? = null,
+    private val messageSent: MessageSentEvent? = null,
+    private val messageRejected: MessageRejected? = null,
     private val _json: JsonValue? = null,
 ) {
 
@@ -82,6 +97,26 @@ private constructor(
     /** Event triggered when an email fails to be sent. */
     fun emailFailed(): Optional<EmailFailedEvent> = Optional.ofNullable(emailFailed)
 
+    /** Event triggered when an email is received on a receiving-enabled domain. */
+    fun messageReceived(): Optional<MessageReceivedEvent> = Optional.ofNullable(messageReceived)
+
+    /** Event triggered when a received email has a security issue (SPF, DKIM, spam, or virus). */
+    fun messageSecurityFlagged(): Optional<MessageSecurityFlaggedEvent> =
+        Optional.ofNullable(messageSecurityFlagged)
+
+    /** Event triggered when a message is received on an inbox with an AI agent. */
+    fun messageAgentTriggered(): Optional<MessageAgentTriggeredEvent> =
+        Optional.ofNullable(messageAgentTriggered)
+
+    /** Event triggered when a message is sent from an inbox. */
+    fun messageSent(): Optional<MessageSentEvent> = Optional.ofNullable(messageSent)
+
+    /**
+     * Event triggered when a received email is rejected before being stored (e.g., inbox storage
+     * limit exceeded).
+     */
+    fun messageRejected(): Optional<MessageRejected> = Optional.ofNullable(messageRejected)
+
     fun isEmailQueued(): Boolean = emailQueued != null
 
     fun isEmailScheduled(): Boolean = emailScheduled != null
@@ -107,6 +142,16 @@ private constructor(
     fun isEmailDeliveryDelayed(): Boolean = emailDeliveryDelayed != null
 
     fun isEmailFailed(): Boolean = emailFailed != null
+
+    fun isMessageReceived(): Boolean = messageReceived != null
+
+    fun isMessageSecurityFlagged(): Boolean = messageSecurityFlagged != null
+
+    fun isMessageAgentTriggered(): Boolean = messageAgentTriggered != null
+
+    fun isMessageSent(): Boolean = messageSent != null
+
+    fun isMessageRejected(): Boolean = messageRejected != null
 
     /** Event triggered when an email is queued for sending. */
     fun asEmailQueued(): EmailQueuedEvent = emailQueued.getOrThrow("emailQueued")
@@ -148,6 +193,26 @@ private constructor(
     /** Event triggered when an email fails to be sent. */
     fun asEmailFailed(): EmailFailedEvent = emailFailed.getOrThrow("emailFailed")
 
+    /** Event triggered when an email is received on a receiving-enabled domain. */
+    fun asMessageReceived(): MessageReceivedEvent = messageReceived.getOrThrow("messageReceived")
+
+    /** Event triggered when a received email has a security issue (SPF, DKIM, spam, or virus). */
+    fun asMessageSecurityFlagged(): MessageSecurityFlaggedEvent =
+        messageSecurityFlagged.getOrThrow("messageSecurityFlagged")
+
+    /** Event triggered when a message is received on an inbox with an AI agent. */
+    fun asMessageAgentTriggered(): MessageAgentTriggeredEvent =
+        messageAgentTriggered.getOrThrow("messageAgentTriggered")
+
+    /** Event triggered when a message is sent from an inbox. */
+    fun asMessageSent(): MessageSentEvent = messageSent.getOrThrow("messageSent")
+
+    /**
+     * Event triggered when a received email is rejected before being stored (e.g., inbox storage
+     * limit exceeded).
+     */
+    fun asMessageRejected(): MessageRejected = messageRejected.getOrThrow("messageRejected")
+
     fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
     fun <T> accept(visitor: Visitor<T>): T =
@@ -165,6 +230,13 @@ private constructor(
             emailRejected != null -> visitor.visitEmailRejected(emailRejected)
             emailDeliveryDelayed != null -> visitor.visitEmailDeliveryDelayed(emailDeliveryDelayed)
             emailFailed != null -> visitor.visitEmailFailed(emailFailed)
+            messageReceived != null -> visitor.visitMessageReceived(messageReceived)
+            messageSecurityFlagged != null ->
+                visitor.visitMessageSecurityFlagged(messageSecurityFlagged)
+            messageAgentTriggered != null ->
+                visitor.visitMessageAgentTriggered(messageAgentTriggered)
+            messageSent != null -> visitor.visitMessageSent(messageSent)
+            messageRejected != null -> visitor.visitMessageRejected(messageRejected)
             else -> visitor.unknown(_json)
         }
 
@@ -230,6 +302,30 @@ private constructor(
                 override fun visitEmailFailed(emailFailed: EmailFailedEvent) {
                     emailFailed.validate()
                 }
+
+                override fun visitMessageReceived(messageReceived: MessageReceivedEvent) {
+                    messageReceived.validate()
+                }
+
+                override fun visitMessageSecurityFlagged(
+                    messageSecurityFlagged: MessageSecurityFlaggedEvent
+                ) {
+                    messageSecurityFlagged.validate()
+                }
+
+                override fun visitMessageAgentTriggered(
+                    messageAgentTriggered: MessageAgentTriggeredEvent
+                ) {
+                    messageAgentTriggered.validate()
+                }
+
+                override fun visitMessageSent(messageSent: MessageSentEvent) {
+                    messageSent.validate()
+                }
+
+                override fun visitMessageRejected(messageRejected: MessageRejected) {
+                    messageRejected.validate()
+                }
             }
         )
         validated = true
@@ -291,6 +387,23 @@ private constructor(
                 override fun visitEmailFailed(emailFailed: EmailFailedEvent) =
                     emailFailed.validity()
 
+                override fun visitMessageReceived(messageReceived: MessageReceivedEvent) =
+                    messageReceived.validity()
+
+                override fun visitMessageSecurityFlagged(
+                    messageSecurityFlagged: MessageSecurityFlaggedEvent
+                ) = messageSecurityFlagged.validity()
+
+                override fun visitMessageAgentTriggered(
+                    messageAgentTriggered: MessageAgentTriggeredEvent
+                ) = messageAgentTriggered.validity()
+
+                override fun visitMessageSent(messageSent: MessageSentEvent) =
+                    messageSent.validity()
+
+                override fun visitMessageRejected(messageRejected: MessageRejected) =
+                    messageRejected.validity()
+
                 override fun unknown(json: JsonValue?) = 0
             }
         )
@@ -313,7 +426,12 @@ private constructor(
             emailComplained == other.emailComplained &&
             emailRejected == other.emailRejected &&
             emailDeliveryDelayed == other.emailDeliveryDelayed &&
-            emailFailed == other.emailFailed
+            emailFailed == other.emailFailed &&
+            messageReceived == other.messageReceived &&
+            messageSecurityFlagged == other.messageSecurityFlagged &&
+            messageAgentTriggered == other.messageAgentTriggered &&
+            messageSent == other.messageSent &&
+            messageRejected == other.messageRejected
     }
 
     override fun hashCode(): Int =
@@ -331,6 +449,11 @@ private constructor(
             emailRejected,
             emailDeliveryDelayed,
             emailFailed,
+            messageReceived,
+            messageSecurityFlagged,
+            messageAgentTriggered,
+            messageSent,
+            messageRejected,
         )
 
     override fun toString(): String =
@@ -349,6 +472,13 @@ private constructor(
             emailDeliveryDelayed != null ->
                 "UnwrapWebhookEvent{emailDeliveryDelayed=$emailDeliveryDelayed}"
             emailFailed != null -> "UnwrapWebhookEvent{emailFailed=$emailFailed}"
+            messageReceived != null -> "UnwrapWebhookEvent{messageReceived=$messageReceived}"
+            messageSecurityFlagged != null ->
+                "UnwrapWebhookEvent{messageSecurityFlagged=$messageSecurityFlagged}"
+            messageAgentTriggered != null ->
+                "UnwrapWebhookEvent{messageAgentTriggered=$messageAgentTriggered}"
+            messageSent != null -> "UnwrapWebhookEvent{messageSent=$messageSent}"
+            messageRejected != null -> "UnwrapWebhookEvent{messageRejected=$messageRejected}"
             _json != null -> "UnwrapWebhookEvent{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid UnwrapWebhookEvent")
         }
@@ -418,6 +548,36 @@ private constructor(
         @JvmStatic
         fun ofEmailFailed(emailFailed: EmailFailedEvent) =
             UnwrapWebhookEvent(emailFailed = emailFailed)
+
+        /** Event triggered when an email is received on a receiving-enabled domain. */
+        @JvmStatic
+        fun ofMessageReceived(messageReceived: MessageReceivedEvent) =
+            UnwrapWebhookEvent(messageReceived = messageReceived)
+
+        /**
+         * Event triggered when a received email has a security issue (SPF, DKIM, spam, or virus).
+         */
+        @JvmStatic
+        fun ofMessageSecurityFlagged(messageSecurityFlagged: MessageSecurityFlaggedEvent) =
+            UnwrapWebhookEvent(messageSecurityFlagged = messageSecurityFlagged)
+
+        /** Event triggered when a message is received on an inbox with an AI agent. */
+        @JvmStatic
+        fun ofMessageAgentTriggered(messageAgentTriggered: MessageAgentTriggeredEvent) =
+            UnwrapWebhookEvent(messageAgentTriggered = messageAgentTriggered)
+
+        /** Event triggered when a message is sent from an inbox. */
+        @JvmStatic
+        fun ofMessageSent(messageSent: MessageSentEvent) =
+            UnwrapWebhookEvent(messageSent = messageSent)
+
+        /**
+         * Event triggered when a received email is rejected before being stored (e.g., inbox
+         * storage limit exceeded).
+         */
+        @JvmStatic
+        fun ofMessageRejected(messageRejected: MessageRejected) =
+            UnwrapWebhookEvent(messageRejected = messageRejected)
     }
 
     /**
@@ -464,6 +624,26 @@ private constructor(
 
         /** Event triggered when an email fails to be sent. */
         fun visitEmailFailed(emailFailed: EmailFailedEvent): T
+
+        /** Event triggered when an email is received on a receiving-enabled domain. */
+        fun visitMessageReceived(messageReceived: MessageReceivedEvent): T
+
+        /**
+         * Event triggered when a received email has a security issue (SPF, DKIM, spam, or virus).
+         */
+        fun visitMessageSecurityFlagged(messageSecurityFlagged: MessageSecurityFlaggedEvent): T
+
+        /** Event triggered when a message is received on an inbox with an AI agent. */
+        fun visitMessageAgentTriggered(messageAgentTriggered: MessageAgentTriggeredEvent): T
+
+        /** Event triggered when a message is sent from an inbox. */
+        fun visitMessageSent(messageSent: MessageSentEvent): T
+
+        /**
+         * Event triggered when a received email is rejected before being stored (e.g., inbox
+         * storage limit exceeded).
+         */
+        fun visitMessageRejected(messageRejected: MessageRejected): T
 
         /**
          * Maps an unknown variant of [UnwrapWebhookEvent] to a value of type [T].
@@ -552,6 +732,31 @@ private constructor(
                         UnwrapWebhookEvent(emailFailed = it, _json = json)
                     } ?: UnwrapWebhookEvent(_json = json)
                 }
+                "message.received" -> {
+                    return tryDeserialize(node, jacksonTypeRef<MessageReceivedEvent>())?.let {
+                        UnwrapWebhookEvent(messageReceived = it, _json = json)
+                    } ?: UnwrapWebhookEvent(_json = json)
+                }
+                "message.security.flagged" -> {
+                    return tryDeserialize(node, jacksonTypeRef<MessageSecurityFlaggedEvent>())
+                        ?.let { UnwrapWebhookEvent(messageSecurityFlagged = it, _json = json) }
+                        ?: UnwrapWebhookEvent(_json = json)
+                }
+                "message.agent.triggered" -> {
+                    return tryDeserialize(node, jacksonTypeRef<MessageAgentTriggeredEvent>())?.let {
+                        UnwrapWebhookEvent(messageAgentTriggered = it, _json = json)
+                    } ?: UnwrapWebhookEvent(_json = json)
+                }
+                "message.sent" -> {
+                    return tryDeserialize(node, jacksonTypeRef<MessageSentEvent>())?.let {
+                        UnwrapWebhookEvent(messageSent = it, _json = json)
+                    } ?: UnwrapWebhookEvent(_json = json)
+                }
+                "message.rejected" -> {
+                    return tryDeserialize(node, jacksonTypeRef<MessageRejected>())?.let {
+                        UnwrapWebhookEvent(messageRejected = it, _json = json)
+                    } ?: UnwrapWebhookEvent(_json = json)
+                }
             }
 
             return UnwrapWebhookEvent(_json = json)
@@ -580,9 +785,817 @@ private constructor(
                 value.emailDeliveryDelayed != null ->
                     generator.writeObject(value.emailDeliveryDelayed)
                 value.emailFailed != null -> generator.writeObject(value.emailFailed)
+                value.messageReceived != null -> generator.writeObject(value.messageReceived)
+                value.messageSecurityFlagged != null ->
+                    generator.writeObject(value.messageSecurityFlagged)
+                value.messageAgentTriggered != null ->
+                    generator.writeObject(value.messageAgentTriggered)
+                value.messageSent != null -> generator.writeObject(value.messageSent)
+                value.messageRejected != null -> generator.writeObject(value.messageRejected)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid UnwrapWebhookEvent")
             }
         }
+    }
+
+    /**
+     * Event triggered when a received email is rejected before being stored (e.g., inbox storage
+     * limit exceeded).
+     */
+    class MessageRejected
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val id: JsonField<String>,
+        private val createdAt: JsonField<String>,
+        private val data: JsonField<Data>,
+        private val type: JsonValue,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("createdAt")
+            @ExcludeMissing
+            createdAt: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("data") @ExcludeMissing data: JsonField<Data> = JsonMissing.of(),
+            @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
+        ) : this(id, createdAt, data, type, mutableMapOf())
+
+        /**
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun id(): String = id.getRequired("id")
+
+        /**
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun createdAt(): String = createdAt.getRequired("createdAt")
+
+        /**
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun data(): Data = data.getRequired("data")
+
+        /**
+         * Expected to always return the following:
+         * ```java
+         * JsonValue.from("message.rejected")
+         * ```
+         *
+         * However, this method can be useful for debugging and logging (e.g. if the server
+         * responded with an unexpected value).
+         */
+        @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
+
+        /**
+         * Returns the raw JSON value of [id].
+         *
+         * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+        /**
+         * Returns the raw JSON value of [createdAt].
+         *
+         * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("createdAt") @ExcludeMissing fun _createdAt(): JsonField<String> = createdAt
+
+        /**
+         * Returns the raw JSON value of [data].
+         *
+         * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<Data> = data
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [MessageRejected].
+             *
+             * The following fields are required:
+             * ```java
+             * .id()
+             * .createdAt()
+             * .data()
+             * ```
+             */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [MessageRejected]. */
+        class Builder internal constructor() {
+
+            private var id: JsonField<String>? = null
+            private var createdAt: JsonField<String>? = null
+            private var data: JsonField<Data>? = null
+            private var type: JsonValue = JsonValue.from("message.rejected")
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(messageRejected: MessageRejected) = apply {
+                id = messageRejected.id
+                createdAt = messageRejected.createdAt
+                data = messageRejected.data
+                type = messageRejected.type
+                additionalProperties = messageRejected.additionalProperties.toMutableMap()
+            }
+
+            fun id(id: String) = id(JsonField.of(id))
+
+            /**
+             * Sets [Builder.id] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.id] with a well-typed [String] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun id(id: JsonField<String>) = apply { this.id = id }
+
+            fun createdAt(createdAt: String) = createdAt(JsonField.of(createdAt))
+
+            /**
+             * Sets [Builder.createdAt] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.createdAt] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun createdAt(createdAt: JsonField<String>) = apply { this.createdAt = createdAt }
+
+            fun data(data: Data) = data(JsonField.of(data))
+
+            /**
+             * Sets [Builder.data] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.data] with a well-typed [Data] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun data(data: JsonField<Data>) = apply { this.data = data }
+
+            /**
+             * Sets the field to an arbitrary JSON value.
+             *
+             * It is usually unnecessary to call this method because the field defaults to the
+             * following:
+             * ```java
+             * JsonValue.from("message.rejected")
+             * ```
+             *
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun type(type: JsonValue) = apply { this.type = type }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [MessageRejected].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```java
+             * .id()
+             * .createdAt()
+             * .data()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): MessageRejected =
+                MessageRejected(
+                    checkRequired("id", id),
+                    checkRequired("createdAt", createdAt),
+                    checkRequired("data", data),
+                    type,
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): MessageRejected = apply {
+            if (validated) {
+                return@apply
+            }
+
+            id()
+            createdAt()
+            data().validate()
+            _type().let {
+                if (it != JsonValue.from("message.rejected")) {
+                    throw NuntlyInvalidDataException("'type' is invalid, received $it")
+                }
+            }
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: NuntlyInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (if (id.asKnown().isPresent) 1 else 0) +
+                (if (createdAt.asKnown().isPresent) 1 else 0) +
+                (data.asKnown().getOrNull()?.validity() ?: 0) +
+                type.let { if (it == JsonValue.from("message.rejected")) 1 else 0 }
+
+        class Data
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val domainId: JsonField<String>,
+            private val domainName: JsonField<String>,
+            private val from: JsonField<String>,
+            private val inboxId: JsonField<String>,
+            private val orgId: JsonField<String>,
+            private val reason: JsonField<Reason>,
+            private val subject: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("domainId")
+                @ExcludeMissing
+                domainId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("domainName")
+                @ExcludeMissing
+                domainName: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("from") @ExcludeMissing from: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("inboxId")
+                @ExcludeMissing
+                inboxId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("orgId") @ExcludeMissing orgId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("reason")
+                @ExcludeMissing
+                reason: JsonField<Reason> = JsonMissing.of(),
+                @JsonProperty("subject")
+                @ExcludeMissing
+                subject: JsonField<String> = JsonMissing.of(),
+            ) : this(domainId, domainName, from, inboxId, orgId, reason, subject, mutableMapOf())
+
+            /**
+             * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun domainId(): String = domainId.getRequired("domainId")
+
+            /**
+             * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun domainName(): String = domainName.getRequired("domainName")
+
+            /**
+             * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun from(): String = from.getRequired("from")
+
+            /**
+             * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun inboxId(): String = inboxId.getRequired("inboxId")
+
+            /**
+             * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun orgId(): String = orgId.getRequired("orgId")
+
+            /**
+             * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun reason(): Reason = reason.getRequired("reason")
+
+            /**
+             * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun subject(): String = subject.getRequired("subject")
+
+            /**
+             * Returns the raw JSON value of [domainId].
+             *
+             * Unlike [domainId], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("domainId") @ExcludeMissing fun _domainId(): JsonField<String> = domainId
+
+            /**
+             * Returns the raw JSON value of [domainName].
+             *
+             * Unlike [domainName], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("domainName")
+            @ExcludeMissing
+            fun _domainName(): JsonField<String> = domainName
+
+            /**
+             * Returns the raw JSON value of [from].
+             *
+             * Unlike [from], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("from") @ExcludeMissing fun _from(): JsonField<String> = from
+
+            /**
+             * Returns the raw JSON value of [inboxId].
+             *
+             * Unlike [inboxId], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("inboxId") @ExcludeMissing fun _inboxId(): JsonField<String> = inboxId
+
+            /**
+             * Returns the raw JSON value of [orgId].
+             *
+             * Unlike [orgId], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("orgId") @ExcludeMissing fun _orgId(): JsonField<String> = orgId
+
+            /**
+             * Returns the raw JSON value of [reason].
+             *
+             * Unlike [reason], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("reason") @ExcludeMissing fun _reason(): JsonField<Reason> = reason
+
+            /**
+             * Returns the raw JSON value of [subject].
+             *
+             * Unlike [subject], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("subject") @ExcludeMissing fun _subject(): JsonField<String> = subject
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [Data].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .domainId()
+                 * .domainName()
+                 * .from()
+                 * .inboxId()
+                 * .orgId()
+                 * .reason()
+                 * .subject()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Data]. */
+            class Builder internal constructor() {
+
+                private var domainId: JsonField<String>? = null
+                private var domainName: JsonField<String>? = null
+                private var from: JsonField<String>? = null
+                private var inboxId: JsonField<String>? = null
+                private var orgId: JsonField<String>? = null
+                private var reason: JsonField<Reason>? = null
+                private var subject: JsonField<String>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(data: Data) = apply {
+                    domainId = data.domainId
+                    domainName = data.domainName
+                    from = data.from
+                    inboxId = data.inboxId
+                    orgId = data.orgId
+                    reason = data.reason
+                    subject = data.subject
+                    additionalProperties = data.additionalProperties.toMutableMap()
+                }
+
+                fun domainId(domainId: String) = domainId(JsonField.of(domainId))
+
+                /**
+                 * Sets [Builder.domainId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.domainId] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun domainId(domainId: JsonField<String>) = apply { this.domainId = domainId }
+
+                fun domainName(domainName: String) = domainName(JsonField.of(domainName))
+
+                /**
+                 * Sets [Builder.domainName] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.domainName] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun domainName(domainName: JsonField<String>) = apply {
+                    this.domainName = domainName
+                }
+
+                fun from(from: String) = from(JsonField.of(from))
+
+                /**
+                 * Sets [Builder.from] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.from] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun from(from: JsonField<String>) = apply { this.from = from }
+
+                fun inboxId(inboxId: String) = inboxId(JsonField.of(inboxId))
+
+                /**
+                 * Sets [Builder.inboxId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.inboxId] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun inboxId(inboxId: JsonField<String>) = apply { this.inboxId = inboxId }
+
+                fun orgId(orgId: String) = orgId(JsonField.of(orgId))
+
+                /**
+                 * Sets [Builder.orgId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.orgId] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun orgId(orgId: JsonField<String>) = apply { this.orgId = orgId }
+
+                fun reason(reason: Reason) = reason(JsonField.of(reason))
+
+                /**
+                 * Sets [Builder.reason] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.reason] with a well-typed [Reason] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun reason(reason: JsonField<Reason>) = apply { this.reason = reason }
+
+                fun subject(subject: String) = subject(JsonField.of(subject))
+
+                /**
+                 * Sets [Builder.subject] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.subject] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun subject(subject: JsonField<String>) = apply { this.subject = subject }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Data].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .domainId()
+                 * .domainName()
+                 * .from()
+                 * .inboxId()
+                 * .orgId()
+                 * .reason()
+                 * .subject()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): Data =
+                    Data(
+                        checkRequired("domainId", domainId),
+                        checkRequired("domainName", domainName),
+                        checkRequired("from", from),
+                        checkRequired("inboxId", inboxId),
+                        checkRequired("orgId", orgId),
+                        checkRequired("reason", reason),
+                        checkRequired("subject", subject),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): Data = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                domainId()
+                domainName()
+                from()
+                inboxId()
+                orgId()
+                reason().validate()
+                subject()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: NuntlyInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (if (domainId.asKnown().isPresent) 1 else 0) +
+                    (if (domainName.asKnown().isPresent) 1 else 0) +
+                    (if (from.asKnown().isPresent) 1 else 0) +
+                    (if (inboxId.asKnown().isPresent) 1 else 0) +
+                    (if (orgId.asKnown().isPresent) 1 else 0) +
+                    (reason.asKnown().getOrNull()?.validity() ?: 0) +
+                    (if (subject.asKnown().isPresent) 1 else 0)
+
+            class Reason @JsonCreator private constructor(private val value: JsonField<String>) :
+                Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    @JvmField val INBOX_STORAGE_LIMIT_EXCEEDED = of("inbox_storage_limit_exceeded")
+
+                    @JvmField val MESSAGE_TOO_LARGE = of("message_too_large")
+
+                    @JvmStatic fun of(value: String) = Reason(JsonField.of(value))
+                }
+
+                /** An enum containing [Reason]'s known values. */
+                enum class Known {
+                    INBOX_STORAGE_LIMIT_EXCEEDED,
+                    MESSAGE_TOO_LARGE,
+                }
+
+                /**
+                 * An enum containing [Reason]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [Reason] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    INBOX_STORAGE_LIMIT_EXCEEDED,
+                    MESSAGE_TOO_LARGE,
+                    /**
+                     * An enum member indicating that [Reason] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        INBOX_STORAGE_LIMIT_EXCEEDED -> Value.INBOX_STORAGE_LIMIT_EXCEEDED
+                        MESSAGE_TOO_LARGE -> Value.MESSAGE_TOO_LARGE
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws NuntlyInvalidDataException if this class instance's value is a not a
+                 *   known member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        INBOX_STORAGE_LIMIT_EXCEEDED -> Known.INBOX_STORAGE_LIMIT_EXCEEDED
+                        MESSAGE_TOO_LARGE -> Known.MESSAGE_TOO_LARGE
+                        else -> throw NuntlyInvalidDataException("Unknown Reason: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws NuntlyInvalidDataException if this class instance's value does not have
+                 *   the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString().orElseThrow {
+                        NuntlyInvalidDataException("Value is not a String")
+                    }
+
+                private var validated: Boolean = false
+
+                fun validate(): Reason = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: NuntlyInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Reason && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Data &&
+                    domainId == other.domainId &&
+                    domainName == other.domainName &&
+                    from == other.from &&
+                    inboxId == other.inboxId &&
+                    orgId == other.orgId &&
+                    reason == other.reason &&
+                    subject == other.subject &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(
+                    domainId,
+                    domainName,
+                    from,
+                    inboxId,
+                    orgId,
+                    reason,
+                    subject,
+                    additionalProperties,
+                )
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Data{domainId=$domainId, domainName=$domainName, from=$from, inboxId=$inboxId, orgId=$orgId, reason=$reason, subject=$subject, additionalProperties=$additionalProperties}"
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is MessageRejected &&
+                id == other.id &&
+                createdAt == other.createdAt &&
+                data == other.data &&
+                type == other.type &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(id, createdAt, data, type, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "MessageRejected{id=$id, createdAt=$createdAt, data=$data, type=$type, additionalProperties=$additionalProperties}"
     }
 }

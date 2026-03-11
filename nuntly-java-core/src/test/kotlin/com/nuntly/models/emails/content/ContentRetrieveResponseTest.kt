@@ -4,6 +4,7 @@ package com.nuntly.models.emails.content
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.nuntly.core.jsonMapper
+import com.nuntly.models.emails.EmailContentItem
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,20 +14,98 @@ internal class ContentRetrieveResponseTest {
     fun create() {
         val contentRetrieveResponse =
             ContentRetrieveResponse.builder()
-                .htmlTemplateUrl("htmlTemplateUrl")
-                .htmlUrl("htmlUrl")
-                .mineUrl("mineUrl")
-                .subjectTemplateUrl("subjectTemplateUrl")
-                .textTemplateUrl("textTemplateUrl")
-                .textUrl("textUrl")
+                .html(
+                    EmailContentItem.builder()
+                        .downloadUrl("https://example.com")
+                        .expiresAt("expiresAt")
+                        .size(0.0)
+                        .build()
+                )
+                .htmlTemplate(
+                    EmailContentItem.builder()
+                        .downloadUrl("https://example.com")
+                        .expiresAt("expiresAt")
+                        .size(0.0)
+                        .build()
+                )
+                .mime(
+                    EmailContentItem.builder()
+                        .downloadUrl("https://example.com")
+                        .expiresAt("expiresAt")
+                        .size(0.0)
+                        .build()
+                )
+                .subjectTemplate(
+                    EmailContentItem.builder()
+                        .downloadUrl("https://example.com")
+                        .expiresAt("expiresAt")
+                        .size(0.0)
+                        .build()
+                )
+                .text(
+                    EmailContentItem.builder()
+                        .downloadUrl("https://example.com")
+                        .expiresAt("expiresAt")
+                        .size(0.0)
+                        .build()
+                )
+                .textTemplate(
+                    EmailContentItem.builder()
+                        .downloadUrl("https://example.com")
+                        .expiresAt("expiresAt")
+                        .size(0.0)
+                        .build()
+                )
                 .build()
 
-        assertThat(contentRetrieveResponse.htmlTemplateUrl()).contains("htmlTemplateUrl")
-        assertThat(contentRetrieveResponse.htmlUrl()).contains("htmlUrl")
-        assertThat(contentRetrieveResponse.mineUrl()).contains("mineUrl")
-        assertThat(contentRetrieveResponse.subjectTemplateUrl()).contains("subjectTemplateUrl")
-        assertThat(contentRetrieveResponse.textTemplateUrl()).contains("textTemplateUrl")
-        assertThat(contentRetrieveResponse.textUrl()).contains("textUrl")
+        assertThat(contentRetrieveResponse.html())
+            .contains(
+                EmailContentItem.builder()
+                    .downloadUrl("https://example.com")
+                    .expiresAt("expiresAt")
+                    .size(0.0)
+                    .build()
+            )
+        assertThat(contentRetrieveResponse.htmlTemplate())
+            .contains(
+                EmailContentItem.builder()
+                    .downloadUrl("https://example.com")
+                    .expiresAt("expiresAt")
+                    .size(0.0)
+                    .build()
+            )
+        assertThat(contentRetrieveResponse.mime())
+            .contains(
+                EmailContentItem.builder()
+                    .downloadUrl("https://example.com")
+                    .expiresAt("expiresAt")
+                    .size(0.0)
+                    .build()
+            )
+        assertThat(contentRetrieveResponse.subjectTemplate())
+            .contains(
+                EmailContentItem.builder()
+                    .downloadUrl("https://example.com")
+                    .expiresAt("expiresAt")
+                    .size(0.0)
+                    .build()
+            )
+        assertThat(contentRetrieveResponse.text())
+            .contains(
+                EmailContentItem.builder()
+                    .downloadUrl("https://example.com")
+                    .expiresAt("expiresAt")
+                    .size(0.0)
+                    .build()
+            )
+        assertThat(contentRetrieveResponse.textTemplate())
+            .contains(
+                EmailContentItem.builder()
+                    .downloadUrl("https://example.com")
+                    .expiresAt("expiresAt")
+                    .size(0.0)
+                    .build()
+            )
     }
 
     @Test
@@ -34,12 +113,48 @@ internal class ContentRetrieveResponseTest {
         val jsonMapper = jsonMapper()
         val contentRetrieveResponse =
             ContentRetrieveResponse.builder()
-                .htmlTemplateUrl("htmlTemplateUrl")
-                .htmlUrl("htmlUrl")
-                .mineUrl("mineUrl")
-                .subjectTemplateUrl("subjectTemplateUrl")
-                .textTemplateUrl("textTemplateUrl")
-                .textUrl("textUrl")
+                .html(
+                    EmailContentItem.builder()
+                        .downloadUrl("https://example.com")
+                        .expiresAt("expiresAt")
+                        .size(0.0)
+                        .build()
+                )
+                .htmlTemplate(
+                    EmailContentItem.builder()
+                        .downloadUrl("https://example.com")
+                        .expiresAt("expiresAt")
+                        .size(0.0)
+                        .build()
+                )
+                .mime(
+                    EmailContentItem.builder()
+                        .downloadUrl("https://example.com")
+                        .expiresAt("expiresAt")
+                        .size(0.0)
+                        .build()
+                )
+                .subjectTemplate(
+                    EmailContentItem.builder()
+                        .downloadUrl("https://example.com")
+                        .expiresAt("expiresAt")
+                        .size(0.0)
+                        .build()
+                )
+                .text(
+                    EmailContentItem.builder()
+                        .downloadUrl("https://example.com")
+                        .expiresAt("expiresAt")
+                        .size(0.0)
+                        .build()
+                )
+                .textTemplate(
+                    EmailContentItem.builder()
+                        .downloadUrl("https://example.com")
+                        .expiresAt("expiresAt")
+                        .size(0.0)
+                        .build()
+                )
                 .build()
 
         val roundtrippedContentRetrieveResponse =

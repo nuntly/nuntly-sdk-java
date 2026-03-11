@@ -21,6 +21,18 @@ internal class UsageRetrieveResponseTest {
                                 .monthly(0.0)
                                 .build()
                         )
+                        .receiving(
+                            UsageRetrieveResponse.Transactional.Receiving.builder()
+                                .daily(0.0)
+                                .monthly(0.0)
+                                .build()
+                        )
+                        .sending(
+                            UsageRetrieveResponse.Transactional.Sending.builder()
+                                .daily(0.0)
+                                .monthly(0.0)
+                                .build()
+                        )
                         .usage(
                             UsageRetrieveResponse.Transactional.Usage.builder()
                                 .daily(0.0)
@@ -36,6 +48,18 @@ internal class UsageRetrieveResponseTest {
                 UsageRetrieveResponse.Transactional.builder()
                     .limits(
                         UsageRetrieveResponse.Transactional.Limits.builder()
+                            .daily(0.0)
+                            .monthly(0.0)
+                            .build()
+                    )
+                    .receiving(
+                        UsageRetrieveResponse.Transactional.Receiving.builder()
+                            .daily(0.0)
+                            .monthly(0.0)
+                            .build()
+                    )
+                    .sending(
+                        UsageRetrieveResponse.Transactional.Sending.builder()
                             .daily(0.0)
                             .monthly(0.0)
                             .build()
@@ -59,6 +83,18 @@ internal class UsageRetrieveResponseTest {
                     UsageRetrieveResponse.Transactional.builder()
                         .limits(
                             UsageRetrieveResponse.Transactional.Limits.builder()
+                                .daily(0.0)
+                                .monthly(0.0)
+                                .build()
+                        )
+                        .receiving(
+                            UsageRetrieveResponse.Transactional.Receiving.builder()
+                                .daily(0.0)
+                                .monthly(0.0)
+                                .build()
+                        )
+                        .sending(
+                            UsageRetrieveResponse.Transactional.Sending.builder()
                                 .daily(0.0)
                                 .monthly(0.0)
                                 .build()

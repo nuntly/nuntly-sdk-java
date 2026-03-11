@@ -12,14 +12,14 @@ internal class EmailSendParamsTest {
     @Test
     fun create() {
         EmailSendParams.builder()
-            .from("from")
-            .subject("subject")
-            .toOfStrings(listOf("string"))
+            .from("Tomlinson AI <ray@info.tomlinson.ai>")
+            .subject("Verify your email address")
+            .to("brian67@gmail.com")
             .addAttachment(
                 EmailSendParams.Attachment.builder()
-                    .content("content")
-                    .contentType("contentType")
-                    .filename("filename")
+                    .content("SGVsbG8gV29ybGQ=")
+                    .contentType("application/pdf")
+                    .filename("invoice.pdf")
                     .build()
             )
             .bccOfStrings(listOf("string"))
@@ -34,11 +34,13 @@ internal class EmailSendParamsTest {
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
-            .html("html")
+            .html(
+                "<h1>Welcome 🎉</h1><p>Thank you for signing up! Please verify your email address.</p>"
+            )
             .replyToOfStrings(listOf("string"))
             .scheduledAt("scheduledAt")
-            .addTag(Tag.builder().name("name").value("value").build())
-            .text("text")
+            .addTag(Tag.builder().name("category").value("transactional").build())
+            .text("Thank you for signing up! Please verify your email address.")
             .build()
     }
 
@@ -46,14 +48,14 @@ internal class EmailSendParamsTest {
     fun body() {
         val params =
             EmailSendParams.builder()
-                .from("from")
-                .subject("subject")
-                .toOfStrings(listOf("string"))
+                .from("Tomlinson AI <ray@info.tomlinson.ai>")
+                .subject("Verify your email address")
+                .to("brian67@gmail.com")
                 .addAttachment(
                     EmailSendParams.Attachment.builder()
-                        .content("content")
-                        .contentType("contentType")
-                        .filename("filename")
+                        .content("SGVsbG8gV29ybGQ=")
+                        .contentType("application/pdf")
+                        .filename("invoice.pdf")
                         .build()
                 )
                 .bccOfStrings(listOf("string"))
@@ -68,24 +70,26 @@ internal class EmailSendParamsTest {
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
-                .html("html")
+                .html(
+                    "<h1>Welcome 🎉</h1><p>Thank you for signing up! Please verify your email address.</p>"
+                )
                 .replyToOfStrings(listOf("string"))
                 .scheduledAt("scheduledAt")
-                .addTag(Tag.builder().name("name").value("value").build())
-                .text("text")
+                .addTag(Tag.builder().name("category").value("transactional").build())
+                .text("Thank you for signing up! Please verify your email address.")
                 .build()
 
         val body = params._body()
 
-        assertThat(body.from()).isEqualTo("from")
-        assertThat(body.subject()).isEqualTo("subject")
-        assertThat(body.to()).isEqualTo(EmailSendParams.To.ofStrings(listOf("string")))
+        assertThat(body.from()).isEqualTo("Tomlinson AI <ray@info.tomlinson.ai>")
+        assertThat(body.subject()).isEqualTo("Verify your email address")
+        assertThat(body.to()).isEqualTo(EmailSendParams.To.ofString("brian67@gmail.com"))
         assertThat(body.attachments().getOrNull())
             .containsExactly(
                 EmailSendParams.Attachment.builder()
-                    .content("content")
-                    .contentType("contentType")
-                    .filename("filename")
+                    .content("SGVsbG8gV29ybGQ=")
+                    .contentType("application/pdf")
+                    .filename("invoice.pdf")
                     .build()
             )
         assertThat(body.bcc()).contains(EmailSendParams.Bcc.ofStrings(listOf("string")))
@@ -102,27 +106,31 @@ internal class EmailSendParamsTest {
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
-        assertThat(body.html()).contains("html")
+        assertThat(body.html())
+            .contains(
+                "<h1>Welcome 🎉</h1><p>Thank you for signing up! Please verify your email address.</p>"
+            )
         assertThat(body.replyTo()).contains(EmailSendParams.ReplyTo.ofStrings(listOf("string")))
         assertThat(body.scheduledAt()).contains("scheduledAt")
         assertThat(body.tags().getOrNull())
-            .containsExactly(Tag.builder().name("name").value("value").build())
-        assertThat(body.text()).contains("text")
+            .containsExactly(Tag.builder().name("category").value("transactional").build())
+        assertThat(body.text())
+            .contains("Thank you for signing up! Please verify your email address.")
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
             EmailSendParams.builder()
-                .from("from")
-                .subject("subject")
-                .toOfStrings(listOf("string"))
+                .from("Tomlinson AI <ray@info.tomlinson.ai>")
+                .subject("Verify your email address")
+                .to("brian67@gmail.com")
                 .build()
 
         val body = params._body()
 
-        assertThat(body.from()).isEqualTo("from")
-        assertThat(body.subject()).isEqualTo("subject")
-        assertThat(body.to()).isEqualTo(EmailSendParams.To.ofStrings(listOf("string")))
+        assertThat(body.from()).isEqualTo("Tomlinson AI <ray@info.tomlinson.ai>")
+        assertThat(body.subject()).isEqualTo("Verify your email address")
+        assertThat(body.to()).isEqualTo(EmailSendParams.To.ofString("brian67@gmail.com"))
     }
 }

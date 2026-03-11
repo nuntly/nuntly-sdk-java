@@ -10,7 +10,7 @@ import com.nuntly.models.emails.content.ContentRetrieveParams
 import com.nuntly.models.emails.content.ContentRetrieveResponse
 import java.util.function.Consumer
 
-/** Operations related to Email management */
+/** Send transactional emails, retrieve sending history, and track delivery status per message. */
 interface ContentService {
 
     /**
@@ -25,7 +25,9 @@ interface ContentService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ContentService
 
-    /** Retrieve email content by email id */
+    /**
+     * Returns presigned URLs to download the HTML, plain-text, and raw MIME source of a sent email.
+     */
     fun retrieve(id: String): ContentRetrieveResponse = retrieve(id, ContentRetrieveParams.none())
 
     /** @see retrieve */

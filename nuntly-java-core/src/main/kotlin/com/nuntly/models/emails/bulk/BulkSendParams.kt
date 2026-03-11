@@ -34,7 +34,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Send bulk emails. */
+/**
+ * Send up to 100 emails in a single request. Use `fallback` to set default values shared across all
+ * messages.
+ */
 class BulkSendParams
 private constructor(
     private val body: Body,

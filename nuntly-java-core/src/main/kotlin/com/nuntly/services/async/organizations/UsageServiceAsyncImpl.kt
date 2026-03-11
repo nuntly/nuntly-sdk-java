@@ -22,7 +22,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Operations related to Organization management */
+/** Manage your organization profile, team members, and account-level settings. */
 class UsageServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     UsageServiceAsync {
 

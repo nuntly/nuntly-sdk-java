@@ -44,7 +44,9 @@ internal class ServiceParamsTest {
 
         apiKeyService.create(
             ApiKeyCreateParams.builder()
+                .addDomainId("string")
                 .name("name")
+                .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                 .status(ApiKeyCreateParams.Status.ENABLED)
                 .putAdditionalHeader("Secret-Header", "42")
                 .putAdditionalQueryParam("secret_query_param", "42")
@@ -67,14 +69,14 @@ internal class ServiceParamsTest {
 
         emailService.send(
             EmailSendParams.builder()
-                .from("from")
-                .subject("subject")
-                .toOfStrings(listOf("string"))
+                .from("Tomlinson AI <ray@info.tomlinson.ai>")
+                .subject("Verify your email address")
+                .to("brian67@gmail.com")
                 .addAttachment(
                     EmailSendParams.Attachment.builder()
-                        .content("content")
-                        .contentType("contentType")
-                        .filename("filename")
+                        .content("SGVsbG8gV29ybGQ=")
+                        .contentType("application/pdf")
+                        .filename("invoice.pdf")
                         .build()
                 )
                 .bccOfStrings(listOf("string"))
@@ -89,11 +91,13 @@ internal class ServiceParamsTest {
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
-                .html("html")
+                .html(
+                    "<h1>Welcome 🎉</h1><p>Thank you for signing up! Please verify your email address.</p>"
+                )
                 .replyToOfStrings(listOf("string"))
                 .scheduledAt("scheduledAt")
-                .addTag(Tag.builder().name("name").value("value").build())
-                .text("text")
+                .addTag(Tag.builder().name("category").value("transactional").build())
+                .text("Thank you for signing up! Please verify your email address.")
                 .putAdditionalHeader("Secret-Header", "42")
                 .putAdditionalQueryParam("secret_query_param", "42")
                 .putAdditionalBodyProperty("secretProperty", JsonValue.from("42"))

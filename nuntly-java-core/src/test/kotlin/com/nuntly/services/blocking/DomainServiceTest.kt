@@ -21,7 +21,10 @@ internal class DomainServiceTest {
                 .build()
         val domainService = client.domains()
 
-        val domain = domainService.create(DomainCreateParams.builder().name("name").build())
+        val domain =
+            domainService.create(
+                DomainCreateParams.builder().name("name").receiving(true).sending(true).build()
+            )
 
         domain.validate()
     }
@@ -55,6 +58,8 @@ internal class DomainServiceTest {
                     .id("dns_01kabn43yqyxn2bx4ve84mczd3")
                     .clickTracking(true)
                     .openTracking(true)
+                    .receiving(true)
+                    .sending(true)
                     .build()
             )
 

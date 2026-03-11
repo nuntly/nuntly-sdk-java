@@ -10,7 +10,7 @@ import com.nuntly.models.organizations.usage.UsageRetrieveResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Operations related to Organization management */
+/** Manage your organization profile, team members, and account-level settings. */
 interface UsageServiceAsync {
 
     /**
@@ -25,7 +25,10 @@ interface UsageServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): UsageServiceAsync
 
-    /** Retrieve organization usage */
+    /**
+     * Returns current period usage metrics (daily and monthly) for sending and receiving, against
+     * your plan limits.
+     */
     fun retrieve(id: String): CompletableFuture<UsageRetrieveResponse> =
         retrieve(id, UsageRetrieveParams.none())
 
