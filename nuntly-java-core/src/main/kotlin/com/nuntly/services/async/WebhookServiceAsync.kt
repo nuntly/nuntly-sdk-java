@@ -21,7 +21,9 @@ import com.nuntly.services.async.webhooks.EventServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Operations related to Webhook management */
+/**
+ * Register HTTP endpoints to receive real-time delivery events such as bounces, opens, and clicks.
+ */
 interface WebhookServiceAsync {
 
     /**
@@ -36,10 +38,10 @@ interface WebhookServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): WebhookServiceAsync
 
-    /** Operations related to Webhook Events management */
+    /** Inspect webhook event history and replay failed deliveries for debugging or recovery. */
     fun events(): EventServiceAsync
 
-    /** Create a webhook */
+    /** Register an endpoint to start receiving webhook events for your organization. */
     fun create(params: WebhookCreateParams): CompletableFuture<WebhookCreateResponse> =
         create(params, RequestOptions.none())
 
@@ -49,7 +51,7 @@ interface WebhookServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<WebhookCreateResponse>
 
-    /** Retrieve a webhook */
+    /** Returns a webhook endpoint with its URL, subscribed events, and configuration. */
     fun retrieve(id: String): CompletableFuture<WebhookRetrieveResponse> =
         retrieve(id, WebhookRetrieveParams.none())
 
@@ -84,7 +86,7 @@ interface WebhookServiceAsync {
     ): CompletableFuture<WebhookRetrieveResponse> =
         retrieve(id, WebhookRetrieveParams.none(), requestOptions)
 
-    /** Update a webhook */
+    /** Update the endpoint URL, subscribed event types, or rotate the signing secret. */
     fun update(id: String): CompletableFuture<WebhookUpdateResponse> =
         update(id, WebhookUpdateParams.none())
 
@@ -119,7 +121,7 @@ interface WebhookServiceAsync {
     ): CompletableFuture<WebhookUpdateResponse> =
         update(id, WebhookUpdateParams.none(), requestOptions)
 
-    /** List webhooks */
+    /** Returns all registered webhook endpoints for the organization. */
     fun list(): CompletableFuture<WebhookListPageAsync> = list(WebhookListParams.none())
 
     /** @see list */
@@ -137,7 +139,7 @@ interface WebhookServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<WebhookListPageAsync> =
         list(WebhookListParams.none(), requestOptions)
 
-    /** Delete a webhook */
+    /** Remove a webhook endpoint. No further events will be delivered to this URL. */
     fun delete(id: String): CompletableFuture<WebhookDeleteResponse> =
         delete(id, WebhookDeleteParams.none())
 
@@ -193,7 +195,7 @@ interface WebhookServiceAsync {
             modifier: Consumer<ClientOptions.Builder>
         ): WebhookServiceAsync.WithRawResponse
 
-        /** Operations related to Webhook Events management */
+        /** Inspect webhook event history and replay failed deliveries for debugging or recovery. */
         fun events(): EventServiceAsync.WithRawResponse
 
         /**

@@ -18,7 +18,10 @@ import com.nuntly.models.domains.DomainUpdateParams
 import com.nuntly.models.domains.DomainUpdateResponse
 import java.util.function.Consumer
 
-/** Operations related to Domain management */
+/**
+ * Add and verify sending and receiving domains. Manage DKIM records, SPF configuration, and enable
+ * inbound email routing.
+ */
 interface DomainService {
 
     /**
@@ -33,7 +36,7 @@ interface DomainService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): DomainService
 
-    /** Create a domain */
+    /** Add a domain to start configuring DNS records for sending or receiving emails. */
     fun create(params: DomainCreateParams): DomainCreateResponse =
         create(params, RequestOptions.none())
 
@@ -43,7 +46,10 @@ interface DomainService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): DomainCreateResponse
 
-    /** Retrieve a domain */
+    /**
+     * Returns a domain with its DNS record configuration and current verification status for each
+     * record.
+     */
     fun retrieve(id: String): DomainRetrieveResponse = retrieve(id, DomainRetrieveParams.none())
 
     /** @see retrieve */
@@ -73,7 +79,7 @@ interface DomainService {
     fun retrieve(id: String, requestOptions: RequestOptions): DomainRetrieveResponse =
         retrieve(id, DomainRetrieveParams.none(), requestOptions)
 
-    /** Update a domain */
+    /** Toggle sending, receiving, open tracking, or click tracking capabilities for a domain. */
     fun update(id: String): DomainUpdateResponse = update(id, DomainUpdateParams.none())
 
     /** @see update */
@@ -103,7 +109,7 @@ interface DomainService {
     fun update(id: String, requestOptions: RequestOptions): DomainUpdateResponse =
         update(id, DomainUpdateParams.none(), requestOptions)
 
-    /** List all domains */
+    /** Returns all domains with their verification and capability status. */
     fun list(): DomainListPage = list(DomainListParams.none())
 
     /** @see list */
@@ -120,7 +126,10 @@ interface DomainService {
     fun list(requestOptions: RequestOptions): DomainListPage =
         list(DomainListParams.none(), requestOptions)
 
-    /** Delete a domain */
+    /**
+     * Remove a domain from the organization. Cannot be deleted if it has active sending or
+     * receiving.
+     */
     fun delete(id: String): DomainDeleteResponse = delete(id, DomainDeleteParams.none())
 
     /** @see delete */

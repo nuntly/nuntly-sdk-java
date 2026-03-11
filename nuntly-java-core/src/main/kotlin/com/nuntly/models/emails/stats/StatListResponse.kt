@@ -259,6 +259,8 @@ private constructor(
         private val scheduled: JsonField<Double>,
         private val sending: JsonField<Double>,
         private val sent: JsonField<Double>,
+        private val uniqueClicked: JsonField<Double>,
+        private val uniqueOpened: JsonField<Double>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -298,6 +300,12 @@ private constructor(
             scheduled: JsonField<Double> = JsonMissing.of(),
             @JsonProperty("sending") @ExcludeMissing sending: JsonField<Double> = JsonMissing.of(),
             @JsonProperty("sent") @ExcludeMissing sent: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("uniqueClicked")
+            @ExcludeMissing
+            uniqueClicked: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("uniqueOpened")
+            @ExcludeMissing
+            uniqueOpened: JsonField<Double> = JsonMissing.of(),
         ) : this(
             bounced,
             canceled,
@@ -315,6 +323,8 @@ private constructor(
             scheduled,
             sending,
             sent,
+            uniqueClicked,
+            uniqueOpened,
             mutableMapOf(),
         )
 
@@ -447,6 +457,22 @@ private constructor(
         fun sent(): Double = sent.getRequired("sent")
 
         /**
+         * Number of unique emails clicked
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun uniqueClicked(): Double = uniqueClicked.getRequired("uniqueClicked")
+
+        /**
+         * Number of unique emails opened
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun uniqueOpened(): Double = uniqueOpened.getRequired("uniqueOpened")
+
+        /**
          * Returns the raw JSON value of [bounced].
          *
          * Unlike [bounced], this method doesn't throw if the JSON field has an unexpected type.
@@ -569,6 +595,26 @@ private constructor(
          */
         @JsonProperty("sent") @ExcludeMissing fun _sent(): JsonField<Double> = sent
 
+        /**
+         * Returns the raw JSON value of [uniqueClicked].
+         *
+         * Unlike [uniqueClicked], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("uniqueClicked")
+        @ExcludeMissing
+        fun _uniqueClicked(): JsonField<Double> = uniqueClicked
+
+        /**
+         * Returns the raw JSON value of [uniqueOpened].
+         *
+         * Unlike [uniqueOpened], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("uniqueOpened")
+        @ExcludeMissing
+        fun _uniqueOpened(): JsonField<Double> = uniqueOpened
+
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
             additionalProperties.put(key, value)
@@ -604,6 +650,8 @@ private constructor(
              * .scheduled()
              * .sending()
              * .sent()
+             * .uniqueClicked()
+             * .uniqueOpened()
              * ```
              */
             @JvmStatic fun builder() = Builder()
@@ -628,6 +676,8 @@ private constructor(
             private var scheduled: JsonField<Double>? = null
             private var sending: JsonField<Double>? = null
             private var sent: JsonField<Double>? = null
+            private var uniqueClicked: JsonField<Double>? = null
+            private var uniqueOpened: JsonField<Double>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -648,6 +698,8 @@ private constructor(
                 scheduled = stat.scheduled
                 sending = stat.sending
                 sent = stat.sent
+                uniqueClicked = stat.uniqueClicked
+                uniqueOpened = stat.uniqueOpened
                 additionalProperties = stat.additionalProperties.toMutableMap()
             }
 
@@ -854,6 +906,34 @@ private constructor(
              */
             fun sent(sent: JsonField<Double>) = apply { this.sent = sent }
 
+            /** Number of unique emails clicked */
+            fun uniqueClicked(uniqueClicked: Double) = uniqueClicked(JsonField.of(uniqueClicked))
+
+            /**
+             * Sets [Builder.uniqueClicked] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.uniqueClicked] with a well-typed [Double] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun uniqueClicked(uniqueClicked: JsonField<Double>) = apply {
+                this.uniqueClicked = uniqueClicked
+            }
+
+            /** Number of unique emails opened */
+            fun uniqueOpened(uniqueOpened: Double) = uniqueOpened(JsonField.of(uniqueOpened))
+
+            /**
+             * Sets [Builder.uniqueOpened] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.uniqueOpened] with a well-typed [Double] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun uniqueOpened(uniqueOpened: JsonField<Double>) = apply {
+                this.uniqueOpened = uniqueOpened
+            }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -896,6 +976,8 @@ private constructor(
              * .scheduled()
              * .sending()
              * .sent()
+             * .uniqueClicked()
+             * .uniqueOpened()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
@@ -918,6 +1000,8 @@ private constructor(
                     checkRequired("scheduled", scheduled),
                     checkRequired("sending", sending),
                     checkRequired("sent", sent),
+                    checkRequired("uniqueClicked", uniqueClicked),
+                    checkRequired("uniqueOpened", uniqueOpened),
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -945,6 +1029,8 @@ private constructor(
             scheduled()
             sending()
             sent()
+            uniqueClicked()
+            uniqueOpened()
             validated = true
         }
 
@@ -979,7 +1065,9 @@ private constructor(
                 (if (renderingFailed.asKnown().isPresent) 1 else 0) +
                 (if (scheduled.asKnown().isPresent) 1 else 0) +
                 (if (sending.asKnown().isPresent) 1 else 0) +
-                (if (sent.asKnown().isPresent) 1 else 0)
+                (if (sent.asKnown().isPresent) 1 else 0) +
+                (if (uniqueClicked.asKnown().isPresent) 1 else 0) +
+                (if (uniqueOpened.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -1003,6 +1091,8 @@ private constructor(
                 scheduled == other.scheduled &&
                 sending == other.sending &&
                 sent == other.sent &&
+                uniqueClicked == other.uniqueClicked &&
+                uniqueOpened == other.uniqueOpened &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -1024,6 +1114,8 @@ private constructor(
                 scheduled,
                 sending,
                 sent,
+                uniqueClicked,
+                uniqueOpened,
                 additionalProperties,
             )
         }
@@ -1031,7 +1123,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Stat{bounced=$bounced, canceled=$canceled, clicked=$clicked, complaintReceived=$complaintReceived, delivered=$delivered, deliveredDelayed=$deliveredDelayed, failed=$failed, occurredOn=$occurredOn, opened=$opened, processed=$processed, queued=$queued, rejected=$rejected, renderingFailed=$renderingFailed, scheduled=$scheduled, sending=$sending, sent=$sent, additionalProperties=$additionalProperties}"
+            "Stat{bounced=$bounced, canceled=$canceled, clicked=$clicked, complaintReceived=$complaintReceived, delivered=$delivered, deliveredDelayed=$deliveredDelayed, failed=$failed, occurredOn=$occurredOn, opened=$opened, processed=$processed, queued=$queued, rejected=$rejected, renderingFailed=$renderingFailed, scheduled=$scheduled, sending=$sending, sent=$sent, uniqueClicked=$uniqueClicked, uniqueOpened=$uniqueOpened, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

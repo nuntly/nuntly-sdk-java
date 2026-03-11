@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** List all domains */
+/** Returns all domains with their verification and capability status. */
 class DomainListParams
 private constructor(
     private val cursor: String?,

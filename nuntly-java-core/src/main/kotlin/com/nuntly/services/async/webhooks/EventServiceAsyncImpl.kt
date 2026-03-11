@@ -28,7 +28,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Operations related to Webhook Events management */
+/** Inspect webhook event history and replay failed deliveries for debugging or recovery. */
 class EventServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     EventServiceAsync {
 

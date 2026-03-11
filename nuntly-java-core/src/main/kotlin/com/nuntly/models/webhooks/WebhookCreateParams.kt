@@ -24,7 +24,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Create a webhook */
+/** Register an endpoint to start receiving webhook events for your organization. */
 class WebhookCreateParams
 private constructor(
     private val body: Body,

@@ -53,6 +53,16 @@ class EventType @JsonCreator private constructor(private val value: JsonField<St
 
         @JvmField val EMAIL_UNSUBSCRIBED = of("email.unsubscribed")
 
+        @JvmField val MESSAGE_RECEIVED = of("message.received")
+
+        @JvmField val MESSAGE_SECURITY_FLAGGED = of("message.security.flagged")
+
+        @JvmField val MESSAGE_AGENT_TRIGGERED = of("message.agent.triggered")
+
+        @JvmField val MESSAGE_SENT = of("message.sent")
+
+        @JvmField val MESSAGE_REJECTED = of("message.rejected")
+
         @JvmStatic fun of(value: String) = EventType(JsonField.of(value))
     }
 
@@ -74,6 +84,11 @@ class EventType @JsonCreator private constructor(private val value: JsonField<St
         EMAIL_RENDERING_FAILED,
         EMAIL_SUBSCRIBED,
         EMAIL_UNSUBSCRIBED,
+        MESSAGE_RECEIVED,
+        MESSAGE_SECURITY_FLAGGED,
+        MESSAGE_AGENT_TRIGGERED,
+        MESSAGE_SENT,
+        MESSAGE_REJECTED,
     }
 
     /**
@@ -102,6 +117,11 @@ class EventType @JsonCreator private constructor(private val value: JsonField<St
         EMAIL_RENDERING_FAILED,
         EMAIL_SUBSCRIBED,
         EMAIL_UNSUBSCRIBED,
+        MESSAGE_RECEIVED,
+        MESSAGE_SECURITY_FLAGGED,
+        MESSAGE_AGENT_TRIGGERED,
+        MESSAGE_SENT,
+        MESSAGE_REJECTED,
         /** An enum member indicating that [EventType] was instantiated with an unknown value. */
         _UNKNOWN,
     }
@@ -131,6 +151,11 @@ class EventType @JsonCreator private constructor(private val value: JsonField<St
             EMAIL_RENDERING_FAILED -> Value.EMAIL_RENDERING_FAILED
             EMAIL_SUBSCRIBED -> Value.EMAIL_SUBSCRIBED
             EMAIL_UNSUBSCRIBED -> Value.EMAIL_UNSUBSCRIBED
+            MESSAGE_RECEIVED -> Value.MESSAGE_RECEIVED
+            MESSAGE_SECURITY_FLAGGED -> Value.MESSAGE_SECURITY_FLAGGED
+            MESSAGE_AGENT_TRIGGERED -> Value.MESSAGE_AGENT_TRIGGERED
+            MESSAGE_SENT -> Value.MESSAGE_SENT
+            MESSAGE_REJECTED -> Value.MESSAGE_REJECTED
             else -> Value._UNKNOWN
         }
 
@@ -160,6 +185,11 @@ class EventType @JsonCreator private constructor(private val value: JsonField<St
             EMAIL_RENDERING_FAILED -> Known.EMAIL_RENDERING_FAILED
             EMAIL_SUBSCRIBED -> Known.EMAIL_SUBSCRIBED
             EMAIL_UNSUBSCRIBED -> Known.EMAIL_UNSUBSCRIBED
+            MESSAGE_RECEIVED -> Known.MESSAGE_RECEIVED
+            MESSAGE_SECURITY_FLAGGED -> Known.MESSAGE_SECURITY_FLAGGED
+            MESSAGE_AGENT_TRIGGERED -> Known.MESSAGE_AGENT_TRIGGERED
+            MESSAGE_SENT -> Known.MESSAGE_SENT
+            MESSAGE_REJECTED -> Known.MESSAGE_REJECTED
             else -> throw NuntlyInvalidDataException("Unknown EventType: $value")
         }
 

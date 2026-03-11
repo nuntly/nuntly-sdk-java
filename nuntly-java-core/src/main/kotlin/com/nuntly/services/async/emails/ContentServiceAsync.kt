@@ -10,7 +10,7 @@ import com.nuntly.models.emails.content.ContentRetrieveResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Operations related to Email management */
+/** Send transactional emails, retrieve sending history, and track delivery status per message. */
 interface ContentServiceAsync {
 
     /**
@@ -25,7 +25,9 @@ interface ContentServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ContentServiceAsync
 
-    /** Retrieve email content by email id */
+    /**
+     * Returns presigned URLs to download the HTML, plain-text, and raw MIME source of a sent email.
+     */
     fun retrieve(id: String): CompletableFuture<ContentRetrieveResponse> =
         retrieve(id, ContentRetrieveParams.none())
 

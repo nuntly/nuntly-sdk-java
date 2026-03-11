@@ -12,15 +12,18 @@ import com.nuntly.core.JsonField
 import com.nuntly.core.JsonMissing
 import com.nuntly.core.JsonValue
 import com.nuntly.core.Params
+import com.nuntly.core.checkKnown
+import com.nuntly.core.checkRequired
 import com.nuntly.core.http.Headers
 import com.nuntly.core.http.QueryParams
+import com.nuntly.core.toImmutable
 import com.nuntly.errors.NuntlyInvalidDataException
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Update an API key */
+/** Update the key name, permissions, or restrict it to specific sending domains. */
 class ApiKeyUpdateParams
 private constructor(
     private val id: String?,
@@ -29,8 +32,23 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** The id of the api key */
     fun id(): Optional<String> = Optional.ofNullable(id)
+
+    /**
+     * The permission type for the api key
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun permission(): Permission = body.permission()
+
+    /**
+     * The domain ids to restrict the api key to (only for sendingAccess)
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun domainIds(): Optional<List<String>> = body.domainIds()
 
     /**
      * The name of the api key
@@ -45,6 +63,20 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun status(): Optional<Status> = body.status()
+
+    /**
+     * Returns the raw JSON value of [permission].
+     *
+     * Unlike [permission], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _permission(): JsonField<Permission> = body._permission()
+
+    /**
+     * Returns the raw JSON value of [domainIds].
+     *
+     * Unlike [domainIds], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _domainIds(): JsonField<List<String>> = body._domainIds()
 
     /**
      * Returns the raw JSON value of [name].
@@ -72,9 +104,14 @@ private constructor(
 
     companion object {
 
-        @JvmStatic fun none(): ApiKeyUpdateParams = builder().build()
-
-        /** Returns a mutable builder for constructing an instance of [ApiKeyUpdateParams]. */
+        /**
+         * Returns a mutable builder for constructing an instance of [ApiKeyUpdateParams].
+         *
+         * The following fields are required:
+         * ```java
+         * .permission()
+         * ```
+         */
         @JvmStatic fun builder() = Builder()
     }
 
@@ -94,7 +131,6 @@ private constructor(
             additionalQueryParams = apiKeyUpdateParams.additionalQueryParams.toBuilder()
         }
 
-        /** The id of the api key */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */
@@ -105,10 +141,43 @@ private constructor(
          *
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
+         * - [permission]
+         * - [domainIds]
          * - [name]
          * - [status]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
+
+        /** The permission type for the api key */
+        fun permission(permission: Permission) = apply { body.permission(permission) }
+
+        /**
+         * Sets [Builder.permission] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.permission] with a well-typed [Permission] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun permission(permission: JsonField<Permission>) = apply { body.permission(permission) }
+
+        /** The domain ids to restrict the api key to (only for sendingAccess) */
+        fun domainIds(domainIds: List<String>) = apply { body.domainIds(domainIds) }
+
+        /**
+         * Sets [Builder.domainIds] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.domainIds] with a well-typed `List<String>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun domainIds(domainIds: JsonField<List<String>>) = apply { body.domainIds(domainIds) }
+
+        /**
+         * Adds a single [String] to [domainIds].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addDomainId(domainId: String) = apply { body.addDomainId(domainId) }
 
         /** The name of the api key */
         fun name(name: String) = apply { body.name(name) }
@@ -252,6 +321,13 @@ private constructor(
          * Returns an immutable instance of [ApiKeyUpdateParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```java
+         * .permission()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): ApiKeyUpdateParams =
             ApiKeyUpdateParams(
@@ -277,6 +353,8 @@ private constructor(
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
+        private val permission: JsonField<Permission>,
+        private val domainIds: JsonField<List<String>>,
         private val name: JsonField<String>,
         private val status: JsonField<Status>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -284,9 +362,31 @@ private constructor(
 
         @JsonCreator
         private constructor(
+            @JsonProperty("permission")
+            @ExcludeMissing
+            permission: JsonField<Permission> = JsonMissing.of(),
+            @JsonProperty("domainIds")
+            @ExcludeMissing
+            domainIds: JsonField<List<String>> = JsonMissing.of(),
             @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
             @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
-        ) : this(name, status, mutableMapOf())
+        ) : this(permission, domainIds, name, status, mutableMapOf())
+
+        /**
+         * The permission type for the api key
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun permission(): Permission = permission.getRequired("permission")
+
+        /**
+         * The domain ids to restrict the api key to (only for sendingAccess)
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun domainIds(): Optional<List<String>> = domainIds.getOptional("domainIds")
 
         /**
          * The name of the api key
@@ -301,6 +401,24 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun status(): Optional<Status> = status.getOptional("status")
+
+        /**
+         * Returns the raw JSON value of [permission].
+         *
+         * Unlike [permission], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("permission")
+        @ExcludeMissing
+        fun _permission(): JsonField<Permission> = permission
+
+        /**
+         * Returns the raw JSON value of [domainIds].
+         *
+         * Unlike [domainIds], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("domainIds")
+        @ExcludeMissing
+        fun _domainIds(): JsonField<List<String>> = domainIds
 
         /**
          * Returns the raw JSON value of [name].
@@ -330,22 +448,73 @@ private constructor(
 
         companion object {
 
-            /** Returns a mutable builder for constructing an instance of [Body]. */
+            /**
+             * Returns a mutable builder for constructing an instance of [Body].
+             *
+             * The following fields are required:
+             * ```java
+             * .permission()
+             * ```
+             */
             @JvmStatic fun builder() = Builder()
         }
 
         /** A builder for [Body]. */
         class Builder internal constructor() {
 
+            private var permission: JsonField<Permission>? = null
+            private var domainIds: JsonField<MutableList<String>>? = null
             private var name: JsonField<String> = JsonMissing.of()
             private var status: JsonField<Status> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
+                permission = body.permission
+                domainIds = body.domainIds.map { it.toMutableList() }
                 name = body.name
                 status = body.status
                 additionalProperties = body.additionalProperties.toMutableMap()
+            }
+
+            /** The permission type for the api key */
+            fun permission(permission: Permission) = permission(JsonField.of(permission))
+
+            /**
+             * Sets [Builder.permission] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.permission] with a well-typed [Permission] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun permission(permission: JsonField<Permission>) = apply {
+                this.permission = permission
+            }
+
+            /** The domain ids to restrict the api key to (only for sendingAccess) */
+            fun domainIds(domainIds: List<String>) = domainIds(JsonField.of(domainIds))
+
+            /**
+             * Sets [Builder.domainIds] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.domainIds] with a well-typed `List<String>` value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun domainIds(domainIds: JsonField<List<String>>) = apply {
+                this.domainIds = domainIds.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [String] to [domainIds].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addDomainId(domainId: String) = apply {
+                domainIds =
+                    (domainIds ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("domainIds", it).add(domainId)
+                    }
             }
 
             /** The name of the api key */
@@ -394,8 +563,22 @@ private constructor(
              * Returns an immutable instance of [Body].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```java
+             * .permission()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
              */
-            fun build(): Body = Body(name, status, additionalProperties.toMutableMap())
+            fun build(): Body =
+                Body(
+                    checkRequired("permission", permission),
+                    (domainIds ?: JsonMissing.of()).map { it.toImmutable() },
+                    name,
+                    status,
+                    additionalProperties.toMutableMap(),
+                )
         }
 
         private var validated: Boolean = false
@@ -405,6 +588,8 @@ private constructor(
                 return@apply
             }
 
+            permission().validate()
+            domainIds()
             name()
             status().ifPresent { it.validate() }
             validated = true
@@ -426,7 +611,9 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (if (name.asKnown().isPresent) 1 else 0) +
+            (permission.asKnown().getOrNull()?.validity() ?: 0) +
+                (domainIds.asKnown().getOrNull()?.size ?: 0) +
+                (if (name.asKnown().isPresent) 1 else 0) +
                 (status.asKnown().getOrNull()?.validity() ?: 0)
 
         override fun equals(other: Any?): Boolean {
@@ -435,17 +622,149 @@ private constructor(
             }
 
             return other is Body &&
+                permission == other.permission &&
+                domainIds == other.domainIds &&
                 name == other.name &&
                 status == other.status &&
                 additionalProperties == other.additionalProperties
         }
 
-        private val hashCode: Int by lazy { Objects.hash(name, status, additionalProperties) }
+        private val hashCode: Int by lazy {
+            Objects.hash(permission, domainIds, name, status, additionalProperties)
+        }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{name=$name, status=$status, additionalProperties=$additionalProperties}"
+            "Body{permission=$permission, domainIds=$domainIds, name=$name, status=$status, additionalProperties=$additionalProperties}"
+    }
+
+    /** The permission type for the api key */
+    class Permission @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val FULL_ACCESS = of("fullAccess")
+
+            @JvmField val SENDING_ACCESS = of("sendingAccess")
+
+            @JvmStatic fun of(value: String) = Permission(JsonField.of(value))
+        }
+
+        /** An enum containing [Permission]'s known values. */
+        enum class Known {
+            FULL_ACCESS,
+            SENDING_ACCESS,
+        }
+
+        /**
+         * An enum containing [Permission]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Permission] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            FULL_ACCESS,
+            SENDING_ACCESS,
+            /**
+             * An enum member indicating that [Permission] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                FULL_ACCESS -> Value.FULL_ACCESS
+                SENDING_ACCESS -> Value.SENDING_ACCESS
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws NuntlyInvalidDataException if this class instance's value is a not a known
+         *   member.
+         */
+        fun known(): Known =
+            when (this) {
+                FULL_ACCESS -> Known.FULL_ACCESS
+                SENDING_ACCESS -> Known.SENDING_ACCESS
+                else -> throw NuntlyInvalidDataException("Unknown Permission: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws NuntlyInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow { NuntlyInvalidDataException("Value is not a String") }
+
+        private var validated: Boolean = false
+
+        fun validate(): Permission = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: NuntlyInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Permission && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
     }
 
     class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {

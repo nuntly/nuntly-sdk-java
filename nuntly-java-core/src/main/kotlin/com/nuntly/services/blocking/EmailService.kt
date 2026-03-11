@@ -20,7 +20,7 @@ import com.nuntly.services.blocking.emails.EventService
 import com.nuntly.services.blocking.emails.StatService
 import java.util.function.Consumer
 
-/** Operations related to Email management */
+/** Send transactional emails, retrieve sending history, and track delivery status per message. */
 interface EmailService {
 
     /**
@@ -35,19 +35,27 @@ interface EmailService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EmailService
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     fun bulk(): BulkService
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     fun events(): EventService
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     fun content(): ContentService
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     fun stats(): StatService
 
-    /** Retrieve an email by its id */
+    /** Returns an email with its current delivery status and metadata. */
     fun retrieve(id: String): EmailRetrieveResponse = retrieve(id, EmailRetrieveParams.none())
 
     /** @see retrieve */
@@ -77,7 +85,7 @@ interface EmailService {
     fun retrieve(id: String, requestOptions: RequestOptions): EmailRetrieveResponse =
         retrieve(id, EmailRetrieveParams.none(), requestOptions)
 
-    /** Return a list of recent emails. */
+    /** Returns sent emails ordered by submission date, newest first. */
     fun list(): EmailListPage = list(EmailListParams.none())
 
     /** @see list */
@@ -94,7 +102,10 @@ interface EmailService {
     fun list(requestOptions: RequestOptions): EmailListPage =
         list(EmailListParams.none(), requestOptions)
 
-    /** Cancel a scheduled email */
+    /**
+     * Cancel a scheduled email before delivery. Only emails with `scheduled` status can be
+     * cancelled.
+     */
     fun cancel(id: String): EmailCancelResponse = cancel(id, EmailCancelParams.none())
 
     /** @see cancel */
@@ -146,16 +157,28 @@ interface EmailService {
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): EmailService.WithRawResponse
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         fun bulk(): BulkService.WithRawResponse
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         fun events(): EventService.WithRawResponse
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         fun content(): ContentService.WithRawResponse
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         fun stats(): StatService.WithRawResponse
 
         /**

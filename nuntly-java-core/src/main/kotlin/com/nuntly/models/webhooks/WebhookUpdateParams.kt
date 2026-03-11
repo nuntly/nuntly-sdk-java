@@ -23,7 +23,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Update a webhook */
+/** Update the endpoint URL, subscribed event types, or rotate the signing secret. */
 class WebhookUpdateParams
 private constructor(
     private val id: String?,
@@ -32,7 +32,6 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** The id of the webhook */
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /**
@@ -142,7 +141,6 @@ private constructor(
             additionalQueryParams = webhookUpdateParams.additionalQueryParams.toBuilder()
         }
 
-        /** The id of the webhook */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */

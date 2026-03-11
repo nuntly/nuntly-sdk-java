@@ -11,16 +11,16 @@ internal class TagTest {
 
     @Test
     fun create() {
-        val tag = Tag.builder().name("name").value("value").build()
+        val tag = Tag.builder().name("category").value("transactional").build()
 
-        assertThat(tag.name()).isEqualTo("name")
-        assertThat(tag.value()).isEqualTo("value")
+        assertThat(tag.name()).isEqualTo("category")
+        assertThat(tag.value()).isEqualTo("transactional")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val tag = Tag.builder().name("name").value("value").build()
+        val tag = Tag.builder().name("category").value("transactional").build()
 
         val roundtrippedTag =
             jsonMapper.readValue(jsonMapper.writeValueAsString(tag), jacksonTypeRef<Tag>())

@@ -11,7 +11,9 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Cancel a scheduled email */
+/**
+ * Cancel a scheduled email before delivery. Only emails with `scheduled` status can be cancelled.
+ */
 class EmailCancelParams
 private constructor(
     private val id: String?,
@@ -20,7 +22,6 @@ private constructor(
     private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
-    /** The id of the email */
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /** Additional body properties to send with the request. */
@@ -58,7 +59,6 @@ private constructor(
             additionalBodyProperties = emailCancelParams.additionalBodyProperties.toMutableMap()
         }
 
-        /** The id of the email */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */

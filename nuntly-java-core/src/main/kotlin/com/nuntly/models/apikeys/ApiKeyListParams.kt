@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** List API keys */
+/** Returns all API keys for the organization. Key values are never included in list responses. */
 class ApiKeyListParams
 private constructor(
     private val cursor: String?,

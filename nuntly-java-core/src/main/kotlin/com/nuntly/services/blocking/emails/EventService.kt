@@ -10,7 +10,7 @@ import com.nuntly.models.emails.events.EventListParams
 import com.nuntly.models.emails.events.EventListResponse
 import java.util.function.Consumer
 
-/** Operations related to Email management */
+/** Send transactional emails, retrieve sending history, and track delivery status per message. */
 interface EventService {
 
     /**
@@ -25,7 +25,10 @@ interface EventService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService
 
-    /** Retrieve email events by email id */
+    /**
+     * Returns the full delivery event history for an email (sent, delivered, opened, bounced,
+     * etc.).
+     */
     fun list(id: String): List<EventListResponse> = list(id, EventListParams.none())
 
     /** @see list */

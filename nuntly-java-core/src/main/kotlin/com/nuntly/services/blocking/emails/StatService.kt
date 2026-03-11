@@ -10,7 +10,7 @@ import com.nuntly.models.emails.stats.StatListParams
 import com.nuntly.models.emails.stats.StatListResponse
 import java.util.function.Consumer
 
-/** Operations related to Email management */
+/** Send transactional emails, retrieve sending history, and track delivery status per message. */
 interface StatService {
 
     /**
@@ -25,7 +25,7 @@ interface StatService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): StatService
 
-    /** Retrieve email statistics */
+    /** Returns aggregated daily sending statistics for the current period. */
     fun list(): StatListResponse = list(StatListParams.none())
 
     /** @see list */

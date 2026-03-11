@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** List webhook events */
+/** Returns recent webhook events across all registered endpoints. */
 class EventListParams
 private constructor(
     private val cursor: String?,

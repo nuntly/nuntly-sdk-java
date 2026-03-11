@@ -18,7 +18,10 @@ import com.nuntly.models.domains.DomainUpdateResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Operations related to Domain management */
+/**
+ * Add and verify sending and receiving domains. Manage DKIM records, SPF configuration, and enable
+ * inbound email routing.
+ */
 interface DomainServiceAsync {
 
     /**
@@ -33,7 +36,7 @@ interface DomainServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): DomainServiceAsync
 
-    /** Create a domain */
+    /** Add a domain to start configuring DNS records for sending or receiving emails. */
     fun create(params: DomainCreateParams): CompletableFuture<DomainCreateResponse> =
         create(params, RequestOptions.none())
 
@@ -43,7 +46,10 @@ interface DomainServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<DomainCreateResponse>
 
-    /** Retrieve a domain */
+    /**
+     * Returns a domain with its DNS record configuration and current verification status for each
+     * record.
+     */
     fun retrieve(id: String): CompletableFuture<DomainRetrieveResponse> =
         retrieve(id, DomainRetrieveParams.none())
 
@@ -78,7 +84,7 @@ interface DomainServiceAsync {
     ): CompletableFuture<DomainRetrieveResponse> =
         retrieve(id, DomainRetrieveParams.none(), requestOptions)
 
-    /** Update a domain */
+    /** Toggle sending, receiving, open tracking, or click tracking capabilities for a domain. */
     fun update(id: String): CompletableFuture<DomainUpdateResponse> =
         update(id, DomainUpdateParams.none())
 
@@ -113,7 +119,7 @@ interface DomainServiceAsync {
     ): CompletableFuture<DomainUpdateResponse> =
         update(id, DomainUpdateParams.none(), requestOptions)
 
-    /** List all domains */
+    /** Returns all domains with their verification and capability status. */
     fun list(): CompletableFuture<DomainListPageAsync> = list(DomainListParams.none())
 
     /** @see list */
@@ -131,7 +137,10 @@ interface DomainServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<DomainListPageAsync> =
         list(DomainListParams.none(), requestOptions)
 
-    /** Delete a domain */
+    /**
+     * Remove a domain from the organization. Cannot be deleted if it has active sending or
+     * receiving.
+     */
     fun delete(id: String): CompletableFuture<DomainDeleteResponse> =
         delete(id, DomainDeleteParams.none())
 

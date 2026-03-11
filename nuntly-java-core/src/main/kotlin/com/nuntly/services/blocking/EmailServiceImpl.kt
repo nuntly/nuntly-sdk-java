@@ -34,10 +34,11 @@ import com.nuntly.services.blocking.emails.EventService
 import com.nuntly.services.blocking.emails.EventServiceImpl
 import com.nuntly.services.blocking.emails.StatService
 import com.nuntly.services.blocking.emails.StatServiceImpl
+import java.time.Duration
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Operations related to Email management */
+/** Send transactional emails, retrieve sending history, and track delivery status per message. */
 class EmailServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     EmailService {
 
@@ -58,16 +59,24 @@ class EmailServiceImpl internal constructor(private val clientOptions: ClientOpt
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EmailService =
         EmailServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     override fun bulk(): BulkService = bulk
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     override fun events(): EventService = events
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     override fun content(): ContentService = content
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     override fun stats(): StatService = stats
 
     override fun retrieve(
@@ -121,16 +130,28 @@ class EmailServiceImpl internal constructor(private val clientOptions: ClientOpt
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         override fun bulk(): BulkService.WithRawResponse = bulk
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         override fun events(): EventService.WithRawResponse = events
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         override fun content(): ContentService.WithRawResponse = content
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         override fun stats(): StatService.WithRawResponse = stats
 
         private val retrieveHandler: Handler<DataEnvelope<EmailRetrieveResponse>> =
@@ -245,7 +266,10 @@ class EmailServiceImpl internal constructor(private val clientOptions: ClientOpt
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepare(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val requestOptions =
+                requestOptions
+                    .applyDefaults(RequestOptions.from(clientOptions))
+                    .applyDefaults(RequestOptions.builder().timeout(Duration.ofMillis(150)).build())
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response

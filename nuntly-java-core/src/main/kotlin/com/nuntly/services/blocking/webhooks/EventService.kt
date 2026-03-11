@@ -14,7 +14,7 @@ import com.nuntly.models.webhooks.events.EventReplayParams
 import com.nuntly.models.webhooks.events.EventReplayResponse
 import java.util.function.Consumer
 
-/** Operations related to Webhook Events management */
+/** Inspect webhook event history and replay failed deliveries for debugging or recovery. */
 interface EventService {
 
     /**
@@ -29,7 +29,7 @@ interface EventService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService
 
-    /** List webhook events */
+    /** Returns recent webhook events across all registered endpoints. */
     fun list(): EventListPage = list(EventListParams.none())
 
     /** @see list */
@@ -46,7 +46,10 @@ interface EventService {
     fun list(requestOptions: RequestOptions): EventListPage =
         list(EventListParams.none(), requestOptions)
 
-    /** List webhook event deliveries */
+    /**
+     * Returns all delivery attempts for a webhook event, including HTTP status codes and response
+     * times.
+     */
     fun deliveries(eventId: String, params: EventDeliveriesParams): List<EventDeliveriesResponse> =
         deliveries(eventId, params, RequestOptions.none())
 
@@ -68,7 +71,7 @@ interface EventService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): List<EventDeliveriesResponse>
 
-    /** Replay a webhook event */
+    /** Re-deliver a webhook event to its endpoint. Useful for retrying failed deliveries. */
     fun replay(eventId: String, params: EventReplayParams): EventReplayResponse =
         replay(eventId, params, RequestOptions.none())
 

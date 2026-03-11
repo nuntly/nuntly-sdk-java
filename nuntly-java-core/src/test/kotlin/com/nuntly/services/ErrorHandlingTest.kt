@@ -72,7 +72,9 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -97,7 +99,9 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -122,7 +126,9 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -147,7 +153,9 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -172,7 +180,9 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -197,7 +207,9 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -222,7 +234,9 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -247,7 +261,9 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -272,7 +288,9 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -297,7 +315,9 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -322,7 +342,9 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -347,7 +369,9 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -372,7 +396,9 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -397,7 +423,9 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -422,7 +450,9 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -447,7 +477,9 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )
@@ -470,7 +502,9 @@ internal class ErrorHandlingTest {
             assertThrows<NuntlyException> {
                 apiKeyService.create(
                     ApiKeyCreateParams.builder()
+                        .addDomainId("string")
                         .name("name")
+                        .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                         .status(ApiKeyCreateParams.Status.ENABLED)
                         .build()
                 )

@@ -3,11 +3,16 @@
 package com.nuntly.client
 
 import com.nuntly.core.ClientOptions
+import com.nuntly.services.async.AgentServiceAsync
 import com.nuntly.services.async.ApiKeyServiceAsync
 import com.nuntly.services.async.DomainServiceAsync
 import com.nuntly.services.async.EmailServiceAsync
+import com.nuntly.services.async.InboxServiceAsync
+import com.nuntly.services.async.MessageServiceAsync
+import com.nuntly.services.async.NamespaceServiceAsync
 import com.nuntly.services.async.OrganizationServiceAsync
 import com.nuntly.services.async.SharedServiceAsync
+import com.nuntly.services.async.ThreadServiceAsync
 import com.nuntly.services.async.WebhookServiceAsync
 import java.util.function.Consumer
 
@@ -49,19 +54,52 @@ interface NuntlyClientAsync {
 
     fun shared(): SharedServiceAsync
 
-    /** Operations related to API keys management */
+    /** Create and revoke API keys used to authenticate requests to the Nuntly API. */
     fun apiKeys(): ApiKeyServiceAsync
 
-    /** Operations related to Domain management */
+    /**
+     * Add and verify sending and receiving domains. Manage DKIM records, SPF configuration, and
+     * enable inbound email routing.
+     */
     fun domains(): DomainServiceAsync
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     fun emails(): EmailServiceAsync
 
-    /** Operations related to Webhook management */
+    /**
+     * Isolate inboxes by tenant, client, or agent using namespaces. Use an external ID to map
+     * namespaces to your own data model.
+     */
+    fun namespaces(): NamespaceServiceAsync
+
+    /**
+     * Create email inboxes at a specific address on a verified receiving domain. Assign inboxes to
+     * namespaces or AI agents.
+     */
+    fun inboxes(): InboxServiceAsync
+
+    /**
+     * Browse email conversations grouped by subject. Mark threads as read or spam, and assign them
+     * to an agent.
+     */
+    fun threads(): ThreadServiceAsync
+
+    /**
+     * Access received messages, download attachments, and send replies or forwards from an inbox.
+     */
+    fun messages(): MessageServiceAsync
+
+    fun agents(): AgentServiceAsync
+
+    /**
+     * Register HTTP endpoints to receive real-time delivery events such as bounces, opens, and
+     * clicks.
+     */
     fun webhooks(): WebhookServiceAsync
 
-    /** Operations related to Organization management */
+    /** Manage your organization profile, team members, and account-level settings. */
     fun organizations(): OrganizationServiceAsync
 
     /**
@@ -91,19 +129,54 @@ interface NuntlyClientAsync {
 
         fun shared(): SharedServiceAsync.WithRawResponse
 
-        /** Operations related to API keys management */
+        /** Create and revoke API keys used to authenticate requests to the Nuntly API. */
         fun apiKeys(): ApiKeyServiceAsync.WithRawResponse
 
-        /** Operations related to Domain management */
+        /**
+         * Add and verify sending and receiving domains. Manage DKIM records, SPF configuration, and
+         * enable inbound email routing.
+         */
         fun domains(): DomainServiceAsync.WithRawResponse
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         fun emails(): EmailServiceAsync.WithRawResponse
 
-        /** Operations related to Webhook management */
+        /**
+         * Isolate inboxes by tenant, client, or agent using namespaces. Use an external ID to map
+         * namespaces to your own data model.
+         */
+        fun namespaces(): NamespaceServiceAsync.WithRawResponse
+
+        /**
+         * Create email inboxes at a specific address on a verified receiving domain. Assign inboxes
+         * to namespaces or AI agents.
+         */
+        fun inboxes(): InboxServiceAsync.WithRawResponse
+
+        /**
+         * Browse email conversations grouped by subject. Mark threads as read or spam, and assign
+         * them to an agent.
+         */
+        fun threads(): ThreadServiceAsync.WithRawResponse
+
+        /**
+         * Access received messages, download attachments, and send replies or forwards from an
+         * inbox.
+         */
+        fun messages(): MessageServiceAsync.WithRawResponse
+
+        fun agents(): AgentServiceAsync.WithRawResponse
+
+        /**
+         * Register HTTP endpoints to receive real-time delivery events such as bounces, opens, and
+         * clicks.
+         */
         fun webhooks(): WebhookServiceAsync.WithRawResponse
 
-        /** Operations related to Organization management */
+        /** Manage your organization profile, team members, and account-level settings. */
         fun organizations(): OrganizationServiceAsync.WithRawResponse
     }
 }

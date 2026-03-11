@@ -19,7 +19,7 @@ import com.nuntly.models.emails.stats.StatListParams
 import com.nuntly.models.emails.stats.StatListResponse
 import java.util.function.Consumer
 
-/** Operations related to Email management */
+/** Send transactional emails, retrieve sending history, and track delivery status per message. */
 class StatServiceImpl internal constructor(private val clientOptions: ClientOptions) : StatService {
 
     private val withRawResponse: StatService.WithRawResponse by lazy {

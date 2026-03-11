@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieve bulk emails */
+/** Returns the delivery status of all emails submitted in a bulk request. */
 class BulkRetrieveParams
 private constructor(
     private val bulkId: String?,

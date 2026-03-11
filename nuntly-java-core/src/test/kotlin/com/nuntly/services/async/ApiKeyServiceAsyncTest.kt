@@ -24,7 +24,9 @@ internal class ApiKeyServiceAsyncTest {
         val apiKeyFuture =
             apiKeyServiceAsync.create(
                 ApiKeyCreateParams.builder()
+                    .addDomainId("string")
                     .name("name")
+                    .permission(ApiKeyCreateParams.Permission.FULL_ACCESS)
                     .status(ApiKeyCreateParams.Status.ENABLED)
                     .build()
             )
@@ -61,6 +63,8 @@ internal class ApiKeyServiceAsyncTest {
             apiKeyServiceAsync.update(
                 ApiKeyUpdateParams.builder()
                     .id("apk_01ka8k8s80gvx9604cn9am5st4")
+                    .permission(ApiKeyUpdateParams.Permission.FULL_ACCESS)
+                    .addDomainId("string")
                     .name("name")
                     .status(ApiKeyUpdateParams.Status.ENABLED)
                     .build()
