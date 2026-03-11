@@ -44,6 +44,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
         assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
         assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
     }
 
     @Test
@@ -105,6 +110,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
         assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
         assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
     }
 
     @Test
@@ -166,6 +176,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
         assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
         assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
     }
 
     @Test
@@ -248,6 +263,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
         assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
         assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
     }
 
     @Test
@@ -352,6 +372,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
         assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
         assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
     }
 
     @Test
@@ -468,6 +493,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
         assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
         assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
     }
 
     @Test
@@ -589,6 +619,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
         assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
         assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
     }
 
     @Test
@@ -707,6 +742,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
         assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
         assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
     }
 
     @Test
@@ -838,6 +878,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
         assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
         assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
     }
 
     @Test
@@ -983,6 +1028,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
         assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
         assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
     }
 
     @Test
@@ -1110,6 +1160,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.emailRejected()).contains(emailRejected)
         assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
         assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
     }
 
     @Test
@@ -1236,6 +1291,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
         assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).contains(emailDeliveryDelayed)
         assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
     }
 
     @Test
@@ -1365,6 +1425,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
         assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
         assertThat(unwrapWebhookEvent.emailFailed()).contains(emailFailed)
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
     }
 
     @Test
@@ -1407,6 +1472,396 @@ internal class UnwrapWebhookEventTest {
                                     .putAdditionalProperty("foo", JsonValue.from(listOf("string")))
                                     .build()
                             )
+                            .build()
+                    )
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
+    fun ofMessageReceived() {
+        val messageReceived =
+            MessageReceivedEvent.builder()
+                .id("id")
+                .createdAt("createdAt")
+                .data(
+                    MessageReceivedEvent.Data.builder()
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .from("from")
+                        .inboxId("inboxId")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .subject("subject")
+                        .threadId("threadId")
+                        .agentId("agentId")
+                        .build()
+                )
+                .type(MessageReceivedEvent.Type.MESSAGE_RECEIVED)
+                .build()
+
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofMessageReceived(messageReceived)
+
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSent()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
+        assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
+        assertThat(unwrapWebhookEvent.emailClicked()).isEmpty
+        assertThat(unwrapWebhookEvent.emailBounced()).isEmpty
+        assertThat(unwrapWebhookEvent.emailComplained()).isEmpty
+        assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).contains(messageReceived)
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
+    }
+
+    @Test
+    fun ofMessageReceivedRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofMessageReceived(
+                MessageReceivedEvent.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .data(
+                        MessageReceivedEvent.Data.builder()
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .from("from")
+                            .inboxId("inboxId")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .subject("subject")
+                            .threadId("threadId")
+                            .agentId("agentId")
+                            .build()
+                    )
+                    .type(MessageReceivedEvent.Type.MESSAGE_RECEIVED)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
+    fun ofMessageSecurityFlagged() {
+        val messageSecurityFlagged =
+            MessageSecurityFlaggedEvent.builder()
+                .id("id")
+                .createdAt("createdAt")
+                .data(
+                    MessageSecurityFlaggedEvent.Data.builder()
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .from("from")
+                        .inboxId("inboxId")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .subject("subject")
+                        .threadId("threadId")
+                        .agentId("agentId")
+                        .build()
+                )
+                .type(MessageSecurityFlaggedEvent.Type.MESSAGE_SECURITY_FLAGGED)
+                .build()
+
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofMessageSecurityFlagged(messageSecurityFlagged)
+
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSent()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
+        assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
+        assertThat(unwrapWebhookEvent.emailClicked()).isEmpty
+        assertThat(unwrapWebhookEvent.emailBounced()).isEmpty
+        assertThat(unwrapWebhookEvent.emailComplained()).isEmpty
+        assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).contains(messageSecurityFlagged)
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
+    }
+
+    @Test
+    fun ofMessageSecurityFlaggedRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofMessageSecurityFlagged(
+                MessageSecurityFlaggedEvent.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .data(
+                        MessageSecurityFlaggedEvent.Data.builder()
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .from("from")
+                            .inboxId("inboxId")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .subject("subject")
+                            .threadId("threadId")
+                            .agentId("agentId")
+                            .build()
+                    )
+                    .type(MessageSecurityFlaggedEvent.Type.MESSAGE_SECURITY_FLAGGED)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
+    fun ofMessageAgentTriggered() {
+        val messageAgentTriggered =
+            MessageAgentTriggeredEvent.builder()
+                .id("id")
+                .createdAt("createdAt")
+                .data(
+                    MessageAgentTriggeredEvent.Data.builder()
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .from("from")
+                        .inboxId("inboxId")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .subject("subject")
+                        .threadId("threadId")
+                        .agentId("agentId")
+                        .build()
+                )
+                .type(MessageAgentTriggeredEvent.Type.MESSAGE_AGENT_TRIGGERED)
+                .build()
+
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofMessageAgentTriggered(messageAgentTriggered)
+
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSent()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
+        assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
+        assertThat(unwrapWebhookEvent.emailClicked()).isEmpty
+        assertThat(unwrapWebhookEvent.emailBounced()).isEmpty
+        assertThat(unwrapWebhookEvent.emailComplained()).isEmpty
+        assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).contains(messageAgentTriggered)
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
+    }
+
+    @Test
+    fun ofMessageAgentTriggeredRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofMessageAgentTriggered(
+                MessageAgentTriggeredEvent.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .data(
+                        MessageAgentTriggeredEvent.Data.builder()
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .from("from")
+                            .inboxId("inboxId")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .subject("subject")
+                            .threadId("threadId")
+                            .agentId("agentId")
+                            .build()
+                    )
+                    .type(MessageAgentTriggeredEvent.Type.MESSAGE_AGENT_TRIGGERED)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
+    fun ofMessageSent() {
+        val messageSent =
+            MessageSentEvent.builder()
+                .id("id")
+                .createdAt("createdAt")
+                .data(
+                    MessageSentEvent.Data.builder()
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .from("from")
+                        .inboxId("inboxId")
+                        .messageId("messageId")
+                        .orgId("orgId")
+                        .subject("subject")
+                        .threadId("threadId")
+                        .agentId("agentId")
+                        .build()
+                )
+                .type(MessageSentEvent.Type.MESSAGE_SENT)
+                .build()
+
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofMessageSent(messageSent)
+
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSent()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
+        assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
+        assertThat(unwrapWebhookEvent.emailClicked()).isEmpty
+        assertThat(unwrapWebhookEvent.emailBounced()).isEmpty
+        assertThat(unwrapWebhookEvent.emailComplained()).isEmpty
+        assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).contains(messageSent)
+        assertThat(unwrapWebhookEvent.messageRejected()).isEmpty
+    }
+
+    @Test
+    fun ofMessageSentRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofMessageSent(
+                MessageSentEvent.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .data(
+                        MessageSentEvent.Data.builder()
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .from("from")
+                            .inboxId("inboxId")
+                            .messageId("messageId")
+                            .orgId("orgId")
+                            .subject("subject")
+                            .threadId("threadId")
+                            .agentId("agentId")
+                            .build()
+                    )
+                    .type(MessageSentEvent.Type.MESSAGE_SENT)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
+    fun ofMessageRejected() {
+        val messageRejected =
+            UnwrapWebhookEvent.MessageRejected.builder()
+                .id("id")
+                .createdAt("createdAt")
+                .data(
+                    UnwrapWebhookEvent.MessageRejected.Data.builder()
+                        .domainId("domainId")
+                        .domainName("domainName")
+                        .from("from")
+                        .inboxId("inboxId")
+                        .orgId("orgId")
+                        .reason(
+                            UnwrapWebhookEvent.MessageRejected.Data.Reason
+                                .INBOX_STORAGE_LIMIT_EXCEEDED
+                        )
+                        .subject("subject")
+                        .build()
+                )
+                .build()
+
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofMessageRejected(messageRejected)
+
+        assertThat(unwrapWebhookEvent.emailQueued()).isEmpty
+        assertThat(unwrapWebhookEvent.emailScheduled()).isEmpty
+        assertThat(unwrapWebhookEvent.emailProcessed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSending()).isEmpty
+        assertThat(unwrapWebhookEvent.emailSent()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDelivered()).isEmpty
+        assertThat(unwrapWebhookEvent.emailOpened()).isEmpty
+        assertThat(unwrapWebhookEvent.emailClicked()).isEmpty
+        assertThat(unwrapWebhookEvent.emailBounced()).isEmpty
+        assertThat(unwrapWebhookEvent.emailComplained()).isEmpty
+        assertThat(unwrapWebhookEvent.emailRejected()).isEmpty
+        assertThat(unwrapWebhookEvent.emailDeliveryDelayed()).isEmpty
+        assertThat(unwrapWebhookEvent.emailFailed()).isEmpty
+        assertThat(unwrapWebhookEvent.messageReceived()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSecurityFlagged()).isEmpty
+        assertThat(unwrapWebhookEvent.messageAgentTriggered()).isEmpty
+        assertThat(unwrapWebhookEvent.messageSent()).isEmpty
+        assertThat(unwrapWebhookEvent.messageRejected()).contains(messageRejected)
+    }
+
+    @Test
+    fun ofMessageRejectedRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofMessageRejected(
+                UnwrapWebhookEvent.MessageRejected.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .data(
+                        UnwrapWebhookEvent.MessageRejected.Data.builder()
+                            .domainId("domainId")
+                            .domainName("domainName")
+                            .from("from")
+                            .inboxId("inboxId")
+                            .orgId("orgId")
+                            .reason(
+                                UnwrapWebhookEvent.MessageRejected.Data.Reason
+                                    .INBOX_STORAGE_LIMIT_EXCEEDED
+                            )
+                            .subject("subject")
                             .build()
                     )
                     .build()

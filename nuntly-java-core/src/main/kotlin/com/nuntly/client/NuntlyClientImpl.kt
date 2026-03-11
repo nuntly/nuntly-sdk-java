@@ -4,16 +4,26 @@ package com.nuntly.client
 
 import com.nuntly.core.ClientOptions
 import com.nuntly.core.getPackageVersion
+import com.nuntly.services.blocking.AgentService
+import com.nuntly.services.blocking.AgentServiceImpl
 import com.nuntly.services.blocking.ApiKeyService
 import com.nuntly.services.blocking.ApiKeyServiceImpl
 import com.nuntly.services.blocking.DomainService
 import com.nuntly.services.blocking.DomainServiceImpl
 import com.nuntly.services.blocking.EmailService
 import com.nuntly.services.blocking.EmailServiceImpl
+import com.nuntly.services.blocking.InboxService
+import com.nuntly.services.blocking.InboxServiceImpl
+import com.nuntly.services.blocking.MessageService
+import com.nuntly.services.blocking.MessageServiceImpl
+import com.nuntly.services.blocking.NamespaceService
+import com.nuntly.services.blocking.NamespaceServiceImpl
 import com.nuntly.services.blocking.OrganizationService
 import com.nuntly.services.blocking.OrganizationServiceImpl
 import com.nuntly.services.blocking.SharedService
 import com.nuntly.services.blocking.SharedServiceImpl
+import com.nuntly.services.blocking.ThreadService
+import com.nuntly.services.blocking.ThreadServiceImpl
 import com.nuntly.services.blocking.WebhookService
 import com.nuntly.services.blocking.WebhookServiceImpl
 import java.util.function.Consumer
@@ -43,6 +53,18 @@ class NuntlyClientImpl(private val clientOptions: ClientOptions) : NuntlyClient 
 
     private val emails: EmailService by lazy { EmailServiceImpl(clientOptionsWithUserAgent) }
 
+    private val namespaces: NamespaceService by lazy {
+        NamespaceServiceImpl(clientOptionsWithUserAgent)
+    }
+
+    private val inboxes: InboxService by lazy { InboxServiceImpl(clientOptionsWithUserAgent) }
+
+    private val threads: ThreadService by lazy { ThreadServiceImpl(clientOptionsWithUserAgent) }
+
+    private val messages: MessageService by lazy { MessageServiceImpl(clientOptionsWithUserAgent) }
+
+    private val agents: AgentService by lazy { AgentServiceImpl(clientOptionsWithUserAgent) }
+
     private val webhooks: WebhookService by lazy { WebhookServiceImpl(clientOptionsWithUserAgent) }
 
     private val organizations: OrganizationService by lazy {
@@ -58,19 +80,52 @@ class NuntlyClientImpl(private val clientOptions: ClientOptions) : NuntlyClient 
 
     override fun shared(): SharedService = shared
 
-    /** Operations related to API keys management */
+    /** Create and revoke API keys used to authenticate requests to the Nuntly API. */
     override fun apiKeys(): ApiKeyService = apiKeys
 
-    /** Operations related to Domain management */
+    /**
+     * Add and verify sending and receiving domains. Manage DKIM records, SPF configuration, and
+     * enable inbound email routing.
+     */
     override fun domains(): DomainService = domains
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     override fun emails(): EmailService = emails
 
-    /** Operations related to Webhook management */
+    /**
+     * Isolate inboxes by tenant, client, or agent using namespaces. Use an external ID to map
+     * namespaces to your own data model.
+     */
+    override fun namespaces(): NamespaceService = namespaces
+
+    /**
+     * Create email inboxes at a specific address on a verified receiving domain. Assign inboxes to
+     * namespaces or AI agents.
+     */
+    override fun inboxes(): InboxService = inboxes
+
+    /**
+     * Browse email conversations grouped by subject. Mark threads as read or spam, and assign them
+     * to an agent.
+     */
+    override fun threads(): ThreadService = threads
+
+    /**
+     * Access received messages, download attachments, and send replies or forwards from an inbox.
+     */
+    override fun messages(): MessageService = messages
+
+    override fun agents(): AgentService = agents
+
+    /**
+     * Register HTTP endpoints to receive real-time delivery events such as bounces, opens, and
+     * clicks.
+     */
     override fun webhooks(): WebhookService = webhooks
 
-    /** Operations related to Organization management */
+    /** Manage your organization profile, team members, and account-level settings. */
     override fun organizations(): OrganizationService = organizations
 
     override fun close() = clientOptions.close()
@@ -94,6 +149,26 @@ class NuntlyClientImpl(private val clientOptions: ClientOptions) : NuntlyClient 
             EmailServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val namespaces: NamespaceService.WithRawResponse by lazy {
+            NamespaceServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val inboxes: InboxService.WithRawResponse by lazy {
+            InboxServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val threads: ThreadService.WithRawResponse by lazy {
+            ThreadServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val messages: MessageService.WithRawResponse by lazy {
+            MessageServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val agents: AgentService.WithRawResponse by lazy {
+            AgentServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val webhooks: WebhookService.WithRawResponse by lazy {
             WebhookServiceImpl.WithRawResponseImpl(clientOptions)
         }
@@ -111,19 +186,54 @@ class NuntlyClientImpl(private val clientOptions: ClientOptions) : NuntlyClient 
 
         override fun shared(): SharedService.WithRawResponse = shared
 
-        /** Operations related to API keys management */
+        /** Create and revoke API keys used to authenticate requests to the Nuntly API. */
         override fun apiKeys(): ApiKeyService.WithRawResponse = apiKeys
 
-        /** Operations related to Domain management */
+        /**
+         * Add and verify sending and receiving domains. Manage DKIM records, SPF configuration, and
+         * enable inbound email routing.
+         */
         override fun domains(): DomainService.WithRawResponse = domains
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         override fun emails(): EmailService.WithRawResponse = emails
 
-        /** Operations related to Webhook management */
+        /**
+         * Isolate inboxes by tenant, client, or agent using namespaces. Use an external ID to map
+         * namespaces to your own data model.
+         */
+        override fun namespaces(): NamespaceService.WithRawResponse = namespaces
+
+        /**
+         * Create email inboxes at a specific address on a verified receiving domain. Assign inboxes
+         * to namespaces or AI agents.
+         */
+        override fun inboxes(): InboxService.WithRawResponse = inboxes
+
+        /**
+         * Browse email conversations grouped by subject. Mark threads as read or spam, and assign
+         * them to an agent.
+         */
+        override fun threads(): ThreadService.WithRawResponse = threads
+
+        /**
+         * Access received messages, download attachments, and send replies or forwards from an
+         * inbox.
+         */
+        override fun messages(): MessageService.WithRawResponse = messages
+
+        override fun agents(): AgentService.WithRawResponse = agents
+
+        /**
+         * Register HTTP endpoints to receive real-time delivery events such as bounces, opens, and
+         * clicks.
+         */
         override fun webhooks(): WebhookService.WithRawResponse = webhooks
 
-        /** Operations related to Organization management */
+        /** Manage your organization profile, team members, and account-level settings. */
         override fun organizations(): OrganizationService.WithRawResponse = organizations
     }
 }

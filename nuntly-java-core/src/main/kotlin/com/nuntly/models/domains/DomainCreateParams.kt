@@ -17,8 +17,9 @@ import com.nuntly.core.http.QueryParams
 import com.nuntly.errors.NuntlyInvalidDataException
 import java.util.Collections
 import java.util.Objects
+import java.util.Optional
 
-/** Create a domain */
+/** Add a domain to start configuring DNS records for sending or receiving emails. */
 class DomainCreateParams
 private constructor(
     private val body: Body,
@@ -35,11 +36,41 @@ private constructor(
     fun name(): String = body.name()
 
     /**
+     * Enable receiving
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun receiving(): Optional<Boolean> = body.receiving()
+
+    /**
+     * Enable sending
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun sending(): Optional<Boolean> = body.sending()
+
+    /**
      * Returns the raw JSON value of [name].
      *
      * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _name(): JsonField<String> = body._name()
+
+    /**
+     * Returns the raw JSON value of [receiving].
+     *
+     * Unlike [receiving], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _receiving(): JsonField<Boolean> = body._receiving()
+
+    /**
+     * Returns the raw JSON value of [sending].
+     *
+     * Unlike [sending], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _sending(): JsonField<Boolean> = body._sending()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -84,6 +115,8 @@ private constructor(
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
          * - [name]
+         * - [receiving]
+         * - [sending]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
@@ -97,6 +130,29 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun name(name: JsonField<String>) = apply { body.name(name) }
+
+        /** Enable receiving */
+        fun receiving(receiving: Boolean) = apply { body.receiving(receiving) }
+
+        /**
+         * Sets [Builder.receiving] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.receiving] with a well-typed [Boolean] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun receiving(receiving: JsonField<Boolean>) = apply { body.receiving(receiving) }
+
+        /** Enable sending */
+        fun sending(sending: Boolean) = apply { body.sending(sending) }
+
+        /**
+         * Sets [Builder.sending] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.sending] with a well-typed [Boolean] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun sending(sending: JsonField<Boolean>) = apply { body.sending(sending) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -245,13 +301,19 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val name: JsonField<String>,
+        private val receiving: JsonField<Boolean>,
+        private val sending: JsonField<Boolean>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of()
-        ) : this(name, mutableMapOf())
+            @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("receiving")
+            @ExcludeMissing
+            receiving: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("sending") @ExcludeMissing sending: JsonField<Boolean> = JsonMissing.of(),
+        ) : this(name, receiving, sending, mutableMapOf())
 
         /**
          * The name of the domain to send e-mails'
@@ -262,11 +324,41 @@ private constructor(
         fun name(): String = name.getRequired("name")
 
         /**
+         * Enable receiving
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun receiving(): Optional<Boolean> = receiving.getOptional("receiving")
+
+        /**
+         * Enable sending
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun sending(): Optional<Boolean> = sending.getOptional("sending")
+
+        /**
          * Returns the raw JSON value of [name].
          *
          * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
+
+        /**
+         * Returns the raw JSON value of [receiving].
+         *
+         * Unlike [receiving], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("receiving") @ExcludeMissing fun _receiving(): JsonField<Boolean> = receiving
+
+        /**
+         * Returns the raw JSON value of [sending].
+         *
+         * Unlike [sending], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("sending") @ExcludeMissing fun _sending(): JsonField<Boolean> = sending
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -297,11 +389,15 @@ private constructor(
         class Builder internal constructor() {
 
             private var name: JsonField<String>? = null
+            private var receiving: JsonField<Boolean> = JsonMissing.of()
+            private var sending: JsonField<Boolean> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
                 name = body.name
+                receiving = body.receiving
+                sending = body.sending
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -316,6 +412,30 @@ private constructor(
              * value.
              */
             fun name(name: JsonField<String>) = apply { this.name = name }
+
+            /** Enable receiving */
+            fun receiving(receiving: Boolean) = receiving(JsonField.of(receiving))
+
+            /**
+             * Sets [Builder.receiving] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.receiving] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun receiving(receiving: JsonField<Boolean>) = apply { this.receiving = receiving }
+
+            /** Enable sending */
+            fun sending(sending: Boolean) = sending(JsonField.of(sending))
+
+            /**
+             * Sets [Builder.sending] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.sending] with a well-typed [Boolean] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun sending(sending: JsonField<Boolean>) = apply { this.sending = sending }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -349,7 +469,12 @@ private constructor(
              * @throws IllegalStateException if any required field is unset.
              */
             fun build(): Body =
-                Body(checkRequired("name", name), additionalProperties.toMutableMap())
+                Body(
+                    checkRequired("name", name),
+                    receiving,
+                    sending,
+                    additionalProperties.toMutableMap(),
+                )
         }
 
         private var validated: Boolean = false
@@ -360,6 +485,8 @@ private constructor(
             }
 
             name()
+            receiving()
+            sending()
             validated = true
         }
 
@@ -377,7 +504,11 @@ private constructor(
          *
          * Used for best match union deserialization.
          */
-        @JvmSynthetic internal fun validity(): Int = (if (name.asKnown().isPresent) 1 else 0)
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (if (name.asKnown().isPresent) 1 else 0) +
+                (if (receiving.asKnown().isPresent) 1 else 0) +
+                (if (sending.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -386,14 +517,19 @@ private constructor(
 
             return other is Body &&
                 name == other.name &&
+                receiving == other.receiving &&
+                sending == other.sending &&
                 additionalProperties == other.additionalProperties
         }
 
-        private val hashCode: Int by lazy { Objects.hash(name, additionalProperties) }
+        private val hashCode: Int by lazy {
+            Objects.hash(name, receiving, sending, additionalProperties)
+        }
 
         override fun hashCode(): Int = hashCode
 
-        override fun toString() = "Body{name=$name, additionalProperties=$additionalProperties}"
+        override fun toString() =
+            "Body{name=$name, receiving=$receiving, sending=$sending, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

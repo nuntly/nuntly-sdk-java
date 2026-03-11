@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Return a list of recent emails. */
+/** Returns sent emails ordered by submission date, newest first. */
 class EmailListParams
 private constructor(
     private val cursor: String?,

@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** List webhooks */
+/** Returns all registered webhook endpoints for the organization. */
 class WebhookListParams
 private constructor(
     private val cursor: String?,

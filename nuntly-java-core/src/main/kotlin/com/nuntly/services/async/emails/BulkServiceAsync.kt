@@ -12,7 +12,7 @@ import com.nuntly.models.emails.bulk.BulkSendResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Operations related to Email management */
+/** Send transactional emails, retrieve sending history, and track delivery status per message. */
 interface BulkServiceAsync {
 
     /**
@@ -27,7 +27,7 @@ interface BulkServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): BulkServiceAsync
 
-    /** Retrieve bulk emails */
+    /** Returns the delivery status of all emails submitted in a bulk request. */
     fun retrieve(bulkId: String): CompletableFuture<BulkRetrieveResponse> =
         retrieve(bulkId, BulkRetrieveParams.none())
 
@@ -62,7 +62,10 @@ interface BulkServiceAsync {
     ): CompletableFuture<BulkRetrieveResponse> =
         retrieve(bulkId, BulkRetrieveParams.none(), requestOptions)
 
-    /** Send bulk emails. */
+    /**
+     * Send up to 100 emails in a single request. Use `fallback` to set default values shared across
+     * all messages.
+     */
     fun send(params: BulkSendParams): CompletableFuture<BulkSendResponse> =
         send(params, RequestOptions.none())
 

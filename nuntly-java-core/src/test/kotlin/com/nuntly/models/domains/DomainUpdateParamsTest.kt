@@ -13,6 +13,8 @@ internal class DomainUpdateParamsTest {
             .id("dns_01kabn43yqyxn2bx4ve84mczd3")
             .clickTracking(true)
             .openTracking(true)
+            .receiving(true)
+            .sending(true)
             .build()
     }
 
@@ -32,12 +34,16 @@ internal class DomainUpdateParamsTest {
                 .id("dns_01kabn43yqyxn2bx4ve84mczd3")
                 .clickTracking(true)
                 .openTracking(true)
+                .receiving(true)
+                .sending(true)
                 .build()
 
         val body = params._body()
 
         assertThat(body.clickTracking()).contains(true)
         assertThat(body.openTracking()).contains(true)
+        assertThat(body.receiving()).contains(true)
+        assertThat(body.sending()).contains(true)
     }
 
     @Test

@@ -34,11 +34,12 @@ import com.nuntly.services.async.emails.EventServiceAsync
 import com.nuntly.services.async.emails.EventServiceAsyncImpl
 import com.nuntly.services.async.emails.StatServiceAsync
 import com.nuntly.services.async.emails.StatServiceAsyncImpl
+import java.time.Duration
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Operations related to Email management */
+/** Send transactional emails, retrieve sending history, and track delivery status per message. */
 class EmailServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     EmailServiceAsync {
 
@@ -59,16 +60,24 @@ class EmailServiceAsyncImpl internal constructor(private val clientOptions: Clie
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EmailServiceAsync =
         EmailServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     override fun bulk(): BulkServiceAsync = bulk
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     override fun events(): EventServiceAsync = events
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     override fun content(): ContentServiceAsync = content
 
-    /** Operations related to Email management */
+    /**
+     * Send transactional emails, retrieve sending history, and track delivery status per message.
+     */
     override fun stats(): StatServiceAsync = stats
 
     override fun retrieve(
@@ -128,16 +137,28 @@ class EmailServiceAsyncImpl internal constructor(private val clientOptions: Clie
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         override fun bulk(): BulkServiceAsync.WithRawResponse = bulk
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         override fun events(): EventServiceAsync.WithRawResponse = events
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         override fun content(): ContentServiceAsync.WithRawResponse = content
 
-        /** Operations related to Email management */
+        /**
+         * Send transactional emails, retrieve sending history, and track delivery status per
+         * message.
+         */
         override fun stats(): StatServiceAsync.WithRawResponse = stats
 
         private val retrieveHandler: Handler<DataEnvelope<EmailRetrieveResponse>> =
@@ -262,7 +283,10 @@ class EmailServiceAsyncImpl internal constructor(private val clientOptions: Clie
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepareAsync(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val requestOptions =
+                requestOptions
+                    .applyDefaults(RequestOptions.from(clientOptions))
+                    .applyDefaults(RequestOptions.builder().timeout(Duration.ofMillis(150)).build())
             return request
                 .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
                 .thenApply { response ->

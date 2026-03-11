@@ -11,7 +11,9 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Delete a domain */
+/**
+ * Remove a domain from the organization. Cannot be deleted if it has active sending or receiving.
+ */
 class DomainDeleteParams
 private constructor(
     private val id: String?,
@@ -20,7 +22,6 @@ private constructor(
     private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
-    /** The id of the domain */
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /** Additional body properties to send with the request. */
@@ -58,7 +59,6 @@ private constructor(
             additionalBodyProperties = domainDeleteParams.additionalBodyProperties.toMutableMap()
         }
 
-        /** The id of the domain */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */

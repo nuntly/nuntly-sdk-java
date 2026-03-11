@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieve a webhook */
+/** Returns a webhook endpoint with its URL, subscribed events, and configuration. */
 class WebhookRetrieveParams
 private constructor(
     private val id: String?,
@@ -17,7 +17,6 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** The id of the webhook */
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /** Additional headers to send with the request. */
@@ -50,7 +49,6 @@ private constructor(
             additionalQueryParams = webhookRetrieveParams.additionalQueryParams.toBuilder()
         }
 
-        /** The id of the webhook */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */

@@ -14,7 +14,7 @@ import com.nuntly.models.webhooks.events.EventReplayResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Operations related to Webhook Events management */
+/** Inspect webhook event history and replay failed deliveries for debugging or recovery. */
 interface EventServiceAsync {
 
     /**
@@ -29,7 +29,7 @@ interface EventServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventServiceAsync
 
-    /** List webhook events */
+    /** Returns recent webhook events across all registered endpoints. */
     fun list(): CompletableFuture<EventListPageAsync> = list(EventListParams.none())
 
     /** @see list */
@@ -47,7 +47,10 @@ interface EventServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<EventListPageAsync> =
         list(EventListParams.none(), requestOptions)
 
-    /** List webhook event deliveries */
+    /**
+     * Returns all delivery attempts for a webhook event, including HTTP status codes and response
+     * times.
+     */
     fun deliveries(
         eventId: String,
         params: EventDeliveriesParams,
@@ -73,7 +76,7 @@ interface EventServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<List<EventDeliveriesResponse>>
 
-    /** Replay a webhook event */
+    /** Re-deliver a webhook event to its endpoint. Useful for retrying failed deliveries. */
     fun replay(eventId: String, params: EventReplayParams): CompletableFuture<EventReplayResponse> =
         replay(eventId, params, RequestOptions.none())
 

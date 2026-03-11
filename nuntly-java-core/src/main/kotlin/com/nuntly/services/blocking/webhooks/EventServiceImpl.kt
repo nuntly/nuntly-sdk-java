@@ -27,7 +27,7 @@ import com.nuntly.models.webhooks.events.EventReplayResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Operations related to Webhook Events management */
+/** Inspect webhook event history and replay failed deliveries for debugging or recovery. */
 class EventServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     EventService {
 

@@ -7,7 +7,7 @@ import com.nuntly.core.http.Headers
 import com.nuntly.core.http.QueryParams
 import java.util.Objects
 
-/** Retrieve email statistics */
+/** Returns aggregated daily sending statistics for the current period. */
 class StatListParams
 private constructor(
     private val additionalHeaders: Headers,

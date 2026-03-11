@@ -55,6 +55,11 @@ internal class ProGuardCompatibilityTest {
         assertThat(client.apiKeys()).isNotNull()
         assertThat(client.domains()).isNotNull()
         assertThat(client.emails()).isNotNull()
+        assertThat(client.namespaces()).isNotNull()
+        assertThat(client.inboxes()).isNotNull()
+        assertThat(client.threads()).isNotNull()
+        assertThat(client.messages()).isNotNull()
+        assertThat(client.agents()).isNotNull()
         assertThat(client.webhooks()).isNotNull()
         assertThat(client.organizations()).isNotNull()
     }

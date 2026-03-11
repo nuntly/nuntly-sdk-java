@@ -31,7 +31,10 @@ import com.nuntly.models.domains.DomainUpdateResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Operations related to Domain management */
+/**
+ * Add and verify sending and receiving domains. Manage DKIM records, SPF configuration, and enable
+ * inbound email routing.
+ */
 class DomainServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     DomainService {
 

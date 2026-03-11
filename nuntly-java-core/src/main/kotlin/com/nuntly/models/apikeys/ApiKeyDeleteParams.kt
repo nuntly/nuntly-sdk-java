@@ -11,7 +11,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Delete an API key */
+/** Revoke an API key. Requests authenticating with this key will be rejected immediately. */
 class ApiKeyDeleteParams
 private constructor(
     private val id: String?,
@@ -20,7 +20,6 @@ private constructor(
     private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
-    /** The id of the api key */
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /** Additional body properties to send with the request. */
@@ -58,7 +57,6 @@ private constructor(
             additionalBodyProperties = apiKeyDeleteParams.additionalBodyProperties.toMutableMap()
         }
 
-        /** The id of the api key */
         fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */

@@ -18,7 +18,7 @@ import com.nuntly.models.apikeys.ApiKeyUpdateParams
 import com.nuntly.models.apikeys.ApiKeyUpdateResponse
 import java.util.function.Consumer
 
-/** Operations related to API keys management */
+/** Create and revoke API keys used to authenticate requests to the Nuntly API. */
 interface ApiKeyService {
 
     /**
@@ -33,7 +33,7 @@ interface ApiKeyService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ApiKeyService
 
-    /** Create an API key */
+    /** Generate a new API key. The key value is only returned once — store it securely. */
     fun create(): ApiKeyCreateResponse = create(ApiKeyCreateParams.none())
 
     /** @see create */
@@ -50,7 +50,7 @@ interface ApiKeyService {
     fun create(requestOptions: RequestOptions): ApiKeyCreateResponse =
         create(ApiKeyCreateParams.none(), requestOptions)
 
-    /** Retrieve an API key */
+    /** Returns API key metadata. The key value is never returned after creation. */
     fun retrieve(id: String): ApiKeyRetrieveResponse = retrieve(id, ApiKeyRetrieveParams.none())
 
     /** @see retrieve */
@@ -80,21 +80,20 @@ interface ApiKeyService {
     fun retrieve(id: String, requestOptions: RequestOptions): ApiKeyRetrieveResponse =
         retrieve(id, ApiKeyRetrieveParams.none(), requestOptions)
 
-    /** Update an API key */
-    fun update(id: String): ApiKeyUpdateResponse = update(id, ApiKeyUpdateParams.none())
+    /** Update the key name, permissions, or restrict it to specific sending domains. */
+    fun update(id: String, params: ApiKeyUpdateParams): ApiKeyUpdateResponse =
+        update(id, params, RequestOptions.none())
 
     /** @see update */
     fun update(
         id: String,
-        params: ApiKeyUpdateParams = ApiKeyUpdateParams.none(),
+        params: ApiKeyUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): ApiKeyUpdateResponse = update(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see update */
-    fun update(
-        id: String,
-        params: ApiKeyUpdateParams = ApiKeyUpdateParams.none(),
-    ): ApiKeyUpdateResponse = update(id, params, RequestOptions.none())
+    fun update(params: ApiKeyUpdateParams): ApiKeyUpdateResponse =
+        update(params, RequestOptions.none())
 
     /** @see update */
     fun update(
@@ -102,15 +101,9 @@ interface ApiKeyService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): ApiKeyUpdateResponse
 
-    /** @see update */
-    fun update(params: ApiKeyUpdateParams): ApiKeyUpdateResponse =
-        update(params, RequestOptions.none())
-
-    /** @see update */
-    fun update(id: String, requestOptions: RequestOptions): ApiKeyUpdateResponse =
-        update(id, ApiKeyUpdateParams.none(), requestOptions)
-
-    /** List API keys */
+    /**
+     * Returns all API keys for the organization. Key values are never included in list responses.
+     */
     fun list(): ApiKeyListPage = list(ApiKeyListParams.none())
 
     /** @see list */
@@ -127,7 +120,7 @@ interface ApiKeyService {
     fun list(requestOptions: RequestOptions): ApiKeyListPage =
         list(ApiKeyListParams.none(), requestOptions)
 
-    /** Delete an API key */
+    /** Revoke an API key. Requests authenticating with this key will be rejected immediately. */
     fun delete(id: String): ApiKeyDeleteResponse = delete(id, ApiKeyDeleteParams.none())
 
     /** @see delete */
@@ -241,31 +234,17 @@ interface ApiKeyService {
          * [ApiKeyService.update].
          */
         @MustBeClosed
-        fun update(id: String): HttpResponseFor<ApiKeyUpdateResponse> =
-            update(id, ApiKeyUpdateParams.none())
+        fun update(id: String, params: ApiKeyUpdateParams): HttpResponseFor<ApiKeyUpdateResponse> =
+            update(id, params, RequestOptions.none())
 
         /** @see update */
         @MustBeClosed
         fun update(
             id: String,
-            params: ApiKeyUpdateParams = ApiKeyUpdateParams.none(),
+            params: ApiKeyUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<ApiKeyUpdateResponse> =
             update(params.toBuilder().id(id).build(), requestOptions)
-
-        /** @see update */
-        @MustBeClosed
-        fun update(
-            id: String,
-            params: ApiKeyUpdateParams = ApiKeyUpdateParams.none(),
-        ): HttpResponseFor<ApiKeyUpdateResponse> = update(id, params, RequestOptions.none())
-
-        /** @see update */
-        @MustBeClosed
-        fun update(
-            params: ApiKeyUpdateParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ApiKeyUpdateResponse>
 
         /** @see update */
         @MustBeClosed
@@ -275,10 +254,9 @@ interface ApiKeyService {
         /** @see update */
         @MustBeClosed
         fun update(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<ApiKeyUpdateResponse> =
-            update(id, ApiKeyUpdateParams.none(), requestOptions)
+            params: ApiKeyUpdateParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<ApiKeyUpdateResponse>
 
         /**
          * Returns a raw HTTP response for `get /api-keys`, but is otherwise the same as

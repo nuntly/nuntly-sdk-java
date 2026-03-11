@@ -13,7 +13,7 @@ import com.nuntly.models.organizations.OrganizationRetrieveResponse
 import com.nuntly.services.blocking.organizations.UsageService
 import java.util.function.Consumer
 
-/** Operations related to Organization management */
+/** Manage your organization profile, team members, and account-level settings. */
 interface OrganizationService {
 
     /**
@@ -28,10 +28,10 @@ interface OrganizationService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): OrganizationService
 
-    /** Operations related to Organization management */
+    /** Manage your organization profile, team members, and account-level settings. */
     fun usage(): UsageService
 
-    /** Retrieve organization */
+    /** Returns the organization's profile, plan, region, and account status. */
     fun retrieve(id: String): OrganizationRetrieveResponse =
         retrieve(id, OrganizationRetrieveParams.none())
 
@@ -62,7 +62,7 @@ interface OrganizationService {
     fun retrieve(id: String, requestOptions: RequestOptions): OrganizationRetrieveResponse =
         retrieve(id, OrganizationRetrieveParams.none(), requestOptions)
 
-    /** Retrieve organizations */
+    /** Returns all organizations the authenticated user belongs to. */
     fun list(): OrganizationListPage = list(OrganizationListParams.none())
 
     /** @see list */
@@ -93,7 +93,7 @@ interface OrganizationService {
             modifier: Consumer<ClientOptions.Builder>
         ): OrganizationService.WithRawResponse
 
-        /** Operations related to Organization management */
+        /** Manage your organization profile, team members, and account-level settings. */
         fun usage(): UsageService.WithRawResponse
 
         /**

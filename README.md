@@ -632,11 +632,10 @@ To forcibly omit a required parameter or property, pass [`JsonMissing`](nuntly-j
 ```java
 import com.nuntly.core.JsonMissing;
 import com.nuntly.models.emails.EmailSendParams;
-import java.util.List;
 
 EmailSendParams params = EmailSendParams.builder()
-    .subject("subject")
-    .toOfStrings(List.of("string"))
+    .subject("Verify your email address")
+    .to("brian67@gmail.com")
     .from(JsonMissing.of())
     .build();
 ```

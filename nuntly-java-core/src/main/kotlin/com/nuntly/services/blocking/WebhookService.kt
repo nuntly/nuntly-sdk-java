@@ -21,7 +21,9 @@ import com.nuntly.models.webhooks.WebhookUpdateResponse
 import com.nuntly.services.blocking.webhooks.EventService
 import java.util.function.Consumer
 
-/** Operations related to Webhook management */
+/**
+ * Register HTTP endpoints to receive real-time delivery events such as bounces, opens, and clicks.
+ */
 interface WebhookService {
 
     /**
@@ -36,10 +38,10 @@ interface WebhookService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): WebhookService
 
-    /** Operations related to Webhook Events management */
+    /** Inspect webhook event history and replay failed deliveries for debugging or recovery. */
     fun events(): EventService
 
-    /** Create a webhook */
+    /** Register an endpoint to start receiving webhook events for your organization. */
     fun create(params: WebhookCreateParams): WebhookCreateResponse =
         create(params, RequestOptions.none())
 
@@ -49,7 +51,7 @@ interface WebhookService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): WebhookCreateResponse
 
-    /** Retrieve a webhook */
+    /** Returns a webhook endpoint with its URL, subscribed events, and configuration. */
     fun retrieve(id: String): WebhookRetrieveResponse = retrieve(id, WebhookRetrieveParams.none())
 
     /** @see retrieve */
@@ -79,7 +81,7 @@ interface WebhookService {
     fun retrieve(id: String, requestOptions: RequestOptions): WebhookRetrieveResponse =
         retrieve(id, WebhookRetrieveParams.none(), requestOptions)
 
-    /** Update a webhook */
+    /** Update the endpoint URL, subscribed event types, or rotate the signing secret. */
     fun update(id: String): WebhookUpdateResponse = update(id, WebhookUpdateParams.none())
 
     /** @see update */
@@ -109,7 +111,7 @@ interface WebhookService {
     fun update(id: String, requestOptions: RequestOptions): WebhookUpdateResponse =
         update(id, WebhookUpdateParams.none(), requestOptions)
 
-    /** List webhooks */
+    /** Returns all registered webhook endpoints for the organization. */
     fun list(): WebhookListPage = list(WebhookListParams.none())
 
     /** @see list */
@@ -126,7 +128,7 @@ interface WebhookService {
     fun list(requestOptions: RequestOptions): WebhookListPage =
         list(WebhookListParams.none(), requestOptions)
 
-    /** Delete a webhook */
+    /** Remove a webhook endpoint. No further events will be delivered to this URL. */
     fun delete(id: String): WebhookDeleteResponse = delete(id, WebhookDeleteParams.none())
 
     /** @see delete */
@@ -173,7 +175,7 @@ interface WebhookService {
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): WebhookService.WithRawResponse
 
-        /** Operations related to Webhook Events management */
+        /** Inspect webhook event history and replay failed deliveries for debugging or recovery. */
         fun events(): EventService.WithRawResponse
 
         /**

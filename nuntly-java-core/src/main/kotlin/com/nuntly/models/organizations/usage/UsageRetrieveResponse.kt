@@ -164,6 +164,8 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val limits: JsonField<Limits>,
+        private val receiving: JsonField<Receiving>,
+        private val sending: JsonField<Sending>,
         private val usage: JsonField<Usage>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -171,14 +173,34 @@ private constructor(
         @JsonCreator
         private constructor(
             @JsonProperty("limits") @ExcludeMissing limits: JsonField<Limits> = JsonMissing.of(),
+            @JsonProperty("receiving")
+            @ExcludeMissing
+            receiving: JsonField<Receiving> = JsonMissing.of(),
+            @JsonProperty("sending") @ExcludeMissing sending: JsonField<Sending> = JsonMissing.of(),
             @JsonProperty("usage") @ExcludeMissing usage: JsonField<Usage> = JsonMissing.of(),
-        ) : this(limits, usage, mutableMapOf())
+        ) : this(limits, receiving, sending, usage, mutableMapOf())
 
         /**
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun limits(): Limits = limits.getRequired("limits")
+
+        /**
+         * Receiving email usage breakdown.
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun receiving(): Receiving = receiving.getRequired("receiving")
+
+        /**
+         * Sending email usage breakdown.
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun sending(): Sending = sending.getRequired("sending")
 
         /**
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
@@ -192,6 +214,22 @@ private constructor(
          * Unlike [limits], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("limits") @ExcludeMissing fun _limits(): JsonField<Limits> = limits
+
+        /**
+         * Returns the raw JSON value of [receiving].
+         *
+         * Unlike [receiving], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("receiving")
+        @ExcludeMissing
+        fun _receiving(): JsonField<Receiving> = receiving
+
+        /**
+         * Returns the raw JSON value of [sending].
+         *
+         * Unlike [sending], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("sending") @ExcludeMissing fun _sending(): JsonField<Sending> = sending
 
         /**
          * Returns the raw JSON value of [usage].
@@ -220,6 +258,8 @@ private constructor(
              * The following fields are required:
              * ```java
              * .limits()
+             * .receiving()
+             * .sending()
              * .usage()
              * ```
              */
@@ -230,12 +270,16 @@ private constructor(
         class Builder internal constructor() {
 
             private var limits: JsonField<Limits>? = null
+            private var receiving: JsonField<Receiving>? = null
+            private var sending: JsonField<Sending>? = null
             private var usage: JsonField<Usage>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(transactional: Transactional) = apply {
                 limits = transactional.limits
+                receiving = transactional.receiving
+                sending = transactional.sending
                 usage = transactional.usage
                 additionalProperties = transactional.additionalProperties.toMutableMap()
             }
@@ -250,6 +294,30 @@ private constructor(
              * supported value.
              */
             fun limits(limits: JsonField<Limits>) = apply { this.limits = limits }
+
+            /** Receiving email usage breakdown. */
+            fun receiving(receiving: Receiving) = receiving(JsonField.of(receiving))
+
+            /**
+             * Sets [Builder.receiving] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.receiving] with a well-typed [Receiving] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun receiving(receiving: JsonField<Receiving>) = apply { this.receiving = receiving }
+
+            /** Sending email usage breakdown. */
+            fun sending(sending: Sending) = sending(JsonField.of(sending))
+
+            /**
+             * Sets [Builder.sending] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.sending] with a well-typed [Sending] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun sending(sending: JsonField<Sending>) = apply { this.sending = sending }
 
             fun usage(usage: Usage) = usage(JsonField.of(usage))
 
@@ -289,6 +357,8 @@ private constructor(
              * The following fields are required:
              * ```java
              * .limits()
+             * .receiving()
+             * .sending()
              * .usage()
              * ```
              *
@@ -297,6 +367,8 @@ private constructor(
             fun build(): Transactional =
                 Transactional(
                     checkRequired("limits", limits),
+                    checkRequired("receiving", receiving),
+                    checkRequired("sending", sending),
                     checkRequired("usage", usage),
                     additionalProperties.toMutableMap(),
                 )
@@ -310,6 +382,8 @@ private constructor(
             }
 
             limits().validate()
+            receiving().validate()
+            sending().validate()
             usage().validate()
             validated = true
         }
@@ -331,6 +405,8 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (limits.asKnown().getOrNull()?.validity() ?: 0) +
+                (receiving.asKnown().getOrNull()?.validity() ?: 0) +
+                (sending.asKnown().getOrNull()?.validity() ?: 0) +
                 (usage.asKnown().getOrNull()?.validity() ?: 0)
 
         class Limits
@@ -350,7 +426,7 @@ private constructor(
             ) : this(daily, monthly, mutableMapOf())
 
             /**
-             * The daily email limit for the organization
+             * The daily email limit for the organization.
              *
              * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
              *   unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -359,7 +435,7 @@ private constructor(
             fun daily(): Double = daily.getRequired("daily")
 
             /**
-             * The monthly email limit for the organization
+             * The monthly email limit for the organization.
              *
              * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
              *   unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -421,7 +497,7 @@ private constructor(
                     additionalProperties = limits.additionalProperties.toMutableMap()
                 }
 
-                /** The daily email limit for the organization */
+                /** The daily email limit for the organization. */
                 fun daily(daily: Double) = daily(JsonField.of(daily))
 
                 /**
@@ -433,7 +509,7 @@ private constructor(
                  */
                 fun daily(daily: JsonField<Double>) = apply { this.daily = daily }
 
-                /** The monthly email limit for the organization */
+                /** The monthly email limit for the organization. */
                 fun monthly(monthly: Double) = monthly(JsonField.of(monthly))
 
                 /**
@@ -538,6 +614,418 @@ private constructor(
                 "Limits{daily=$daily, monthly=$monthly, additionalProperties=$additionalProperties}"
         }
 
+        /** Receiving email usage breakdown. */
+        class Receiving
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val daily: JsonField<Double>,
+            private val monthly: JsonField<Double>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("daily") @ExcludeMissing daily: JsonField<Double> = JsonMissing.of(),
+                @JsonProperty("monthly")
+                @ExcludeMissing
+                monthly: JsonField<Double> = JsonMissing.of(),
+            ) : this(daily, monthly, mutableMapOf())
+
+            /**
+             * Daily email count.
+             *
+             * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun daily(): Double = daily.getRequired("daily")
+
+            /**
+             * Monthly email count.
+             *
+             * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun monthly(): Double = monthly.getRequired("monthly")
+
+            /**
+             * Returns the raw JSON value of [daily].
+             *
+             * Unlike [daily], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("daily") @ExcludeMissing fun _daily(): JsonField<Double> = daily
+
+            /**
+             * Returns the raw JSON value of [monthly].
+             *
+             * Unlike [monthly], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("monthly") @ExcludeMissing fun _monthly(): JsonField<Double> = monthly
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [Receiving].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .daily()
+                 * .monthly()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Receiving]. */
+            class Builder internal constructor() {
+
+                private var daily: JsonField<Double>? = null
+                private var monthly: JsonField<Double>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(receiving: Receiving) = apply {
+                    daily = receiving.daily
+                    monthly = receiving.monthly
+                    additionalProperties = receiving.additionalProperties.toMutableMap()
+                }
+
+                /** Daily email count. */
+                fun daily(daily: Double) = daily(JsonField.of(daily))
+
+                /**
+                 * Sets [Builder.daily] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.daily] with a well-typed [Double] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun daily(daily: JsonField<Double>) = apply { this.daily = daily }
+
+                /** Monthly email count. */
+                fun monthly(monthly: Double) = monthly(JsonField.of(monthly))
+
+                /**
+                 * Sets [Builder.monthly] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.monthly] with a well-typed [Double] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun monthly(monthly: JsonField<Double>) = apply { this.monthly = monthly }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Receiving].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .daily()
+                 * .monthly()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): Receiving =
+                    Receiving(
+                        checkRequired("daily", daily),
+                        checkRequired("monthly", monthly),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): Receiving = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                daily()
+                monthly()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: NuntlyInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (if (daily.asKnown().isPresent) 1 else 0) +
+                    (if (monthly.asKnown().isPresent) 1 else 0)
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Receiving &&
+                    daily == other.daily &&
+                    monthly == other.monthly &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(daily, monthly, additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Receiving{daily=$daily, monthly=$monthly, additionalProperties=$additionalProperties}"
+        }
+
+        /** Sending email usage breakdown. */
+        class Sending
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val daily: JsonField<Double>,
+            private val monthly: JsonField<Double>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("daily") @ExcludeMissing daily: JsonField<Double> = JsonMissing.of(),
+                @JsonProperty("monthly")
+                @ExcludeMissing
+                monthly: JsonField<Double> = JsonMissing.of(),
+            ) : this(daily, monthly, mutableMapOf())
+
+            /**
+             * Daily email count.
+             *
+             * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun daily(): Double = daily.getRequired("daily")
+
+            /**
+             * Monthly email count.
+             *
+             * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun monthly(): Double = monthly.getRequired("monthly")
+
+            /**
+             * Returns the raw JSON value of [daily].
+             *
+             * Unlike [daily], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("daily") @ExcludeMissing fun _daily(): JsonField<Double> = daily
+
+            /**
+             * Returns the raw JSON value of [monthly].
+             *
+             * Unlike [monthly], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("monthly") @ExcludeMissing fun _monthly(): JsonField<Double> = monthly
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [Sending].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .daily()
+                 * .monthly()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Sending]. */
+            class Builder internal constructor() {
+
+                private var daily: JsonField<Double>? = null
+                private var monthly: JsonField<Double>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(sending: Sending) = apply {
+                    daily = sending.daily
+                    monthly = sending.monthly
+                    additionalProperties = sending.additionalProperties.toMutableMap()
+                }
+
+                /** Daily email count. */
+                fun daily(daily: Double) = daily(JsonField.of(daily))
+
+                /**
+                 * Sets [Builder.daily] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.daily] with a well-typed [Double] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun daily(daily: JsonField<Double>) = apply { this.daily = daily }
+
+                /** Monthly email count. */
+                fun monthly(monthly: Double) = monthly(JsonField.of(monthly))
+
+                /**
+                 * Sets [Builder.monthly] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.monthly] with a well-typed [Double] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun monthly(monthly: JsonField<Double>) = apply { this.monthly = monthly }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Sending].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .daily()
+                 * .monthly()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): Sending =
+                    Sending(
+                        checkRequired("daily", daily),
+                        checkRequired("monthly", monthly),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): Sending = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                daily()
+                monthly()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: NuntlyInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (if (daily.asKnown().isPresent) 1 else 0) +
+                    (if (monthly.asKnown().isPresent) 1 else 0)
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Sending &&
+                    daily == other.daily &&
+                    monthly == other.monthly &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(daily, monthly, additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Sending{daily=$daily, monthly=$monthly, additionalProperties=$additionalProperties}"
+        }
+
         class Usage
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
@@ -555,7 +1043,7 @@ private constructor(
             ) : this(daily, monthly, mutableMapOf())
 
             /**
-             * The daily email usage for the organization
+             * The daily total (sending + receiving) usage.
              *
              * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
              *   unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -564,7 +1052,7 @@ private constructor(
             fun daily(): Double = daily.getRequired("daily")
 
             /**
-             * The monthly email usage for the organization
+             * The monthly total (sending + receiving) usage.
              *
              * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
              *   unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -626,7 +1114,7 @@ private constructor(
                     additionalProperties = usage.additionalProperties.toMutableMap()
                 }
 
-                /** The daily email usage for the organization */
+                /** The daily total (sending + receiving) usage. */
                 fun daily(daily: Double) = daily(JsonField.of(daily))
 
                 /**
@@ -638,7 +1126,7 @@ private constructor(
                  */
                 fun daily(daily: JsonField<Double>) = apply { this.daily = daily }
 
-                /** The monthly email usage for the organization */
+                /** The monthly total (sending + receiving) usage. */
                 fun monthly(monthly: Double) = monthly(JsonField.of(monthly))
 
                 /**
@@ -750,16 +1238,20 @@ private constructor(
 
             return other is Transactional &&
                 limits == other.limits &&
+                receiving == other.receiving &&
+                sending == other.sending &&
                 usage == other.usage &&
                 additionalProperties == other.additionalProperties
         }
 
-        private val hashCode: Int by lazy { Objects.hash(limits, usage, additionalProperties) }
+        private val hashCode: Int by lazy {
+            Objects.hash(limits, receiving, sending, usage, additionalProperties)
+        }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Transactional{limits=$limits, usage=$usage, additionalProperties=$additionalProperties}"
+            "Transactional{limits=$limits, receiving=$receiving, sending=$sending, usage=$usage, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

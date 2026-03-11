@@ -18,7 +18,7 @@ import com.nuntly.models.apikeys.ApiKeyUpdateResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Operations related to API keys management */
+/** Create and revoke API keys used to authenticate requests to the Nuntly API. */
 interface ApiKeyServiceAsync {
 
     /**
@@ -33,7 +33,7 @@ interface ApiKeyServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ApiKeyServiceAsync
 
-    /** Create an API key */
+    /** Generate a new API key. The key value is only returned once — store it securely. */
     fun create(): CompletableFuture<ApiKeyCreateResponse> = create(ApiKeyCreateParams.none())
 
     /** @see create */
@@ -51,7 +51,7 @@ interface ApiKeyServiceAsync {
     fun create(requestOptions: RequestOptions): CompletableFuture<ApiKeyCreateResponse> =
         create(ApiKeyCreateParams.none(), requestOptions)
 
-    /** Retrieve an API key */
+    /** Returns API key metadata. The key value is never returned after creation. */
     fun retrieve(id: String): CompletableFuture<ApiKeyRetrieveResponse> =
         retrieve(id, ApiKeyRetrieveParams.none())
 
@@ -86,29 +86,17 @@ interface ApiKeyServiceAsync {
     ): CompletableFuture<ApiKeyRetrieveResponse> =
         retrieve(id, ApiKeyRetrieveParams.none(), requestOptions)
 
-    /** Update an API key */
-    fun update(id: String): CompletableFuture<ApiKeyUpdateResponse> =
-        update(id, ApiKeyUpdateParams.none())
+    /** Update the key name, permissions, or restrict it to specific sending domains. */
+    fun update(id: String, params: ApiKeyUpdateParams): CompletableFuture<ApiKeyUpdateResponse> =
+        update(id, params, RequestOptions.none())
 
     /** @see update */
     fun update(
         id: String,
-        params: ApiKeyUpdateParams = ApiKeyUpdateParams.none(),
+        params: ApiKeyUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<ApiKeyUpdateResponse> =
         update(params.toBuilder().id(id).build(), requestOptions)
-
-    /** @see update */
-    fun update(
-        id: String,
-        params: ApiKeyUpdateParams = ApiKeyUpdateParams.none(),
-    ): CompletableFuture<ApiKeyUpdateResponse> = update(id, params, RequestOptions.none())
-
-    /** @see update */
-    fun update(
-        params: ApiKeyUpdateParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ApiKeyUpdateResponse>
 
     /** @see update */
     fun update(params: ApiKeyUpdateParams): CompletableFuture<ApiKeyUpdateResponse> =
@@ -116,12 +104,13 @@ interface ApiKeyServiceAsync {
 
     /** @see update */
     fun update(
-        id: String,
-        requestOptions: RequestOptions,
-    ): CompletableFuture<ApiKeyUpdateResponse> =
-        update(id, ApiKeyUpdateParams.none(), requestOptions)
+        params: ApiKeyUpdateParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<ApiKeyUpdateResponse>
 
-    /** List API keys */
+    /**
+     * Returns all API keys for the organization. Key values are never included in list responses.
+     */
     fun list(): CompletableFuture<ApiKeyListPageAsync> = list(ApiKeyListParams.none())
 
     /** @see list */
@@ -139,7 +128,7 @@ interface ApiKeyServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<ApiKeyListPageAsync> =
         list(ApiKeyListParams.none(), requestOptions)
 
-    /** Delete an API key */
+    /** Revoke an API key. Requests authenticating with this key will be rejected immediately. */
     fun delete(id: String): CompletableFuture<ApiKeyDeleteResponse> =
         delete(id, ApiKeyDeleteParams.none())
 
@@ -258,29 +247,19 @@ interface ApiKeyServiceAsync {
          * Returns a raw HTTP response for `put /api-keys/{id}`, but is otherwise the same as
          * [ApiKeyServiceAsync.update].
          */
-        fun update(id: String): CompletableFuture<HttpResponseFor<ApiKeyUpdateResponse>> =
-            update(id, ApiKeyUpdateParams.none())
-
-        /** @see update */
         fun update(
             id: String,
-            params: ApiKeyUpdateParams = ApiKeyUpdateParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ApiKeyUpdateResponse>> =
-            update(params.toBuilder().id(id).build(), requestOptions)
-
-        /** @see update */
-        fun update(
-            id: String,
-            params: ApiKeyUpdateParams = ApiKeyUpdateParams.none(),
+            params: ApiKeyUpdateParams,
         ): CompletableFuture<HttpResponseFor<ApiKeyUpdateResponse>> =
             update(id, params, RequestOptions.none())
 
         /** @see update */
         fun update(
+            id: String,
             params: ApiKeyUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ApiKeyUpdateResponse>>
+        ): CompletableFuture<HttpResponseFor<ApiKeyUpdateResponse>> =
+            update(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see update */
         fun update(
@@ -290,10 +269,9 @@ interface ApiKeyServiceAsync {
 
         /** @see update */
         fun update(
-            id: String,
-            requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<ApiKeyUpdateResponse>> =
-            update(id, ApiKeyUpdateParams.none(), requestOptions)
+            params: ApiKeyUpdateParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<ApiKeyUpdateResponse>>
 
         /**
          * Returns a raw HTTP response for `get /api-keys`, but is otherwise the same as
