@@ -43,11 +43,6 @@ internal class BulkServiceTest {
                         BulkSendParams.Email.builder()
                             .bccOfStrings(listOf("string"))
                             .ccOfStrings(listOf("string"))
-                            .context(
-                                BulkSendParams.Email.Context.builder()
-                                    .putAdditionalProperty("foo", JsonValue.from("string"))
-                                    .build()
-                            )
                             .from("Tomlinson AI <ray@info.tomlinson.ai>")
                             .headers(
                                 BulkSendParams.Email.Headers.builder()
@@ -63,17 +58,17 @@ internal class BulkServiceTest {
                             .addTag(Tag.builder().name("category").value("transactional").build())
                             .text("Thank you for signing up! Please verify your email address.")
                             .to("brian67@gmail.com")
+                            .variables(
+                                BulkSendParams.Email.Variables.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                                    .build()
+                            )
                             .build()
                     )
                     .fallback(
                         BulkSendParams.Fallback.builder()
                             .bccOfStrings(listOf("string"))
                             .ccOfStrings(listOf("string"))
-                            .context(
-                                BulkSendParams.Fallback.Context.builder()
-                                    .putAdditionalProperty("foo", JsonValue.from("string"))
-                                    .build()
-                            )
                             .from("Tomlinson AI <ray@info.tomlinson.ai>")
                             .headers(
                                 BulkSendParams.Fallback.Headers.builder()
@@ -89,6 +84,11 @@ internal class BulkServiceTest {
                             .addTag(Tag.builder().name("category").value("transactional").build())
                             .text("Thank you for signing up! Please verify your email address.")
                             .to("brian67@gmail.com")
+                            .variables(
+                                BulkSendParams.Fallback.Variables.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                                    .build()
+                            )
                             .build()
                     )
                     .build()

@@ -81,11 +81,6 @@ internal class ServiceParamsTest {
                 )
                 .bccOfStrings(listOf("string"))
                 .ccOfStrings(listOf("string"))
-                .context(
-                    EmailSendParams.Context.builder()
-                        .putAdditionalProperty("foo", JsonValue.from("string"))
-                        .build()
-                )
                 .headers(
                     EmailSendParams.Headers.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -98,6 +93,11 @@ internal class ServiceParamsTest {
                 .scheduledAt("scheduledAt")
                 .addTag(Tag.builder().name("category").value("transactional").build())
                 .text("Thank you for signing up! Please verify your email address.")
+                .variables(
+                    EmailSendParams.Variables.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
                 .putAdditionalHeader("Secret-Header", "42")
                 .putAdditionalQueryParam("secret_query_param", "42")
                 .putAdditionalBodyProperty("secretProperty", JsonValue.from("42"))
