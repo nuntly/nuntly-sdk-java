@@ -511,7 +511,6 @@ private constructor(
     private constructor(
         private val bcc: JsonField<Bcc>,
         private val cc: JsonField<Cc>,
-        private val context: JsonField<Context>,
         private val from: JsonField<String>,
         private val headers: JsonField<Headers>,
         private val html: JsonField<String>,
@@ -521,6 +520,7 @@ private constructor(
         private val tags: JsonField<List<Tag>>,
         private val text: JsonField<String>,
         private val to: JsonField<To>,
+        private val variables: JsonField<Variables>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -528,7 +528,6 @@ private constructor(
         private constructor(
             @JsonProperty("bcc") @ExcludeMissing bcc: JsonField<Bcc> = JsonMissing.of(),
             @JsonProperty("cc") @ExcludeMissing cc: JsonField<Cc> = JsonMissing.of(),
-            @JsonProperty("context") @ExcludeMissing context: JsonField<Context> = JsonMissing.of(),
             @JsonProperty("from") @ExcludeMissing from: JsonField<String> = JsonMissing.of(),
             @JsonProperty("headers") @ExcludeMissing headers: JsonField<Headers> = JsonMissing.of(),
             @JsonProperty("html") @ExcludeMissing html: JsonField<String> = JsonMissing.of(),
@@ -540,10 +539,12 @@ private constructor(
             @JsonProperty("tags") @ExcludeMissing tags: JsonField<List<Tag>> = JsonMissing.of(),
             @JsonProperty("text") @ExcludeMissing text: JsonField<String> = JsonMissing.of(),
             @JsonProperty("to") @ExcludeMissing to: JsonField<To> = JsonMissing.of(),
+            @JsonProperty("variables")
+            @ExcludeMissing
+            variables: JsonField<Variables> = JsonMissing.of(),
         ) : this(
             bcc,
             cc,
-            context,
             from,
             headers,
             html,
@@ -553,6 +554,7 @@ private constructor(
             tags,
             text,
             to,
+            variables,
             mutableMapOf(),
         )
 
@@ -571,14 +573,6 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun cc(): Optional<Cc> = cc.getOptional("cc")
-
-        /**
-         * The context for the template
-         *
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun context(): Optional<Context> = context.getOptional("context")
 
         /**
          * The e-mail address of the sender
@@ -654,6 +648,14 @@ private constructor(
         fun to(): Optional<To> = to.getOptional("to")
 
         /**
+         * The variables for the template
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun variables(): Optional<Variables> = variables.getOptional("variables")
+
+        /**
          * Returns the raw JSON value of [bcc].
          *
          * Unlike [bcc], this method doesn't throw if the JSON field has an unexpected type.
@@ -666,13 +668,6 @@ private constructor(
          * Unlike [cc], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("cc") @ExcludeMissing fun _cc(): JsonField<Cc> = cc
-
-        /**
-         * Returns the raw JSON value of [context].
-         *
-         * Unlike [context], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("context") @ExcludeMissing fun _context(): JsonField<Context> = context
 
         /**
          * Returns the raw JSON value of [from].
@@ -739,6 +734,15 @@ private constructor(
          */
         @JsonProperty("to") @ExcludeMissing fun _to(): JsonField<To> = to
 
+        /**
+         * Returns the raw JSON value of [variables].
+         *
+         * Unlike [variables], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("variables")
+        @ExcludeMissing
+        fun _variables(): JsonField<Variables> = variables
+
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
             additionalProperties.put(key, value)
@@ -762,7 +766,6 @@ private constructor(
 
             private var bcc: JsonField<Bcc> = JsonMissing.of()
             private var cc: JsonField<Cc> = JsonMissing.of()
-            private var context: JsonField<Context> = JsonMissing.of()
             private var from: JsonField<String> = JsonMissing.of()
             private var headers: JsonField<Headers> = JsonMissing.of()
             private var html: JsonField<String> = JsonMissing.of()
@@ -772,13 +775,13 @@ private constructor(
             private var tags: JsonField<MutableList<Tag>>? = null
             private var text: JsonField<String> = JsonMissing.of()
             private var to: JsonField<To> = JsonMissing.of()
+            private var variables: JsonField<Variables> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(email: Email) = apply {
                 bcc = email.bcc
                 cc = email.cc
-                context = email.context
                 from = email.from
                 headers = email.headers
                 html = email.html
@@ -788,6 +791,7 @@ private constructor(
                 tags = email.tags.map { it.toMutableList() }
                 text = email.text
                 to = email.to
+                variables = email.variables
                 additionalProperties = email.additionalProperties.toMutableMap()
             }
 
@@ -827,18 +831,6 @@ private constructor(
             /** Alias for calling [cc] with `Cc.ofString(string)`. */
             fun cc(string: String) = cc(Cc.ofString(string))
 
-            /** The context for the template */
-            fun context(context: Context) = context(JsonField.of(context))
-
-            /**
-             * Sets [Builder.context] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.context] with a well-typed [Context] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun context(context: JsonField<Context>) = apply { this.context = context }
-
             /** The e-mail address of the sender */
             fun from(from: String) = from(JsonField.of(from))
 
@@ -976,6 +968,18 @@ private constructor(
             /** Alias for calling [to] with `To.ofString(string)`. */
             fun to(string: String) = to(To.ofString(string))
 
+            /** The variables for the template */
+            fun variables(variables: Variables) = variables(JsonField.of(variables))
+
+            /**
+             * Sets [Builder.variables] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.variables] with a well-typed [Variables] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun variables(variables: JsonField<Variables>) = apply { this.variables = variables }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -1004,7 +1008,6 @@ private constructor(
                 Email(
                     bcc,
                     cc,
-                    context,
                     from,
                     headers,
                     html,
@@ -1014,6 +1017,7 @@ private constructor(
                     (tags ?: JsonMissing.of()).map { it.toImmutable() },
                     text,
                     to,
+                    variables,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -1027,7 +1031,6 @@ private constructor(
 
             bcc().ifPresent { it.validate() }
             cc().ifPresent { it.validate() }
-            context().ifPresent { it.validate() }
             from()
             headers().ifPresent { it.validate() }
             html()
@@ -1037,6 +1040,7 @@ private constructor(
             tags().ifPresent { it.forEach { it.validate() } }
             text()
             to().ifPresent { it.validate() }
+            variables().ifPresent { it.validate() }
             validated = true
         }
 
@@ -1058,7 +1062,6 @@ private constructor(
         internal fun validity(): Int =
             (bcc.asKnown().getOrNull()?.validity() ?: 0) +
                 (cc.asKnown().getOrNull()?.validity() ?: 0) +
-                (context.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (from.asKnown().isPresent) 1 else 0) +
                 (headers.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (html.asKnown().isPresent) 1 else 0) +
@@ -1067,7 +1070,8 @@ private constructor(
                 (if (subject.asKnown().isPresent) 1 else 0) +
                 (tags.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (text.asKnown().isPresent) 1 else 0) +
-                (to.asKnown().getOrNull()?.validity() ?: 0)
+                (to.asKnown().getOrNull()?.validity() ?: 0) +
+                (variables.asKnown().getOrNull()?.validity() ?: 0)
 
         /** The blind carbon copy recipient(s) of the email */
         @JsonDeserialize(using = Bcc.Deserializer::class)
@@ -1407,109 +1411,6 @@ private constructor(
                     }
                 }
             }
-        }
-
-        /** The context for the template */
-        class Context
-        @JsonCreator
-        private constructor(
-            @com.fasterxml.jackson.annotation.JsonValue
-            private val additionalProperties: Map<String, JsonValue>
-        ) {
-
-            @JsonAnyGetter
-            @ExcludeMissing
-            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
-
-            fun toBuilder() = Builder().from(this)
-
-            companion object {
-
-                /** Returns a mutable builder for constructing an instance of [Context]. */
-                @JvmStatic fun builder() = Builder()
-            }
-
-            /** A builder for [Context]. */
-            class Builder internal constructor() {
-
-                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-                @JvmSynthetic
-                internal fun from(context: Context) = apply {
-                    additionalProperties = context.additionalProperties.toMutableMap()
-                }
-
-                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                    this.additionalProperties.clear()
-                    putAllAdditionalProperties(additionalProperties)
-                }
-
-                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                    additionalProperties.put(key, value)
-                }
-
-                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
-                    apply {
-                        this.additionalProperties.putAll(additionalProperties)
-                    }
-
-                fun removeAdditionalProperty(key: String) = apply {
-                    additionalProperties.remove(key)
-                }
-
-                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                    keys.forEach(::removeAdditionalProperty)
-                }
-
-                /**
-                 * Returns an immutable instance of [Context].
-                 *
-                 * Further updates to this [Builder] will not mutate the returned instance.
-                 */
-                fun build(): Context = Context(additionalProperties.toImmutable())
-            }
-
-            private var validated: Boolean = false
-
-            fun validate(): Context = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: NuntlyInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            @JvmSynthetic
-            internal fun validity(): Int =
-                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is Context && additionalProperties == other.additionalProperties
-            }
-
-            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
-
-            override fun hashCode(): Int = hashCode
-
-            override fun toString() = "Context{additionalProperties=$additionalProperties}"
         }
 
         /** The headers to add to the email */
@@ -1959,6 +1860,109 @@ private constructor(
             }
         }
 
+        /** The variables for the template */
+        class Variables
+        @JsonCreator
+        private constructor(
+            @com.fasterxml.jackson.annotation.JsonValue
+            private val additionalProperties: Map<String, JsonValue>
+        ) {
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Variables]. */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Variables]. */
+            class Builder internal constructor() {
+
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(variables: Variables) = apply {
+                    additionalProperties = variables.additionalProperties.toMutableMap()
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Variables].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): Variables = Variables(additionalProperties.toImmutable())
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): Variables = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: NuntlyInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Variables && additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() = "Variables{additionalProperties=$additionalProperties}"
+        }
+
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
@@ -1967,7 +1971,6 @@ private constructor(
             return other is Email &&
                 bcc == other.bcc &&
                 cc == other.cc &&
-                context == other.context &&
                 from == other.from &&
                 headers == other.headers &&
                 html == other.html &&
@@ -1977,6 +1980,7 @@ private constructor(
                 tags == other.tags &&
                 text == other.text &&
                 to == other.to &&
+                variables == other.variables &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -1984,7 +1988,6 @@ private constructor(
             Objects.hash(
                 bcc,
                 cc,
-                context,
                 from,
                 headers,
                 html,
@@ -1994,6 +1997,7 @@ private constructor(
                 tags,
                 text,
                 to,
+                variables,
                 additionalProperties,
             )
         }
@@ -2001,7 +2005,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Email{bcc=$bcc, cc=$cc, context=$context, from=$from, headers=$headers, html=$html, replyTo=$replyTo, scheduledAt=$scheduledAt, subject=$subject, tags=$tags, text=$text, to=$to, additionalProperties=$additionalProperties}"
+            "Email{bcc=$bcc, cc=$cc, from=$from, headers=$headers, html=$html, replyTo=$replyTo, scheduledAt=$scheduledAt, subject=$subject, tags=$tags, text=$text, to=$to, variables=$variables, additionalProperties=$additionalProperties}"
     }
 
     /** Used as a fallback field email value if no value is present in emails */
@@ -2010,7 +2014,6 @@ private constructor(
     private constructor(
         private val bcc: JsonField<Bcc>,
         private val cc: JsonField<Cc>,
-        private val context: JsonField<Context>,
         private val from: JsonField<String>,
         private val headers: JsonField<Headers>,
         private val html: JsonField<String>,
@@ -2020,6 +2023,7 @@ private constructor(
         private val tags: JsonField<List<Tag>>,
         private val text: JsonField<String>,
         private val to: JsonField<To>,
+        private val variables: JsonField<Variables>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -2027,7 +2031,6 @@ private constructor(
         private constructor(
             @JsonProperty("bcc") @ExcludeMissing bcc: JsonField<Bcc> = JsonMissing.of(),
             @JsonProperty("cc") @ExcludeMissing cc: JsonField<Cc> = JsonMissing.of(),
-            @JsonProperty("context") @ExcludeMissing context: JsonField<Context> = JsonMissing.of(),
             @JsonProperty("from") @ExcludeMissing from: JsonField<String> = JsonMissing.of(),
             @JsonProperty("headers") @ExcludeMissing headers: JsonField<Headers> = JsonMissing.of(),
             @JsonProperty("html") @ExcludeMissing html: JsonField<String> = JsonMissing.of(),
@@ -2039,10 +2042,12 @@ private constructor(
             @JsonProperty("tags") @ExcludeMissing tags: JsonField<List<Tag>> = JsonMissing.of(),
             @JsonProperty("text") @ExcludeMissing text: JsonField<String> = JsonMissing.of(),
             @JsonProperty("to") @ExcludeMissing to: JsonField<To> = JsonMissing.of(),
+            @JsonProperty("variables")
+            @ExcludeMissing
+            variables: JsonField<Variables> = JsonMissing.of(),
         ) : this(
             bcc,
             cc,
-            context,
             from,
             headers,
             html,
@@ -2052,6 +2057,7 @@ private constructor(
             tags,
             text,
             to,
+            variables,
             mutableMapOf(),
         )
 
@@ -2070,14 +2076,6 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun cc(): Optional<Cc> = cc.getOptional("cc")
-
-        /**
-         * The context for the template
-         *
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun context(): Optional<Context> = context.getOptional("context")
 
         /**
          * The e-mail address of the sender
@@ -2153,6 +2151,14 @@ private constructor(
         fun to(): Optional<To> = to.getOptional("to")
 
         /**
+         * The variables for the template
+         *
+         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun variables(): Optional<Variables> = variables.getOptional("variables")
+
+        /**
          * Returns the raw JSON value of [bcc].
          *
          * Unlike [bcc], this method doesn't throw if the JSON field has an unexpected type.
@@ -2165,13 +2171,6 @@ private constructor(
          * Unlike [cc], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("cc") @ExcludeMissing fun _cc(): JsonField<Cc> = cc
-
-        /**
-         * Returns the raw JSON value of [context].
-         *
-         * Unlike [context], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("context") @ExcludeMissing fun _context(): JsonField<Context> = context
 
         /**
          * Returns the raw JSON value of [from].
@@ -2238,6 +2237,15 @@ private constructor(
          */
         @JsonProperty("to") @ExcludeMissing fun _to(): JsonField<To> = to
 
+        /**
+         * Returns the raw JSON value of [variables].
+         *
+         * Unlike [variables], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("variables")
+        @ExcludeMissing
+        fun _variables(): JsonField<Variables> = variables
+
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
             additionalProperties.put(key, value)
@@ -2261,7 +2269,6 @@ private constructor(
 
             private var bcc: JsonField<Bcc> = JsonMissing.of()
             private var cc: JsonField<Cc> = JsonMissing.of()
-            private var context: JsonField<Context> = JsonMissing.of()
             private var from: JsonField<String> = JsonMissing.of()
             private var headers: JsonField<Headers> = JsonMissing.of()
             private var html: JsonField<String> = JsonMissing.of()
@@ -2271,13 +2278,13 @@ private constructor(
             private var tags: JsonField<MutableList<Tag>>? = null
             private var text: JsonField<String> = JsonMissing.of()
             private var to: JsonField<To> = JsonMissing.of()
+            private var variables: JsonField<Variables> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(fallback: Fallback) = apply {
                 bcc = fallback.bcc
                 cc = fallback.cc
-                context = fallback.context
                 from = fallback.from
                 headers = fallback.headers
                 html = fallback.html
@@ -2287,6 +2294,7 @@ private constructor(
                 tags = fallback.tags.map { it.toMutableList() }
                 text = fallback.text
                 to = fallback.to
+                variables = fallback.variables
                 additionalProperties = fallback.additionalProperties.toMutableMap()
             }
 
@@ -2325,18 +2333,6 @@ private constructor(
 
             /** Alias for calling [cc] with `Cc.ofString(string)`. */
             fun cc(string: String) = cc(Cc.ofString(string))
-
-            /** The context for the template */
-            fun context(context: Context) = context(JsonField.of(context))
-
-            /**
-             * Sets [Builder.context] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.context] with a well-typed [Context] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun context(context: JsonField<Context>) = apply { this.context = context }
 
             /** The e-mail address of the sender */
             fun from(from: String) = from(JsonField.of(from))
@@ -2475,6 +2471,18 @@ private constructor(
             /** Alias for calling [to] with `To.ofString(string)`. */
             fun to(string: String) = to(To.ofString(string))
 
+            /** The variables for the template */
+            fun variables(variables: Variables) = variables(JsonField.of(variables))
+
+            /**
+             * Sets [Builder.variables] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.variables] with a well-typed [Variables] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun variables(variables: JsonField<Variables>) = apply { this.variables = variables }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -2503,7 +2511,6 @@ private constructor(
                 Fallback(
                     bcc,
                     cc,
-                    context,
                     from,
                     headers,
                     html,
@@ -2513,6 +2520,7 @@ private constructor(
                     (tags ?: JsonMissing.of()).map { it.toImmutable() },
                     text,
                     to,
+                    variables,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -2526,7 +2534,6 @@ private constructor(
 
             bcc().ifPresent { it.validate() }
             cc().ifPresent { it.validate() }
-            context().ifPresent { it.validate() }
             from()
             headers().ifPresent { it.validate() }
             html()
@@ -2536,6 +2543,7 @@ private constructor(
             tags().ifPresent { it.forEach { it.validate() } }
             text()
             to().ifPresent { it.validate() }
+            variables().ifPresent { it.validate() }
             validated = true
         }
 
@@ -2557,7 +2565,6 @@ private constructor(
         internal fun validity(): Int =
             (bcc.asKnown().getOrNull()?.validity() ?: 0) +
                 (cc.asKnown().getOrNull()?.validity() ?: 0) +
-                (context.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (from.asKnown().isPresent) 1 else 0) +
                 (headers.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (html.asKnown().isPresent) 1 else 0) +
@@ -2566,7 +2573,8 @@ private constructor(
                 (if (subject.asKnown().isPresent) 1 else 0) +
                 (tags.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (text.asKnown().isPresent) 1 else 0) +
-                (to.asKnown().getOrNull()?.validity() ?: 0)
+                (to.asKnown().getOrNull()?.validity() ?: 0) +
+                (variables.asKnown().getOrNull()?.validity() ?: 0)
 
         /** The blind carbon copy recipient(s) of the email */
         @JsonDeserialize(using = Bcc.Deserializer::class)
@@ -2906,109 +2914,6 @@ private constructor(
                     }
                 }
             }
-        }
-
-        /** The context for the template */
-        class Context
-        @JsonCreator
-        private constructor(
-            @com.fasterxml.jackson.annotation.JsonValue
-            private val additionalProperties: Map<String, JsonValue>
-        ) {
-
-            @JsonAnyGetter
-            @ExcludeMissing
-            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
-
-            fun toBuilder() = Builder().from(this)
-
-            companion object {
-
-                /** Returns a mutable builder for constructing an instance of [Context]. */
-                @JvmStatic fun builder() = Builder()
-            }
-
-            /** A builder for [Context]. */
-            class Builder internal constructor() {
-
-                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-                @JvmSynthetic
-                internal fun from(context: Context) = apply {
-                    additionalProperties = context.additionalProperties.toMutableMap()
-                }
-
-                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                    this.additionalProperties.clear()
-                    putAllAdditionalProperties(additionalProperties)
-                }
-
-                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                    additionalProperties.put(key, value)
-                }
-
-                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
-                    apply {
-                        this.additionalProperties.putAll(additionalProperties)
-                    }
-
-                fun removeAdditionalProperty(key: String) = apply {
-                    additionalProperties.remove(key)
-                }
-
-                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                    keys.forEach(::removeAdditionalProperty)
-                }
-
-                /**
-                 * Returns an immutable instance of [Context].
-                 *
-                 * Further updates to this [Builder] will not mutate the returned instance.
-                 */
-                fun build(): Context = Context(additionalProperties.toImmutable())
-            }
-
-            private var validated: Boolean = false
-
-            fun validate(): Context = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: NuntlyInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            @JvmSynthetic
-            internal fun validity(): Int =
-                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is Context && additionalProperties == other.additionalProperties
-            }
-
-            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
-
-            override fun hashCode(): Int = hashCode
-
-            override fun toString() = "Context{additionalProperties=$additionalProperties}"
         }
 
         /** The headers to add to the email */
@@ -3458,6 +3363,109 @@ private constructor(
             }
         }
 
+        /** The variables for the template */
+        class Variables
+        @JsonCreator
+        private constructor(
+            @com.fasterxml.jackson.annotation.JsonValue
+            private val additionalProperties: Map<String, JsonValue>
+        ) {
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Variables]. */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Variables]. */
+            class Builder internal constructor() {
+
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(variables: Variables) = apply {
+                    additionalProperties = variables.additionalProperties.toMutableMap()
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Variables].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): Variables = Variables(additionalProperties.toImmutable())
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): Variables = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: NuntlyInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Variables && additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() = "Variables{additionalProperties=$additionalProperties}"
+        }
+
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
@@ -3466,7 +3474,6 @@ private constructor(
             return other is Fallback &&
                 bcc == other.bcc &&
                 cc == other.cc &&
-                context == other.context &&
                 from == other.from &&
                 headers == other.headers &&
                 html == other.html &&
@@ -3476,6 +3483,7 @@ private constructor(
                 tags == other.tags &&
                 text == other.text &&
                 to == other.to &&
+                variables == other.variables &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -3483,7 +3491,6 @@ private constructor(
             Objects.hash(
                 bcc,
                 cc,
-                context,
                 from,
                 headers,
                 html,
@@ -3493,6 +3500,7 @@ private constructor(
                 tags,
                 text,
                 to,
+                variables,
                 additionalProperties,
             )
         }
@@ -3500,7 +3508,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Fallback{bcc=$bcc, cc=$cc, context=$context, from=$from, headers=$headers, html=$html, replyTo=$replyTo, scheduledAt=$scheduledAt, subject=$subject, tags=$tags, text=$text, to=$to, additionalProperties=$additionalProperties}"
+            "Fallback{bcc=$bcc, cc=$cc, from=$from, headers=$headers, html=$html, replyTo=$replyTo, scheduledAt=$scheduledAt, subject=$subject, tags=$tags, text=$text, to=$to, variables=$variables, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

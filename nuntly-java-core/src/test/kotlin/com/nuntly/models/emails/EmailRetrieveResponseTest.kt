@@ -32,11 +32,6 @@ internal class EmailRetrieveResponseTest {
                 .bccOfStrings(listOf("string"))
                 .bulkId("bulkId")
                 .ccOfStrings(listOf("string"))
-                .context(
-                    EmailRetrieveResponse.Context.builder()
-                        .putAdditionalProperty("foo", JsonValue.from("string"))
-                        .build()
-                )
                 .headers(
                     EmailRetrieveResponse.Headers.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -51,6 +46,11 @@ internal class EmailRetrieveResponseTest {
                         .build()
                 )
                 .addTag(Tag.builder().name("category").value("transactional").build())
+                .variables(
+                    EmailRetrieveResponse.Variables.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
                 .build()
 
         assertThat(emailRetrieveResponse.id()).isEqualTo("em_01ka8k8s80gvx9604cn9am5st4")
@@ -74,12 +74,6 @@ internal class EmailRetrieveResponseTest {
         assertThat(emailRetrieveResponse.bulkId()).contains("bulkId")
         assertThat(emailRetrieveResponse.cc())
             .contains(EmailRetrieveResponse.Cc.ofStrings(listOf("string")))
-        assertThat(emailRetrieveResponse.context())
-            .contains(
-                EmailRetrieveResponse.Context.builder()
-                    .putAdditionalProperty("foo", JsonValue.from("string"))
-                    .build()
-            )
         assertThat(emailRetrieveResponse.headers())
             .contains(
                 EmailRetrieveResponse.Headers.builder()
@@ -98,6 +92,12 @@ internal class EmailRetrieveResponseTest {
             )
         assertThat(emailRetrieveResponse.tags().getOrNull())
             .containsExactly(Tag.builder().name("category").value("transactional").build())
+        assertThat(emailRetrieveResponse.variables())
+            .contains(
+                EmailRetrieveResponse.Variables.builder()
+                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                    .build()
+            )
     }
 
     @Test
@@ -122,11 +122,6 @@ internal class EmailRetrieveResponseTest {
                 .bccOfStrings(listOf("string"))
                 .bulkId("bulkId")
                 .ccOfStrings(listOf("string"))
-                .context(
-                    EmailRetrieveResponse.Context.builder()
-                        .putAdditionalProperty("foo", JsonValue.from("string"))
-                        .build()
-                )
                 .headers(
                     EmailRetrieveResponse.Headers.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -141,6 +136,11 @@ internal class EmailRetrieveResponseTest {
                         .build()
                 )
                 .addTag(Tag.builder().name("category").value("transactional").build())
+                .variables(
+                    EmailRetrieveResponse.Variables.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
                 .build()
 
         val roundtrippedEmailRetrieveResponse =

@@ -24,11 +24,6 @@ internal class EmailSendParamsTest {
             )
             .bccOfStrings(listOf("string"))
             .ccOfStrings(listOf("string"))
-            .context(
-                EmailSendParams.Context.builder()
-                    .putAdditionalProperty("foo", JsonValue.from("string"))
-                    .build()
-            )
             .headers(
                 EmailSendParams.Headers.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -41,6 +36,11 @@ internal class EmailSendParamsTest {
             .scheduledAt("scheduledAt")
             .addTag(Tag.builder().name("category").value("transactional").build())
             .text("Thank you for signing up! Please verify your email address.")
+            .variables(
+                EmailSendParams.Variables.builder()
+                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                    .build()
+            )
             .build()
     }
 
@@ -60,11 +60,6 @@ internal class EmailSendParamsTest {
                 )
                 .bccOfStrings(listOf("string"))
                 .ccOfStrings(listOf("string"))
-                .context(
-                    EmailSendParams.Context.builder()
-                        .putAdditionalProperty("foo", JsonValue.from("string"))
-                        .build()
-                )
                 .headers(
                     EmailSendParams.Headers.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -77,6 +72,11 @@ internal class EmailSendParamsTest {
                 .scheduledAt("scheduledAt")
                 .addTag(Tag.builder().name("category").value("transactional").build())
                 .text("Thank you for signing up! Please verify your email address.")
+                .variables(
+                    EmailSendParams.Variables.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
                 .build()
 
         val body = params._body()
@@ -94,12 +94,6 @@ internal class EmailSendParamsTest {
             )
         assertThat(body.bcc()).contains(EmailSendParams.Bcc.ofStrings(listOf("string")))
         assertThat(body.cc()).contains(EmailSendParams.Cc.ofStrings(listOf("string")))
-        assertThat(body.context())
-            .contains(
-                EmailSendParams.Context.builder()
-                    .putAdditionalProperty("foo", JsonValue.from("string"))
-                    .build()
-            )
         assertThat(body.headers())
             .contains(
                 EmailSendParams.Headers.builder()
@@ -116,6 +110,12 @@ internal class EmailSendParamsTest {
             .containsExactly(Tag.builder().name("category").value("transactional").build())
         assertThat(body.text())
             .contains("Thank you for signing up! Please verify your email address.")
+        assertThat(body.variables())
+            .contains(
+                EmailSendParams.Variables.builder()
+                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                    .build()
+            )
     }
 
     @Test
