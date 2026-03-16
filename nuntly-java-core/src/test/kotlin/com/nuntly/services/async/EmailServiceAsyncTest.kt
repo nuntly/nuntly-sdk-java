@@ -82,11 +82,6 @@ internal class EmailServiceAsyncTest {
                     )
                     .bccOfStrings(listOf("string"))
                     .ccOfStrings(listOf("string"))
-                    .context(
-                        EmailSendParams.Context.builder()
-                            .putAdditionalProperty("foo", JsonValue.from("string"))
-                            .build()
-                    )
                     .headers(
                         EmailSendParams.Headers.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -99,6 +94,11 @@ internal class EmailServiceAsyncTest {
                     .scheduledAt("scheduledAt")
                     .addTag(Tag.builder().name("category").value("transactional").build())
                     .text("Thank you for signing up! Please verify your email address.")
+                    .variables(
+                        EmailSendParams.Variables.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
                     .build()
             )
 
