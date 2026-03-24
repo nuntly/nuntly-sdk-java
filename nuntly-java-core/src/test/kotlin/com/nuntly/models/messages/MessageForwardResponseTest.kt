@@ -15,11 +15,13 @@ internal class MessageForwardResponseTest {
             MessageForwardResponse.builder()
                 .id("imsg_01kabn43yqyxn2bx4ve84mczd3")
                 .messageId("messageId")
+                .subject("subject")
                 .threadId("threadId")
                 .build()
 
         assertThat(messageForwardResponse.id()).isEqualTo("imsg_01kabn43yqyxn2bx4ve84mczd3")
         assertThat(messageForwardResponse.messageId()).isEqualTo("messageId")
+        assertThat(messageForwardResponse.subject()).isEqualTo("subject")
         assertThat(messageForwardResponse.threadId()).isEqualTo("threadId")
     }
 
@@ -30,6 +32,7 @@ internal class MessageForwardResponseTest {
             MessageForwardResponse.builder()
                 .id("imsg_01kabn43yqyxn2bx4ve84mczd3")
                 .messageId("messageId")
+                .subject("subject")
                 .threadId("threadId")
                 .build()
 

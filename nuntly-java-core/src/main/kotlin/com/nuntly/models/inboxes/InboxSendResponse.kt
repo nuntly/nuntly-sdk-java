@@ -20,6 +20,7 @@ class InboxSendResponse
 private constructor(
     private val id: JsonField<String>,
     private val messageId: JsonField<String>,
+    private val subject: JsonField<String>,
     private val threadId: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -28,8 +29,9 @@ private constructor(
     private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
         @JsonProperty("messageId") @ExcludeMissing messageId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("subject") @ExcludeMissing subject: JsonField<String> = JsonMissing.of(),
         @JsonProperty("threadId") @ExcludeMissing threadId: JsonField<String> = JsonMissing.of(),
-    ) : this(id, messageId, threadId, mutableMapOf())
+    ) : this(id, messageId, subject, threadId, mutableMapOf())
 
     /**
      * The id of the message
@@ -46,6 +48,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun messageId(): String = messageId.getRequired("messageId")
+
+    /**
+     * The subject of the message.
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun subject(): String = subject.getRequired("subject")
 
     /**
      * The id of the thread.
@@ -68,6 +78,13 @@ private constructor(
      * Unlike [messageId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("messageId") @ExcludeMissing fun _messageId(): JsonField<String> = messageId
+
+    /**
+     * Returns the raw JSON value of [subject].
+     *
+     * Unlike [subject], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("subject") @ExcludeMissing fun _subject(): JsonField<String> = subject
 
     /**
      * Returns the raw JSON value of [threadId].
@@ -97,6 +114,7 @@ private constructor(
          * ```java
          * .id()
          * .messageId()
+         * .subject()
          * .threadId()
          * ```
          */
@@ -108,6 +126,7 @@ private constructor(
 
         private var id: JsonField<String>? = null
         private var messageId: JsonField<String>? = null
+        private var subject: JsonField<String>? = null
         private var threadId: JsonField<String>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -115,6 +134,7 @@ private constructor(
         internal fun from(inboxSendResponse: InboxSendResponse) = apply {
             id = inboxSendResponse.id
             messageId = inboxSendResponse.messageId
+            subject = inboxSendResponse.subject
             threadId = inboxSendResponse.threadId
             additionalProperties = inboxSendResponse.additionalProperties.toMutableMap()
         }
@@ -141,6 +161,17 @@ private constructor(
          * value.
          */
         fun messageId(messageId: JsonField<String>) = apply { this.messageId = messageId }
+
+        /** The subject of the message. */
+        fun subject(subject: String) = subject(JsonField.of(subject))
+
+        /**
+         * Sets [Builder.subject] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.subject] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun subject(subject: JsonField<String>) = apply { this.subject = subject }
 
         /** The id of the thread. */
         fun threadId(threadId: String) = threadId(JsonField.of(threadId))
@@ -181,6 +212,7 @@ private constructor(
          * ```java
          * .id()
          * .messageId()
+         * .subject()
          * .threadId()
          * ```
          *
@@ -190,6 +222,7 @@ private constructor(
             InboxSendResponse(
                 checkRequired("id", id),
                 checkRequired("messageId", messageId),
+                checkRequired("subject", subject),
                 checkRequired("threadId", threadId),
                 additionalProperties.toMutableMap(),
             )
@@ -204,6 +237,7 @@ private constructor(
 
         id()
         messageId()
+        subject()
         threadId()
         validated = true
     }
@@ -225,6 +259,7 @@ private constructor(
     internal fun validity(): Int =
         (if (id.asKnown().isPresent) 1 else 0) +
             (if (messageId.asKnown().isPresent) 1 else 0) +
+            (if (subject.asKnown().isPresent) 1 else 0) +
             (if (threadId.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
@@ -235,16 +270,17 @@ private constructor(
         return other is InboxSendResponse &&
             id == other.id &&
             messageId == other.messageId &&
+            subject == other.subject &&
             threadId == other.threadId &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(id, messageId, threadId, additionalProperties)
+        Objects.hash(id, messageId, subject, threadId, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InboxSendResponse{id=$id, messageId=$messageId, threadId=$threadId, additionalProperties=$additionalProperties}"
+        "InboxSendResponse{id=$id, messageId=$messageId, subject=$subject, threadId=$threadId, additionalProperties=$additionalProperties}"
 }

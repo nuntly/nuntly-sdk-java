@@ -672,6 +672,8 @@ private constructor(
 
             @JvmField val DISABLED = of("disabled")
 
+            @JvmField val PAUSED = of("paused")
+
             @JvmStatic fun of(value: String) = SendingStatus(JsonField.of(value))
         }
 
@@ -679,6 +681,7 @@ private constructor(
         enum class Known {
             ENABLED,
             DISABLED,
+            PAUSED,
         }
 
         /**
@@ -693,6 +696,7 @@ private constructor(
         enum class Value {
             ENABLED,
             DISABLED,
+            PAUSED,
             /**
              * An enum member indicating that [SendingStatus] was instantiated with an unknown
              * value.
@@ -711,6 +715,7 @@ private constructor(
             when (this) {
                 ENABLED -> Value.ENABLED
                 DISABLED -> Value.DISABLED
+                PAUSED -> Value.PAUSED
                 else -> Value._UNKNOWN
             }
 
@@ -727,6 +732,7 @@ private constructor(
             when (this) {
                 ENABLED -> Known.ENABLED
                 DISABLED -> Known.DISABLED
+                PAUSED -> Known.PAUSED
                 else -> throw NuntlyInvalidDataException("Unknown SendingStatus: $value")
             }
 
