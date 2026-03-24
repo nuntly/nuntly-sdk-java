@@ -15,11 +15,13 @@ internal class InboxSendResponseTest {
             InboxSendResponse.builder()
                 .id("imsg_01kabn43yqyxn2bx4ve84mczd3")
                 .messageId("messageId")
+                .subject("subject")
                 .threadId("threadId")
                 .build()
 
         assertThat(inboxSendResponse.id()).isEqualTo("imsg_01kabn43yqyxn2bx4ve84mczd3")
         assertThat(inboxSendResponse.messageId()).isEqualTo("messageId")
+        assertThat(inboxSendResponse.subject()).isEqualTo("subject")
         assertThat(inboxSendResponse.threadId()).isEqualTo("threadId")
     }
 
@@ -30,6 +32,7 @@ internal class InboxSendResponseTest {
             InboxSendResponse.builder()
                 .id("imsg_01kabn43yqyxn2bx4ve84mczd3")
                 .messageId("messageId")
+                .subject("subject")
                 .threadId("threadId")
                 .build()
 
