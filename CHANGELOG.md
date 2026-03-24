@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.5.0 (2026-03-24)
+
+Full Changelog: [v0.4.0...v0.5.0](https://github.com/nuntly/nuntly-sdk-java/compare/v0.4.0...v0.5.0)
+
+### Features
+
+* **api:** add sending status 'paused' for the domain ([948ddf3](https://github.com/nuntly/nuntly-sdk-java/commit/948ddf3ed661fe3d765ee45dae94d7732c1fc7b6))
+
+
+### Bug Fixes
+
+* **client:** allow updating header/query affecting fields in `toBuilder()` ([1945d7e](https://github.com/nuntly/nuntly-sdk-java/commit/1945d7e01683487fbecd49f1b8f152907f9a4063))
+
+
+### Chores
+
+* **internal:** bump ktfmt ([834f03e](https://github.com/nuntly/nuntly-sdk-java/commit/834f03e449b575b009bb0d27d2f22e8a66f1111b))
+* **internal:** tweak CI branches ([49c00ef](https://github.com/nuntly/nuntly-sdk-java/commit/49c00ef7c9adfcd0c0eea6344bf1503d7bfb3486))
+* **internal:** update gitignore ([5dc3500](https://github.com/nuntly/nuntly-sdk-java/commit/5dc3500e8d21ea49fe056af191b3d5dce01a02fc))
+* **internal:** update retry delay tests ([e9cf065](https://github.com/nuntly/nuntly-sdk-java/commit/e9cf0650b6b478a3ca419253e05d0b2b20f2c925))
+* **tests:** bump steady to v0.19.4 ([dbd935e](https://github.com/nuntly/nuntly-sdk-java/commit/dbd935ec61d8216c26c25dc3dc5f0077d522d58a))
+* **tests:** bump steady to v0.19.5 ([32841f7](https://github.com/nuntly/nuntly-sdk-java/commit/32841f7315c07c9e881e2b6aabd13cce7b305ff2))
+* **tests:** bump steady to v0.19.6 ([4b309ef](https://github.com/nuntly/nuntly-sdk-java/commit/4b309ef00d759fcd98404a741abfb378d4fb154c))
+
+
+### Refactors
+
+* **tests:** switch from prism to steady ([9a4ba28](https://github.com/nuntly/nuntly-sdk-java/commit/9a4ba28adee426a8a2c1887f244072c7c2c10934))
+
 ## 0.4.0 (2026-03-16)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/nuntly/nuntly-sdk-java/compare/v0.3.0...v0.4.0)
