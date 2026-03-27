@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.1 (2026-03-27)
+
+Full Changelog: [v0.5.0...v0.5.1](https://github.com/nuntly/nuntly-sdk-java/compare/v0.5.0...v0.5.1)
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([be6c700](https://github.com/nuntly/nuntly-sdk-java/commit/be6c7000aa0ec54b5abd5acc023c3d2ffd69969a))
+* **internal:** update multipart form array serialization ([7cc35eb](https://github.com/nuntly/nuntly-sdk-java/commit/7cc35eb8ed276450e7fbc1617c32149a12818dd4))
+* **tests:** bump steady to v0.19.7 ([9ad4c85](https://github.com/nuntly/nuntly-sdk-java/commit/9ad4c85cf8e51352f661d7ee640ae1d8dd724a8f))
+
 ## 0.5.0 (2026-03-24)
 
 Full Changelog: [v0.4.0...v0.5.0](https://github.com/nuntly/nuntly-sdk-java/compare/v0.4.0...v0.5.0)
