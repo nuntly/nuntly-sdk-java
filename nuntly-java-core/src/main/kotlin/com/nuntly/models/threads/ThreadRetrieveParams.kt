@@ -9,15 +9,22 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieve a thread. Auto-marks as read. */
+/**
+ * Retrieve a thread. Pass ?markRead=true to automatically remove the unread label from all
+ * messages.
+ */
 class ThreadRetrieveParams
 private constructor(
     private val threadId: String?,
+    private val markRead: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     fun threadId(): Optional<String> = Optional.ofNullable(threadId)
+
+    /** Set to "true" to automatically remove the unread label from all messages in the thread. */
+    fun markRead(): Optional<String> = Optional.ofNullable(markRead)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -39,12 +46,14 @@ private constructor(
     class Builder internal constructor() {
 
         private var threadId: String? = null
+        private var markRead: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
         internal fun from(threadRetrieveParams: ThreadRetrieveParams) = apply {
             threadId = threadRetrieveParams.threadId
+            markRead = threadRetrieveParams.markRead
             additionalHeaders = threadRetrieveParams.additionalHeaders.toBuilder()
             additionalQueryParams = threadRetrieveParams.additionalQueryParams.toBuilder()
         }
@@ -53,6 +62,14 @@ private constructor(
 
         /** Alias for calling [Builder.threadId] with `threadId.orElse(null)`. */
         fun threadId(threadId: Optional<String>) = threadId(threadId.getOrNull())
+
+        /**
+         * Set to "true" to automatically remove the unread label from all messages in the thread.
+         */
+        fun markRead(markRead: String?) = apply { this.markRead = markRead }
+
+        /** Alias for calling [Builder.markRead] with `markRead.orElse(null)`. */
+        fun markRead(markRead: Optional<String>) = markRead(markRead.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -158,7 +175,12 @@ private constructor(
          * Further updates to this [Builder] will not mutate the returned instance.
          */
         fun build(): ThreadRetrieveParams =
-            ThreadRetrieveParams(threadId, additionalHeaders.build(), additionalQueryParams.build())
+            ThreadRetrieveParams(
+                threadId,
+                markRead,
+                additionalHeaders.build(),
+                additionalQueryParams.build(),
+            )
     }
 
     fun _pathParam(index: Int): String =
@@ -169,7 +191,13 @@ private constructor(
 
     override fun _headers(): Headers = additionalHeaders
 
-    override fun _queryParams(): QueryParams = additionalQueryParams
+    override fun _queryParams(): QueryParams =
+        QueryParams.builder()
+            .apply {
+                markRead?.let { put("markRead", it) }
+                putAll(additionalQueryParams)
+            }
+            .build()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -178,12 +206,14 @@ private constructor(
 
         return other is ThreadRetrieveParams &&
             threadId == other.threadId &&
+            markRead == other.markRead &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int = Objects.hash(threadId, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int =
+        Objects.hash(threadId, markRead, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "ThreadRetrieveParams{threadId=$threadId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "ThreadRetrieveParams{threadId=$threadId, markRead=$markRead, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

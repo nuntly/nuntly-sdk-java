@@ -26,6 +26,8 @@ import com.nuntly.models.messages.MessageListParams
 import com.nuntly.models.messages.MessageReplyParams
 import com.nuntly.models.messages.MessageReplyResponse
 import com.nuntly.models.messages.MessageRetrieveParams
+import com.nuntly.models.messages.MessageUpdateParams
+import com.nuntly.models.messages.MessageUpdateResponse
 import com.nuntly.services.blocking.messages.AttachmentService
 import com.nuntly.services.blocking.messages.AttachmentServiceImpl
 import com.nuntly.services.blocking.messages.ContentService
@@ -66,6 +68,13 @@ class MessageServiceImpl internal constructor(private val clientOptions: ClientO
     ): MessageDetail =
         // get /messages/{messageId}
         withRawResponse().retrieve(params, requestOptions).parse()
+
+    override fun update(
+        params: MessageUpdateParams,
+        requestOptions: RequestOptions,
+    ): MessageUpdateResponse =
+        // patch /messages/{messageId}
+        withRawResponse().update(params, requestOptions).parse()
 
     override fun list(params: MessageListParams, requestOptions: RequestOptions): MessageListPage =
         // get /messages
@@ -140,6 +149,38 @@ class MessageServiceImpl internal constructor(private val clientOptions: ClientO
             return errorHandler.handle(response).parseable {
                 response
                     .use { retrieveHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+                    .data()
+            }
+        }
+
+        private val updateHandler: Handler<DataEnvelope<MessageUpdateResponse>> =
+            jsonHandler<DataEnvelope<MessageUpdateResponse>>(clientOptions.jsonMapper)
+
+        override fun update(
+            params: MessageUpdateParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<MessageUpdateResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("messageId", params.messageId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.PATCH)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("messages", params._pathParam(0))
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { updateHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

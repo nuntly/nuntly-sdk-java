@@ -14,8 +14,7 @@ class ThreadListParams
 private constructor(
     private val inboxId: String?,
     private val cursor: String?,
-    private val isRead: Boolean?,
-    private val isSpam: Boolean?,
+    private val labels: String?,
     private val limit: Double?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
@@ -26,11 +25,11 @@ private constructor(
     /** The cursor to retrieve the next page of results */
     fun cursor(): Optional<String> = Optional.ofNullable(cursor)
 
-    /** Filter by read status. */
-    fun isRead(): Optional<Boolean> = Optional.ofNullable(isRead)
-
-    /** Filter by spam status. */
-    fun isSpam(): Optional<Boolean> = Optional.ofNullable(isSpam)
+    /**
+     * Comma-separated labels to filter by (AND logic). Threads with spam/trash are excluded by
+     * default unless explicitly requested via ?labels=spam or ?labels=trash.
+     */
+    fun labels(): Optional<String> = Optional.ofNullable(labels)
 
     /** The maximum number of results to return */
     fun limit(): Optional<Double> = Optional.ofNullable(limit)
@@ -56,8 +55,7 @@ private constructor(
 
         private var inboxId: String? = null
         private var cursor: String? = null
-        private var isRead: Boolean? = null
-        private var isSpam: Boolean? = null
+        private var labels: String? = null
         private var limit: Double? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
@@ -66,8 +64,7 @@ private constructor(
         internal fun from(threadListParams: ThreadListParams) = apply {
             inboxId = threadListParams.inboxId
             cursor = threadListParams.cursor
-            isRead = threadListParams.isRead
-            isSpam = threadListParams.isSpam
+            labels = threadListParams.labels
             limit = threadListParams.limit
             additionalHeaders = threadListParams.additionalHeaders.toBuilder()
             additionalQueryParams = threadListParams.additionalQueryParams.toBuilder()
@@ -84,31 +81,14 @@ private constructor(
         /** Alias for calling [Builder.cursor] with `cursor.orElse(null)`. */
         fun cursor(cursor: Optional<String>) = cursor(cursor.getOrNull())
 
-        /** Filter by read status. */
-        fun isRead(isRead: Boolean?) = apply { this.isRead = isRead }
-
         /**
-         * Alias for [Builder.isRead].
-         *
-         * This unboxed primitive overload exists for backwards compatibility.
+         * Comma-separated labels to filter by (AND logic). Threads with spam/trash are excluded by
+         * default unless explicitly requested via ?labels=spam or ?labels=trash.
          */
-        fun isRead(isRead: Boolean) = isRead(isRead as Boolean?)
+        fun labels(labels: String?) = apply { this.labels = labels }
 
-        /** Alias for calling [Builder.isRead] with `isRead.orElse(null)`. */
-        fun isRead(isRead: Optional<Boolean>) = isRead(isRead.getOrNull())
-
-        /** Filter by spam status. */
-        fun isSpam(isSpam: Boolean?) = apply { this.isSpam = isSpam }
-
-        /**
-         * Alias for [Builder.isSpam].
-         *
-         * This unboxed primitive overload exists for backwards compatibility.
-         */
-        fun isSpam(isSpam: Boolean) = isSpam(isSpam as Boolean?)
-
-        /** Alias for calling [Builder.isSpam] with `isSpam.orElse(null)`. */
-        fun isSpam(isSpam: Optional<Boolean>) = isSpam(isSpam.getOrNull())
+        /** Alias for calling [Builder.labels] with `labels.orElse(null)`. */
+        fun labels(labels: Optional<String>) = labels(labels.getOrNull())
 
         /** The maximum number of results to return */
         fun limit(limit: Double?) = apply { this.limit = limit }
@@ -230,8 +210,7 @@ private constructor(
             ThreadListParams(
                 inboxId,
                 cursor,
-                isRead,
-                isSpam,
+                labels,
                 limit,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -250,8 +229,7 @@ private constructor(
         QueryParams.builder()
             .apply {
                 cursor?.let { put("cursor", it) }
-                isRead?.let { put("isRead", it.toString()) }
-                isSpam?.let { put("isSpam", it.toString()) }
+                labels?.let { put("labels", it) }
                 limit?.let { put("limit", it.toString()) }
                 putAll(additionalQueryParams)
             }
@@ -265,24 +243,15 @@ private constructor(
         return other is ThreadListParams &&
             inboxId == other.inboxId &&
             cursor == other.cursor &&
-            isRead == other.isRead &&
-            isSpam == other.isSpam &&
+            labels == other.labels &&
             limit == other.limit &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(
-            inboxId,
-            cursor,
-            isRead,
-            isSpam,
-            limit,
-            additionalHeaders,
-            additionalQueryParams,
-        )
+        Objects.hash(inboxId, cursor, labels, limit, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "ThreadListParams{inboxId=$inboxId, cursor=$cursor, isRead=$isRead, isSpam=$isSpam, limit=$limit, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "ThreadListParams{inboxId=$inboxId, cursor=$cursor, labels=$labels, limit=$limit, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

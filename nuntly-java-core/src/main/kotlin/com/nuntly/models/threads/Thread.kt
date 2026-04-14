@@ -10,7 +10,9 @@ import com.nuntly.core.ExcludeMissing
 import com.nuntly.core.JsonField
 import com.nuntly.core.JsonMissing
 import com.nuntly.core.JsonValue
+import com.nuntly.core.checkKnown
 import com.nuntly.core.checkRequired
+import com.nuntly.core.toImmutable
 import com.nuntly.errors.NuntlyInvalidDataException
 import java.util.Collections
 import java.util.Objects
@@ -26,8 +28,7 @@ private constructor(
     private val domainId: JsonField<String>,
     private val domainName: JsonField<String>,
     private val inboxId: JsonField<String>,
-    private val isRead: JsonField<Boolean>,
-    private val isSpam: JsonField<Boolean>,
+    private val labels: JsonField<List<String>>,
     private val lastMessageAt: JsonField<String>,
     private val messageCount: JsonField<Double>,
     private val subject: JsonField<String>,
@@ -45,8 +46,7 @@ private constructor(
         @ExcludeMissing
         domainName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("inboxId") @ExcludeMissing inboxId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("isRead") @ExcludeMissing isRead: JsonField<Boolean> = JsonMissing.of(),
-        @JsonProperty("isSpam") @ExcludeMissing isSpam: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("labels") @ExcludeMissing labels: JsonField<List<String>> = JsonMissing.of(),
         @JsonProperty("lastMessageAt")
         @ExcludeMissing
         lastMessageAt: JsonField<String> = JsonMissing.of(),
@@ -62,8 +62,7 @@ private constructor(
         domainId,
         domainName,
         inboxId,
-        isRead,
-        isSpam,
+        labels,
         lastMessageAt,
         messageCount,
         subject,
@@ -120,20 +119,12 @@ private constructor(
     fun inboxId(): String = inboxId.getRequired("inboxId")
 
     /**
-     * Whether the thread has been read.
+     * Aggregated labels from all messages in the thread.
      *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun isRead(): Boolean = isRead.getRequired("isRead")
-
-    /**
-     * Whether the thread is marked as spam.
-     *
-     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun isSpam(): Boolean = isSpam.getRequired("isSpam")
+    fun labels(): List<String> = labels.getRequired("labels")
 
     /**
      * The timestamp of the most recent message.
@@ -210,18 +201,11 @@ private constructor(
     @JsonProperty("inboxId") @ExcludeMissing fun _inboxId(): JsonField<String> = inboxId
 
     /**
-     * Returns the raw JSON value of [isRead].
+     * Returns the raw JSON value of [labels].
      *
-     * Unlike [isRead], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [labels], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("isRead") @ExcludeMissing fun _isRead(): JsonField<Boolean> = isRead
-
-    /**
-     * Returns the raw JSON value of [isSpam].
-     *
-     * Unlike [isSpam], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("isSpam") @ExcludeMissing fun _isSpam(): JsonField<Boolean> = isSpam
+    @JsonProperty("labels") @ExcludeMissing fun _labels(): JsonField<List<String>> = labels
 
     /**
      * Returns the raw JSON value of [lastMessageAt].
@@ -280,8 +264,7 @@ private constructor(
          * .domainId()
          * .domainName()
          * .inboxId()
-         * .isRead()
-         * .isSpam()
+         * .labels()
          * .lastMessageAt()
          * .messageCount()
          * .subject()
@@ -299,8 +282,7 @@ private constructor(
         private var domainId: JsonField<String>? = null
         private var domainName: JsonField<String>? = null
         private var inboxId: JsonField<String>? = null
-        private var isRead: JsonField<Boolean>? = null
-        private var isSpam: JsonField<Boolean>? = null
+        private var labels: JsonField<MutableList<String>>? = null
         private var lastMessageAt: JsonField<String>? = null
         private var messageCount: JsonField<Double>? = null
         private var subject: JsonField<String>? = null
@@ -315,8 +297,7 @@ private constructor(
             domainId = thread.domainId
             domainName = thread.domainName
             inboxId = thread.inboxId
-            isRead = thread.isRead
-            isSpam = thread.isSpam
+            labels = thread.labels.map { it.toMutableList() }
             lastMessageAt = thread.lastMessageAt
             messageCount = thread.messageCount
             subject = thread.subject
@@ -398,27 +379,31 @@ private constructor(
          */
         fun inboxId(inboxId: JsonField<String>) = apply { this.inboxId = inboxId }
 
-        /** Whether the thread has been read. */
-        fun isRead(isRead: Boolean) = isRead(JsonField.of(isRead))
+        /** Aggregated labels from all messages in the thread. */
+        fun labels(labels: List<String>) = labels(JsonField.of(labels))
 
         /**
-         * Sets [Builder.isRead] to an arbitrary JSON value.
+         * Sets [Builder.labels] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.isRead] with a well-typed [Boolean] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
+         * You should usually call [Builder.labels] with a well-typed `List<String>` value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
          */
-        fun isRead(isRead: JsonField<Boolean>) = apply { this.isRead = isRead }
-
-        /** Whether the thread is marked as spam. */
-        fun isSpam(isSpam: Boolean) = isSpam(JsonField.of(isSpam))
+        fun labels(labels: JsonField<List<String>>) = apply {
+            this.labels = labels.map { it.toMutableList() }
+        }
 
         /**
-         * Sets [Builder.isSpam] to an arbitrary JSON value.
+         * Adds a single [String] to [labels].
          *
-         * You should usually call [Builder.isSpam] with a well-typed [Boolean] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
+         * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun isSpam(isSpam: JsonField<Boolean>) = apply { this.isSpam = isSpam }
+        fun addLabel(label: String) = apply {
+            labels =
+                (labels ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("labels", it).add(label)
+                }
+        }
 
         /** The timestamp of the most recent message. */
         fun lastMessageAt(lastMessageAt: String) = lastMessageAt(JsonField.of(lastMessageAt))
@@ -503,8 +488,7 @@ private constructor(
          * .domainId()
          * .domainName()
          * .inboxId()
-         * .isRead()
-         * .isSpam()
+         * .labels()
          * .lastMessageAt()
          * .messageCount()
          * .subject()
@@ -520,8 +504,7 @@ private constructor(
                 checkRequired("domainId", domainId),
                 checkRequired("domainName", domainName),
                 checkRequired("inboxId", inboxId),
-                checkRequired("isRead", isRead),
-                checkRequired("isSpam", isSpam),
+                checkRequired("labels", labels).map { it.toImmutable() },
                 checkRequired("lastMessageAt", lastMessageAt),
                 checkRequired("messageCount", messageCount),
                 checkRequired("subject", subject),
@@ -543,8 +526,7 @@ private constructor(
         domainId()
         domainName()
         inboxId()
-        isRead()
-        isSpam()
+        labels()
         lastMessageAt()
         messageCount()
         subject()
@@ -573,8 +555,7 @@ private constructor(
             (if (domainId.asKnown().isPresent) 1 else 0) +
             (if (domainName.asKnown().isPresent) 1 else 0) +
             (if (inboxId.asKnown().isPresent) 1 else 0) +
-            (if (isRead.asKnown().isPresent) 1 else 0) +
-            (if (isSpam.asKnown().isPresent) 1 else 0) +
+            (labels.asKnown().getOrNull()?.size ?: 0) +
             (if (lastMessageAt.asKnown().isPresent) 1 else 0) +
             (if (messageCount.asKnown().isPresent) 1 else 0) +
             (if (subject.asKnown().isPresent) 1 else 0) +
@@ -592,8 +573,7 @@ private constructor(
             domainId == other.domainId &&
             domainName == other.domainName &&
             inboxId == other.inboxId &&
-            isRead == other.isRead &&
-            isSpam == other.isSpam &&
+            labels == other.labels &&
             lastMessageAt == other.lastMessageAt &&
             messageCount == other.messageCount &&
             subject == other.subject &&
@@ -609,8 +589,7 @@ private constructor(
             domainId,
             domainName,
             inboxId,
-            isRead,
-            isSpam,
+            labels,
             lastMessageAt,
             messageCount,
             subject,
@@ -622,5 +601,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Thread{id=$id, agentId=$agentId, createdAt=$createdAt, domainId=$domainId, domainName=$domainName, inboxId=$inboxId, isRead=$isRead, isSpam=$isSpam, lastMessageAt=$lastMessageAt, messageCount=$messageCount, subject=$subject, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "Thread{id=$id, agentId=$agentId, createdAt=$createdAt, domainId=$domainId, domainName=$domainName, inboxId=$inboxId, labels=$labels, lastMessageAt=$lastMessageAt, messageCount=$messageCount, subject=$subject, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

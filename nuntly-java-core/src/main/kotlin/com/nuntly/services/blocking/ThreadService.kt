@@ -37,7 +37,10 @@ interface ThreadService {
      */
     fun messages(): MessageService
 
-    /** Retrieve a thread. Auto-marks as read. */
+    /**
+     * Retrieve a thread. Pass ?markRead=true to automatically remove the unread label from all
+     * messages.
+     */
     fun retrieve(threadId: String): Thread = retrieve(threadId, ThreadRetrieveParams.none())
 
     /** @see retrieve */
@@ -66,7 +69,10 @@ interface ThreadService {
     fun retrieve(threadId: String, requestOptions: RequestOptions): Thread =
         retrieve(threadId, ThreadRetrieveParams.none(), requestOptions)
 
-    /** Update thread properties (read status, spam, agent). */
+    /**
+     * Update thread labels and agent assignment. Label operations apply to all messages in the
+     * thread.
+     */
     fun update(threadId: String): ThreadUpdateResponse = update(threadId, ThreadUpdateParams.none())
 
     /** @see update */

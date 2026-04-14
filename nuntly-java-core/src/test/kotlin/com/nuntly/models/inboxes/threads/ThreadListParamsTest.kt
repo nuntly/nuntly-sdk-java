@@ -13,8 +13,7 @@ internal class ThreadListParamsTest {
         ThreadListParams.builder()
             .inboxId("ibx_01kabn43yqyxn2bx4ve84mczd3")
             .cursor("cursor")
-            .isRead(true)
-            .isSpam(true)
+            .labels("labels")
             .limit(1.0)
             .build()
     }
@@ -34,8 +33,7 @@ internal class ThreadListParamsTest {
             ThreadListParams.builder()
                 .inboxId("ibx_01kabn43yqyxn2bx4ve84mczd3")
                 .cursor("cursor")
-                .isRead(true)
-                .isSpam(true)
+                .labels("labels")
                 .limit(1.0)
                 .build()
 
@@ -45,8 +43,7 @@ internal class ThreadListParamsTest {
             .isEqualTo(
                 QueryParams.builder()
                     .put("cursor", "cursor")
-                    .put("isRead", "true")
-                    .put("isSpam", "true")
+                    .put("labels", "labels")
                     .put("limit", "1.0")
                     .build()
             )

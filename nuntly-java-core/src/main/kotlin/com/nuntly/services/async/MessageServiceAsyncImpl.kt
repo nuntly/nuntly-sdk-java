@@ -26,6 +26,8 @@ import com.nuntly.models.messages.MessageListParams
 import com.nuntly.models.messages.MessageReplyParams
 import com.nuntly.models.messages.MessageReplyResponse
 import com.nuntly.models.messages.MessageRetrieveParams
+import com.nuntly.models.messages.MessageUpdateParams
+import com.nuntly.models.messages.MessageUpdateResponse
 import com.nuntly.services.async.messages.AttachmentServiceAsync
 import com.nuntly.services.async.messages.AttachmentServiceAsyncImpl
 import com.nuntly.services.async.messages.ContentServiceAsync
@@ -69,6 +71,13 @@ class MessageServiceAsyncImpl internal constructor(private val clientOptions: Cl
     ): CompletableFuture<MessageDetail> =
         // get /messages/{messageId}
         withRawResponse().retrieve(params, requestOptions).thenApply { it.parse() }
+
+    override fun update(
+        params: MessageUpdateParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<MessageUpdateResponse> =
+        // patch /messages/{messageId}
+        withRawResponse().update(params, requestOptions).thenApply { it.parse() }
 
     override fun list(
         params: MessageListParams,
@@ -148,6 +157,41 @@ class MessageServiceAsyncImpl internal constructor(private val clientOptions: Cl
                     errorHandler.handle(response).parseable {
                         response
                             .use { retrieveHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                            .data()
+                    }
+                }
+        }
+
+        private val updateHandler: Handler<DataEnvelope<MessageUpdateResponse>> =
+            jsonHandler<DataEnvelope<MessageUpdateResponse>>(clientOptions.jsonMapper)
+
+        override fun update(
+            params: MessageUpdateParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<MessageUpdateResponse>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("messageId", params.messageId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.PATCH)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("messages", params._pathParam(0))
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { updateHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

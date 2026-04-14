@@ -14,6 +14,8 @@ import com.nuntly.models.messages.MessageListParams
 import com.nuntly.models.messages.MessageReplyParams
 import com.nuntly.models.messages.MessageReplyResponse
 import com.nuntly.models.messages.MessageRetrieveParams
+import com.nuntly.models.messages.MessageUpdateParams
+import com.nuntly.models.messages.MessageUpdateResponse
 import com.nuntly.services.blocking.messages.AttachmentService
 import com.nuntly.services.blocking.messages.ContentService
 import java.util.function.Consumer
@@ -73,6 +75,38 @@ interface MessageService {
     /** @see retrieve */
     fun retrieve(messageId: String, requestOptions: RequestOptions): MessageDetail =
         retrieve(messageId, MessageRetrieveParams.none(), requestOptions)
+
+    /** Update message labels. Only available for messages in user-created inboxes. */
+    fun update(messageId: String): MessageUpdateResponse =
+        update(messageId, MessageUpdateParams.none())
+
+    /** @see update */
+    fun update(
+        messageId: String,
+        params: MessageUpdateParams = MessageUpdateParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): MessageUpdateResponse =
+        update(params.toBuilder().messageId(messageId).build(), requestOptions)
+
+    /** @see update */
+    fun update(
+        messageId: String,
+        params: MessageUpdateParams = MessageUpdateParams.none(),
+    ): MessageUpdateResponse = update(messageId, params, RequestOptions.none())
+
+    /** @see update */
+    fun update(
+        params: MessageUpdateParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): MessageUpdateResponse
+
+    /** @see update */
+    fun update(params: MessageUpdateParams): MessageUpdateResponse =
+        update(params, RequestOptions.none())
+
+    /** @see update */
+    fun update(messageId: String, requestOptions: RequestOptions): MessageUpdateResponse =
+        update(messageId, MessageUpdateParams.none(), requestOptions)
 
     /** List all received messages across inboxes. */
     fun list(): MessageListPage = list(MessageListParams.none())
@@ -208,6 +242,50 @@ interface MessageService {
             requestOptions: RequestOptions,
         ): HttpResponseFor<MessageDetail> =
             retrieve(messageId, MessageRetrieveParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `patch /messages/{messageId}`, but is otherwise the same
+         * as [MessageService.update].
+         */
+        @MustBeClosed
+        fun update(messageId: String): HttpResponseFor<MessageUpdateResponse> =
+            update(messageId, MessageUpdateParams.none())
+
+        /** @see update */
+        @MustBeClosed
+        fun update(
+            messageId: String,
+            params: MessageUpdateParams = MessageUpdateParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<MessageUpdateResponse> =
+            update(params.toBuilder().messageId(messageId).build(), requestOptions)
+
+        /** @see update */
+        @MustBeClosed
+        fun update(
+            messageId: String,
+            params: MessageUpdateParams = MessageUpdateParams.none(),
+        ): HttpResponseFor<MessageUpdateResponse> = update(messageId, params, RequestOptions.none())
+
+        /** @see update */
+        @MustBeClosed
+        fun update(
+            params: MessageUpdateParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<MessageUpdateResponse>
+
+        /** @see update */
+        @MustBeClosed
+        fun update(params: MessageUpdateParams): HttpResponseFor<MessageUpdateResponse> =
+            update(params, RequestOptions.none())
+
+        /** @see update */
+        @MustBeClosed
+        fun update(
+            messageId: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<MessageUpdateResponse> =
+            update(messageId, MessageUpdateParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /messages`, but is otherwise the same as

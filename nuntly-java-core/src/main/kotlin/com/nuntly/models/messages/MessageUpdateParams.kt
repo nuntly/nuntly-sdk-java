@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.nuntly.models.threads
+package com.nuntly.models.messages
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -21,21 +21,19 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/**
- * Update thread labels and agent assignment. Label operations apply to all messages in the thread.
- */
-class ThreadUpdateParams
+/** Update message labels. Only available for messages in user-created inboxes. */
+class MessageUpdateParams
 private constructor(
-    private val threadId: String?,
+    private val messageId: String?,
     private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    fun threadId(): Optional<String> = Optional.ofNullable(threadId)
+    fun messageId(): Optional<String> = Optional.ofNullable(messageId)
 
     /**
-     * Labels to add to all messages in the thread.
+     * Labels to add to the message.
      *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -43,15 +41,7 @@ private constructor(
     fun addLabels(): Optional<List<String>> = body.addLabels()
 
     /**
-     * The AI agent identifier.
-     *
-     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun agentId(): Optional<String> = body.agentId()
-
-    /**
-     * Labels to remove from all messages in the thread.
+     * Labels to remove from the message.
      *
      * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -64,13 +54,6 @@ private constructor(
      * Unlike [addLabels], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _addLabels(): JsonField<List<String>> = body._addLabels()
-
-    /**
-     * Returns the raw JSON value of [agentId].
-     *
-     * Unlike [agentId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _agentId(): JsonField<String> = body._agentId()
 
     /**
      * Returns the raw JSON value of [removeLabels].
@@ -91,32 +74,32 @@ private constructor(
 
     companion object {
 
-        @JvmStatic fun none(): ThreadUpdateParams = builder().build()
+        @JvmStatic fun none(): MessageUpdateParams = builder().build()
 
-        /** Returns a mutable builder for constructing an instance of [ThreadUpdateParams]. */
+        /** Returns a mutable builder for constructing an instance of [MessageUpdateParams]. */
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [ThreadUpdateParams]. */
+    /** A builder for [MessageUpdateParams]. */
     class Builder internal constructor() {
 
-        private var threadId: String? = null
+        private var messageId: String? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
-        internal fun from(threadUpdateParams: ThreadUpdateParams) = apply {
-            threadId = threadUpdateParams.threadId
-            body = threadUpdateParams.body.toBuilder()
-            additionalHeaders = threadUpdateParams.additionalHeaders.toBuilder()
-            additionalQueryParams = threadUpdateParams.additionalQueryParams.toBuilder()
+        internal fun from(messageUpdateParams: MessageUpdateParams) = apply {
+            messageId = messageUpdateParams.messageId
+            body = messageUpdateParams.body.toBuilder()
+            additionalHeaders = messageUpdateParams.additionalHeaders.toBuilder()
+            additionalQueryParams = messageUpdateParams.additionalQueryParams.toBuilder()
         }
 
-        fun threadId(threadId: String?) = apply { this.threadId = threadId }
+        fun messageId(messageId: String?) = apply { this.messageId = messageId }
 
-        /** Alias for calling [Builder.threadId] with `threadId.orElse(null)`. */
-        fun threadId(threadId: Optional<String>) = threadId(threadId.getOrNull())
+        /** Alias for calling [Builder.messageId] with `messageId.orElse(null)`. */
+        fun messageId(messageId: Optional<String>) = messageId(messageId.getOrNull())
 
         /**
          * Sets the entire request body.
@@ -124,12 +107,11 @@ private constructor(
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
          * - [addLabels]
-         * - [agentId]
          * - [removeLabels]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** Labels to add to all messages in the thread. */
+        /** Labels to add to the message. */
         fun addLabels(addLabels: List<String>) = apply { body.addLabels(addLabels) }
 
         /**
@@ -148,21 +130,7 @@ private constructor(
          */
         fun addAddLabel(addLabel: String) = apply { body.addAddLabel(addLabel) }
 
-        /** The AI agent identifier. */
-        fun agentId(agentId: String?) = apply { body.agentId(agentId) }
-
-        /** Alias for calling [Builder.agentId] with `agentId.orElse(null)`. */
-        fun agentId(agentId: Optional<String>) = agentId(agentId.getOrNull())
-
-        /**
-         * Sets [Builder.agentId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.agentId] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun agentId(agentId: JsonField<String>) = apply { body.agentId(agentId) }
-
-        /** Labels to remove from all messages in the thread. */
+        /** Labels to remove from the message. */
         fun removeLabels(removeLabels: List<String>) = apply { body.removeLabels(removeLabels) }
 
         /**
@@ -301,13 +269,13 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [ThreadUpdateParams].
+         * Returns an immutable instance of [MessageUpdateParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          */
-        fun build(): ThreadUpdateParams =
-            ThreadUpdateParams(
-                threadId,
+        fun build(): MessageUpdateParams =
+            MessageUpdateParams(
+                messageId,
                 body.build(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -318,7 +286,7 @@ private constructor(
 
     fun _pathParam(index: Int): String =
         when (index) {
-            0 -> threadId ?: ""
+            0 -> messageId ?: ""
             else -> ""
         }
 
@@ -330,7 +298,6 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val addLabels: JsonField<List<String>>,
-        private val agentId: JsonField<String>,
         private val removeLabels: JsonField<List<String>>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -340,14 +307,13 @@ private constructor(
             @JsonProperty("addLabels")
             @ExcludeMissing
             addLabels: JsonField<List<String>> = JsonMissing.of(),
-            @JsonProperty("agentId") @ExcludeMissing agentId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("removeLabels")
             @ExcludeMissing
             removeLabels: JsonField<List<String>> = JsonMissing.of(),
-        ) : this(addLabels, agentId, removeLabels, mutableMapOf())
+        ) : this(addLabels, removeLabels, mutableMapOf())
 
         /**
-         * Labels to add to all messages in the thread.
+         * Labels to add to the message.
          *
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -355,15 +321,7 @@ private constructor(
         fun addLabels(): Optional<List<String>> = addLabels.getOptional("addLabels")
 
         /**
-         * The AI agent identifier.
-         *
-         * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun agentId(): Optional<String> = agentId.getOptional("agentId")
-
-        /**
-         * Labels to remove from all messages in the thread.
+         * Labels to remove from the message.
          *
          * @throws NuntlyInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -378,13 +336,6 @@ private constructor(
         @JsonProperty("addLabels")
         @ExcludeMissing
         fun _addLabels(): JsonField<List<String>> = addLabels
-
-        /**
-         * Returns the raw JSON value of [agentId].
-         *
-         * Unlike [agentId], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("agentId") @ExcludeMissing fun _agentId(): JsonField<String> = agentId
 
         /**
          * Returns the raw JSON value of [removeLabels].
@@ -418,19 +369,17 @@ private constructor(
         class Builder internal constructor() {
 
             private var addLabels: JsonField<MutableList<String>>? = null
-            private var agentId: JsonField<String> = JsonMissing.of()
             private var removeLabels: JsonField<MutableList<String>>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
                 addLabels = body.addLabels.map { it.toMutableList() }
-                agentId = body.agentId
                 removeLabels = body.removeLabels.map { it.toMutableList() }
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** Labels to add to all messages in the thread. */
+            /** Labels to add to the message. */
             fun addLabels(addLabels: List<String>) = addLabels(JsonField.of(addLabels))
 
             /**
@@ -456,22 +405,7 @@ private constructor(
                     }
             }
 
-            /** The AI agent identifier. */
-            fun agentId(agentId: String?) = agentId(JsonField.ofNullable(agentId))
-
-            /** Alias for calling [Builder.agentId] with `agentId.orElse(null)`. */
-            fun agentId(agentId: Optional<String>) = agentId(agentId.getOrNull())
-
-            /**
-             * Sets [Builder.agentId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.agentId] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun agentId(agentId: JsonField<String>) = apply { this.agentId = agentId }
-
-            /** Labels to remove from all messages in the thread. */
+            /** Labels to remove from the message. */
             fun removeLabels(removeLabels: List<String>) = removeLabels(JsonField.of(removeLabels))
 
             /**
@@ -524,7 +458,6 @@ private constructor(
             fun build(): Body =
                 Body(
                     (addLabels ?: JsonMissing.of()).map { it.toImmutable() },
-                    agentId,
                     (removeLabels ?: JsonMissing.of()).map { it.toImmutable() },
                     additionalProperties.toMutableMap(),
                 )
@@ -538,7 +471,6 @@ private constructor(
             }
 
             addLabels()
-            agentId()
             removeLabels()
             validated = true
         }
@@ -560,7 +492,6 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (addLabels.asKnown().getOrNull()?.size ?: 0) +
-                (if (agentId.asKnown().isPresent) 1 else 0) +
                 (removeLabels.asKnown().getOrNull()?.size ?: 0)
 
         override fun equals(other: Any?): Boolean {
@@ -570,19 +501,18 @@ private constructor(
 
             return other is Body &&
                 addLabels == other.addLabels &&
-                agentId == other.agentId &&
                 removeLabels == other.removeLabels &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(addLabels, agentId, removeLabels, additionalProperties)
+            Objects.hash(addLabels, removeLabels, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{addLabels=$addLabels, agentId=$agentId, removeLabels=$removeLabels, additionalProperties=$additionalProperties}"
+            "Body{addLabels=$addLabels, removeLabels=$removeLabels, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -590,16 +520,16 @@ private constructor(
             return true
         }
 
-        return other is ThreadUpdateParams &&
-            threadId == other.threadId &&
+        return other is MessageUpdateParams &&
+            messageId == other.messageId &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(threadId, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(messageId, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "ThreadUpdateParams{threadId=$threadId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "MessageUpdateParams{messageId=$messageId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

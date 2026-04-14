@@ -4,6 +4,7 @@ package com.nuntly.services.async
 
 import com.nuntly.TestServerExtension
 import com.nuntly.client.okhttp.NuntlyOkHttpClientAsync
+import com.nuntly.models.threads.ThreadRetrieveParams
 import com.nuntly.models.threads.ThreadUpdateParams
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -20,7 +21,13 @@ internal class ThreadServiceAsyncTest {
                 .build()
         val threadServiceAsync = client.threads()
 
-        val threadFuture = threadServiceAsync.retrieve("thr_01kabn43yqyxn2bx4ve84mczd3")
+        val threadFuture =
+            threadServiceAsync.retrieve(
+                ThreadRetrieveParams.builder()
+                    .threadId("thr_01kabn43yqyxn2bx4ve84mczd3")
+                    .markRead("markRead")
+                    .build()
+            )
 
         val thread = threadFuture.get()
         thread.validate()
@@ -39,9 +46,9 @@ internal class ThreadServiceAsyncTest {
             threadServiceAsync.update(
                 ThreadUpdateParams.builder()
                     .threadId("thr_01kabn43yqyxn2bx4ve84mczd3")
+                    .addAddLabel("x")
                     .agentId("agentId")
-                    .isRead(true)
-                    .isSpam(true)
+                    .addRemoveLabel("x")
                     .build()
             )
 

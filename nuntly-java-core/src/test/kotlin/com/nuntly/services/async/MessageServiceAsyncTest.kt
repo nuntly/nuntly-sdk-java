@@ -6,6 +6,7 @@ import com.nuntly.TestServerExtension
 import com.nuntly.client.okhttp.NuntlyOkHttpClientAsync
 import com.nuntly.models.messages.MessageForwardParams
 import com.nuntly.models.messages.MessageReplyParams
+import com.nuntly.models.messages.MessageUpdateParams
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -25,6 +26,28 @@ internal class MessageServiceAsyncTest {
 
         val messageDetail = messageDetailFuture.get()
         messageDetail.validate()
+    }
+
+    @Test
+    fun update() {
+        val client =
+            NuntlyOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val messageServiceAsync = client.messages()
+
+        val messageFuture =
+            messageServiceAsync.update(
+                MessageUpdateParams.builder()
+                    .messageId("imsg_01kabn43yqyxn2bx4ve84mczd3")
+                    .addAddLabel("x")
+                    .addRemoveLabel("x")
+                    .build()
+            )
+
+        val message = messageFuture.get()
+        message.validate()
     }
 
     @Test

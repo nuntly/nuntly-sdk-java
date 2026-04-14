@@ -13,6 +13,8 @@ import com.nuntly.models.messages.MessageListParams
 import com.nuntly.models.messages.MessageReplyParams
 import com.nuntly.models.messages.MessageReplyResponse
 import com.nuntly.models.messages.MessageRetrieveParams
+import com.nuntly.models.messages.MessageUpdateParams
+import com.nuntly.models.messages.MessageUpdateResponse
 import com.nuntly.services.async.messages.AttachmentServiceAsync
 import com.nuntly.services.async.messages.ContentServiceAsync
 import java.util.concurrent.CompletableFuture
@@ -77,6 +79,41 @@ interface MessageServiceAsync {
         requestOptions: RequestOptions,
     ): CompletableFuture<MessageDetail> =
         retrieve(messageId, MessageRetrieveParams.none(), requestOptions)
+
+    /** Update message labels. Only available for messages in user-created inboxes. */
+    fun update(messageId: String): CompletableFuture<MessageUpdateResponse> =
+        update(messageId, MessageUpdateParams.none())
+
+    /** @see update */
+    fun update(
+        messageId: String,
+        params: MessageUpdateParams = MessageUpdateParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<MessageUpdateResponse> =
+        update(params.toBuilder().messageId(messageId).build(), requestOptions)
+
+    /** @see update */
+    fun update(
+        messageId: String,
+        params: MessageUpdateParams = MessageUpdateParams.none(),
+    ): CompletableFuture<MessageUpdateResponse> = update(messageId, params, RequestOptions.none())
+
+    /** @see update */
+    fun update(
+        params: MessageUpdateParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<MessageUpdateResponse>
+
+    /** @see update */
+    fun update(params: MessageUpdateParams): CompletableFuture<MessageUpdateResponse> =
+        update(params, RequestOptions.none())
+
+    /** @see update */
+    fun update(
+        messageId: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<MessageUpdateResponse> =
+        update(messageId, MessageUpdateParams.none(), requestOptions)
 
     /** List all received messages across inboxes. */
     fun list(): CompletableFuture<MessageListPageAsync> = list(MessageListParams.none())
@@ -221,6 +258,47 @@ interface MessageServiceAsync {
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<MessageDetail>> =
             retrieve(messageId, MessageRetrieveParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `patch /messages/{messageId}`, but is otherwise the same
+         * as [MessageServiceAsync.update].
+         */
+        fun update(messageId: String): CompletableFuture<HttpResponseFor<MessageUpdateResponse>> =
+            update(messageId, MessageUpdateParams.none())
+
+        /** @see update */
+        fun update(
+            messageId: String,
+            params: MessageUpdateParams = MessageUpdateParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<MessageUpdateResponse>> =
+            update(params.toBuilder().messageId(messageId).build(), requestOptions)
+
+        /** @see update */
+        fun update(
+            messageId: String,
+            params: MessageUpdateParams = MessageUpdateParams.none(),
+        ): CompletableFuture<HttpResponseFor<MessageUpdateResponse>> =
+            update(messageId, params, RequestOptions.none())
+
+        /** @see update */
+        fun update(
+            params: MessageUpdateParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<MessageUpdateResponse>>
+
+        /** @see update */
+        fun update(
+            params: MessageUpdateParams
+        ): CompletableFuture<HttpResponseFor<MessageUpdateResponse>> =
+            update(params, RequestOptions.none())
+
+        /** @see update */
+        fun update(
+            messageId: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<MessageUpdateResponse>> =
+            update(messageId, MessageUpdateParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /messages`, but is otherwise the same as

@@ -4,6 +4,7 @@ package com.nuntly.services.blocking
 
 import com.nuntly.TestServerExtension
 import com.nuntly.client.okhttp.NuntlyOkHttpClient
+import com.nuntly.models.threads.ThreadRetrieveParams
 import com.nuntly.models.threads.ThreadUpdateParams
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -20,7 +21,13 @@ internal class ThreadServiceTest {
                 .build()
         val threadService = client.threads()
 
-        val thread = threadService.retrieve("thr_01kabn43yqyxn2bx4ve84mczd3")
+        val thread =
+            threadService.retrieve(
+                ThreadRetrieveParams.builder()
+                    .threadId("thr_01kabn43yqyxn2bx4ve84mczd3")
+                    .markRead("markRead")
+                    .build()
+            )
 
         thread.validate()
     }
@@ -38,9 +45,9 @@ internal class ThreadServiceTest {
             threadService.update(
                 ThreadUpdateParams.builder()
                     .threadId("thr_01kabn43yqyxn2bx4ve84mczd3")
+                    .addAddLabel("x")
                     .agentId("agentId")
-                    .isRead(true)
-                    .isSpam(true)
+                    .addRemoveLabel("x")
                     .build()
             )
 

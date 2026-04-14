@@ -29,6 +29,7 @@ private constructor(
     private val cc: JsonField<List<String>>,
     private val createdAt: JsonField<String>,
     private val from: JsonField<String>,
+    private val labels: JsonField<List<String>>,
     private val messageId: JsonField<String>,
     private val receivedAt: JsonField<String>,
     private val replyTo: JsonField<List<String>>,
@@ -49,6 +50,7 @@ private constructor(
         @JsonProperty("cc") @ExcludeMissing cc: JsonField<List<String>> = JsonMissing.of(),
         @JsonProperty("createdAt") @ExcludeMissing createdAt: JsonField<String> = JsonMissing.of(),
         @JsonProperty("from") @ExcludeMissing from: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("labels") @ExcludeMissing labels: JsonField<List<String>> = JsonMissing.of(),
         @JsonProperty("messageId") @ExcludeMissing messageId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("receivedAt")
         @ExcludeMissing
@@ -67,6 +69,7 @@ private constructor(
         cc,
         createdAt,
         from,
+        labels,
         messageId,
         receivedAt,
         replyTo,
@@ -125,6 +128,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun from(): String = from.getRequired("from")
+
+    /**
+     * The message labels.
+     *
+     * @throws NuntlyInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun labels(): List<String> = labels.getRequired("labels")
 
     /**
      * The email Message-ID header.
@@ -227,6 +238,13 @@ private constructor(
     @JsonProperty("from") @ExcludeMissing fun _from(): JsonField<String> = from
 
     /**
+     * Returns the raw JSON value of [labels].
+     *
+     * Unlike [labels], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("labels") @ExcludeMissing fun _labels(): JsonField<List<String>> = labels
+
+    /**
      * Returns the raw JSON value of [messageId].
      *
      * Unlike [messageId], this method doesn't throw if the JSON field has an unexpected type.
@@ -300,6 +318,7 @@ private constructor(
          * .cc()
          * .createdAt()
          * .from()
+         * .labels()
          * .messageId()
          * .receivedAt()
          * .replyTo()
@@ -321,6 +340,7 @@ private constructor(
         private var cc: JsonField<MutableList<String>>? = null
         private var createdAt: JsonField<String>? = null
         private var from: JsonField<String>? = null
+        private var labels: JsonField<MutableList<String>>? = null
         private var messageId: JsonField<String>? = null
         private var receivedAt: JsonField<String>? = null
         private var replyTo: JsonField<MutableList<String>>? = null
@@ -338,6 +358,7 @@ private constructor(
             cc = messageListResponse.cc.map { it.toMutableList() }
             createdAt = messageListResponse.createdAt
             from = messageListResponse.from
+            labels = messageListResponse.labels.map { it.toMutableList() }
             messageId = messageListResponse.messageId
             receivedAt = messageListResponse.receivedAt
             replyTo = messageListResponse.replyTo.map { it.toMutableList() }
@@ -448,6 +469,32 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun from(from: JsonField<String>) = apply { this.from = from }
+
+        /** The message labels. */
+        fun labels(labels: List<String>) = labels(JsonField.of(labels))
+
+        /**
+         * Sets [Builder.labels] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.labels] with a well-typed `List<String>` value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun labels(labels: JsonField<List<String>>) = apply {
+            this.labels = labels.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [String] to [labels].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addLabel(label: String) = apply {
+            labels =
+                (labels ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("labels", it).add(label)
+                }
+        }
 
         /** The email Message-ID header. */
         fun messageId(messageId: String) = messageId(JsonField.of(messageId))
@@ -588,6 +635,7 @@ private constructor(
          * .cc()
          * .createdAt()
          * .from()
+         * .labels()
          * .messageId()
          * .receivedAt()
          * .replyTo()
@@ -607,6 +655,7 @@ private constructor(
                 checkRequired("cc", cc).map { it.toImmutable() },
                 checkRequired("createdAt", createdAt),
                 checkRequired("from", from),
+                checkRequired("labels", labels).map { it.toImmutable() },
                 checkRequired("messageId", messageId),
                 checkRequired("receivedAt", receivedAt),
                 checkRequired("replyTo", replyTo).map { it.toImmutable() },
@@ -631,6 +680,7 @@ private constructor(
         cc()
         createdAt()
         from()
+        labels()
         messageId()
         receivedAt()
         replyTo()
@@ -662,6 +712,7 @@ private constructor(
             (cc.asKnown().getOrNull()?.size ?: 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
             (if (from.asKnown().isPresent) 1 else 0) +
+            (labels.asKnown().getOrNull()?.size ?: 0) +
             (if (messageId.asKnown().isPresent) 1 else 0) +
             (if (receivedAt.asKnown().isPresent) 1 else 0) +
             (replyTo.asKnown().getOrNull()?.size ?: 0) +
@@ -820,6 +871,7 @@ private constructor(
             cc == other.cc &&
             createdAt == other.createdAt &&
             from == other.from &&
+            labels == other.labels &&
             messageId == other.messageId &&
             receivedAt == other.receivedAt &&
             replyTo == other.replyTo &&
@@ -838,6 +890,7 @@ private constructor(
             cc,
             createdAt,
             from,
+            labels,
             messageId,
             receivedAt,
             replyTo,
@@ -852,5 +905,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "MessageListResponse{id=$id, attachmentCount=$attachmentCount, bcc=$bcc, cc=$cc, createdAt=$createdAt, from=$from, messageId=$messageId, receivedAt=$receivedAt, replyTo=$replyTo, status=$status, subject=$subject, threadId=$threadId, to=$to, additionalProperties=$additionalProperties}"
+        "MessageListResponse{id=$id, attachmentCount=$attachmentCount, bcc=$bcc, cc=$cc, createdAt=$createdAt, from=$from, labels=$labels, messageId=$messageId, receivedAt=$receivedAt, replyTo=$replyTo, status=$status, subject=$subject, threadId=$threadId, to=$to, additionalProperties=$additionalProperties}"
 }
