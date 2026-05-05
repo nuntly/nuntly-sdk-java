@@ -5,6 +5,7 @@ package com.nuntly.errors
 import com.nuntly.core.JsonValue
 import com.nuntly.core.checkRequired
 import com.nuntly.core.http.Headers
+import com.nuntly.core.jsonMapper
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
@@ -14,7 +15,11 @@ private constructor(
     private val headers: Headers,
     private val body: JsonValue,
     cause: Throwable?,
-) : NuntlyServiceException("$statusCode: $body", cause) {
+) :
+    NuntlyServiceException(
+        "$statusCode: ${if (body.isMissing()) "Unknown" else jsonMapper().writeValueAsString(body)}",
+        cause,
+    ) {
 
     override fun statusCode(): Int = statusCode
 

@@ -5,12 +5,16 @@ package com.nuntly.errors
 import com.nuntly.core.JsonValue
 import com.nuntly.core.checkRequired
 import com.nuntly.core.http.Headers
+import com.nuntly.core.jsonMapper
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class UnprocessableEntityException
 private constructor(private val headers: Headers, private val body: JsonValue, cause: Throwable?) :
-    NuntlyServiceException("422: $body", cause) {
+    NuntlyServiceException(
+        "422: ${if (body.isMissing()) "Unknown" else jsonMapper().writeValueAsString(body)}",
+        cause,
+    ) {
 
     override fun statusCode(): Int = 422
 
