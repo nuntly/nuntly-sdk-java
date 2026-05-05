@@ -679,6 +679,14 @@ private constructor(
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): DomainRetrieveResponse = apply {
         if (validated) {
             return@apply
@@ -843,6 +851,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): ReceivingStatus = apply {
             if (validated) {
                 return@apply
@@ -1335,6 +1352,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): Record = apply {
             if (validated) {
                 return@apply
@@ -1490,6 +1516,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
             fun validate(): Group = apply {
                 if (validated) {
                     return@apply
@@ -1628,6 +1664,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
             fun validate(): RecordType = apply {
                 if (validated) {
                     return@apply
@@ -1776,6 +1822,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
             fun validate(): Status = apply {
                 if (validated) {
                     return@apply
@@ -1937,6 +1993,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): Region = apply {
             if (validated) {
                 return@apply
@@ -2073,6 +2138,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): SendingStatus = apply {
             if (validated) {
                 return@apply
@@ -2217,6 +2291,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): Status = apply {
             if (validated) {
                 return@apply

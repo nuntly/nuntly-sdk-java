@@ -234,6 +234,14 @@ private constructor(
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): EmailFailedEvent = apply {
         if (validated) {
             return@apply
@@ -938,6 +946,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): Data = apply {
             if (validated) {
                 return@apply
@@ -1097,6 +1114,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
             fun validate(): Failure = apply {
                 if (validated) {
                     return@apply
@@ -1162,6 +1189,36 @@ private constructor(
 
             fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
+            /**
+             * Maps this instance's current variant to a value of type [T] using the given
+             * [visitor].
+             *
+             * Note that this method is _not_ forwards compatible with new variants from the API,
+             * unless [visitor] overrides [Visitor.unknown]. To handle variants not known to this
+             * version of the SDK gracefully, consider overriding [Visitor.unknown]:
+             * ```java
+             * import com.nuntly.core.JsonValue;
+             * import java.util.Optional;
+             *
+             * Optional<String> result = to.accept(new To.Visitor<Optional<String>>() {
+             *     @Override
+             *     public Optional<String> visitString(String string) {
+             *         return Optional.of(string.toString());
+             *     }
+             *
+             *     // ...
+             *
+             *     @Override
+             *     public Optional<String> unknown(JsonValue json) {
+             *         // Or inspect the `json`.
+             *         return Optional.empty();
+             *     }
+             * });
+             * ```
+             *
+             * @throws NuntlyInvalidDataException if [Visitor.unknown] is not overridden in
+             *   [visitor] and the current variant is unknown.
+             */
             fun <T> accept(visitor: Visitor<T>): T =
                 when {
                     string != null -> visitor.visitString(string)
@@ -1171,6 +1228,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
             fun validate(): To = apply {
                 if (validated) {
                     return@apply
@@ -1330,6 +1397,36 @@ private constructor(
 
             fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
+            /**
+             * Maps this instance's current variant to a value of type [T] using the given
+             * [visitor].
+             *
+             * Note that this method is _not_ forwards compatible with new variants from the API,
+             * unless [visitor] overrides [Visitor.unknown]. To handle variants not known to this
+             * version of the SDK gracefully, consider overriding [Visitor.unknown]:
+             * ```java
+             * import com.nuntly.core.JsonValue;
+             * import java.util.Optional;
+             *
+             * Optional<String> result = bcc.accept(new Bcc.Visitor<Optional<String>>() {
+             *     @Override
+             *     public Optional<String> visitString(String string) {
+             *         return Optional.of(string.toString());
+             *     }
+             *
+             *     // ...
+             *
+             *     @Override
+             *     public Optional<String> unknown(JsonValue json) {
+             *         // Or inspect the `json`.
+             *         return Optional.empty();
+             *     }
+             * });
+             * ```
+             *
+             * @throws NuntlyInvalidDataException if [Visitor.unknown] is not overridden in
+             *   [visitor] and the current variant is unknown.
+             */
             fun <T> accept(visitor: Visitor<T>): T =
                 when {
                     string != null -> visitor.visitString(string)
@@ -1339,6 +1436,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
             fun validate(): Bcc = apply {
                 if (validated) {
                     return@apply
@@ -1500,6 +1607,36 @@ private constructor(
 
             fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
+            /**
+             * Maps this instance's current variant to a value of type [T] using the given
+             * [visitor].
+             *
+             * Note that this method is _not_ forwards compatible with new variants from the API,
+             * unless [visitor] overrides [Visitor.unknown]. To handle variants not known to this
+             * version of the SDK gracefully, consider overriding [Visitor.unknown]:
+             * ```java
+             * import com.nuntly.core.JsonValue;
+             * import java.util.Optional;
+             *
+             * Optional<String> result = cc.accept(new Cc.Visitor<Optional<String>>() {
+             *     @Override
+             *     public Optional<String> visitString(String string) {
+             *         return Optional.of(string.toString());
+             *     }
+             *
+             *     // ...
+             *
+             *     @Override
+             *     public Optional<String> unknown(JsonValue json) {
+             *         // Or inspect the `json`.
+             *         return Optional.empty();
+             *     }
+             * });
+             * ```
+             *
+             * @throws NuntlyInvalidDataException if [Visitor.unknown] is not overridden in
+             *   [visitor] and the current variant is unknown.
+             */
             fun <T> accept(visitor: Visitor<T>): T =
                 when {
                     string != null -> visitor.visitString(string)
@@ -1509,6 +1646,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
             fun validate(): Cc = apply {
                 if (validated) {
                     return@apply
@@ -1794,6 +1941,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
             fun validate(): Header = apply {
                 if (validated) {
                     return@apply
@@ -1864,6 +2021,36 @@ private constructor(
 
             fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
+            /**
+             * Maps this instance's current variant to a value of type [T] using the given
+             * [visitor].
+             *
+             * Note that this method is _not_ forwards compatible with new variants from the API,
+             * unless [visitor] overrides [Visitor.unknown]. To handle variants not known to this
+             * version of the SDK gracefully, consider overriding [Visitor.unknown]:
+             * ```java
+             * import com.nuntly.core.JsonValue;
+             * import java.util.Optional;
+             *
+             * Optional<String> result = replyTo.accept(new ReplyTo.Visitor<Optional<String>>() {
+             *     @Override
+             *     public Optional<String> visitString(String string) {
+             *         return Optional.of(string.toString());
+             *     }
+             *
+             *     // ...
+             *
+             *     @Override
+             *     public Optional<String> unknown(JsonValue json) {
+             *         // Or inspect the `json`.
+             *         return Optional.empty();
+             *     }
+             * });
+             * ```
+             *
+             * @throws NuntlyInvalidDataException if [Visitor.unknown] is not overridden in
+             *   [visitor] and the current variant is unknown.
+             */
             fun <T> accept(visitor: Visitor<T>): T =
                 when {
                     string != null -> visitor.visitString(string)
@@ -1873,6 +2060,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
             fun validate(): ReplyTo = apply {
                 if (validated) {
                     return@apply
@@ -2073,6 +2270,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
             fun validate(): Tags = apply {
                 if (validated) {
                     return@apply

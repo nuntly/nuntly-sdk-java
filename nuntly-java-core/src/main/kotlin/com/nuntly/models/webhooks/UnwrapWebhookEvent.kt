@@ -215,6 +215,35 @@ private constructor(
 
     fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
+    /**
+     * Maps this instance's current variant to a value of type [T] using the given [visitor].
+     *
+     * Note that this method is _not_ forwards compatible with new variants from the API, unless
+     * [visitor] overrides [Visitor.unknown]. To handle variants not known to this version of the
+     * SDK gracefully, consider overriding [Visitor.unknown]:
+     * ```java
+     * import com.nuntly.core.JsonValue;
+     * import java.util.Optional;
+     *
+     * Optional<String> result = unwrapWebhookEvent.accept(new UnwrapWebhookEvent.Visitor<Optional<String>>() {
+     *     @Override
+     *     public Optional<String> visitEmailQueued(EmailQueuedEvent emailQueued) {
+     *         return Optional.of(emailQueued.toString());
+     *     }
+     *
+     *     // ...
+     *
+     *     @Override
+     *     public Optional<String> unknown(JsonValue json) {
+     *         // Or inspect the `json`.
+     *         return Optional.empty();
+     *     }
+     * });
+     * ```
+     *
+     * @throws NuntlyInvalidDataException if [Visitor.unknown] is not overridden in [visitor] and
+     *   the current variant is unknown.
+     */
     fun <T> accept(visitor: Visitor<T>): T =
         when {
             emailQueued != null -> visitor.visitEmailQueued(emailQueued)
@@ -242,6 +271,14 @@ private constructor(
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): UnwrapWebhookEvent = apply {
         if (validated) {
             return@apply
@@ -1009,6 +1046,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): MessageRejected = apply {
             if (validated) {
                 return@apply
@@ -1371,6 +1417,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws NuntlyInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
             fun validate(): Data = apply {
                 if (validated) {
                     return@apply
@@ -1503,6 +1559,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws NuntlyInvalidDataException if any value type in this object doesn't match
+                 *   its expected type.
+                 */
                 fun validate(): Reason = apply {
                     if (validated) {
                         return@apply
