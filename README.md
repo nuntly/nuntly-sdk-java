@@ -460,6 +460,21 @@ NuntlyClient client = NuntlyOkHttpClient.builder()
     .build();
 ```
 
+If the proxy responds with `407 Proxy Authentication Required`, supply credentials by also configuring `proxyAuthenticator`:
+
+```java
+import com.nuntly.client.NuntlyClient;
+import com.nuntly.client.okhttp.NuntlyOkHttpClient;
+import com.nuntly.core.http.ProxyAuthenticator;
+
+NuntlyClient client = NuntlyOkHttpClient.builder()
+    .fromEnv()
+    .proxy(...)
+    // Or a custom implementation of `ProxyAuthenticator`.
+    .proxyAuthenticator(ProxyAuthenticator.basic("username", "password"))
+    .build();
+```
+
 ### Connection pooling
 
 To customize the underlying OkHttp connection pool, configure the client using the `maxIdleConnections` and `keepAliveDuration` methods:
