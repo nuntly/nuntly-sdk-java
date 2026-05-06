@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.6.0 (2026-05-06)
+
+Full Changelog: [v0.5.0...v0.6.0](https://github.com/nuntly/nuntly-sdk-java/compare/v0.5.0...v0.6.0)
+
+### Features
+
+* **api:** implement label ([9106e39](https://github.com/nuntly/nuntly-sdk-java/commit/9106e39a9f68032114ada016fb3e6d6a1be4cf27))
+* **client:** more robust error parsing ([cc836e0](https://github.com/nuntly/nuntly-sdk-java/commit/cc836e0fed4853538d946b64125c6cc402fcbdbc))
+* **client:** support proxy authentication ([e6e0f39](https://github.com/nuntly/nuntly-sdk-java/commit/e6e0f3929ae6693a5d300ab4efdbc729819c0182))
+* support setting headers via env ([fba15cd](https://github.com/nuntly/nuntly-sdk-java/commit/fba15cddd34b79348161aa1036496e5aeb9e3170))
+
+
+### Performance Improvements
+
+* **client:** create one json mapper ([f349b91](https://github.com/nuntly/nuntly-sdk-java/commit/f349b91d30687e78cb5f1389fdbb8abb73e6a28c))
+
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([be6c700](https://github.com/nuntly/nuntly-sdk-java/commit/be6c7000aa0ec54b5abd5acc023c3d2ffd69969a))
+* **internal:** update multipart form array serialization ([7cc35eb](https://github.com/nuntly/nuntly-sdk-java/commit/7cc35eb8ed276450e7fbc1617c32149a12818dd4))
+* remove duplicated dokka setup ([b905581](https://github.com/nuntly/nuntly-sdk-java/commit/b90558163d03ec7305341c5929a47a678c6f1889))
+* **tests:** bump steady to v0.19.7 ([9ad4c85](https://github.com/nuntly/nuntly-sdk-java/commit/9ad4c85cf8e51352f661d7ee640ae1d8dd724a8f))
+* **tests:** bump steady to v0.20.1 ([4ca6c5e](https://github.com/nuntly/nuntly-sdk-java/commit/4ca6c5e8299d69f16020dc83f95452a25e9de016))
+* **tests:** bump steady to v0.20.2 ([f406712](https://github.com/nuntly/nuntly-sdk-java/commit/f406712b2daed702c802028b63b1f97facd75454))
+* **tests:** bump steady to v0.22.1 ([0043aa0](https://github.com/nuntly/nuntly-sdk-java/commit/0043aa083c9f94bd71e9be4552431ffee23c76c9))
+
+
+### Documentation
+
+* clarify forwards compat behavior ([3dfae7a](https://github.com/nuntly/nuntly-sdk-java/commit/3dfae7a1b98935aba71e07f06e13f2e68888203d))
+
 ## 0.5.0 (2026-03-24)
 
 Full Changelog: [v0.4.0...v0.5.0](https://github.com/nuntly/nuntly-sdk-java/compare/v0.4.0...v0.5.0)
