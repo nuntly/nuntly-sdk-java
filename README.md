@@ -139,28 +139,6 @@ System.out.println(response.data().status());
 System.out.println(response.response().headers().firstValue("x-request-id"));
 ```
 
-## Resources
-
-- `nuntly.emails()` - send, retrieve, list, cancel
-  - `.stats()` - retrieve
-  - `.events()` - list
-  - `.content()` - retrieve
-  - `.bulk()` - send, list
-- `nuntly.domains()` - create, retrieve, list, update, delete
-- `nuntly.webhooks()` - create, retrieve, list, update, delete
-  - `.events()` - list, replay, deliveries
-- `nuntly.organizations()` - retrieve, list
-  - `.usage()` - retrieve
-- `nuntly.inboxes()` - create, retrieve, list, update, delete
-- `nuntly.agents()` - memory
-- `nuntly.threads()` - retrieve, update
-  - `.messages()` - list
-- `nuntly.messages()` - retrieve, list, reply, forward
-  - `.content()` - retrieve
-  - `.attachments()` - list, retrieve
-- `nuntly.namespaces()` - create, retrieve, list, update, delete
-- `nuntly.apiKeys()` - create, retrieve, list, update, delete
-
 ## License
 
 MIT. See [LICENSE](./LICENSE).
