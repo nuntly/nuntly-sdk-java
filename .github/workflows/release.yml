@@ -1,0 +1,57 @@
+# Prerequisites (one-time, in build.gradle.kts of :sdk and :spring modules):
+#   plugins { id("com.vanniktech.maven.publish") version "0.30.0" }
+#   mavenPublishing {
+#     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, true)
+#     signAllPublications()
+#     coordinates("com.nuntly", "nuntly-java", version.toString())
+#     pom { /* name, description, url, scm, developers, licenses */ }
+#   }
+# The Sonatype Central Portal namespace `com.nuntly` must be verified via DNS TXT
+# (one-time, ~24h propagation). See sdks/release-templates/README.md.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish to Maven Central
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    environment: release
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Verify tag matches Gradle version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          GRADLE_VERSION=$(grep -E '^version = ' sdk/build.gradle.kts | head -1 | sed -E 's/.*"(.+)".*/\1/')
+          if [ "$TAG_VERSION" != "$GRADLE_VERSION" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match Gradle version $GRADLE_VERSION"
+            exit 1
+          fi
+
+      - name: Build, test, sign, and publish
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
+        run: ./gradlew build :sdk:publishAndReleaseToMavenCentral :spring:publishAndReleaseToMavenCentral --no-configuration-cache
