@@ -2,6 +2,7 @@ package com.nuntly.sdk.resources;
 
 import com.nuntly.sdk.*;
 import com.nuntly.sdk.models.*;
+import com.nuntly.sdk.resources.messages.*;
 import java.util.*;
 
 public final class Messages extends Resource {
