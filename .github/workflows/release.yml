@@ -43,6 +43,11 @@ jobs:
         run: |
           TAG_VERSION="${GITHUB_REF_NAME#v}"
           GRADLE_VERSION=$(grep -E '^version = ' sdk/build.gradle.kts | head -1 | sed -E 's/.*"(.+)".*/\1/')
+          CORE_VERSION=$(grep -E '^version = ' core/build.gradle.kts | head -1 | sed -E 's/.*"(.+)".*/\1/')
+          if [ "$CORE_VERSION" != "$GRADLE_VERSION" ]; then
+            echo "::error::core version $CORE_VERSION does not match sdk version $GRADLE_VERSION"
+            exit 1
+          fi
           if [ "$TAG_VERSION" != "$GRADLE_VERSION" ]; then
             echo "::error::Tag $GITHUB_REF_NAME does not match Gradle version $GRADLE_VERSION"
             exit 1
@@ -54,4 +59,4 @@ jobs:
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
-        run: ./gradlew build :sdk:publishAndReleaseToMavenCentral :spring:publishAndReleaseToMavenCentral --no-configuration-cache
+        run: ./gradlew build :core:publishAndReleaseToMavenCentral :sdk:publishAndReleaseToMavenCentral :spring:publishAndReleaseToMavenCentral --no-configuration-cache
