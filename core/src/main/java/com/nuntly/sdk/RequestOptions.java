@@ -5,9 +5,12 @@ import java.util.Map;
 import java.util.Optional;
 
 public record RequestOptions(
-    Optional<Duration> timeout, Optional<Integer> maxRetries, Map<String, String> headers) {
+    Optional<Duration> timeout,
+    Optional<Integer> maxRetries,
+    Map<String, String> headers,
+    Optional<String> idempotencyKey) {
   public static RequestOptions none() {
-    return new RequestOptions(Optional.empty(), Optional.empty(), Map.of());
+    return new RequestOptions(Optional.empty(), Optional.empty(), Map.of(), Optional.empty());
   }
 
   public static Builder builder() {
@@ -18,6 +21,7 @@ public record RequestOptions(
     private Duration timeout;
     private Integer maxRetries;
     private Map<String, String> headers = Map.of();
+    private String idempotencyKey;
 
     public Builder timeout(Duration timeout) {
       this.timeout = timeout;
@@ -34,9 +38,22 @@ public record RequestOptions(
       return this;
     }
 
+    /**
+     * Set an explicit idempotency key for endpoints that support server-side deduplication. When
+     * omitted, the SDK auto-generates a UUID v4 for {@code emails().send()} and {@code
+     * emails().bulk().send()} so transient retries replay safely without duplicate sends.
+     */
+    public Builder idempotencyKey(String idempotencyKey) {
+      this.idempotencyKey = idempotencyKey;
+      return this;
+    }
+
     public RequestOptions build() {
       return new RequestOptions(
-          Optional.ofNullable(timeout), Optional.ofNullable(maxRetries), headers);
+          Optional.ofNullable(timeout),
+          Optional.ofNullable(maxRetries),
+          headers,
+          Optional.ofNullable(idempotencyKey));
     }
   }
 }
