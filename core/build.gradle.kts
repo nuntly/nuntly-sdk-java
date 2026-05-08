@@ -1,6 +1,9 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     `java-library`
     id("com.diffplug.spotless") version "6.25.0"
+    id("com.vanniktech.maven.publish") version "0.30.0"
 }
 
 spotless {
@@ -14,7 +17,37 @@ spotless {
 }
 
 group = "com.nuntly"
-version = "1.0.0-alpha.3"
+version = "1.0.0-alpha.4"
+
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+    signAllPublications()
+    coordinates("com.nuntly", "nuntly-java-core", version.toString())
+
+    pom {
+        name.set("Nuntly Java SDK Core")
+        description.set("HTTP client and shared infrastructure for the Nuntly Java SDK.")
+        url.set("https://nuntly.com")
+        licenses {
+            license {
+                name.set("MIT")
+                url.set("https://opensource.org/licenses/MIT")
+            }
+        }
+        developers {
+            developer {
+                id.set("nuntly")
+                name.set("Nuntly")
+                email.set("support@nuntly.com")
+            }
+        }
+        scm {
+            url.set("https://github.com/nuntly/nuntly-sdk-java")
+            connection.set("scm:git:git://github.com/nuntly/nuntly-sdk-java.git")
+            developerConnection.set("scm:git:ssh://github.com:nuntly/nuntly-sdk-java.git")
+        }
+    }
+}
 
 java {
     toolchain {
