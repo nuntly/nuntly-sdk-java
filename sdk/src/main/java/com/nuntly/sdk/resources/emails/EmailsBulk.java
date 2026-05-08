@@ -1,4 +1,4 @@
-package com.nuntly.sdk.resources;
+package com.nuntly.sdk.resources.emails;
 
 import com.nuntly.sdk.*;
 import com.nuntly.sdk.models.*;

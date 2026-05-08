@@ -2,6 +2,7 @@ package com.nuntly.sdk.resources;
 
 import com.nuntly.sdk.*;
 import com.nuntly.sdk.models.*;
+import com.nuntly.sdk.resources.webhooks.*;
 import java.util.*;
 
 public final class Webhooks extends Resource {
