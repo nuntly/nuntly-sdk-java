@@ -1,4 +1,4 @@
-package com.nuntly.sdk.resources;
+package com.nuntly.sdk.resources.messages;
 
 import com.nuntly.sdk.*;
 import com.nuntly.sdk.models.*;

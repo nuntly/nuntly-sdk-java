@@ -1,4 +1,4 @@
-package com.nuntly.sdk;
+package com.nuntly.sdk.lib;
 
 import com.google.gson.JsonObject;
 

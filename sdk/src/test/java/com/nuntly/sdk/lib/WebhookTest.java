@@ -1,4 +1,4 @@
-package com.nuntly.sdk;
+package com.nuntly.sdk.lib;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
