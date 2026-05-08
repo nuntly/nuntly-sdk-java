@@ -64,7 +64,17 @@ public final class Emails extends Resource {
    * attachments, labels, custom headers and scheduling.
    */
   public CreateEmailResponse send(CreateEmailRequest body) {
-    return client.post("/emails", body, CreateEmailResponse.class, RequestOptions.none());
+    return send(body, RequestOptions.none());
+  }
+
+  public CreateEmailResponse send(CreateEmailRequest body, RequestOptions opts) {
+    var idempotencyKey = opts.idempotencyKey().orElse(java.util.UUID.randomUUID().toString());
+    var headers = new java.util.HashMap<String, String>(opts.headers());
+    headers.putIfAbsent("Idempotency-Key", idempotencyKey);
+    var optsWithKey =
+        new RequestOptions(
+            opts.timeout(), opts.maxRetries(), headers, java.util.Optional.of(idempotencyKey));
+    return client.post("/emails", body, CreateEmailResponse.class, optsWithKey);
   }
 
   /**
