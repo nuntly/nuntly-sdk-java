@@ -6,16 +6,11 @@ import com.nuntly.sdk.resources.inboxes.*;
 import java.util.*;
 
 public final class Inboxes extends Resource {
-  private InboxesThreads threads;
   private InboxesMessages messages;
+  private InboxesThreads threads;
 
   public Inboxes(NuntlyClient client) {
     super(client);
-  }
-
-  public InboxesThreads threads() {
-    if (threads == null) threads = new InboxesThreads(client);
-    return threads;
   }
 
   public InboxesMessages messages() {
@@ -23,9 +18,19 @@ public final class Inboxes extends Resource {
     return messages;
   }
 
+  public InboxesThreads threads() {
+    if (threads == null) threads = new InboxesThreads(client);
+    return threads;
+  }
+
   /** Create a new inbox on a verified domain. */
   public InboxResponse create(CreateInboxRequest body) {
     return client.post("/inboxes", body, InboxResponse.class, RequestOptions.none());
+  }
+
+  /** Soft-delete an inbox. */
+  public IdResponse delete(String inboxId) {
+    return client.delete("/inboxes/" + inboxId + "", IdResponse.class, RequestOptions.none());
   }
 
   /** List all inboxes. */
@@ -33,14 +38,7 @@ public final class Inboxes extends Resource {
     var query = new HashMap<String, String>();
     cursor.ifPresent(c -> query.put("cursor", c));
     limit.ifPresent(l -> query.put("limit", l.toString()));
-    var response = client.rawRequest("GET", "/inboxes", null, RequestOptions.none());
-    var json = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
-    var items = client.gson().fromJson(json.get("data"), InboxesResponseItem[].class);
-    var next =
-        json.has("nextCursor") && !json.get("nextCursor").isJsonNull()
-            ? json.get("nextCursor").getAsString()
-            : null;
-    return new CursorPage<>(java.util.List.of(items), next, (c) -> list(c, limit));
+    return client.list("/inboxes", InboxesResponseItem.class, query, RequestOptions.none());
   }
 
   public CursorPage<InboxesResponseItem> list() {
@@ -55,10 +53,5 @@ public final class Inboxes extends Resource {
   /** Update an inbox. */
   public IdResponse update(String inboxId, UpdateInboxRequest body) {
     return client.patch("/inboxes/" + inboxId + "", body, IdResponse.class, RequestOptions.none());
-  }
-
-  /** Soft-delete an inbox. */
-  public IdResponse delete(String inboxId) {
-    return client.delete("/inboxes/" + inboxId + "", IdResponse.class, RequestOptions.none());
   }
 }

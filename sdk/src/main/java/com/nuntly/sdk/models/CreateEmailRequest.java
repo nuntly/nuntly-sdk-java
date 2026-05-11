@@ -36,9 +36,9 @@ public record CreateEmailRequest(
     /** The headers to add to the email */
     java.util.Optional<java.util.Map<String, Object>> headers,
     /** The tags to add to the email */
-    java.util.Optional<java.util.List<java.util.Map<String, Object>>> tags,
+    java.util.Optional<java.util.List<Tag>> tags,
     /** The attachements to add to the email */
-    java.util.Optional<java.util.List<java.util.Map<String, Object>>> attachments,
+    java.util.Optional<java.util.List<Attachment>> attachments,
     /** The variables for the template */
     java.util.Optional<java.util.Map<String, Object>> variables,
     /** The date at which the email is scheduled to be sent */
@@ -58,8 +58,8 @@ public record CreateEmailRequest(
     private String text;
     private String html;
     private java.util.Map<String, Object> headers;
-    private java.util.List<java.util.Map<String, Object>> tags;
-    private java.util.List<java.util.Map<String, Object>> attachments;
+    private java.util.List<Tag> tags;
+    private java.util.List<Attachment> attachments;
     private java.util.Map<String, Object> variables;
     private String scheduledAt;
 
@@ -121,13 +121,13 @@ public record CreateEmailRequest(
     }
 
     /** The tags to add to the email */
-    public Builder tags(java.util.List<java.util.Map<String, Object>> tags) {
+    public Builder tags(java.util.List<Tag> tags) {
       this.tags = tags;
       return this;
     }
 
     /** The attachements to add to the email */
-    public Builder attachments(java.util.List<java.util.Map<String, Object>> attachments) {
+    public Builder attachments(java.util.List<Attachment> attachments) {
       this.attachments = attachments;
       return this;
     }

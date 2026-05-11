@@ -10,6 +10,12 @@ public final class EmailsBulk extends Resource {
     super(client);
   }
 
+  /** Returns the delivery status of all emails submitted in a bulk request. */
+  public BulkEmailsResponse list(String bulkId) {
+    return client.get(
+        "/emails/bulk/" + bulkId + "", BulkEmailsResponse.class, RequestOptions.none());
+  }
+
   /**
    * Send up to 20 emails in a single request. Use `fallback` to set default values shared across
    * all messages.
@@ -26,11 +32,5 @@ public final class EmailsBulk extends Resource {
         new RequestOptions(
             opts.timeout(), opts.maxRetries(), headers, java.util.Optional.of(idempotencyKey));
     return client.post("/emails/bulk", body, CreateBulkEmailsResponse.class, optsWithKey);
-  }
-
-  /** Returns the delivery status of all emails submitted in a bulk request. */
-  public BulkEmailsResponse list(String bulkId) {
-    return client.get(
-        "/emails/bulk/" + bulkId + "", BulkEmailsResponse.class, RequestOptions.none());
   }
 }

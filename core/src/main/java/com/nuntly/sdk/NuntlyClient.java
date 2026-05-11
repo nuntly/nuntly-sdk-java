@@ -4,10 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -69,6 +73,32 @@ public final class NuntlyClient {
   public HttpResponse<String> rawRequest(
       String method, String path, Object body, RequestOptions opts) {
     return request(method, path, body, opts);
+  }
+
+  /**
+   * Issue a paginated GET, decode the response into a {@link CursorPage} of items, and capture the
+   * original query so {@link CursorPage#nextPage()} replays the same filters with only the cursor
+   * updated.
+   */
+  public <T> CursorPage<T> list(
+      String path, Class<T> itemType, Map<String, String> query, RequestOptions opts) {
+    var queryPath = query.isEmpty() ? path : path + "?" + encodeQuery(query);
+    var response = request("GET", queryPath, null, opts);
+    var json = JsonParser.parseString(response.body()).getAsJsonObject();
+    @SuppressWarnings("unchecked")
+    T[] items = (T[]) GSON.fromJson(json.get("data"), Array.newInstance(itemType, 0).getClass());
+    String next =
+        json.has("nextCursor") && !json.get("nextCursor").isJsonNull()
+            ? json.get("nextCursor").getAsString()
+            : null;
+    return new CursorPage<>(
+        java.util.List.of(items),
+        next,
+        (cursor) -> {
+          var nextQuery = new HashMap<>(query);
+          cursor.ifPresent(c -> nextQuery.put("cursor", c));
+          return list(path, itemType, nextQuery, opts);
+        });
   }
 
   public HttpResponse<String> lastResponse() {
@@ -209,7 +239,11 @@ public final class NuntlyClient {
 
   private String encodeQuery(Map<String, String> query) {
     return query.entrySet().stream()
-        .map(e -> e.getKey() + "=" + e.getValue())
+        .map(
+            e ->
+                URLEncoder.encode(e.getKey(), StandardCharsets.UTF_8)
+                    + "="
+                    + URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8))
         .reduce((a, b) -> a + "&" + b)
         .orElse("");
   }

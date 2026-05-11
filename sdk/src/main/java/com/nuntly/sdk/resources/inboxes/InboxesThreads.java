@@ -16,15 +16,11 @@ public final class InboxesThreads extends Resource {
     var query = new HashMap<String, String>();
     cursor.ifPresent(c -> query.put("cursor", c));
     limit.ifPresent(l -> query.put("limit", l.toString()));
-    var response =
-        client.rawRequest("GET", "/inboxes/" + inboxId + "/threads", null, RequestOptions.none());
-    var json = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
-    var items = client.gson().fromJson(json.get("data"), ThreadsResponseItem[].class);
-    var next =
-        json.has("nextCursor") && !json.get("nextCursor").isJsonNull()
-            ? json.get("nextCursor").getAsString()
-            : null;
-    return new CursorPage<>(java.util.List.of(items), next, (c) -> list(inboxId, c, limit));
+    return client.list(
+        "/inboxes/" + inboxId + "/threads",
+        ThreadsResponseItem.class,
+        query,
+        RequestOptions.none());
   }
 
   public CursorPage<ThreadsResponseItem> list(String inboxId) {

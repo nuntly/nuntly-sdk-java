@@ -31,7 +31,7 @@ public record EmailResponse(
     /** The headers to add to the email */
     java.util.Optional<java.util.Map<String, Object>> headers,
     /** The tags to add to the email */
-    java.util.Optional<java.util.List<java.util.Map<String, Object>>> tags,
+    java.util.Optional<java.util.List<Tag>> tags,
     /** The attachements */
     java.util.Optional<java.util.List<java.util.Map<String, Object>>> attachments,
     /** The variables for the template */

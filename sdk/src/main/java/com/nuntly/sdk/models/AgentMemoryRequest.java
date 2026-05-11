@@ -17,7 +17,7 @@ public record AgentMemoryRequest(
     /** The thread id to scope the memory to. */
     java.util.Optional<String> threadId,
     /** The agent memory key-value data. */
-    String memory,
+    java.util.Map<String, Object> memory,
     /** A human-readable conversation summary. */
     java.util.Optional<String> summary) {
 
@@ -28,7 +28,7 @@ public record AgentMemoryRequest(
   public static final class Builder {
     private String inboxId;
     private String threadId;
-    private String memory;
+    private java.util.Map<String, Object> memory;
     private String summary;
 
     /** The inbox id to scope the memory to. */
@@ -44,7 +44,7 @@ public record AgentMemoryRequest(
     }
 
     /** The agent memory key-value data. */
-    public Builder memory(String memory) {
+    public Builder memory(java.util.Map<String, Object> memory) {
       this.memory = memory;
       return this;
     }
