@@ -4,16 +4,16 @@ import com.nuntly.sdk.resources.*;
 
 public final class Nuntly {
   private final NuntlyClient client;
-  private Emails emails;
-  private Domains domains;
-  private Webhooks webhooks;
-  private Organizations organizations;
-  private Inboxes inboxes;
   private Agents agents;
-  private Threads threads;
+  private ApiKeys apiKeys;
+  private Domains domains;
+  private Emails emails;
+  private Inboxes inboxes;
   private Messages messages;
   private Namespaces namespaces;
-  private ApiKeys apiKeys;
+  private Organizations organizations;
+  private Threads threads;
+  private Webhooks webhooks;
 
   private Nuntly(ClientOptions options) {
     this.client = new NuntlyClient(options);
@@ -27,9 +27,14 @@ public final class Nuntly {
     return new Nuntly(options);
   }
 
-  public Emails emails() {
-    if (emails == null) emails = new Emails(client);
-    return emails;
+  public Agents agents() {
+    if (agents == null) agents = new Agents(client);
+    return agents;
+  }
+
+  public ApiKeys apiKeys() {
+    if (apiKeys == null) apiKeys = new ApiKeys(client);
+    return apiKeys;
   }
 
   public Domains domains() {
@@ -37,29 +42,14 @@ public final class Nuntly {
     return domains;
   }
 
-  public Webhooks webhooks() {
-    if (webhooks == null) webhooks = new Webhooks(client);
-    return webhooks;
-  }
-
-  public Organizations organizations() {
-    if (organizations == null) organizations = new Organizations(client);
-    return organizations;
+  public Emails emails() {
+    if (emails == null) emails = new Emails(client);
+    return emails;
   }
 
   public Inboxes inboxes() {
     if (inboxes == null) inboxes = new Inboxes(client);
     return inboxes;
-  }
-
-  public Agents agents() {
-    if (agents == null) agents = new Agents(client);
-    return agents;
-  }
-
-  public Threads threads() {
-    if (threads == null) threads = new Threads(client);
-    return threads;
   }
 
   public Messages messages() {
@@ -72,8 +62,18 @@ public final class Nuntly {
     return namespaces;
   }
 
-  public ApiKeys apiKeys() {
-    if (apiKeys == null) apiKeys = new ApiKeys(client);
-    return apiKeys;
+  public Organizations organizations() {
+    if (organizations == null) organizations = new Organizations(client);
+    return organizations;
+  }
+
+  public Threads threads() {
+    if (threads == null) threads = new Threads(client);
+    return threads;
+  }
+
+  public Webhooks webhooks() {
+    if (webhooks == null) webhooks = new Webhooks(client);
+    return webhooks;
   }
 }

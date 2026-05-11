@@ -17,6 +17,29 @@ public final class Webhooks extends Resource {
     return events;
   }
 
+  /** Register an endpoint to start receiving webhook events for your organization. */
+  public CreateWebhookResponse create(CreateWebhookRequest body) {
+    return client.post("/webhooks", body, CreateWebhookResponse.class, RequestOptions.none());
+  }
+
+  /** Remove a webhook endpoint. No further events will be delivered to this URL. */
+  public DeleteWebhookResponse delete(String id) {
+    return client.delete(
+        "/webhooks/" + id + "", DeleteWebhookResponse.class, RequestOptions.none());
+  }
+
+  /** Returns all registered webhook endpoints for the organization. */
+  public CursorPage<WebhooksResponseItem> list(Optional<String> cursor, Optional<Integer> limit) {
+    var query = new HashMap<String, String>();
+    cursor.ifPresent(c -> query.put("cursor", c));
+    limit.ifPresent(l -> query.put("limit", l.toString()));
+    return client.list("/webhooks", WebhooksResponseItem.class, query, RequestOptions.none());
+  }
+
+  public CursorPage<WebhooksResponseItem> list() {
+    return list(Optional.empty(), Optional.empty());
+  }
+
   /** Returns a webhook endpoint with its URL, subscribed events, and configuration. */
   public WebhookResponse retrieve(String id) {
     return client.get("/webhooks/" + id + "", WebhookResponse.class, RequestOptions.none());
@@ -26,35 +49,5 @@ public final class Webhooks extends Resource {
   public UpdateWebhookResponse update(String id, UpdateWebhookRequest body) {
     return client.put(
         "/webhooks/" + id + "", body, UpdateWebhookResponse.class, RequestOptions.none());
-  }
-
-  /** Remove a webhook endpoint. No further events will be delivered to this URL. */
-  public DeleteWebhookResponse delete(String id) {
-    return client.delete(
-        "/webhooks/" + id + "", DeleteWebhookResponse.class, RequestOptions.none());
-  }
-
-  /** Register an endpoint to start receiving webhook events for your organization. */
-  public CreateWebhookResponse create(CreateWebhookRequest body) {
-    return client.post("/webhooks", body, CreateWebhookResponse.class, RequestOptions.none());
-  }
-
-  /** Returns all registered webhook endpoints for the organization. */
-  public CursorPage<WebhooksResponseItem> list(Optional<String> cursor, Optional<Integer> limit) {
-    var query = new HashMap<String, String>();
-    cursor.ifPresent(c -> query.put("cursor", c));
-    limit.ifPresent(l -> query.put("limit", l.toString()));
-    var response = client.rawRequest("GET", "/webhooks", null, RequestOptions.none());
-    var json = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
-    var items = client.gson().fromJson(json.get("data"), WebhooksResponseItem[].class);
-    var next =
-        json.has("nextCursor") && !json.get("nextCursor").isJsonNull()
-            ? json.get("nextCursor").getAsString()
-            : null;
-    return new CursorPage<>(java.util.List.of(items), next, (c) -> list(c, limit));
-  }
-
-  public CursorPage<WebhooksResponseItem> list() {
-    return list(Optional.empty(), Optional.empty());
   }
 }

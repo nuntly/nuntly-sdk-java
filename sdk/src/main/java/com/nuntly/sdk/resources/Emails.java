@@ -6,28 +6,13 @@ import com.nuntly.sdk.resources.emails.*;
 import java.util.*;
 
 public final class Emails extends Resource {
-  private EmailsStats stats;
-  private EmailsEvents events;
-  private EmailsContent content;
   private EmailsBulk bulk;
+  private EmailsContent content;
+  private EmailsEvents events;
+  private EmailsStats stats;
 
   public Emails(NuntlyClient client) {
     super(client);
-  }
-
-  public EmailsStats stats() {
-    if (stats == null) stats = new EmailsStats(client);
-    return stats;
-  }
-
-  public EmailsEvents events() {
-    if (events == null) events = new EmailsEvents(client);
-    return events;
-  }
-
-  public EmailsContent content() {
-    if (content == null) content = new EmailsContent(client);
-    return content;
   }
 
   public EmailsBulk bulk() {
@@ -35,9 +20,26 @@ public final class Emails extends Resource {
     return bulk;
   }
 
-  /** Returns an email with its current delivery status and metadata. */
-  public EmailResponse retrieve(String id) {
-    return client.get("/emails/" + id + "", EmailResponse.class, RequestOptions.none());
+  public EmailsContent content() {
+    if (content == null) content = new EmailsContent(client);
+    return content;
+  }
+
+  public EmailsEvents events() {
+    if (events == null) events = new EmailsEvents(client);
+    return events;
+  }
+
+  public EmailsStats stats() {
+    if (stats == null) stats = new EmailsStats(client);
+    return stats;
+  }
+
+  /**
+   * Cancel a scheduled email before delivery. Only emails with `scheduled` status can be cancelled.
+   */
+  public DeleteEmailResponse cancel(String id) {
+    return client.delete("/emails/" + id + "", DeleteEmailResponse.class, RequestOptions.none());
   }
 
   /** Returns sent emails ordered by submission date, newest first. */
@@ -45,18 +47,16 @@ public final class Emails extends Resource {
     var query = new HashMap<String, String>();
     cursor.ifPresent(c -> query.put("cursor", c));
     limit.ifPresent(l -> query.put("limit", l.toString()));
-    var response = client.rawRequest("GET", "/emails", null, RequestOptions.none());
-    var json = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
-    var items = client.gson().fromJson(json.get("data"), EmailsResponseItem[].class);
-    var next =
-        json.has("nextCursor") && !json.get("nextCursor").isJsonNull()
-            ? json.get("nextCursor").getAsString()
-            : null;
-    return new CursorPage<>(java.util.List.of(items), next, (c) -> list(c, limit));
+    return client.list("/emails", EmailsResponseItem.class, query, RequestOptions.none());
   }
 
   public CursorPage<EmailsResponseItem> list() {
     return list(Optional.empty(), Optional.empty());
+  }
+
+  /** Returns an email with its current delivery status and metadata. */
+  public EmailResponse retrieve(String id) {
+    return client.get("/emails/" + id + "", EmailResponse.class, RequestOptions.none());
   }
 
   /**
@@ -75,12 +75,5 @@ public final class Emails extends Resource {
         new RequestOptions(
             opts.timeout(), opts.maxRetries(), headers, java.util.Optional.of(idempotencyKey));
     return client.post("/emails", body, CreateEmailResponse.class, optsWithKey);
-  }
-
-  /**
-   * Cancel a scheduled email before delivery. Only emails with `scheduled` status can be cancelled.
-   */
-  public DeleteEmailResponse cancel(String id) {
-    return client.delete("/emails/" + id + "", DeleteEmailResponse.class, RequestOptions.none());
   }
 }

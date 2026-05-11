@@ -6,16 +6,11 @@ import com.nuntly.sdk.resources.messages.*;
 import java.util.*;
 
 public final class Messages extends Resource {
-  private MessagesContent content;
   private MessagesAttachments attachments;
+  private MessagesContent content;
 
   public Messages(NuntlyClient client) {
     super(client);
-  }
-
-  public MessagesContent content() {
-    if (content == null) content = new MessagesContent(client);
-    return content;
   }
 
   public MessagesAttachments attachments() {
@@ -23,34 +18,30 @@ public final class Messages extends Resource {
     return attachments;
   }
 
+  public MessagesContent content() {
+    if (content == null) content = new MessagesContent(client);
+    return content;
+  }
+
+  /** Forward a message to new recipients. */
+  public SendMessageResponse forward(String messageId, ForwardMessageRequest body) {
+    return client.post(
+        "/messages/" + messageId + "/forward",
+        body,
+        SendMessageResponse.class,
+        RequestOptions.none());
+  }
+
   /** List all received messages across inboxes. */
   public CursorPage<MessagesResponseItem> list(Optional<String> cursor, Optional<Integer> limit) {
     var query = new HashMap<String, String>();
     cursor.ifPresent(c -> query.put("cursor", c));
     limit.ifPresent(l -> query.put("limit", l.toString()));
-    var response = client.rawRequest("GET", "/messages", null, RequestOptions.none());
-    var json = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
-    var items = client.gson().fromJson(json.get("data"), MessagesResponseItem[].class);
-    var next =
-        json.has("nextCursor") && !json.get("nextCursor").isJsonNull()
-            ? json.get("nextCursor").getAsString()
-            : null;
-    return new CursorPage<>(java.util.List.of(items), next, (c) -> list(c, limit));
+    return client.list("/messages", MessagesResponseItem.class, query, RequestOptions.none());
   }
 
   public CursorPage<MessagesResponseItem> list() {
     return list(Optional.empty(), Optional.empty());
-  }
-
-  /** Retrieve a single message with inbox enrichment. */
-  public MessageResponse retrieve(String messageId) {
-    return client.get("/messages/" + messageId + "", MessageResponse.class, RequestOptions.none());
-  }
-
-  /** Update message labels. Only available for messages in user-created inboxes. */
-  public IdResponse update(String messageId, UpdateMessageRequest body) {
-    return client.patch(
-        "/messages/" + messageId + "", body, IdResponse.class, RequestOptions.none());
   }
 
   /** Reply to a message. Set replyAll to true to reply to all recipients. */
@@ -62,12 +53,14 @@ public final class Messages extends Resource {
         RequestOptions.none());
   }
 
-  /** Forward a message to new recipients. */
-  public SendMessageResponse forward(String messageId, ForwardMessageRequest body) {
-    return client.post(
-        "/messages/" + messageId + "/forward",
-        body,
-        SendMessageResponse.class,
-        RequestOptions.none());
+  /** Retrieve a single message with inbox enrichment. */
+  public MessageResponse retrieve(String messageId) {
+    return client.get("/messages/" + messageId + "", MessageResponse.class, RequestOptions.none());
+  }
+
+  /** Update message labels. Only available for messages in user-created inboxes. */
+  public IdResponse update(String messageId, UpdateMessageRequest body) {
+    return client.patch(
+        "/messages/" + messageId + "", body, IdResponse.class, RequestOptions.none());
   }
 }
