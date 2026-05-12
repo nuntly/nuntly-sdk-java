@@ -9,7 +9,7 @@ public record WebhookEventsResponseItem(
     /** The id of the organization */
     String orgId,
     /** An event */
-    String event,
+    EventType event,
     /** The timestamp when the event was successfully delivered to the endpoint */
     java.util.Optional<String> successfulAt,
     java.util.Map<String, Object> data,

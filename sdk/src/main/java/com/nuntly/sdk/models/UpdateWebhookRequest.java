@@ -16,7 +16,7 @@ public record UpdateWebhookRequest(
     /** The endpoint URL of the webhook */
     java.util.Optional<String> endpointUrl,
     /** The event types to subscribe to */
-    java.util.Optional<java.util.List<String>> events,
+    java.util.Optional<java.util.List<EventType>> events,
     /** The status of the webhook. */
     java.util.Optional<String> status,
     /** If true, a new signing secret will be generated */
@@ -29,7 +29,7 @@ public record UpdateWebhookRequest(
   public static final class Builder {
     private String name;
     private String endpointUrl;
-    private java.util.List<String> events;
+    private java.util.List<EventType> events;
     private String status;
     private Boolean rotateSecret;
 
@@ -46,7 +46,7 @@ public record UpdateWebhookRequest(
     }
 
     /** The event types to subscribe to */
-    public Builder events(java.util.List<String> events) {
+    public Builder events(java.util.List<EventType> events) {
       this.events = events;
       return this;
     }

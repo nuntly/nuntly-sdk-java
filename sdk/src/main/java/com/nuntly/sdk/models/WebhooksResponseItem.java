@@ -11,6 +11,6 @@ public record WebhooksResponseItem(
     /** The status of the webhook. */
     String status,
     /** The event types to subscribe to */
-    java.util.List<String> events,
+    java.util.List<EventType> events,
     /** Date at which the object was created (ISO 8601 format) */
     String createdAt) {}
