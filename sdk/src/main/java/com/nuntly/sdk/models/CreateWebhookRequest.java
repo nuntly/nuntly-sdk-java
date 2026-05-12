@@ -20,7 +20,7 @@ public record CreateWebhookRequest(
     /** The status of the webhook. */
     java.util.Optional<String> status,
     /** The event types to subscribe to */
-    java.util.List<String> events) {
+    java.util.List<EventType> events) {
 
   public static Builder builder() {
     return new Builder();
@@ -30,7 +30,7 @@ public record CreateWebhookRequest(
     private String name;
     private String endpointUrl;
     private String status;
-    private java.util.List<String> events;
+    private java.util.List<EventType> events;
 
     /** The name of the webhook */
     public Builder name(String name) {
@@ -51,7 +51,7 @@ public record CreateWebhookRequest(
     }
 
     /** The event types to subscribe to */
-    public Builder events(java.util.List<String> events) {
+    public Builder events(java.util.List<EventType> events) {
       this.events = events;
       return this;
     }

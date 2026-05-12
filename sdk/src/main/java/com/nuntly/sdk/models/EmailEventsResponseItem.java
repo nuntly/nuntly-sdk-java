@@ -11,5 +11,5 @@ public record EmailEventsResponseItem(
     /** The date at which the event occurred */
     java.util.Optional<String> occurredAt,
     /** An event */
-    String eventType,
+    EventType eventType,
     java.util.Map<String, Object> payload) {}

@@ -59,9 +59,15 @@ public non-sealed class ApiError extends NuntlyError {
     };
   }
 
+  /**
+   * Best-effort extraction of the human-readable error title from the canonical `{ "error": {
+   * "status", "code", "title", "details"? } }` payload returned by the Nuntly API. Avoids a JSON
+   * parser dependency on the hot path; if the body cannot be parsed, fall back to a truncated raw
+   * body.
+   */
   private static String parseMessage(String body) {
     if (body == null || body.isBlank()) return "Request failed";
-    var idx = body.indexOf("\"message\"");
+    var idx = body.indexOf("\"title\"");
     if (idx < 0) return body.length() > 200 ? body.substring(0, 200) : body;
     var start = body.indexOf(':', idx) + 1;
     var qStart = body.indexOf('"', start) + 1;
