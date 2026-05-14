@@ -39,7 +39,7 @@ public final class ApiKeys extends Resource {
 
   /** Update the key name, permissions, or restrict it to specific sending domains. */
   public UpdateApiKeyResponse update(String id, UpdateApiKeyRequest body) {
-    return client.put(
+    return client.patch(
         "/api-keys/" + id + "", body, UpdateApiKeyResponse.class, RequestOptions.none());
   }
 }
