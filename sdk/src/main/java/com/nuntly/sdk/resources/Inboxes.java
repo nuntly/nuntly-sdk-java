@@ -45,9 +45,9 @@ public final class Inboxes extends Resource {
     return list(Optional.empty(), Optional.empty());
   }
 
-  /** Retrieve an inbox with thread stats. */
-  public InboxDetailResponse retrieve(String inboxId) {
-    return client.get("/inboxes/" + inboxId + "", InboxDetailResponse.class, RequestOptions.none());
+  /** Retrieve an inbox. */
+  public InboxResponse retrieve(String inboxId) {
+    return client.get("/inboxes/" + inboxId + "", InboxResponse.class, RequestOptions.none());
   }
 
   /** Update an inbox. */

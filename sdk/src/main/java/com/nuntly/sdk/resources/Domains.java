@@ -11,8 +11,8 @@ public final class Domains extends Resource {
   }
 
   /** Add a domain to start configuring DNS records for sending or receiving emails. */
-  public CreateDomainResponse create(CreateDomainRequest body) {
-    return client.post("/domains", body, CreateDomainResponse.class, RequestOptions.none());
+  public DomainRecordsResponse create(CreateDomainRequest body) {
+    return client.post("/domains", body, DomainRecordsResponse.class, RequestOptions.none());
   }
 
   /**

@@ -47,7 +47,7 @@ public final class Webhooks extends Resource {
 
   /** Update the endpoint URL, subscribed event types, or rotate the signing secret. */
   public UpdateWebhookResponse update(String id, UpdateWebhookRequest body) {
-    return client.put(
+    return client.patch(
         "/webhooks/" + id + "", body, UpdateWebhookResponse.class, RequestOptions.none());
   }
 }
