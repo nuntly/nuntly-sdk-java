@@ -17,12 +17,6 @@ public final class Organizations extends Resource {
     return usage;
   }
 
-  /** Returns the organization's profile, plan, region, and account status. */
-  public OrganizationResponse retrieve(String id) {
-    return client.get(
-        "/organizations/" + id + "", OrganizationResponse.class, RequestOptions.none());
-  }
-
   /** Returns all organizations the authenticated user belongs to. */
   public CursorPage<OrganizationsResponseItem> list(
       Optional<String> cursor, Optional<Integer> limit) {
@@ -35,5 +29,11 @@ public final class Organizations extends Resource {
 
   public CursorPage<OrganizationsResponseItem> list() {
     return list(Optional.empty(), Optional.empty());
+  }
+
+  /** Returns the organization's profile, plan, region, and account status. */
+  public OrganizationResponse retrieve(String id) {
+    return client.get(
+        "/organizations/" + id + "", OrganizationResponse.class, RequestOptions.none());
   }
 }

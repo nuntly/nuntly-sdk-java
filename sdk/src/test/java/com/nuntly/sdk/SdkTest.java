@@ -23,7 +23,8 @@ class SdkTest {
     assertEquals(List.of("user@example.com"), req.to());
     assertEquals("Welcome", req.subject());
     assertEquals(Optional.of("<h1>Hi</h1>"), req.html());
-    assertEquals(Optional.empty(), req.cc());
+    // Collection fields are nullable, not wrapped in Optional (Effective Java item 55).
+    assertNull(req.cc());
   }
 
   @Test
@@ -143,6 +144,9 @@ class SdkTest {
 
   @Test
   void emailResponseRecord() {
+    // Collection-typed fields (List, Map) are nullable rather than wrapped in
+    // Optional, following Effective Java item 55. Tests pass `null` to mean
+    // "absent" and an empty collection to mean "present but empty".
     var resp =
         new EmailResponse(
             "em_1",
@@ -151,21 +155,21 @@ class SdkTest {
             Optional.empty(),
             "a@b.com",
             List.of("c@d.com"),
-            Optional.empty(),
-            Optional.empty(),
-            "delivered",
-            Optional.empty(),
+            null,
+            null,
+            EmailStatus.DELIVERED,
+            null,
             "Hello",
-            Optional.empty(),
-            Optional.empty(),
-            Optional.empty(),
-            Optional.empty(),
-            Optional.empty(),
+            null,
+            null,
+            null,
+            null,
+            null,
             Optional.empty(),
             "2026-01-01T00:00:00Z");
 
     assertEquals("em_1", resp.id());
-    assertEquals("delivered", resp.status());
+    assertEquals(EmailStatus.DELIVERED, resp.status());
     assertEquals("Hello", resp.subject());
   }
 

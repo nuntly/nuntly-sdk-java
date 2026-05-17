@@ -1,19 +1,23 @@
 package com.nuntly.sdk.models;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 public record EmailEvent(
     String id,
     String orgId,
-    java.util.Optional<String> bulkId,
+    Optional<String> bulkId,
     String messageId,
     String sentAt,
     String enqueuedAt,
     String domainName,
     String domainId,
     String from,
-    java.util.List<String> to,
-    java.util.Optional<java.util.List<String>> cc,
-    java.util.Optional<java.util.List<String>> bcc,
-    java.util.Optional<java.util.List<String>> replyTo,
+    List<String> to,
+    List<String> cc,
+    List<String> bcc,
+    List<String> replyTo,
     String subject,
-    java.util.Optional<java.util.List<java.util.Map<String, Object>>> headers,
-    java.util.Optional<java.util.Map<String, Object>> tags) {}
+    List<Map<String, Object>> headers,
+    Map<String, Object> tags) {}

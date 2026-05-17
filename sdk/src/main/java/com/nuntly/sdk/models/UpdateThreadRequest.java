@@ -1,5 +1,6 @@
 package com.nuntly.sdk.models;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -12,29 +13,29 @@ import java.util.Optional;
  */
 public record UpdateThreadRequest(
     /** Labels to add to all messages in the thread. */
-    java.util.Optional<java.util.List<String>> addLabels,
+    List<String> addLabels,
     /** Labels to remove from all messages in the thread. */
-    java.util.Optional<java.util.List<String>> removeLabels,
+    List<String> removeLabels,
     /** The AI agent identifier. */
-    java.util.Optional<String> agentId) {
+    Optional<String> agentId) {
 
   public static Builder builder() {
     return new Builder();
   }
 
   public static final class Builder {
-    private java.util.List<String> addLabels;
-    private java.util.List<String> removeLabels;
+    private List<String> addLabels;
+    private List<String> removeLabels;
     private String agentId;
 
     /** Labels to add to all messages in the thread. */
-    public Builder addLabels(java.util.List<String> addLabels) {
+    public Builder addLabels(List<String> addLabels) {
       this.addLabels = addLabels;
       return this;
     }
 
     /** Labels to remove from all messages in the thread. */
-    public Builder removeLabels(java.util.List<String> removeLabels) {
+    public Builder removeLabels(List<String> removeLabels) {
       this.removeLabels = removeLabels;
       return this;
     }
@@ -46,10 +47,7 @@ public record UpdateThreadRequest(
     }
 
     public UpdateThreadRequest build() {
-      return new UpdateThreadRequest(
-          Optional.ofNullable(addLabels),
-          Optional.ofNullable(removeLabels),
-          Optional.ofNullable(agentId));
+      return new UpdateThreadRequest(addLabels, removeLabels, Optional.ofNullable(agentId));
     }
   }
 }

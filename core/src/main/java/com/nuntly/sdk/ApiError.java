@@ -1,5 +1,6 @@
 package com.nuntly.sdk;
 
+import com.google.gson.JsonParser;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpResponse;
 import java.util.Optional;
@@ -60,20 +61,30 @@ public non-sealed class ApiError extends NuntlyError {
   }
 
   /**
-   * Best-effort extraction of the human-readable error title from the canonical `{ "error": {
-   * "status", "code", "title", "details"? } }` payload returned by the Nuntly API. Avoids a JSON
-   * parser dependency on the hot path; if the body cannot be parsed, fall back to a truncated raw
-   * body.
+   * Best-effort extraction of the human-readable error title from the canonical {@code { "error": {
+   * "status", "code", "title", "details"? } }} payload returned by the Nuntly API. Uses the Gson
+   * parser already on the classpath (shared with {@link NuntlyClient}) to avoid the fragile
+   * substring scan that mis-rendered any body whose {@code details} string contained the literal
+   * {@code "title"}. Falls back to a truncated raw body when the payload is not the canonical
+   * envelope.
    */
   private static String parseMessage(String body) {
     if (body == null || body.isBlank()) return "Request failed";
-    var idx = body.indexOf("\"title\"");
-    if (idx < 0) return body.length() > 200 ? body.substring(0, 200) : body;
-    var start = body.indexOf(':', idx) + 1;
-    var qStart = body.indexOf('"', start) + 1;
-    var qEnd = body.indexOf('"', qStart);
-    if (qStart > 0 && qEnd > qStart) return body.substring(qStart, qEnd);
-    return body;
+    try {
+      var root = JsonParser.parseString(body);
+      if (root.isJsonObject()) {
+        var obj = root.getAsJsonObject();
+        if (obj.has("error") && obj.get("error").isJsonObject()) {
+          var err = obj.getAsJsonObject("error");
+          if (err.has("title") && err.get("title").isJsonPrimitive()) {
+            return err.get("title").getAsString();
+          }
+        }
+      }
+    } catch (Exception ignored) {
+      // fall through to truncated raw body
+    }
+    return body.length() > 200 ? body.substring(0, 200) : body;
   }
 
   public static final class BadRequestError extends ApiError {

@@ -23,7 +23,6 @@ public final class NuntlyClient {
   private final ClientOptions options;
   private final HttpClient httpClient;
   private final String userAgent;
-  private volatile HttpResponse<String> lastResponse;
 
   public NuntlyClient(ClientOptions options) {
     this.options = options;
@@ -101,10 +100,6 @@ public final class NuntlyClient {
         });
   }
 
-  public HttpResponse<String> lastResponse() {
-    return lastResponse;
-  }
-
   public Gson gson() {
     return GSON;
   }
@@ -146,7 +141,6 @@ public final class NuntlyClient {
     for (int attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         var response = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
-        this.lastResponse = response;
 
         if (options.debug()) {
           var requestId = response.headers().firstValue("x-request-id").orElse("");

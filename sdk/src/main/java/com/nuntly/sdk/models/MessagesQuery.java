@@ -1,11 +1,13 @@
 package com.nuntly.sdk.models;
 
+import java.util.Optional;
+
 public record MessagesQuery(
     /** The cursor to retrieve the next page of results */
-    java.util.Optional<String> cursor,
+    Optional<String> cursor,
     /** The maximum number of results to return */
-    java.util.Optional<Long> limit,
+    Optional<Long> limit,
     /** Filter by domain. */
-    java.util.Optional<String> domainId,
+    Optional<String> domainId,
     /** Filter by sender address. */
-    java.util.Optional<String> from) {}
+    Optional<String> from) {}

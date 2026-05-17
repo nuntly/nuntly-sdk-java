@@ -14,7 +14,7 @@ public final class WebhooksEvents extends Resource {
    * Returns all delivery attempts for a webhook event, including HTTP status codes and response
    * times.
    */
-  public java.util.List<WebhookEventDeliveriesResponseItem> deliveries(String id, String eventId) {
+  public List<WebhookEventDeliveriesResponseItem> deliveries(String id, String eventId) {
     var response =
         client.rawRequest(
             "GET",
@@ -24,7 +24,7 @@ public final class WebhooksEvents extends Resource {
     var json = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
     var items =
         client.gson().fromJson(json.get("data"), WebhookEventDeliveriesResponseItem[].class);
-    return java.util.List.of(items);
+    return List.of(items);
   }
 
   /** Returns recent webhook events across all registered endpoints. */

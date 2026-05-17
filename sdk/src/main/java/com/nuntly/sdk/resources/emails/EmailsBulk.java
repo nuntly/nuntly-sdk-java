@@ -10,7 +10,7 @@ public final class EmailsBulk extends Resource {
     super(client);
   }
 
-  /** Returns the delivery status of all emails submitted in a bulk request. */
+  /** Returns the emails submitted in a bulk request. */
   public BulkEmailsResponse list(String bulkId) {
     return client.get(
         "/emails/bulk/" + bulkId + "", BulkEmailsResponse.class, RequestOptions.none());
@@ -25,12 +25,11 @@ public final class EmailsBulk extends Resource {
   }
 
   public CreateBulkEmailsResponse send(CreateBulkEmailsRequest body, RequestOptions opts) {
-    var idempotencyKey = opts.idempotencyKey().orElse(java.util.UUID.randomUUID().toString());
-    var headers = new java.util.HashMap<String, String>(opts.headers());
+    var idempotencyKey = opts.idempotencyKey().orElse(UUID.randomUUID().toString());
+    var headers = new HashMap<String, String>(opts.headers());
     headers.putIfAbsent("Idempotency-Key", idempotencyKey);
     var optsWithKey =
-        new RequestOptions(
-            opts.timeout(), opts.maxRetries(), headers, java.util.Optional.of(idempotencyKey));
+        new RequestOptions(opts.timeout(), opts.maxRetries(), headers, Optional.of(idempotencyKey));
     return client.post("/emails/bulk", body, CreateBulkEmailsResponse.class, optsWithKey);
   }
 }

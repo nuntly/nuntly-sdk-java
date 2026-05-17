@@ -1,5 +1,6 @@
 package com.nuntly.sdk.models;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -7,19 +8,19 @@ import java.util.Optional;
  *
  * <pre>{@code
  * var result = nuntly.agents().memory().upsert(AgentMemoryRequest.builder()
- *     .memory("memory_value")
+ *     .memory(Map.of())
  *     .build());
  * }</pre>
  */
 public record AgentMemoryRequest(
     /** The inbox id to scope the memory to. */
-    java.util.Optional<String> inboxId,
+    Optional<String> inboxId,
     /** The thread id to scope the memory to. */
-    java.util.Optional<String> threadId,
+    Optional<String> threadId,
     /** The agent memory key-value data. */
-    java.util.Map<String, Object> memory,
+    Map<String, Object> memory,
     /** A human-readable conversation summary. */
-    java.util.Optional<String> summary) {
+    Optional<String> summary) {
 
   public static Builder builder() {
     return new Builder();
@@ -28,7 +29,7 @@ public record AgentMemoryRequest(
   public static final class Builder {
     private String inboxId;
     private String threadId;
-    private java.util.Map<String, Object> memory;
+    private Map<String, Object> memory;
     private String summary;
 
     /** The inbox id to scope the memory to. */
@@ -44,7 +45,7 @@ public record AgentMemoryRequest(
     }
 
     /** The agent memory key-value data. */
-    public Builder memory(java.util.Map<String, Object> memory) {
+    public Builder memory(Map<String, Object> memory) {
       this.memory = memory;
       return this;
     }

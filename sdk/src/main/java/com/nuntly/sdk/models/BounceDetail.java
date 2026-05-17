@@ -1,9 +1,13 @@
 package com.nuntly.sdk.models;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 public record BounceDetail(
-    String bounceType,
-    String bounceSubType,
-    java.util.List<java.util.Map<String, Object>> bouncedRecipients,
+    BounceDetailBounceType bounceType,
+    BounceDetailBounceSubType bounceSubType,
+    List<Map<String, Object>> bouncedRecipients,
     String bouncedAt,
     String feedbackId,
-    java.util.Optional<String> reportingMta) {}
+    Optional<String> reportingMta) {}

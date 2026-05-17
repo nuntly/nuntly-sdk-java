@@ -34,15 +34,17 @@ public final class Inboxes extends Resource {
   }
 
   /** List all inboxes. */
-  public CursorPage<InboxesResponseItem> list(Optional<String> cursor, Optional<Integer> limit) {
+  public CursorPage<InboxesResponseItem> list(
+      Optional<String> cursor, Optional<Integer> limit, Optional<String> namespaceId) {
     var query = new HashMap<String, String>();
     cursor.ifPresent(c -> query.put("cursor", c));
     limit.ifPresent(l -> query.put("limit", l.toString()));
+    namespaceId.ifPresent(v -> query.put("namespaceId", v.toString()));
     return client.list("/inboxes", InboxesResponseItem.class, query, RequestOptions.none());
   }
 
   public CursorPage<InboxesResponseItem> list() {
-    return list(Optional.empty(), Optional.empty());
+    return list(Optional.empty(), Optional.empty(), Optional.empty());
   }
 
   /** Retrieve an inbox. */

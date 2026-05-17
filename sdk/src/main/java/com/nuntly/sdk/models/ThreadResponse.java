@@ -1,12 +1,15 @@
 package com.nuntly.sdk.models;
 
+import java.util.List;
+import java.util.Optional;
+
 public record ThreadResponse(
     /** The id of the thread */
     String id,
     /** Date at which the object was created (ISO 8601 format) */
     String createdAt,
     /** Date at which the object was updated (ISO 8601 format) */
-    java.util.Optional<String> updatedAt,
+    Optional<String> updatedAt,
     /** The id of the domain. */
     String domainId,
     /** The domain name. */
@@ -20,6 +23,6 @@ public record ThreadResponse(
     /** The number of messages in the thread. */
     long messageCount,
     /** Aggregated labels from all messages in the thread. */
-    java.util.List<String> labels,
+    List<String> labels,
     /** The AI agent identifier. */
     String agentId) {}

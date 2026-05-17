@@ -1,5 +1,6 @@
 package com.nuntly.sdk.models;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,20 +14,20 @@ import java.util.Optional;
  */
 public record ForwardMessageRequest(
     /** The recipient addresses to forward to. */
-    java.util.List<String> to,
+    List<String> to,
     /** An optional comment to prepend. */
-    java.util.Optional<String> text) {
+    Optional<String> text) {
 
   public static Builder builder() {
     return new Builder();
   }
 
   public static final class Builder {
-    private java.util.List<String> to;
+    private List<String> to;
     private String text;
 
     /** The recipient addresses to forward to. */
-    public Builder to(java.util.List<String> to) {
+    public Builder to(List<String> to) {
       this.to = to;
       return this;
     }

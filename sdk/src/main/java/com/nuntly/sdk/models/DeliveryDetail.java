@@ -1,9 +1,12 @@
 package com.nuntly.sdk.models;
 
+import java.util.List;
+import java.util.Optional;
+
 public record DeliveryDetail(
     String deliveredAt,
-    java.util.List<String> recipients,
+    List<String> recipients,
     String smtpResponse,
     String remoteMtaIp,
     String reportingMta,
-    java.util.Optional<Long> processingTime) {}
+    Optional<Long> processingTime) {}

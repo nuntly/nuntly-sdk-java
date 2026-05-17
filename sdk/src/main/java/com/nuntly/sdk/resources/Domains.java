@@ -10,7 +10,7 @@ public final class Domains extends Resource {
     super(client);
   }
 
-  /** Add a domain to start configuring DNS records for sending or receiving emails. */
+  /** Add a domain for sending or receiving emails. */
   public DomainRecordsResponse create(CreateDomainRequest body) {
     return client.post("/domains", body, DomainRecordsResponse.class, RequestOptions.none());
   }

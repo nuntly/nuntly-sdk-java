@@ -1,5 +1,6 @@
 package com.nuntly.sdk.models;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,44 +15,44 @@ import java.util.Optional;
  */
 public record SendMessageRequest(
     /** The recipient addresses. */
-    java.util.List<String> to,
+    List<String> to,
     /** The CC addresses. */
-    java.util.Optional<java.util.List<String>> cc,
+    List<String> cc,
     /** The BCC addresses. */
-    java.util.Optional<java.util.List<String>> bcc,
+    List<String> bcc,
     /** The message subject. */
     String subject,
     /** The plain text body. */
-    java.util.Optional<String> text,
+    Optional<String> text,
     /** The HTML body. */
-    java.util.Optional<String> html) {
+    Optional<String> html) {
 
   public static Builder builder() {
     return new Builder();
   }
 
   public static final class Builder {
-    private java.util.List<String> to;
-    private java.util.List<String> cc;
-    private java.util.List<String> bcc;
+    private List<String> to;
+    private List<String> cc;
+    private List<String> bcc;
     private String subject;
     private String text;
     private String html;
 
     /** The recipient addresses. */
-    public Builder to(java.util.List<String> to) {
+    public Builder to(List<String> to) {
       this.to = to;
       return this;
     }
 
     /** The CC addresses. */
-    public Builder cc(java.util.List<String> cc) {
+    public Builder cc(List<String> cc) {
       this.cc = cc;
       return this;
     }
 
     /** The BCC addresses. */
-    public Builder bcc(java.util.List<String> bcc) {
+    public Builder bcc(List<String> bcc) {
       this.bcc = bcc;
       return this;
     }
@@ -76,12 +77,7 @@ public record SendMessageRequest(
 
     public SendMessageRequest build() {
       return new SendMessageRequest(
-          to,
-          Optional.ofNullable(cc),
-          Optional.ofNullable(bcc),
-          subject,
-          Optional.ofNullable(text),
-          Optional.ofNullable(html));
+          to, cc, bcc, subject, Optional.ofNullable(text), Optional.ofNullable(html));
     }
   }
 }

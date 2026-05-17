@@ -7,11 +7,11 @@ public record DomainsResponseItem(
     /** The name of the domain to send e-mails' */
     String name,
     /** The status for the domain */
-    String status,
+    DomainStatus status,
     /** The sending status for the domain */
-    String sendingStatus,
+    DomainRecordsResponseSendingStatus sendingStatus,
     /** The receiving status for the domain */
-    String receivingStatus,
+    DomainStatus receivingStatus,
     /** Date at which the object was created (ISO 8601 format) */
     String createdAt,
     /** The region of the domain data */

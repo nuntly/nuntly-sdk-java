@@ -1,5 +1,7 @@
 package com.nuntly.sdk.models;
 
+import java.util.Optional;
+
 public record InboundEventData(
     String orgId,
     String domainId,
@@ -9,4 +11,4 @@ public record InboundEventData(
     String messageId,
     String from,
     String subject,
-    java.util.Optional<String> agentId) {}
+    Optional<String> agentId) {}

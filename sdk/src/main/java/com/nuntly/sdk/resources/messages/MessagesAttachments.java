@@ -11,13 +11,13 @@ public final class MessagesAttachments extends Resource {
   }
 
   /** List all attachments for a message. */
-  public java.util.List<AttachmentResponse> list(String messageId) {
+  public List<AttachmentResponse> list(String messageId) {
     var response =
         client.rawRequest(
             "GET", "/messages/" + messageId + "/attachments", null, RequestOptions.none());
     var json = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
     var items = client.gson().fromJson(json.get("data"), AttachmentResponse[].class);
-    return java.util.List.of(items);
+    return List.of(items);
   }
 
   /** Retrieve an attachment with a presigned download URL. */
