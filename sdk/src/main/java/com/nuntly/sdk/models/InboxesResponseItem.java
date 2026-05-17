@@ -1,5 +1,7 @@
 package com.nuntly.sdk.models;
 
+import java.util.Optional;
+
 /** A single item from InboxesResponse. */
 public record InboxesResponseItem(
     /** The id of the inbox */
@@ -7,7 +9,7 @@ public record InboxesResponseItem(
     /** Date at which the object was created (ISO 8601 format) */
     String createdAt,
     /** Date at which the object was updated (ISO 8601 format) */
-    java.util.Optional<String> updatedAt,
+    Optional<String> updatedAt,
     /** The id of the domain. */
     String domainId,
     /** The domain name. */

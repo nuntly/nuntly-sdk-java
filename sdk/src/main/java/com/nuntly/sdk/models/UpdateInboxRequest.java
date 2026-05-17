@@ -12,7 +12,7 @@ import java.util.Optional;
  */
 public record UpdateInboxRequest(
     /** The display name of the inbox. */
-    java.util.Optional<String> name) {
+    Optional<String> name) {
 
   public static Builder builder() {
     return new Builder();

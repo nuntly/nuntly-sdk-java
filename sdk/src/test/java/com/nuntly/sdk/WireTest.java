@@ -35,7 +35,13 @@ class WireTest {
                     new MockResponse(
                         404,
                         """
-                        {"message":"Not found","code":"RESOURCE_NOT_FOUND"}\
+                        {"error":{"status":404,"code":"not_found","title":"Resource not found"}}\
+                        """);
+                case String p when p.startsWith("/emails/em_title_in_details") ->
+                    new MockResponse(
+                        404,
+                        """
+                        {"error":{"status":404,"code":"not_found","title":"Resource not found","details":"the literal string \\"title\\" appears inside details"}}\
                         """);
                 case String p when p.equals("/emails") && lastMethod.equals("POST") ->
                     new MockResponse(
@@ -115,7 +121,7 @@ class WireTest {
     var nuntly = createClient();
     var email = nuntly.emails().retrieve("em_1");
     assertEquals("em_123", email.id());
-    assertEquals("delivered", email.status());
+    assertEquals(EmailStatus.DELIVERED, email.status());
   }
 
   @Test
@@ -152,6 +158,32 @@ class WireTest {
         assertThrows(ApiError.NotFoundError.class, () -> nuntly.emails().retrieve("em_not_found"));
     assertNotNull(error.rawResponse());
     assertEquals(404, error.rawResponse().statusCode());
+  }
+
+  @Test
+  void errorMessageExtractsCanonicalTitle() {
+    var nuntly = createClient();
+    var error =
+        assertThrows(ApiError.NotFoundError.class, () -> nuntly.emails().retrieve("em_not_found"));
+    assertTrue(
+        error.getMessage().contains("Resource not found"),
+        "expected canonical title in message, got: " + error.getMessage());
+  }
+
+  @Test
+  void errorMessageIgnoresTitleLiteralInsideDetails() {
+    var nuntly = createClient();
+    var error =
+        assertThrows(
+            ApiError.NotFoundError.class, () -> nuntly.emails().retrieve("em_title_in_details"));
+    // The Gson-based parser must extract the real `error.title`, not the substring after the
+    // first occurrence of `"title"` (which lives inside `details`).
+    assertTrue(
+        error.getMessage().contains("Resource not found"),
+        "expected canonical title, got: " + error.getMessage());
+    assertFalse(
+        error.getMessage().contains("appears inside details"),
+        "must not bleed details into message, got: " + error.getMessage());
   }
 
   @Test

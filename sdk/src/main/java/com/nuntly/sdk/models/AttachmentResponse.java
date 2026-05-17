@@ -1,5 +1,7 @@
 package com.nuntly.sdk.models;
 
+import java.util.Optional;
+
 public record AttachmentResponse(
     /** The id of the attachment */
     String id,
@@ -14,4 +16,4 @@ public record AttachmentResponse(
     /** The CID for inline images. */
     String contentId,
     /** Presigned download URL (included when retrieving a single attachment). */
-    java.util.Optional<String> downloadUrl) {}
+    Optional<String> downloadUrl) {}

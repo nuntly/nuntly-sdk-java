@@ -4,4 +4,4 @@ public record DeleteEmailResponse(
     /** The id of the email */
     String id,
     /** The status of the email. */
-    String status) {}
+    EmailStatus status) {}

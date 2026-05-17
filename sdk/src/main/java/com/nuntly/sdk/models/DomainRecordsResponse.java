@@ -1,5 +1,8 @@
 package com.nuntly.sdk.models;
 
+import java.util.List;
+import java.util.Map;
+
 public record DomainRecordsResponse(
     /** The id of the domain */
     String id,
@@ -8,7 +11,7 @@ public record DomainRecordsResponse(
     /** Date at which the object was created (ISO 8601 format) */
     String createdAt,
     /** The status for the domain */
-    String status,
+    DomainStatus status,
     /** The region of the domain data */
     String region,
     /** The date of the lastest verification of this record */
@@ -18,11 +21,11 @@ public record DomainRecordsResponse(
     /** Whether receiving is enabled for the domain */
     boolean receiving,
     /** The sending status for the domain */
-    String sendingStatus,
+    DomainRecordsResponseSendingStatus sendingStatus,
     /** The date of the latest sending status change */
     String sendingStatusAt,
     /** The receiving status for the domain */
-    String receivingStatus,
+    DomainStatus receivingStatus,
     /** The date of the latest receiving status change */
     String receivingStatusAt,
     /** Emit an event for each recipient opens an email their email client */
@@ -30,4 +33,4 @@ public record DomainRecordsResponse(
     /** Emit an event for each time the recipient clicks a link in the email */
     boolean clickTracking,
     /** The DNS records for your domain. */
-    java.util.List<java.util.Map<String, Object>> records) {}
+    List<Map<String, Object>> records) {}

@@ -15,9 +15,9 @@ public record CreateDomainRequest(
     /** The name of the domain to send e-mails' */
     String name,
     /** Enable sending */
-    java.util.Optional<Boolean> sending,
+    Optional<Boolean> sending,
     /** Enable receiving */
-    java.util.Optional<Boolean> receiving) {
+    Optional<Boolean> receiving) {
 
   public static Builder builder() {
     return new Builder();

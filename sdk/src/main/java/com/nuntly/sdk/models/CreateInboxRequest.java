@@ -7,21 +7,21 @@ import java.util.Optional;
  *
  * <pre>{@code
  * var result = nuntly.inboxes().create(CreateInboxRequest.builder()
- *     .address("address_value")
+ *     .address("jane@example.com")
  *     .build());
  * }</pre>
  */
 public record CreateInboxRequest(
     /** The id of the domain for this inbox. Defaults to your provided domain when omitted. */
-    java.util.Optional<String> domainId,
+    Optional<String> domainId,
     /** The local-part of the email address (before the @). */
     String address,
     /** The display name of the inbox. */
-    java.util.Optional<String> name,
+    Optional<String> name,
     /** The id of the namespace to assign the inbox to. */
-    java.util.Optional<String> namespaceId,
+    Optional<String> namespaceId,
     /** The external AI agent identifier. */
-    java.util.Optional<String> agentId) {
+    Optional<String> agentId) {
 
   public static Builder builder() {
     return new Builder();

@@ -1,5 +1,9 @@
 package com.nuntly.sdk.models;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 public record CreateBulkEmailsResponse(
     /** The bulk id */
-    java.util.Optional<String> id, java.util.List<java.util.Map<String, Object>> emails) {}
+    Optional<String> id, List<Map<String, Object>> emails) {}

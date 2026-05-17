@@ -1,10 +1,14 @@
 package com.nuntly.sdk.models;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 public record ComplaintDetail(
     String complainedAt,
-    java.util.Optional<java.util.List<java.util.Map<String, Object>>> complainedRecipients,
-    java.util.Optional<String> complaintSubType,
-    java.util.Optional<String> complaintFeedbackType,
+    List<Map<String, Object>> complainedRecipients,
+    Optional<String> complaintSubType,
+    Optional<ComplaintDetailComplaintFeedbackType> complaintFeedbackType,
     String feedbackId,
-    java.util.Optional<String> userAgent,
-    java.util.Optional<String> receivedAt) {}
+    Optional<String> userAgent,
+    Optional<String> receivedAt) {}

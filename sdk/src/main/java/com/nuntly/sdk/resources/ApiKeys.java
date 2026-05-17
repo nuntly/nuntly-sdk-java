@@ -10,7 +10,7 @@ public final class ApiKeys extends Resource {
     super(client);
   }
 
-  /** Generate a new API key. The key value is only returned once — store it securely. */
+  /** Generate a new API key. The key value is only returned once. Store it securely. */
   public CreateApiKeyResponse create(CreateApiKeyRequest body) {
     return client.post("/api-keys", body, CreateApiKeyResponse.class, RequestOptions.none());
   }

@@ -12,13 +12,13 @@ import java.util.Optional;
  */
 public record UpdateDomainRequest(
     /** Emit an event for each recipient opens an email their email client */
-    java.util.Optional<Boolean> openTracking,
+    Optional<Boolean> openTracking,
     /** Emit an event for each time the recipient clicks a link in the email */
-    java.util.Optional<Boolean> clickTracking,
+    Optional<Boolean> clickTracking,
     /** Enable or disable sending */
-    java.util.Optional<Boolean> sending,
+    Optional<Boolean> sending,
     /** Enable or disable receiving */
-    java.util.Optional<Boolean> receiving) {
+    Optional<Boolean> receiving) {
 
   public static Builder builder() {
     return new Builder();

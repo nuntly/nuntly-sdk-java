@@ -1,44 +1,45 @@
 package com.nuntly.sdk.models;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
  *
  * <pre>{@code
  * var result = nuntly.emails().bulk().send(CreateBulkEmailsRequest.builder()
- *     .emails("emails_value")
+ *     .emails(List.of())
  *     .build());
  * }</pre>
  */
 public record CreateBulkEmailsRequest(
     /** Used as a fallback field email value if no value is present in emails */
-    java.util.Optional<java.util.Map<String, Object>> fallback,
+    Map<String, Object> fallback,
     /** The bulk emails to send */
-    java.util.List<java.util.Map<String, Object>> emails) {
+    List<Map<String, Object>> emails) {
 
   public static Builder builder() {
     return new Builder();
   }
 
   public static final class Builder {
-    private java.util.Map<String, Object> fallback;
-    private java.util.List<java.util.Map<String, Object>> emails;
+    private Map<String, Object> fallback;
+    private List<Map<String, Object>> emails;
 
     /** Used as a fallback field email value if no value is present in emails */
-    public Builder fallback(java.util.Map<String, Object> fallback) {
+    public Builder fallback(Map<String, Object> fallback) {
       this.fallback = fallback;
       return this;
     }
 
     /** The bulk emails to send */
-    public Builder emails(java.util.List<java.util.Map<String, Object>> emails) {
+    public Builder emails(List<Map<String, Object>> emails) {
       this.emails = emails;
       return this;
     }
 
     public CreateBulkEmailsRequest build() {
-      return new CreateBulkEmailsRequest(Optional.ofNullable(fallback), emails);
+      return new CreateBulkEmailsRequest(fallback, emails);
     }
   }
 }

@@ -15,7 +15,7 @@ public record CreateNamespaceRequest(
     /** The display name of the namespace. */
     String name,
     /** An optional external identifier for the namespace. */
-    java.util.Optional<String> externalId) {
+    Optional<String> externalId) {
 
   public static Builder builder() {
     return new Builder();

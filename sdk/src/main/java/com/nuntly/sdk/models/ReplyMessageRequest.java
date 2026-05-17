@@ -13,9 +13,9 @@ import java.util.Optional;
  */
 public record ReplyMessageRequest(
     /** The plain text body. */
-    java.util.Optional<String> text,
+    Optional<String> text,
     /** The HTML body. */
-    java.util.Optional<String> html,
+    Optional<String> html,
     /** Whether to reply to all recipients. */
     boolean replyAll) {
 

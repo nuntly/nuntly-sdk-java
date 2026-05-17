@@ -1,6 +1,6 @@
 package com.nuntly.sdk.models;
 
-import java.util.Optional;
+import java.util.List;
 
 /**
  *
@@ -12,33 +12,32 @@ import java.util.Optional;
  */
 public record UpdateMessageRequest(
     /** Labels to add to the message. */
-    java.util.Optional<java.util.List<String>> addLabels,
+    List<String> addLabels,
     /** Labels to remove from the message. */
-    java.util.Optional<java.util.List<String>> removeLabels) {
+    List<String> removeLabels) {
 
   public static Builder builder() {
     return new Builder();
   }
 
   public static final class Builder {
-    private java.util.List<String> addLabels;
-    private java.util.List<String> removeLabels;
+    private List<String> addLabels;
+    private List<String> removeLabels;
 
     /** Labels to add to the message. */
-    public Builder addLabels(java.util.List<String> addLabels) {
+    public Builder addLabels(List<String> addLabels) {
       this.addLabels = addLabels;
       return this;
     }
 
     /** Labels to remove from the message. */
-    public Builder removeLabels(java.util.List<String> removeLabels) {
+    public Builder removeLabels(List<String> removeLabels) {
       this.removeLabels = removeLabels;
       return this;
     }
 
     public UpdateMessageRequest build() {
-      return new UpdateMessageRequest(
-          Optional.ofNullable(addLabels), Optional.ofNullable(removeLabels));
+      return new UpdateMessageRequest(addLabels, removeLabels);
     }
   }
 }

@@ -1,3 +1,5 @@
 package com.nuntly.sdk.models;
 
-public record FailureDetail(java.util.Map<String, Object> error) {}
+import java.util.Map;
+
+public record FailureDetail(Map<String, Object> error) {}

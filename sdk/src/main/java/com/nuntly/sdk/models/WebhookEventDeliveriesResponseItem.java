@@ -1,8 +1,10 @@
 package com.nuntly.sdk.models;
 
+import java.util.Map;
+
 public record WebhookEventDeliveriesResponseItem(
     String id,
     String deliveredAt,
     String code,
-    String status,
-    java.util.Map<String, Object> response) {}
+    WebhookEventDeliveriesResponseItemStatus status,
+    Map<String, Object> response) {}

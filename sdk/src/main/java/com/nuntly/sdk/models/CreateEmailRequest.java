@@ -1,5 +1,7 @@
 package com.nuntly.sdk.models;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -17,32 +19,32 @@ public record CreateEmailRequest(
     /** The e-mail address of the sender */
     String from,
     /** The primary recipient(s) of the email */
-    java.util.List<String> to,
+    List<String> to,
     /** The carbon copy recipient(s) of the email */
-    java.util.Optional<java.util.List<String>> cc,
+    List<String> cc,
     /** The blind carbon copy recipient(s) of the email */
-    java.util.Optional<java.util.List<String>> bcc,
+    List<String> bcc,
     /**
      * The email address where replies should be sent. If a recipient replies, the response will go
      * to this address instead of the sender's email address
      */
-    java.util.Optional<java.util.List<String>> replyTo,
+    List<String> replyTo,
     /** The subject of the e-mail */
     String subject,
     /** The plaintext version of the email */
-    java.util.Optional<String> text,
+    Optional<String> text,
     /** The HTML version of the email */
-    java.util.Optional<String> html,
+    Optional<String> html,
     /** The headers to add to the email */
-    java.util.Optional<java.util.Map<String, Object>> headers,
+    Map<String, String> headers,
     /** The tags to add to the email */
-    java.util.Optional<java.util.List<Tag>> tags,
+    List<Tag> tags,
     /** The attachements to add to the email */
-    java.util.Optional<java.util.List<Attachment>> attachments,
+    List<Attachment> attachments,
     /** The variables for the template */
-    java.util.Optional<java.util.Map<String, Object>> variables,
+    Map<String, Object> variables,
     /** The date at which the email is scheduled to be sent */
-    java.util.Optional<String> scheduledAt) {
+    Optional<String> scheduledAt) {
 
   public static Builder builder() {
     return new Builder();
@@ -50,17 +52,17 @@ public record CreateEmailRequest(
 
   public static final class Builder {
     private String from;
-    private java.util.List<String> to;
-    private java.util.List<String> cc;
-    private java.util.List<String> bcc;
-    private java.util.List<String> replyTo;
+    private List<String> to;
+    private List<String> cc;
+    private List<String> bcc;
+    private List<String> replyTo;
     private String subject;
     private String text;
     private String html;
-    private java.util.Map<String, Object> headers;
-    private java.util.List<Tag> tags;
-    private java.util.List<Attachment> attachments;
-    private java.util.Map<String, Object> variables;
+    private Map<String, String> headers;
+    private List<Tag> tags;
+    private List<Attachment> attachments;
+    private Map<String, Object> variables;
     private String scheduledAt;
 
     /** The e-mail address of the sender */
@@ -70,19 +72,19 @@ public record CreateEmailRequest(
     }
 
     /** The primary recipient(s) of the email */
-    public Builder to(java.util.List<String> to) {
+    public Builder to(List<String> to) {
       this.to = to;
       return this;
     }
 
     /** The carbon copy recipient(s) of the email */
-    public Builder cc(java.util.List<String> cc) {
+    public Builder cc(List<String> cc) {
       this.cc = cc;
       return this;
     }
 
     /** The blind carbon copy recipient(s) of the email */
-    public Builder bcc(java.util.List<String> bcc) {
+    public Builder bcc(List<String> bcc) {
       this.bcc = bcc;
       return this;
     }
@@ -91,7 +93,7 @@ public record CreateEmailRequest(
      * The email address where replies should be sent. If a recipient replies, the response will go
      * to this address instead of the sender's email address
      */
-    public Builder replyTo(java.util.List<String> replyTo) {
+    public Builder replyTo(List<String> replyTo) {
       this.replyTo = replyTo;
       return this;
     }
@@ -115,25 +117,25 @@ public record CreateEmailRequest(
     }
 
     /** The headers to add to the email */
-    public Builder headers(java.util.Map<String, Object> headers) {
+    public Builder headers(Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
 
     /** The tags to add to the email */
-    public Builder tags(java.util.List<Tag> tags) {
+    public Builder tags(List<Tag> tags) {
       this.tags = tags;
       return this;
     }
 
     /** The attachements to add to the email */
-    public Builder attachments(java.util.List<Attachment> attachments) {
+    public Builder attachments(List<Attachment> attachments) {
       this.attachments = attachments;
       return this;
     }
 
     /** The variables for the template */
-    public Builder variables(java.util.Map<String, Object> variables) {
+    public Builder variables(Map<String, Object> variables) {
       this.variables = variables;
       return this;
     }
@@ -148,16 +150,16 @@ public record CreateEmailRequest(
       return new CreateEmailRequest(
           from,
           to,
-          Optional.ofNullable(cc),
-          Optional.ofNullable(bcc),
-          Optional.ofNullable(replyTo),
+          cc,
+          bcc,
+          replyTo,
           subject,
           Optional.ofNullable(text),
           Optional.ofNullable(html),
-          Optional.ofNullable(headers),
-          Optional.ofNullable(tags),
-          Optional.ofNullable(attachments),
-          Optional.ofNullable(variables),
+          headers,
+          tags,
+          attachments,
+          variables,
           Optional.ofNullable(scheduledAt));
     }
   }

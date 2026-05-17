@@ -6,4 +6,4 @@ public record OrganizationResponse(
     /** The name of the organization */
     String name,
     /** The status of the organization */
-    String status) {}
+    CreateWebhookRequestStatus status) {}

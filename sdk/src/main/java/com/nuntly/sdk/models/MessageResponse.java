@@ -1,5 +1,8 @@
 package com.nuntly.sdk.models;
 
+import java.util.List;
+import java.util.Map;
+
 public record MessageResponse(
     /** The id of the message */
     String id,
@@ -17,22 +20,22 @@ public record MessageResponse(
      */
     String from,
     /** The recipient addresses. */
-    java.util.List<String> to,
+    List<String> to,
     /** The CC addresses. */
-    java.util.List<String> cc,
+    List<String> cc,
     /** The BCC addresses. */
-    java.util.List<String> bcc,
+    List<String> bcc,
     /** The Reply-To addresses. */
-    java.util.List<String> replyTo,
+    List<String> replyTo,
     /** The message subject. */
     String subject,
     /** The original date of the message. */
     String receivedAt,
     /** The status of the message */
-    String status,
+    MessageResponseStatus status,
     /** The message labels. */
-    java.util.List<String> labels,
+    List<String> labels,
     /** The number of attachments. */
     long attachmentCount,
     /** The raw email headers. */
-    java.util.Map<String, Object> headers) {}
+    Map<String, String> headers) {}

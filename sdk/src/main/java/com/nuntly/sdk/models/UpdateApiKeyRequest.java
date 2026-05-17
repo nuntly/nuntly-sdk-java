@@ -1,5 +1,6 @@
 package com.nuntly.sdk.models;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -12,12 +13,12 @@ import java.util.Optional;
  */
 public record UpdateApiKeyRequest(
     /** The name of the api key */
-    java.util.Optional<String> name,
-    java.util.Optional<String> status,
+    Optional<String> name,
+    Optional<CreateWebhookRequestStatus> status,
     /** The permission type for the api key */
-    java.util.Optional<String> permission,
+    Optional<CreateApiKeyRequestPermission> permission,
     /** The domain ids to restrict the api key to (only for sendingAccess) */
-    java.util.Optional<java.util.List<String>> domainIds) {
+    List<String> domainIds) {
 
   public static Builder builder() {
     return new Builder();
@@ -25,9 +26,9 @@ public record UpdateApiKeyRequest(
 
   public static final class Builder {
     private String name;
-    private String status;
-    private String permission;
-    private java.util.List<String> domainIds;
+    private CreateWebhookRequestStatus status;
+    private CreateApiKeyRequestPermission permission;
+    private List<String> domainIds;
 
     /** The name of the api key */
     public Builder name(String name) {
@@ -35,19 +36,19 @@ public record UpdateApiKeyRequest(
       return this;
     }
 
-    public Builder status(String status) {
+    public Builder status(CreateWebhookRequestStatus status) {
       this.status = status;
       return this;
     }
 
     /** The permission type for the api key */
-    public Builder permission(String permission) {
+    public Builder permission(CreateApiKeyRequestPermission permission) {
       this.permission = permission;
       return this;
     }
 
     /** The domain ids to restrict the api key to (only for sendingAccess) */
-    public Builder domainIds(java.util.List<String> domainIds) {
+    public Builder domainIds(List<String> domainIds) {
       this.domainIds = domainIds;
       return this;
     }
@@ -57,7 +58,7 @@ public record UpdateApiKeyRequest(
           Optional.ofNullable(name),
           Optional.ofNullable(status),
           Optional.ofNullable(permission),
-          Optional.ofNullable(domainIds));
+          domainIds);
     }
   }
 }

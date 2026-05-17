@@ -1,3 +1,5 @@
 package com.nuntly.sdk.models;
 
-public record OrganizationUsageResponse(java.util.Map<String, Object> transactional) {}
+import java.util.Map;
+
+public record OrganizationUsageResponse(Map<String, Object> transactional) {}

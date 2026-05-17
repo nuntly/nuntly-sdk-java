@@ -1,6 +1,6 @@
 # nuntly-java-spring
 
-Spring Boot 3 auto-configuration for the [Nuntly Java SDK](../../generated/java).
+Spring Boot 3 auto-configuration for the [Nuntly Java SDK](https://github.com/nuntly/nuntly-sdk-java).
 
 Adds a single `Nuntly` bean to the application context, configurable via `application.yaml` or environment variables.
 
@@ -32,7 +32,8 @@ If `nuntly.api-key` is not set, the SDK falls back to the `NUNTLY_API_KEY` envir
 
 ```java
 import com.nuntly.sdk.Nuntly;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.nuntly.sdk.models.CreateEmailRequest;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,7 +45,12 @@ public class WelcomeEmailService {
     }
 
     public void send(String to) {
-        nuntly.emails().create(/* request */);
+        nuntly.emails().send(CreateEmailRequest.builder()
+            .from("hello@example.com")
+            .to(List.of(to))
+            .subject("Welcome to Nuntly")
+            .html("<p>Hello!</p>")
+            .build());
     }
 }
 ```

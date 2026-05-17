@@ -1,9 +1,13 @@
 package com.nuntly.sdk.lib;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.nuntly.sdk.models.EmailDeliveredEvent;
+import com.nuntly.sdk.models.MessageReceivedEvent;
+import com.nuntly.sdk.models.UnknownWebhookEvent;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.HexFormat;
@@ -34,9 +38,42 @@ class WebhookTest {
   void verifiesValidSignatureAndReturnsTypedEvent() throws Exception {
     var ts = System.currentTimeMillis() / 1000L;
     var event = Webhook.verify(PAYLOAD, header(PAYLOAD, SECRET, ts), SECRET);
-    assertEquals("email.delivered", event.type());
-    assertEquals("evt_1", event.id());
-    assertEquals("em_1", event.data().get("id").getAsString());
+    var delivered = assertInstanceOf(EmailDeliveredEvent.class, event);
+    assertEquals("email.delivered", delivered.type());
+    assertEquals("evt_1", delivered.id());
+    // `data` is a typed EmailDeliveredEventData record now (was Map<String, Object>).
+    // Missing JSON fields land as null; the `id` field is the one set in PAYLOAD.
+    assertEquals("em_1", delivered.data().id());
+  }
+
+  @Test
+  void decodesInboundEventDataForMessageEvents() throws Exception {
+    var inboundPayload =
+        "{\"id\":\"evt_in_1\",\"createdAt\":\"2026-03-29T00:00:00Z\","
+            + "\"type\":\"message.received\","
+            + "\"data\":{\"orgId\":\"org_1\",\"domainId\":\"dom_1\",\"domainName\":\"example.com\","
+            + "\"inboxId\":\"in_1\",\"threadId\":\"th_1\",\"messageId\":\"imsg_1\","
+            + "\"from\":\"sender@example.com\",\"subject\":\"hi\"}}";
+    var ts = System.currentTimeMillis() / 1000L;
+    var event = Webhook.verify(inboundPayload, header(inboundPayload, SECRET, ts), SECRET);
+    var received = assertInstanceOf(MessageReceivedEvent.class, event);
+    assertEquals("message.received", received.type());
+    assertEquals("evt_in_1", received.id());
+    assertEquals("imsg_1", received.data().messageId());
+    assertEquals("dom_1", received.data().domainId());
+  }
+
+  @Test
+  void unknownEventTypeFallsBackToUnknownWebhookEvent() throws Exception {
+    var unknownPayload =
+        "{\"id\":\"evt_x\",\"createdAt\":\"2026-03-29T00:00:00Z\","
+            + "\"type\":\"email.totallyNew\",\"data\":{\"id\":\"em_x\"}}";
+    var ts = System.currentTimeMillis() / 1000L;
+    var event = Webhook.verify(unknownPayload, header(unknownPayload, SECRET, ts), SECRET);
+    var unknown = assertInstanceOf(UnknownWebhookEvent.class, event);
+    assertEquals("email.totallyNew", unknown.type());
+    assertEquals("evt_x", unknown.id());
+    assertEquals("em_x", unknown.data().get("id").getAsString());
   }
 
   @Test

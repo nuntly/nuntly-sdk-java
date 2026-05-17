@@ -1,5 +1,6 @@
 package com.nuntly.sdk.models;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,13 +15,13 @@ import java.util.Optional;
  */
 public record CreateWebhookRequest(
     /** The name of the webhook */
-    java.util.Optional<String> name,
+    Optional<String> name,
     /** The endpoint URL of the webhook */
     String endpointUrl,
     /** The status of the webhook. */
-    java.util.Optional<String> status,
+    Optional<CreateWebhookRequestStatus> status,
     /** The event types to subscribe to */
-    java.util.List<EventType> events) {
+    List<EventType> events) {
 
   public static Builder builder() {
     return new Builder();
@@ -29,8 +30,8 @@ public record CreateWebhookRequest(
   public static final class Builder {
     private String name;
     private String endpointUrl;
-    private String status;
-    private java.util.List<EventType> events;
+    private CreateWebhookRequestStatus status;
+    private List<EventType> events;
 
     /** The name of the webhook */
     public Builder name(String name) {
@@ -45,13 +46,13 @@ public record CreateWebhookRequest(
     }
 
     /** The status of the webhook. */
-    public Builder status(String status) {
+    public Builder status(CreateWebhookRequestStatus status) {
       this.status = status;
       return this;
     }
 
     /** The event types to subscribe to */
-    public Builder events(java.util.List<EventType> events) {
+    public Builder events(List<EventType> events) {
       this.events = events;
       return this;
     }

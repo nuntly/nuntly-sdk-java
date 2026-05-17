@@ -7,4 +7,4 @@ public record MessageRejectedEventData(
     String inboxId,
     String from,
     String subject,
-    String reason) {}
+    MessageRejectedEventDataReason reason) {}

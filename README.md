@@ -132,12 +132,88 @@ var nuntly = Nuntly.create(ClientOptions.builder()
 
 ## Raw response access
 
+Inspect the underlying HTTP response on errors via `ApiError.rawResponse()`:
+
 ```java
-var email = nuntly.emails().retrieve("em_123");
-var response = nuntly.emails().withResponse(email);
-System.out.println(response.data().status());
-System.out.println(response.response().headers().firstValue("x-request-id"));
+try {
+    nuntly.emails().retrieve("em_invalid");
+} catch (ApiError e) {
+    System.out.println(e.rawResponse().statusCode());
+    System.out.println(e.rawResponse().headers().firstValue("x-request-id").orElse(""));
+}
 ```
+
+## Spring Boot
+
+A separate auto-configuration starter wires `Nuntly` as a bean and binds settings from `application.yml` / `application.properties`:
+
+```kotlin
+dependencies {
+    implementation("com.nuntly:nuntly-java-spring:0.0.1")
+}
+```
+
+```yaml
+# application.yml
+nuntly:
+  api-key: ${NUNTLY_API_KEY}
+  base-url: https://api.nuntly.com  # optional
+  timeout: 30s                       # optional
+  max-retries: 3                     # optional
+  debug: false                       # optional
+```
+
+```java
+@Service
+public class MailService {
+  private final Nuntly nuntly;
+
+  public MailService(Nuntly nuntly) { this.nuntly = nuntly; }
+}
+```
+
+Override any extensibility point by declaring a single `@Bean`. The starter wires it into the underlying `ClientOptions`:
+
+```java
+@Bean Hooks hooks() {
+  return Hooks.builder()
+      .onRequest(req -> log.info("-> {} {}", req.method(), req.uri()))
+      .build();
+}
+
+@Bean BackoffStrategy backoff() {
+  return BackoffStrategy.builder().initialIntervalMs(200).build();
+}
+
+@Bean AppInfo appInfo() {
+  return AppInfo.of("my-app", "1.4.2");
+}
+```
+
+## Webhook verification
+
+Verify a webhook signature and parse the payload into a typed event:
+
+```java
+import com.nuntly.sdk.lib.Webhook;
+import com.nuntly.sdk.models.WebhookEvent;
+import com.nuntly.sdk.models.WebhookEvent.*;
+
+WebhookEvent event = Webhook.verify(payload, signatureHeader, secret);
+
+switch (event) {
+  case EmailBouncedEvent e -> handleBounce(e);
+  case EmailDeliveredEvent e -> handleDelivered(e);
+  case MessageReceivedEvent e -> handleReceive(e);
+  default -> log.warn("Unhandled event type: {}", event.type());
+}
+```
+
+`WebhookEvent` is a sealed interface; the compiler enforces exhaustive matching once every permitted subtype has a case.
+
+## Error types
+
+`NotFoundError`, `RateLimitError`, `AuthenticationError`, `PermissionDeniedError`, `ConflictError`, `BadRequestError`, `UnprocessableEntityError`, `InternalServerError`. All extend `ApiError`. See [`ApiError.java`](./core/src/main/java/com/nuntly/sdk/ApiError.java).
 
 ## License
 
