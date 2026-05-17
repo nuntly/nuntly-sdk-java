@@ -18,7 +18,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public final class NuntlyClient {
   private static final Set<Integer> RETRYABLE_CODES = Set.of(408, 409, 429, 500, 502, 503, 504);
-  private static final Gson GSON = new GsonBuilder().create();
+  // Optional adapter is mandatory: without it, Gson falls back to reflection
+  // on java.util.Optional, which the JDK 17+ module system refuses to allow.
+  private static final Gson GSON = new GsonBuilder()
+      .registerTypeAdapterFactory(new OptionalTypeAdapterFactory())
+      .create();
 
   private final ClientOptions options;
   private final HttpClient httpClient;
