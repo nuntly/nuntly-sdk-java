@@ -9,7 +9,7 @@ public record DomainsResponseItem(
     /** The status for the domain */
     DomainStatus status,
     /** The sending status for the domain */
-    DomainRecordsResponseSendingStatus sendingStatus,
+    DomainSendingStatus sendingStatus,
     /** The receiving status for the domain */
     DomainStatus receivingStatus,
     /** Date at which the object was created (ISO 8601 format) */

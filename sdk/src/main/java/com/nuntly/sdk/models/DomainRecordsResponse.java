@@ -21,7 +21,7 @@ public record DomainRecordsResponse(
     /** Whether receiving is enabled for the domain */
     boolean receiving,
     /** The sending status for the domain */
-    DomainRecordsResponseSendingStatus sendingStatus,
+    DomainSendingStatus sendingStatus,
     /** The date of the latest sending status change */
     String sendingStatusAt,
     /** The receiving status for the domain */

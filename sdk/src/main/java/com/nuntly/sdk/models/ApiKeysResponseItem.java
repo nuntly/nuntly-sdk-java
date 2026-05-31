@@ -11,6 +11,6 @@ public record ApiKeysResponseItem(
     /** The last 6 characters of the api key token */
     String shortToken,
     /** The status for the api key */
-    CreateWebhookResponseStatus status,
+    ApiKeyStatus status,
     /** Date at which the object was created (ISO 8601 format) */
     String createdAt) {}

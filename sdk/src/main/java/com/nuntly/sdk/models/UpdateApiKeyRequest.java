@@ -14,7 +14,7 @@ import java.util.Optional;
 public record UpdateApiKeyRequest(
     /** The name of the api key */
     Optional<String> name,
-    Optional<CreateWebhookRequestStatus> status,
+    Optional<UpdateApiKeyRequestStatus> status,
     /** The permission type for the api key */
     Optional<CreateApiKeyRequestPermission> permission,
     /** The domain ids to restrict the api key to (only for sendingAccess) */
@@ -26,7 +26,7 @@ public record UpdateApiKeyRequest(
 
   public static final class Builder {
     private String name;
-    private CreateWebhookRequestStatus status;
+    private UpdateApiKeyRequestStatus status;
     private CreateApiKeyRequestPermission permission;
     private List<String> domainIds;
 
@@ -36,7 +36,7 @@ public record UpdateApiKeyRequest(
       return this;
     }
 
-    public Builder status(CreateWebhookRequestStatus status) {
+    public Builder status(UpdateApiKeyRequestStatus status) {
       this.status = status;
       return this;
     }

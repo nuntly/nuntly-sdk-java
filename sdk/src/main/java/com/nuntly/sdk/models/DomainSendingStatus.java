@@ -2,7 +2,7 @@ package com.nuntly.sdk.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public enum DomainRecordsResponseSendingStatus {
+public enum DomainSendingStatus {
   @SerializedName("enabled")
   ENABLED("enabled"),
   @SerializedName("disabled")
@@ -12,7 +12,7 @@ public enum DomainRecordsResponseSendingStatus {
 
   private final String value;
 
-  DomainRecordsResponseSendingStatus(String value) {
+  DomainSendingStatus(String value) {
     this.value = value;
   }
 
@@ -20,8 +20,8 @@ public enum DomainRecordsResponseSendingStatus {
     return value;
   }
 
-  public static DomainRecordsResponseSendingStatus fromValue(String value) {
+  public static DomainSendingStatus fromValue(String value) {
     for (var e : values()) if (e.value.equals(value)) return e;
-    throw new IllegalArgumentException("Unknown DomainRecordsResponseSendingStatus: " + value);
+    throw new IllegalArgumentException("Unknown DomainSendingStatus: " + value);
   }
 }
