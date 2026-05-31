@@ -19,7 +19,7 @@ public record CreateWebhookRequest(
     /** The endpoint URL of the webhook */
     String endpointUrl,
     /** The status of the webhook. */
-    Optional<CreateWebhookRequestStatus> status,
+    Optional<WebhookMutableStatus> status,
     /** The event types to subscribe to */
     List<EventType> events) {
 
@@ -30,7 +30,7 @@ public record CreateWebhookRequest(
   public static final class Builder {
     private String name;
     private String endpointUrl;
-    private CreateWebhookRequestStatus status;
+    private WebhookMutableStatus status;
     private List<EventType> events;
 
     /** The name of the webhook */
@@ -46,7 +46,7 @@ public record CreateWebhookRequest(
     }
 
     /** The status of the webhook. */
-    public Builder status(CreateWebhookRequestStatus status) {
+    public Builder status(WebhookMutableStatus status) {
       this.status = status;
       return this;
     }

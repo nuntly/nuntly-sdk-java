@@ -12,7 +12,7 @@ public record WebhooksResponseItem(
     /** The endpoint URL of the webhook */
     String endpointUrl,
     /** The status of the webhook. */
-    CreateWebhookResponseStatus status,
+    WebhookStatus status,
     /** The event types to subscribe to */
     List<EventType> events,
     /** Date at which the object was created (ISO 8601 format) */

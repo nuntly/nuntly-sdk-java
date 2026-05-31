@@ -16,7 +16,7 @@ public record CreateApiKeyRequest(
     /** The name of the api key */
     Optional<String> name,
     /** The status for the api key */
-    Optional<CreateWebhookResponseStatus> status,
+    Optional<ApiKeyStatus> status,
     /** The permission type for the api key */
     CreateApiKeyRequestPermission permission,
     /** The domain ids to restrict the api key to (only for sendingAccess) */
@@ -28,7 +28,7 @@ public record CreateApiKeyRequest(
 
   public static final class Builder {
     private String name;
-    private CreateWebhookResponseStatus status;
+    private ApiKeyStatus status;
     private CreateApiKeyRequestPermission permission;
     private List<String> domainIds;
 
@@ -39,7 +39,7 @@ public record CreateApiKeyRequest(
     }
 
     /** The status for the api key */
-    public Builder status(CreateWebhookResponseStatus status) {
+    public Builder status(ApiKeyStatus status) {
       this.status = status;
       return this;
     }

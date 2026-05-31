@@ -12,4 +12,4 @@ public record CreateApiKeyResponse(
     /** The last 6 characters of the api key token */
     String shortToken,
     /** The status for the api key */
-    CreateWebhookResponseStatus status) {}
+    ApiKeyStatus status) {}

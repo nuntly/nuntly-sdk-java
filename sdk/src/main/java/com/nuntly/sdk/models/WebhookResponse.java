@@ -13,6 +13,6 @@ public record WebhookResponse(
     /** The event types to subscribe to */
     List<EventType> events,
     /** The status of the webhook. */
-    CreateWebhookResponseStatus status,
+    WebhookStatus status,
     /** Date at which the object was created (ISO 8601 format) */
     String createdAt) {}

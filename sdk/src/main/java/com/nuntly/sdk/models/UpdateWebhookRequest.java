@@ -19,7 +19,7 @@ public record UpdateWebhookRequest(
     /** The event types to subscribe to */
     List<EventType> events,
     /** The status of the webhook. */
-    Optional<CreateWebhookRequestStatus> status,
+    Optional<WebhookMutableStatus> status,
     /** If true, a new signing secret will be generated */
     Optional<Boolean> rotateSecret) {
 
@@ -31,7 +31,7 @@ public record UpdateWebhookRequest(
     private String name;
     private String endpointUrl;
     private List<EventType> events;
-    private CreateWebhookRequestStatus status;
+    private WebhookMutableStatus status;
     private Boolean rotateSecret;
 
     /** The name of the webhook */
@@ -53,7 +53,7 @@ public record UpdateWebhookRequest(
     }
 
     /** The status of the webhook. */
-    public Builder status(CreateWebhookRequestStatus status) {
+    public Builder status(WebhookMutableStatus status) {
       this.status = status;
       return this;
     }

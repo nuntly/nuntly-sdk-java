@@ -2,17 +2,15 @@ package com.nuntly.sdk.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public enum CreateWebhookResponseStatus {
+public enum UpdateApiKeyRequestStatus {
   @SerializedName("enabled")
   ENABLED("enabled"),
   @SerializedName("disabled")
-  DISABLED("disabled"),
-  @SerializedName("revoked")
-  REVOKED("revoked");
+  DISABLED("disabled");
 
   private final String value;
 
-  CreateWebhookResponseStatus(String value) {
+  UpdateApiKeyRequestStatus(String value) {
     this.value = value;
   }
 
@@ -20,8 +18,8 @@ public enum CreateWebhookResponseStatus {
     return value;
   }
 
-  public static CreateWebhookResponseStatus fromValue(String value) {
+  public static UpdateApiKeyRequestStatus fromValue(String value) {
     for (var e : values()) if (e.value.equals(value)) return e;
-    throw new IllegalArgumentException("Unknown CreateWebhookResponseStatus: " + value);
+    throw new IllegalArgumentException("Unknown UpdateApiKeyRequestStatus: " + value);
   }
 }
