@@ -8,7 +8,7 @@ import java.util.Optional;
  *
  * <pre>{@code
  * var result = nuntly.apiKeys().create(CreateApiKeyRequest.builder()
- *     .permission(null)
+ *     .permission(CreateApiKeyRequestPermission.FULL_ACCESS)
  *     .build());
  * }</pre>
  */

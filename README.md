@@ -85,7 +85,7 @@ for (var item : nuntly.emails().list()) {
 
 // Stream API
 nuntly.emails().list().stream()
-    .filter(e -> "delivered".equals(e.status()))
+    .filter(e -> e.status() == EmailStatus.DELIVERED)
     .forEach(e -> System.out.println(e.id()));
 
 // Manual pagination

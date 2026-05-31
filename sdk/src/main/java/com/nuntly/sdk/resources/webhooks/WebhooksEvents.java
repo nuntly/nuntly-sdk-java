@@ -43,6 +43,7 @@ public final class WebhooksEvents extends Resource {
 
   /** Re-deliver a webhook event to its endpoint. Useful for retrying failed deliveries. */
   public void replay(String id, String eventId) {
-    client.deleteVoid("/webhooks/" + id + "/events/" + eventId + "/replay", RequestOptions.none());
+    client.rawRequest(
+        "POST", "/webhooks/" + id + "/events/" + eventId + "/replay", null, RequestOptions.none());
   }
 }
