@@ -105,8 +105,8 @@ try {
     nuntly.emails().retrieve("em_invalid");
 } catch (ApiError e) {
     switch (e) {
-        case NotFoundError nf -> System.out.println("Not found: " + nf.requestId());
-        case RateLimitError rl -> System.out.println("Retry in: " + rl.retryAfter() + "ms");
+        case NotFoundError nf -> System.out.println("Not found: " + nf.requestId().orElse("?"));
+        case RateLimitError rl -> System.out.println("Retry in: " + rl.retryAfter().orElse(0L) + "ms");
         case AuthenticationError ae -> System.out.println("Invalid API key");
         default -> System.out.println("HTTP " + e.status() + ": " + e.getMessage());
     }
