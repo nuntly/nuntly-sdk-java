@@ -14,5 +14,9 @@ public record WebhookResponse(
     List<EventType> events,
     /** The status of the webhook. */
     WebhookStatus status,
+    /** The reason the webhook was disabled, or `null` if it is not disabled. */
+    String disabledReason,
+    /** The timestamp when the webhook was disabled, or `null` if it is not disabled. */
+    String disabledAt,
     /** Date at which the object was created (ISO 8601 format) */
     String createdAt) {}

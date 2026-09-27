@@ -1,3 +1,6 @@
 package com.nuntly.sdk.models;
 
-public record OpenDetail(String openedAt, String userAgent) {}
+import java.util.Optional;
+
+public record OpenDetail(
+    String openedAt, String userAgent, Optional<ClickDetailIsBotEvent> isBotEvent) {}
