@@ -10,4 +10,5 @@ public record BounceDetail(
     List<Map<String, Object>> bouncedRecipients,
     String bouncedAt,
     String feedbackId,
-    Optional<String> reportingMta) {}
+    Optional<String> reportingMta,
+    Optional<String> remoteMtaIp) {}
