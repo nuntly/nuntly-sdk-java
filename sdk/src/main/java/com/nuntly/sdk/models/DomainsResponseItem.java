@@ -11,7 +11,7 @@ public record DomainsResponseItem(
     /** The sending status for the domain */
     DomainSendingStatus sendingStatus,
     /** The receiving status for the domain */
-    DomainStatus receivingStatus,
+    DomainReceivingStatus receivingStatus,
     /** Date at which the object was created (ISO 8601 format) */
     String createdAt,
     /** The region of the domain data */
