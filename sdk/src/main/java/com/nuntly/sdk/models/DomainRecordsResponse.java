@@ -25,7 +25,7 @@ public record DomainRecordsResponse(
     /** The date of the latest sending status change */
     String sendingStatusAt,
     /** The receiving status for the domain */
-    DomainStatus receivingStatus,
+    DomainReceivingStatus receivingStatus,
     /** The date of the latest receiving status change */
     String receivingStatusAt,
     /** Emit an event for each recipient opens an email their email client */
