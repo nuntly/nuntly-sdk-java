@@ -17,7 +17,7 @@ spotless {
 }
 
 group = "com.nuntly"
-version = "1.2.2"
+version = "2.0.0-beta.1"
 
 mavenPublishing {
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
@@ -67,6 +67,9 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    // The conformance vectors: conformance/ at the repository root, or two levels up in a source tree.
+    val vectors = listOf("$rootDir/conformance", "$rootDir/../../conformance").map(::file).first { it.isDirectory }
+    inputs.dir(vectors).withPropertyName("conformanceVectors")
     jvmArgs(
         "--add-opens", "java.base/java.lang=ALL-UNNAMED",
         "--add-opens", "java.base/java.util=ALL-UNNAMED",

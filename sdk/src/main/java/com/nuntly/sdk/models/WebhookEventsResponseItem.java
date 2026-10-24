@@ -3,18 +3,21 @@ package com.nuntly.sdk.models;
 import java.util.Map;
 import java.util.Optional;
 
-/** A single item from WebhookEventsResponse. */
+/**
+ * A single item from WebhookEventsResponse.
+ *
+ * @param id The id of the webhook event
+ * @param webhookId The id of the webhook
+ * @param orgId The id of the organization
+ * @param event An event
+ * @param successfulAt The timestamp when the event was successfully delivered to the endpoint
+ * @param status Status of the webhook delivery attempt
+ */
 public record WebhookEventsResponseItem(
-    /** The id of the webhook event */
     String id,
-    /** The id of the webhook */
     String webhookId,
-    /** The id of the organization */
     String orgId,
-    /** An event */
     EventType event,
-    /** The timestamp when the event was successfully delivered to the endpoint */
     Optional<String> successfulAt,
     Map<String, Object> data,
-    /** Status of the webhook delivery attempt */
     WebhookEventsResponseItemStatus status) {}

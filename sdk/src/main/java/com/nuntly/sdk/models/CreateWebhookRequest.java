@@ -12,16 +12,17 @@ import java.util.Optional;
  *     .events(List.of("email.delivered", "email.bounced"))
  *     .build());
  * }</pre>
+ *
+ * @param name The name of the webhook
+ * @param endpointUrl The endpoint URL of the webhook
+ * @param status The status of the webhook.
+ * @param events The event types to subscribe to
  */
 public record CreateWebhookRequest(
-    /** The name of the webhook */
     Optional<String> name,
-    /** The endpoint URL of the webhook */
     String endpointUrl,
-    /** The status of the webhook. */
     Optional<WebhookMutableStatus> status,
-    /** The event types to subscribe to */
-    List<EventType> events) {
+    List<WebhookEventType> events) {
 
   public static Builder builder() {
     return new Builder();
@@ -31,7 +32,7 @@ public record CreateWebhookRequest(
     private String name;
     private String endpointUrl;
     private WebhookMutableStatus status;
-    private List<EventType> events;
+    private List<WebhookEventType> events;
 
     /** The name of the webhook */
     public Builder name(String name) {
@@ -52,7 +53,7 @@ public record CreateWebhookRequest(
     }
 
     /** The event types to subscribe to */
-    public Builder events(List<EventType> events) {
+    public Builder events(List<WebhookEventType> events) {
       this.events = events;
       return this;
     }

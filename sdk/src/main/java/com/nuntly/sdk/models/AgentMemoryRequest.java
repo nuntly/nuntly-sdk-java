@@ -1,5 +1,8 @@
 package com.nuntly.sdk.models;
 
+import com.google.gson.annotations.JsonAdapter;
+import com.nuntly.sdk.ExplicitNullTypeAdapterFactory;
+import com.nuntly.sdk.JsonNullable;
 import java.util.Map;
 import java.util.Optional;
 
@@ -11,16 +14,17 @@ import java.util.Optional;
  *     .memory(Map.of())
  *     .build());
  * }</pre>
+ *
+ * @param inboxId The id of an inbox in your organization. Scopes memory to that inbox.
+ * @param threadId The id of a thread in your organization. Scopes memory to that thread.
+ * @param memory The agent memory key-value data.
+ * @param summary A human-readable conversation summary.
  */
 public record AgentMemoryRequest(
-    /** The inbox id to scope the memory to. */
     Optional<String> inboxId,
-    /** The thread id to scope the memory to. */
     Optional<String> threadId,
-    /** The agent memory key-value data. */
-    Map<String, Object> memory,
-    /** A human-readable conversation summary. */
-    Optional<String> summary) {
+    @JsonAdapter(ExplicitNullTypeAdapterFactory.MapNullValues.class) Map<String, Object> memory,
+    JsonNullable<String> summary) {
 
   public static Builder builder() {
     return new Builder();
@@ -30,15 +34,15 @@ public record AgentMemoryRequest(
     private String inboxId;
     private String threadId;
     private Map<String, Object> memory;
-    private String summary;
+    private JsonNullable<String> summary = JsonNullable.absent();
 
-    /** The inbox id to scope the memory to. */
+    /** The id of an inbox in your organization. Scopes memory to that inbox. */
     public Builder inboxId(String inboxId) {
       this.inboxId = inboxId;
       return this;
     }
 
-    /** The thread id to scope the memory to. */
+    /** The id of a thread in your organization. Scopes memory to that thread. */
     public Builder threadId(String threadId) {
       this.threadId = threadId;
       return this;
@@ -50,18 +54,23 @@ public record AgentMemoryRequest(
       return this;
     }
 
-    /** A human-readable conversation summary. */
+    /**
+     * Sets {@code summary}; {@code null} leaves it unset. Use {@link #clearSummary()} to send null.
+     */
     public Builder summary(String summary) {
-      this.summary = summary;
+      this.summary = JsonNullable.ofNullable(summary);
+      return this;
+    }
+
+    /** Sends {@code summary} as null. A human-readable conversation summary. */
+    public Builder clearSummary() {
+      this.summary = JsonNullable.ofNull();
       return this;
     }
 
     public AgentMemoryRequest build() {
       return new AgentMemoryRequest(
-          Optional.ofNullable(inboxId),
-          Optional.ofNullable(threadId),
-          memory,
-          Optional.ofNullable(summary));
+          Optional.ofNullable(inboxId), Optional.ofNullable(threadId), memory, summary);
     }
   }
 }

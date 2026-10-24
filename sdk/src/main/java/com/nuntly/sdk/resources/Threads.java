@@ -18,18 +18,32 @@ public final class Threads extends Resource {
   }
 
   /**
-   * Retrieve a thread. Pass ?markRead=true to automatically remove the unread label from all
-   * messages.
+   * Retrieves a thread with its subject, message count, last activity and labels from all its
+   * messages. Pass markRead=true to clear unread labels.
    */
+  public ThreadResponse retrieve(String threadId, ThreadsRetrieveParams params) {
+    var query = new HashMap<String, Object>();
+    params.markRead().ifPresent(v -> query.put("markRead", v));
+    return client.get(
+        "/threads/" + pathParam("threadId", threadId) + "",
+        ThreadResponse.class,
+        query,
+        RequestOptions.none());
+  }
+
   public ThreadResponse retrieve(String threadId) {
-    return client.get("/threads/" + threadId + "", ThreadResponse.class, RequestOptions.none());
+    return retrieve(threadId, ThreadsRetrieveParams.builder().build());
   }
 
   /**
-   * Update thread labels and agent assignment. Label operations apply to all messages in the
-   * thread.
+   * Adds or removes labels on every message in a thread, or sets its agent. Label operations only
+   * work on threads in user-created inboxes.
    */
   public IdResponse update(String threadId, UpdateThreadRequest body) {
-    return client.patch("/threads/" + threadId + "", body, IdResponse.class, RequestOptions.none());
+    return client.patch(
+        "/threads/" + pathParam("threadId", threadId) + "",
+        body,
+        IdResponse.class,
+        RequestOptions.none());
   }
 }

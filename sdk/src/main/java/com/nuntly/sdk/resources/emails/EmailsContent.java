@@ -11,10 +11,13 @@ public final class EmailsContent extends Resource {
   }
 
   /**
-   * Returns presigned URLs to download the HTML, plain-text, and raw MIME source of a sent email.
+   * Returns download links, valid for 2 minutes, for the HTML, plain-text and raw MIME versions of
+   * an email, plus its stored subject and body templates.
    */
   public EmailContentResponse retrieve(String id) {
     return client.get(
-        "/emails/" + id + "/content", EmailContentResponse.class, RequestOptions.none());
+        "/emails/" + pathParam("id", id) + "/content",
+        EmailContentResponse.class,
+        RequestOptions.none());
   }
 }

@@ -1,15 +1,22 @@
 package com.nuntly.sdk.models;
 
+import java.util.Optional;
+
+/**
+ * @param html HTML content, or `null` if unavailable.
+ * @param text Plain text content, or `null` if unavailable.
+ * @param mime Raw MIME (.eml) content, or `null` if unavailable.
+ * @param subjectTemplate Subject template content, or `null` if unavailable. Returned for failed
+ *     emails only.
+ * @param htmlTemplate HTML template content, or `null` if unavailable. Returned for failed emails
+ *     only.
+ * @param textTemplate Text template content, or `null` if unavailable. Returned for failed emails
+ *     only.
+ */
 public record EmailContentResponse(
-    /** HTML content, or `null` if unavailable. */
-    EmailContentItem html,
-    /** Plain text content, or `null` if unavailable. */
-    EmailContentItem text,
-    /** Raw MIME (.eml) content, or `null` if unavailable. */
-    EmailContentItem mime,
-    /** Subject template content, or `null` if unavailable. Returned for failed emails only. */
-    EmailContentItem subjectTemplate,
-    /** HTML template content, or `null` if unavailable. Returned for failed emails only. */
-    EmailContentItem htmlTemplate,
-    /** Text template content, or `null` if unavailable. Returned for failed emails only. */
-    EmailContentItem textTemplate) {}
+    Optional<EmailContentItem> html,
+    Optional<EmailContentItem> text,
+    Optional<EmailContentItem> mime,
+    Optional<EmailContentItem> subjectTemplate,
+    Optional<EmailContentItem> htmlTemplate,
+    Optional<EmailContentItem> textTemplate) {}

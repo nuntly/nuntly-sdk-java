@@ -11,15 +11,16 @@ import java.util.Optional;
  *     .permission(CreateApiKeyRequestPermission.FULL_ACCESS)
  *     .build());
  * }</pre>
+ *
+ * @param name The name of the api key
+ * @param status The status for the api key
+ * @param permission The permission type for the api key
+ * @param domainIds The domain ids to restrict the api key to (only for sendingAccess)
  */
 public record CreateApiKeyRequest(
-    /** The name of the api key */
     Optional<String> name,
-    /** The status for the api key */
     Optional<ApiKeyStatus> status,
-    /** The permission type for the api key */
     CreateApiKeyRequestPermission permission,
-    /** The domain ids to restrict the api key to (only for sendingAccess) */
     List<String> domainIds) {
 
   public static Builder builder() {

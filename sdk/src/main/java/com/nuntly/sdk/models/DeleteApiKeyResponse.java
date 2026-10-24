@@ -1,5 +1,6 @@
 package com.nuntly.sdk.models;
 
-public record DeleteApiKeyResponse(
-    /** The id of the api key */
-    String id) {}
+/**
+ * @param id The id of the api key
+ */
+public record DeleteApiKeyResponse(String id) {}

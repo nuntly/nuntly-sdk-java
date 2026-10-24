@@ -1,7 +1,7 @@
 package com.nuntly.sdk.models;
 
-public record DeleteEmailResponse(
-    /** The id of the email */
-    String id,
-    /** The status of the email. */
-    EmailStatus status) {}
+/**
+ * @param id The id of the email
+ * @param status The status of the email.
+ */
+public record DeleteEmailResponse(String id, EmailStatus status) {}

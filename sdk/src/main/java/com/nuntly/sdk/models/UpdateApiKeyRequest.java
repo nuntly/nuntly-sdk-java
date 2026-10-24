@@ -10,14 +10,15 @@ import java.util.Optional;
  * var result = nuntly.apiKeys().update(UpdateApiKeyRequest.builder()
  *     .build());
  * }</pre>
+ *
+ * @param name The name of the api key
+ * @param permission The permission type for the api key
+ * @param domainIds The domain ids to restrict the api key to (only for sendingAccess)
  */
 public record UpdateApiKeyRequest(
-    /** The name of the api key */
     Optional<String> name,
     Optional<UpdateApiKeyRequestStatus> status,
-    /** The permission type for the api key */
     Optional<CreateApiKeyRequestPermission> permission,
-    /** The domain ids to restrict the api key to (only for sendingAccess) */
     List<String> domainIds) {
 
   public static Builder builder() {

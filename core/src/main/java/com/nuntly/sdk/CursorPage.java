@@ -2,6 +2,7 @@ package com.nuntly.sdk;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -31,7 +32,13 @@ public final class CursorPage<T> implements Iterable<T> {
     return nextCursor.isPresent();
   }
 
+  /**
+   * Fetches the page after this one.
+   *
+   * @throws NoSuchElementException when this is the last page ({@link #hasNextPage()} is false)
+   */
   public CursorPage<T> nextPage() {
+    if (!hasNextPage()) throw new NoSuchElementException("No more pages");
     return fetchPage.apply(nextCursor);
   }
 
@@ -55,15 +62,18 @@ public final class CursorPage<T> implements Iterable<T> {
 
     @Override
     public boolean hasNext() {
-      if (index < currentPage.data().size()) return true;
-      if (!currentPage.hasNextPage()) return false;
-      currentPage = currentPage.nextPage();
-      index = 0;
-      return !currentPage.data().isEmpty();
+      // A page can be empty and still have a next cursor.
+      while (index >= currentPage.data().size()) {
+        if (!currentPage.hasNextPage()) return false;
+        currentPage = currentPage.nextPage();
+        index = 0;
+      }
+      return true;
     }
 
     @Override
     public T next() {
+      if (!hasNext()) throw new NoSuchElementException();
       return currentPage.data().get(index++);
     }
   }

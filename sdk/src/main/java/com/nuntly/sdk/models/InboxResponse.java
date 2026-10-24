@@ -2,24 +2,26 @@ package com.nuntly.sdk.models;
 
 import java.util.Optional;
 
+/**
+ * @param id The id of the inbox
+ * @param createdAt Date at which the object was created (ISO 8601 format)
+ * @param updatedAt Date at which the object was updated (ISO 8601 format)
+ * @param domainId The id of the domain.
+ * @param domainName The domain name.
+ * @param address The local-part of the email address.
+ * @param name The display name of the inbox.
+ * @param namespaceId The id of the namespace.
+ * @param namespaceName The display name of the namespace.
+ * @param agentId The AI agent identifier.
+ */
 public record InboxResponse(
-    /** The id of the inbox */
     String id,
-    /** Date at which the object was created (ISO 8601 format) */
     String createdAt,
-    /** Date at which the object was updated (ISO 8601 format) */
     Optional<String> updatedAt,
-    /** The id of the domain. */
     String domainId,
-    /** The domain name. */
     String domainName,
-    /** The local-part of the email address. */
     String address,
-    /** The display name of the inbox. */
-    String name,
-    /** The id of the namespace. */
-    String namespaceId,
-    /** The display name of the namespace. */
-    String namespaceName,
-    /** The AI agent identifier. */
-    String agentId) {}
+    Optional<String> name,
+    Optional<String> namespaceId,
+    Optional<String> namespaceName,
+    Optional<String> agentId) {}

@@ -1,5 +1,6 @@
 package com.nuntly.sdk.models;
 
-public record DeleteWebhookResponse(
-    /** The id of the webhook */
-    String id) {}
+/**
+ * @param id The id of the webhook
+ */
+public record DeleteWebhookResponse(String id) {}

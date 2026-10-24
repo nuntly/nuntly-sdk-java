@@ -10,21 +10,23 @@ public final class InboxesThreads extends Resource {
     super(client);
   }
 
-  /** List threads in an inbox. */
-  public CursorPage<ThreadsResponseItem> list(
-      String inboxId, Optional<String> cursor, Optional<Integer> limit, Optional<String> labels) {
+  /**
+   * Lists the threads in an inbox, most recently active first, with cursor pagination. Filter by
+   * labels; spam and trash threads are excluded by default.
+   */
+  public CursorPage<ThreadsResponseItem> list(String inboxId, InboxesThreadsListParams params) {
     var query = new HashMap<String, String>();
-    cursor.ifPresent(c -> query.put("cursor", c));
-    limit.ifPresent(l -> query.put("limit", l.toString()));
-    labels.ifPresent(v -> query.put("labels", v.toString()));
+    params.cursor().ifPresent(v -> query.put("cursor", v));
+    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.labels().ifPresent(v -> query.put("labels", v));
     return client.list(
-        "/inboxes/" + inboxId + "/threads",
+        "/inboxes/" + pathParam("inboxId", inboxId) + "/threads",
         ThreadsResponseItem.class,
         query,
         RequestOptions.none());
   }
 
   public CursorPage<ThreadsResponseItem> list(String inboxId) {
-    return list(inboxId, Optional.empty(), Optional.empty(), Optional.empty());
+    return list(inboxId, InboxesThreadsListParams.builder().build());
   }
 }

@@ -6,6 +6,7 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -26,8 +27,8 @@ import java.util.Optional;
  *
  * <ul>
  *   <li>Serializes {@code Optional.empty()} as JSON {@code null}. Combined with Gson's default
- *       (serializeNulls = false), the field is omitted from the request body, which is what Zod
- *       {@code .optional()} expects on the wire.
+ *       (serializeNulls = false), the field is omitted from the request body, which is how the API
+ *       reads an optional field that is not set.
  *   <li>Serializes {@code Optional.of(v)} as the wrapped value.
  *   <li>Deserializes JSON {@code null} or a missing value as {@code Optional.empty()}.
  *   <li>Deserializes a present value as {@code Optional.of(value)}.
@@ -78,7 +79,7 @@ public final class OptionalTypeAdapterFactory implements TypeAdapterFactory {
     List<String> optionalComponents = new ArrayList<>();
     for (RecordComponent component : rawType.getRecordComponents()) {
       if (component.getType() == Optional.class) {
-        optionalComponents.add(component.getName());
+        optionalComponents.add(jsonName(rawType, component));
       }
     }
     if (optionalComponents.isEmpty()) {
@@ -108,6 +109,17 @@ public final class OptionalTypeAdapterFactory implements TypeAdapterFactory {
         return delegate.fromJsonTree(tree);
       }
     };
+  }
+
+  // The JSON key of a component renamed with @SerializedName (defaultValue is "default").
+  private static String jsonName(Class<?> recordType, RecordComponent component) {
+    try {
+      SerializedName name =
+          recordType.getDeclaredField(component.getName()).getAnnotation(SerializedName.class);
+      return name != null ? name.value() : component.getName();
+    } catch (NoSuchFieldException e) {
+      return component.getName();
+    }
   }
 
   private static final class OptionalAdapter<T> extends TypeAdapter<Optional<T>> {

@@ -3,21 +3,24 @@ package com.nuntly.sdk.models;
 import java.util.List;
 import java.util.Optional;
 
-/** A single item from WebhooksResponse. */
+/**
+ * A single item from WebhooksResponse.
+ *
+ * @param id The id of the webhook
+ * @param name The name of the webhook
+ * @param endpointUrl The endpoint URL of the webhook
+ * @param status The status of the webhook.
+ * @param disabledReason The reason the webhook was disabled, or `null` if it is not disabled.
+ * @param disabledAt The timestamp when the webhook was disabled, or `null` if it is not disabled.
+ * @param events The event types to subscribe to
+ * @param createdAt Date at which the object was created (ISO 8601 format)
+ */
 public record WebhooksResponseItem(
-    /** The id of the webhook */
     String id,
-    /** The name of the webhook */
     Optional<String> name,
-    /** The endpoint URL of the webhook */
     String endpointUrl,
-    /** The status of the webhook. */
     WebhookStatus status,
-    /** The reason the webhook was disabled, or `null` if it is not disabled. */
-    String disabledReason,
-    /** The timestamp when the webhook was disabled, or `null` if it is not disabled. */
-    String disabledAt,
-    /** The event types to subscribe to */
+    Optional<WebhookDisabledReason> disabledReason,
+    Optional<String> disabledAt,
     List<EventType> events,
-    /** Date at which the object was created (ISO 8601 format) */
     String createdAt) {}

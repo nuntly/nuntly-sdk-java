@@ -12,19 +12,20 @@ import java.util.Optional;
  *     .subject("Welcome to Nuntly")
  *     .build());
  * }</pre>
+ *
+ * @param to The recipient addresses.
+ * @param cc The CC addresses.
+ * @param bcc The BCC addresses.
+ * @param subject The message subject.
+ * @param text The plain text body.
+ * @param html The HTML body.
  */
 public record SendMessageRequest(
-    /** The recipient addresses. */
     List<String> to,
-    /** The CC addresses. */
     List<String> cc,
-    /** The BCC addresses. */
     List<String> bcc,
-    /** The message subject. */
     String subject,
-    /** The plain text body. */
     Optional<String> text,
-    /** The HTML body. */
     Optional<String> html) {
 
   public static Builder builder() {

@@ -11,12 +11,11 @@ import java.util.Optional;
  *     .to(List.of("user@example.com"))
  *     .build());
  * }</pre>
+ *
+ * @param to The recipient addresses to forward to.
+ * @param text An optional comment to prepend.
  */
-public record ForwardMessageRequest(
-    /** The recipient addresses to forward to. */
-    List<String> to,
-    /** An optional comment to prepend. */
-    Optional<String> text) {
+public record ForwardMessageRequest(List<String> to, Optional<String> text) {
 
   public static Builder builder() {
     return new Builder();

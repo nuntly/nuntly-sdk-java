@@ -1,7 +1,10 @@
 package com.nuntly.sdk.models;
 
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.nuntly.sdk.OpenEnumTypeAdapterFactory;
 
+@JsonAdapter(OpenEnumTypeAdapterFactory.class)
 public enum DeliveryDelayDetailDelayType {
   @SerializedName("InternalFailure")
   INTERNAL_FAILURE("InternalFailure"),
@@ -22,7 +25,9 @@ public enum DeliveryDelayDetailDelayType {
   @SerializedName("Undetermined")
   UNDETERMINED("Undetermined"),
   @SerializedName("SendingDeferral")
-  SENDING_DEFERRAL("SendingDeferral");
+  SENDING_DEFERRAL("SendingDeferral"),
+  /** A value this SDK version does not know yet; {@link #value()} returns null. */
+  UNKNOWN(null);
 
   private final String value;
 
@@ -35,7 +40,7 @@ public enum DeliveryDelayDetailDelayType {
   }
 
   public static DeliveryDelayDetailDelayType fromValue(String value) {
-    for (var e : values()) if (e.value.equals(value)) return e;
-    throw new IllegalArgumentException("Unknown DeliveryDelayDetailDelayType: " + value);
+    for (var e : values()) if (e != UNKNOWN && e.value.equals(value)) return e;
+    return UNKNOWN;
   }
 }

@@ -1,5 +1,8 @@
 package com.nuntly.sdk;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpResponse;
@@ -9,20 +12,50 @@ public non-sealed class ApiError extends NuntlyError {
   private final int status;
   private final HttpHeaders headers;
   private final String body;
+  private final String code;
+  private final String title;
+  private final Optional<JsonElement> details;
   private final Optional<String> requestId;
   private final HttpResponse<String> rawResponse;
 
   public ApiError(int status, String body, HttpHeaders headers, HttpResponse<String> rawResponse) {
-    super("HTTP %d: %s".formatted(status, parseMessage(body)));
+    this(status, body, headers, rawResponse, ErrorBody.parse(body));
+  }
+
+  private ApiError(
+      int status,
+      String body,
+      HttpHeaders headers,
+      HttpResponse<String> rawResponse,
+      ErrorBody parsed) {
+    super("HTTP %d: %s".formatted(status, parsed.title()));
     this.status = status;
     this.body = body;
     this.headers = headers;
+    this.code = parsed.code();
+    this.title = parsed.title();
+    this.details = parsed.details();
     this.requestId = headers.firstValue("x-request-id");
     this.rawResponse = rawResponse;
   }
 
   public int status() {
     return status;
+  }
+
+  /** API error code, for example {@code not_found}, or {@code unknown} when the body has none. */
+  public String code() {
+    return code;
+  }
+
+  /** Short summary of the error, or an excerpt of the body when it is not the API error JSON. */
+  public String title() {
+    return title;
+  }
+
+  /** Details about this occurrence, when the API sent any. */
+  public Optional<JsonElement> details() {
+    return details;
   }
 
   public HttpHeaders headers() {
@@ -60,31 +93,35 @@ public non-sealed class ApiError extends NuntlyError {
     };
   }
 
-  /**
-   * Best-effort extraction of the human-readable error title from the canonical {@code { "error": {
-   * "status", "code", "title", "details"? } }} payload returned by the Nuntly API. Uses the Gson
-   * parser already on the classpath (shared with {@link NuntlyClient}) to avoid the fragile
-   * substring scan that mis-rendered any body whose {@code details} string contained the literal
-   * {@code "title"}. Falls back to a truncated raw body when the payload is not the canonical
-   * envelope.
-   */
-  private static String parseMessage(String body) {
-    if (body == null || body.isBlank()) return "Request failed";
-    try {
-      var root = JsonParser.parseString(body);
-      if (root.isJsonObject()) {
-        var obj = root.getAsJsonObject();
-        if (obj.has("error") && obj.get("error").isJsonObject()) {
-          var err = obj.getAsJsonObject("error");
-          if (err.has("title") && err.get("title").isJsonPrimitive()) {
-            return err.get("title").getAsString();
-          }
+  private record ErrorBody(String code, String title, Optional<JsonElement> details) {
+    private static final int EXCERPT_LENGTH = 200;
+
+    // The API error JSON is {"error": {"status", "code", "title", "details"?}}; anything else
+    // (a proxy's HTML page) keeps a short excerpt, never the full body.
+    static ErrorBody parse(String body) {
+      if (body == null || body.isBlank())
+        return new ErrorBody("unknown", "Request failed", Optional.empty());
+      try {
+        var root = JsonParser.parseString(body);
+        if (root.isJsonObject() && root.getAsJsonObject().get("error") instanceof JsonObject err) {
+          return new ErrorBody(
+              string(err, "code").orElse("unknown"),
+              string(err, "title").orElse("Request failed"),
+              Optional.ofNullable(err.get("details")).filter(d -> !d.isJsonNull()));
         }
+      } catch (JsonParseException ignored) {
+        // not JSON
       }
-    } catch (Exception ignored) {
-      // fall through to truncated raw body
+      var excerpt = body.length() > EXCERPT_LENGTH ? body.substring(0, EXCERPT_LENGTH) : body;
+      return new ErrorBody("unknown", excerpt, Optional.empty());
     }
-    return body.length() > 200 ? body.substring(0, 200) : body;
+
+    private static Optional<String> string(JsonObject obj, String key) {
+      var value = obj.get(key);
+      return value != null && value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()
+          ? Optional.of(value.getAsString())
+          : Optional.empty();
+    }
   }
 
   public static final class BadRequestError extends ApiError {
@@ -128,17 +165,7 @@ public non-sealed class ApiError extends NuntlyError {
 
     public RateLimitError(String body, HttpHeaders headers, HttpResponse<String> raw) {
       super(429, body, headers, raw);
-      this.retryAfter =
-          headers
-              .firstValue("retry-after")
-              .map(
-                  v -> {
-                    try {
-                      return Long.parseLong(v) * 1000;
-                    } catch (NumberFormatException e) {
-                      return null;
-                    }
-                  });
+      this.retryAfter = headers.firstValue("retry-after").flatMap(RetryAfter::parseMillis);
     }
 
     public Optional<Long> retryAfter() {

@@ -10,14 +10,12 @@ import java.util.Optional;
  *     .replyAll(false)
  *     .build());
  * }</pre>
+ *
+ * @param text The plain text body.
+ * @param html The HTML body.
+ * @param replyAll Whether to reply to all recipients.
  */
-public record ReplyMessageRequest(
-    /** The plain text body. */
-    Optional<String> text,
-    /** The HTML body. */
-    Optional<String> html,
-    /** Whether to reply to all recipients. */
-    boolean replyAll) {
+public record ReplyMessageRequest(Optional<String> text, Optional<String> html, boolean replyAll) {
 
   public static Builder builder() {
     return new Builder();

@@ -9,6 +9,7 @@ public record EmailDeliveredEventData(
     String id,
     String orgId,
     Optional<String> bulkId,
+    Optional<String> broadcastId,
     String messageId,
     String sentAt,
     String enqueuedAt,
@@ -20,6 +21,6 @@ public record EmailDeliveredEventData(
     List<String> bcc,
     List<String> replyTo,
     String subject,
-    List<Map<String, Object>> headers,
+    List<EmailEvent.HeadersItem> headers,
     Map<String, Object> tags,
     DeliveryDetail delivery) {}

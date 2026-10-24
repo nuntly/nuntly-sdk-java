@@ -11,11 +11,13 @@ public final class OrganizationsUsage extends Resource {
   }
 
   /**
-   * Returns current period usage metrics (daily and monthly) for sending and receiving, against
-   * your plan limits.
+   * Returns the daily and monthly email usage of the organization, with each limit, its reset time,
+   * and a breakdown by channel.
    */
   public OrganizationUsageResponse retrieve(String id) {
     return client.get(
-        "/organizations/" + id + "/usage", OrganizationUsageResponse.class, RequestOptions.none());
+        "/organizations/" + pathParam("id", id) + "/usage",
+        OrganizationUsageResponse.class,
+        RequestOptions.none());
   }
 }

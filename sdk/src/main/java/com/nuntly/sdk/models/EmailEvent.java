@@ -8,6 +8,7 @@ public record EmailEvent(
     String id,
     String orgId,
     Optional<String> bulkId,
+    Optional<String> broadcastId,
     String messageId,
     String sentAt,
     String enqueuedAt,
@@ -19,5 +20,8 @@ public record EmailEvent(
     List<String> bcc,
     List<String> replyTo,
     String subject,
-    List<Map<String, Object>> headers,
-    Map<String, Object> tags) {}
+    List<HeadersItem> headers,
+    Map<String, Object> tags) {
+
+  public record HeadersItem(String name, String value) {}
+}

@@ -9,12 +9,11 @@ import java.util.List;
  * var result = nuntly.messages().update(UpdateMessageRequest.builder()
  *     .build());
  * }</pre>
+ *
+ * @param addLabels Labels to add to the message.
+ * @param removeLabels Labels to remove from the message.
  */
-public record UpdateMessageRequest(
-    /** Labels to add to the message. */
-    List<String> addLabels,
-    /** Labels to remove from the message. */
-    List<String> removeLabels) {
+public record UpdateMessageRequest(List<String> addLabels, List<String> removeLabels) {
 
   public static Builder builder() {
     return new Builder();

@@ -1,11 +1,15 @@
 package com.nuntly.sdk.models;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 public record DeliveryDelayDetail(
     String delayedAt,
     DeliveryDelayDetailDelayType delayType,
-    List<Map<String, Object>> delayedRecipients,
+    List<DelayedRecipientsItem> delayedRecipients,
     String deliveryStoppedAt,
-    String reportingMta) {}
+    String reportingMta) {
+
+  public record DelayedRecipientsItem(
+      String email, Optional<String> status, Optional<String> diagnosticCode) {}
+}

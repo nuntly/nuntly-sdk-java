@@ -3,26 +3,28 @@ package com.nuntly.sdk.models;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @param id The id of the thread
+ * @param createdAt Date at which the object was created (ISO 8601 format)
+ * @param updatedAt Date at which the object was updated (ISO 8601 format)
+ * @param domainId The id of the domain.
+ * @param domainName The domain name.
+ * @param inboxId The id of the inbox.
+ * @param subject The original subject line.
+ * @param lastMessageAt The timestamp of the most recent message.
+ * @param messageCount The number of messages in the thread.
+ * @param labels Aggregated labels from all messages in the thread.
+ * @param agentId The AI agent identifier.
+ */
 public record ThreadResponse(
-    /** The id of the thread */
     String id,
-    /** Date at which the object was created (ISO 8601 format) */
     String createdAt,
-    /** Date at which the object was updated (ISO 8601 format) */
     Optional<String> updatedAt,
-    /** The id of the domain. */
-    String domainId,
-    /** The domain name. */
+    Optional<String> domainId,
     String domainName,
-    /** The id of the inbox. */
     String inboxId,
-    /** The original subject line. */
     String subject,
-    /** The timestamp of the most recent message. */
     String lastMessageAt,
-    /** The number of messages in the thread. */
     long messageCount,
-    /** Aggregated labels from all messages in the thread. */
     List<String> labels,
-    /** The AI agent identifier. */
-    String agentId) {}
+    Optional<String> agentId) {}

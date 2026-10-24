@@ -17,6 +17,13 @@ public record ClientOptions(
   public static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(60);
   public static final int DEFAULT_MAX_RETRIES = 2;
 
+  public ClientOptions {
+    // Request paths start with "/".
+    if (baseUrl != null && baseUrl.endsWith("/")) {
+      baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+    }
+  }
+
   public static Builder builder() {
     return new Builder();
   }

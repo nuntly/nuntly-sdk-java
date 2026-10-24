@@ -2,40 +2,41 @@ package com.nuntly.sdk.models;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+/**
+ * @param id The id of the message
+ * @param createdAt Date at which the object was created (ISO 8601 format)
+ * @param inboxId The id of the inbox, or null if routed to the default catch-all.
+ * @param threadId The id of the thread.
+ * @param messageId The email Message-ID header.
+ * @param from The sender address (RFC 5322 format, e.g. "Jane Doe &lt;jane@example.com&gt;" or
+ *     "jane@example.com").
+ * @param to The recipient addresses.
+ * @param cc The CC addresses.
+ * @param bcc The BCC addresses.
+ * @param replyTo The Reply-To addresses.
+ * @param subject The message subject.
+ * @param receivedAt The original date of the message.
+ * @param status The status of the message
+ * @param labels The message labels.
+ * @param attachmentCount The number of attachments.
+ * @param headers The raw email headers.
+ */
 public record MessageResponse(
-    /** The id of the message */
     String id,
-    /** Date at which the object was created (ISO 8601 format) */
     String createdAt,
-    /** The id of the inbox, or null if routed to the default catch-all. */
-    String inboxId,
-    /** The id of the thread. */
+    Optional<String> inboxId,
     String threadId,
-    /** The email Message-ID header. */
     String messageId,
-    /**
-     * The sender address (RFC 5322 format, e.g. "Jane Doe <jane@example.com>" or
-     * "jane@example.com").
-     */
     String from,
-    /** The recipient addresses. */
     List<String> to,
-    /** The CC addresses. */
     List<String> cc,
-    /** The BCC addresses. */
     List<String> bcc,
-    /** The Reply-To addresses. */
     List<String> replyTo,
-    /** The message subject. */
     String subject,
-    /** The original date of the message. */
     String receivedAt,
-    /** The status of the message */
     MessageResponseStatus status,
-    /** The message labels. */
     List<String> labels,
-    /** The number of attachments. */
     long attachmentCount,
-    /** The raw email headers. */
     Map<String, String> headers) {}

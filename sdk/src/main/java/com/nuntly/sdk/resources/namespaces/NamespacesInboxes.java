@@ -10,20 +10,23 @@ public final class NamespacesInboxes extends Resource {
     super(client);
   }
 
-  /** List inboxes in a namespace. */
+  /**
+   * Lists the active inboxes assigned to a namespace, newest first, with cursor pagination. Returns
+   * the same inbox objects as the inbox list.
+   */
   public CursorPage<InboxesResponseItem> list(
-      String namespaceId, Optional<String> cursor, Optional<Integer> limit) {
+      String namespaceId, NamespacesInboxesListParams params) {
     var query = new HashMap<String, String>();
-    cursor.ifPresent(c -> query.put("cursor", c));
-    limit.ifPresent(l -> query.put("limit", l.toString()));
+    params.cursor().ifPresent(v -> query.put("cursor", v));
+    params.limit().ifPresent(v -> query.put("limit", v.toString()));
     return client.list(
-        "/namespaces/" + namespaceId + "/inboxes",
+        "/namespaces/" + pathParam("namespaceId", namespaceId) + "/inboxes",
         InboxesResponseItem.class,
         query,
         RequestOptions.none());
   }
 
   public CursorPage<InboxesResponseItem> list(String namespaceId) {
-    return list(namespaceId, Optional.empty(), Optional.empty());
+    return list(namespaceId, NamespacesInboxesListParams.builder().build());
   }
 }

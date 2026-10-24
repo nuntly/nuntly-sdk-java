@@ -11,11 +11,20 @@ public final class MessagesContent extends Resource {
   }
 
   /**
-   * Returns presigned URLs to download the HTML, plain-text, and raw MIME source of a received
-   * message.
+   * Returns temporary download URLs, valid for 2 minutes, for the HTML, plain-text or raw MIME
+   * content of a message. Only HTML is returned by default.
    */
-  public MessageContent retrieve(String messageId) {
+  public MessageContent retrieve(String messageId, MessagesContentRetrieveParams params) {
+    var query = new HashMap<String, Object>();
+    if (params.format() != null) query.put("format", params.format());
     return client.get(
-        "/messages/" + messageId + "/content", MessageContent.class, RequestOptions.none());
+        "/messages/" + pathParam("messageId", messageId) + "/content",
+        MessageContent.class,
+        query,
+        RequestOptions.none());
+  }
+
+  public MessageContent retrieve(String messageId) {
+    return retrieve(messageId, MessagesContentRetrieveParams.builder().build());
   }
 }

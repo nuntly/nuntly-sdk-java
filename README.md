@@ -15,7 +15,7 @@ The official Java 21 SDK for [Nuntly](https://nuntly.com), the developer-first e
 
 ```kotlin
 dependencies {
-    implementation("com.nuntly:nuntly-java:0.0.1")
+    implementation("com.nuntly:nuntly-java:2.0.0")
 }
 ```
 
@@ -23,7 +23,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.nuntly:nuntly-java:0.0.1'
+    implementation 'com.nuntly:nuntly-java:2.0.0'
 }
 ```
 
@@ -33,9 +33,11 @@ dependencies {
 <dependency>
     <groupId>com.nuntly</groupId>
     <artifactId>nuntly-java</artifactId>
-    <version>0.0.1</version>
+    <version>2.0.0</version>
 </dependency>
 ```
+
+The SDK brings in Gson 2.x as an API dependency, and a few of its public methods use Gson types: `ApiError.details()` returns an `Optional<JsonElement>`, `NuntlyClient.gson()` returns the configured `Gson`, and `ExplicitNullTypeAdapterFactory` is a Gson `TypeAdapterFactory`. These stay on Gson 2.x for the whole 2.x line. Moving them off Gson is planned for 3.0.
 
 ## Quick start
 
@@ -75,6 +77,17 @@ var nuntly = Nuntly.create(ClientOptions.builder()
     .build());
 ```
 
+### Retries
+
+A failed request is retried up to `maxRetries` times (2 by default) on a 408, a 429, a 500, a 502, a 503, a 504 or an `IOException` (connection reset, timeout). The first retry waits 375 to 500 ms and each later one twice as long, up to 8 s (`BackoffStrategy.DEFAULT`: 500 ms initial interval, exponent 2, jitter that shortens each delay to 75% to 100% of it).
+
+- A 409 is retried only when the API sends `x-should-retry: true`, as on `idempotency_key_in_progress`: the first attempt of a keyed send still holds the key, and the retry gets its stored response. Any other conflict, such as `contact_already_exists`, does not resolve on its own.
+- A `POST` is retried only on a 429 unless it carries an `Idempotency-Key`, so a retry cannot create a duplicate. `emails().send()`, `emails().bulk().send()`, `messages().reply()`, `messages().forward()`, `inboxes().messages().send()`, `inboxes().create()`, `broadcasts().create()` and `broadcasts().send()` generate one when you pass none.
+- A server-sent `x-should-retry: true|false` overrides these rules. A `Retry-After` (seconds, decimals allowed, or an HTTP-date) on any response replaces the backoff delay; above 60 s the SDK does not wait and throws the error for that response at once, with `RateLimitError.retryAfter()` set on a 429.
+- An exception thrown by a hook is never retried.
+
+Call `disableRetry()` on the builder to turn retries off.
+
 ## Pagination
 
 ```java
@@ -88,6 +101,12 @@ nuntly.emails().list().stream()
     .filter(e -> e.status() == EmailStatus.DELIVERED)
     .forEach(e -> System.out.println(e.id()));
 
+// Page size, cursor and filters go in a params record
+var inboxes = nuntly.inboxes().list(InboxesListParams.builder()
+    .limit(20)
+    .namespaceId("ns_01ka8k8s80gvx9604cn9am5st4")
+    .build());
+
 // Manual pagination
 var page = nuntly.emails().list();
 System.out.println(page.data());
@@ -96,9 +115,28 @@ if (page.hasNextPage()) {
 }
 ```
 
+## Clearing a field
+
+A field the API accepts as `null` (for example a broadcast `templateId`, `topicId` or `segmentId`) has a `clearX()` builder method that sends `null`. Fields you do not set, or set to `null`, stay out of the request and keep their value.
+
+```java
+nuntly.broadcasts().update(broadcastId, UpdateBroadcastRequest.builder()
+    .clearSegmentId()            // sends "segmentId": null
+    .subject("Spring sale")      // templateId, topicId... are left unchanged
+    .build());
+
+// A null map value removes a contact property. Map.of() rejects null: use a HashMap.
+var properties = new HashMap<String, Object>();
+properties.put("plan", null);
+nuntly.contacts().update(contactId, UpdateContactRequest.builder().properties(properties).build());
+```
+
+Contact `properties`, agent `memory` and email `variables` send a `null` map value (a `null` template variable renders as empty text). Email `headers` and broadcast `variables` drop a `null` value from the request, because the API rejects `null` there.
+
 ## Error handling
 
 ```java
+import com.nuntly.sdk.ApiError;
 import com.nuntly.sdk.ApiError.*;
 
 try {
@@ -108,13 +146,15 @@ try {
         case NotFoundError nf -> System.out.println("Not found: " + nf.requestId().orElse("?"));
         case RateLimitError rl -> System.out.println("Retry in: " + rl.retryAfter().orElse(0L) + "ms");
         case AuthenticationError ae -> System.out.println("Invalid API key");
-        default -> System.out.println("HTTP " + e.status() + ": " + e.getMessage());
+        default -> System.out.println("HTTP " + e.status() + " " + e.code() + ": " + e.title());
     }
 
     // Raw response access
     System.out.println(e.rawResponse().statusCode());
 }
 ```
+
+Every `ApiError` exposes `status()`, `code()` (for example `invalid_body`), `title()`, `details()`, `headers()`, `requestId()` and `rawResponse()`. When the body is not the API error JSON, such as a proxy's HTML page, `code()` is `unknown` and `title()` holds its first 200 characters.
 
 ## Lifecycle hooks
 
@@ -149,7 +189,7 @@ A separate auto-configuration starter wires `Nuntly` as a bean and binds setting
 
 ```kotlin
 dependencies {
-    implementation("com.nuntly:nuntly-java-spring:0.0.1")
+    implementation("com.nuntly:nuntly-java-spring:2.0.0")
 }
 ```
 
@@ -196,8 +236,7 @@ Verify a webhook signature and parse the payload into a typed event:
 
 ```java
 import com.nuntly.sdk.lib.Webhook;
-import com.nuntly.sdk.models.WebhookEvent;
-import com.nuntly.sdk.models.WebhookEvent.*;
+import com.nuntly.sdk.models.*;
 
 WebhookEvent event = Webhook.verify(payload, signatureHeader, secret);
 
@@ -214,6 +253,12 @@ switch (event) {
 ## Error types
 
 `NotFoundError`, `RateLimitError`, `AuthenticationError`, `PermissionDeniedError`, `ConflictError`, `BadRequestError`, `UnprocessableEntityError`, `InternalServerError`. All extend `ApiError`. See [`ApiError.java`](./core/src/main/java/com/nuntly/sdk/ApiError.java).
+
+A request that gets no response throws `ConnectionError`, and `ConnectionError.TimeoutError` when it exceeds the timeout.
+
+## Upgrading
+
+Upgrading from 1.x? See [MIGRATION.md](MIGRATION.md).
 
 ## License
 

@@ -10,14 +10,13 @@ import java.util.Optional;
  *     .name("example.com")
  *     .build());
  * }</pre>
+ *
+ * @param name The name of the domain to send e-mails'
+ * @param sending Enable sending
+ * @param receiving Enable receiving
  */
 public record CreateDomainRequest(
-    /** The name of the domain to send e-mails' */
-    String name,
-    /** Enable sending */
-    Optional<Boolean> sending,
-    /** Enable receiving */
-    Optional<Boolean> receiving) {
+    String name, Optional<Boolean> sending, Optional<Boolean> receiving) {
 
   public static Builder builder() {
     return new Builder();

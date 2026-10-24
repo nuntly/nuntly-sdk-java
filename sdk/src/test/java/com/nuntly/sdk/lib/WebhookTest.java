@@ -77,6 +77,18 @@ class WebhookTest {
   }
 
   @Test
+  void internalEventTypeFallsBackToUnknownWebhookEvent() throws Exception {
+    var queuedPayload =
+        "{\"id\":\"evt_q\",\"createdAt\":\"2026-03-29T00:00:00Z\","
+            + "\"type\":\"email.queued\",\"data\":{\"queue\":{}}}";
+    var ts = System.currentTimeMillis() / 1000L;
+    var event = Webhook.verify(queuedPayload, header(queuedPayload, SECRET, ts), SECRET);
+    var unknown = assertInstanceOf(UnknownWebhookEvent.class, event);
+    assertEquals("email.queued", unknown.type());
+    assertEquals("evt_q", unknown.id());
+  }
+
+  @Test
   void acceptsSecretWithoutWhsecPrefix() throws Exception {
     var ts = System.currentTimeMillis() / 1000L;
     var headerWithPrefix = header(PAYLOAD, SECRET, ts);
@@ -84,13 +96,46 @@ class WebhookTest {
     assertEquals("email.delivered", event.type());
   }
 
+  private static final String NEW_SECRET = "whsec_new_secret";
+  private static final String OLD_SECRET = "whsec_old_secret";
+
+  // Signature header during a secret rotation: one v0= prefix, then one signature per secret.
+  private static String rotationHeader(long ts) throws Exception {
+    return "t=" + ts + ",v0=" + sign(PAYLOAD, ts, NEW_SECRET) + "," + sign(PAYLOAD, ts, OLD_SECRET);
+  }
+
   @Test
-  void acceptsSecondSignatureForKeyRotation() throws Exception {
+  void rotationVerifiesWithOldSecret() throws Exception {
     var ts = System.currentTimeMillis() / 1000L;
-    var validSig = sign(PAYLOAD, ts, SECRET);
-    var headerWithRotation = "t=" + ts + ",v0=00deadbeef,v0=" + validSig;
-    var event = Webhook.verify(PAYLOAD, headerWithRotation, SECRET);
-    assertEquals("email.delivered", event.type());
+    var event = Webhook.verify(PAYLOAD, rotationHeader(ts), OLD_SECRET);
+    assertInstanceOf(EmailDeliveredEvent.class, event);
+  }
+
+  @Test
+  void rotationVerifiesWithNewSecret() throws Exception {
+    var ts = System.currentTimeMillis() / 1000L;
+    var event = Webhook.verify(PAYLOAD, rotationHeader(ts), NEW_SECRET);
+    assertInstanceOf(EmailDeliveredEvent.class, event);
+  }
+
+  @Test
+  void rotationAcceptsV0PrefixOnEverySignature() throws Exception {
+    var ts = System.currentTimeMillis() / 1000L;
+    var header =
+        "t=" + ts + ",v0=" + sign(PAYLOAD, ts, NEW_SECRET) + ",v0=" + sign(PAYLOAD, ts, OLD_SECRET);
+    var event = Webhook.verify(PAYLOAD, header, OLD_SECRET);
+    assertInstanceOf(EmailDeliveredEvent.class, event);
+  }
+
+  @Test
+  void rotationRejectsWhenNoSignatureMatches() throws Exception {
+    var ts = System.currentTimeMillis() / 1000L;
+    var header = rotationHeader(ts);
+    var ex =
+        assertThrows(
+            WebhookVerificationError.class,
+            () -> Webhook.verify(PAYLOAD, header, "whsec_other_secret"));
+    assertTrue(ex.getMessage().contains("verification failed"));
   }
 
   @Test
@@ -108,7 +153,7 @@ class WebhookTest {
     var ex =
         assertThrows(
             WebhookVerificationError.class, () -> Webhook.verify(PAYLOAD, headerOld, SECRET));
-    assertTrue(ex.getMessage().contains("too old"));
+    assertTrue(ex.getMessage().contains("outside tolerance window"));
   }
 
   @Test
