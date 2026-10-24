@@ -5,45 +5,42 @@ import com.nuntly.sdk.models.*;
 import java.util.*;
 
 public final class WebhooksEvents extends Resource {
+  private WebhooksEventsDeliveries deliveries;
 
   public WebhooksEvents(NuntlyClient client) {
     super(client);
   }
 
-  /**
-   * Returns all delivery attempts for a webhook event, including HTTP status codes and response
-   * times.
-   */
-  public List<WebhookEventDeliveriesResponseItem> deliveries(String id, String eventId) {
-    var response =
-        client.rawRequest(
-            "GET",
-            "/webhooks/" + id + "/events/" + eventId + "/deliveries",
-            null,
-            RequestOptions.none());
-    var json = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
-    var items =
-        client.gson().fromJson(json.get("data"), WebhookEventDeliveriesResponseItem[].class);
-    return List.of(items);
+  public WebhooksEventsDeliveries deliveries() {
+    if (deliveries == null) deliveries = new WebhooksEventsDeliveries(client);
+    return deliveries;
   }
 
-  /** Returns recent webhook events across all registered endpoints. */
-  public CursorPage<WebhookEventsResponseItem> list(
-      Optional<String> cursor, Optional<Integer> limit) {
+  /**
+   * Lists the webhook events of the last 48 hours across all your endpoints, with their delivery
+   * status and payload. Results use cursor pagination.
+   */
+  public CursorPage<WebhookEventsResponseItem> list(WebhooksEventsListParams params) {
     var query = new HashMap<String, String>();
-    cursor.ifPresent(c -> query.put("cursor", c));
-    limit.ifPresent(l -> query.put("limit", l.toString()));
+    params.cursor().ifPresent(v -> query.put("cursor", v));
+    params.limit().ifPresent(v -> query.put("limit", v.toString()));
     return client.list(
         "/webhooks/events", WebhookEventsResponseItem.class, query, RequestOptions.none());
   }
 
   public CursorPage<WebhookEventsResponseItem> list() {
-    return list(Optional.empty(), Optional.empty());
+    return list(WebhooksEventsListParams.builder().build());
   }
 
-  /** Re-deliver a webhook event to its endpoint. Useful for retrying failed deliveries. */
+  /**
+   * Queues a new delivery of a past webhook event to the endpoint. The request is accepted
+   * asynchronously and returns 202 before the delivery runs.
+   */
   public void replay(String id, String eventId) {
     client.rawRequest(
-        "POST", "/webhooks/" + id + "/events/" + eventId + "/replay", null, RequestOptions.none());
+        "POST",
+        "/webhooks/" + pathParam("id", id) + "/events/" + pathParam("eventId", eventId) + "/replay",
+        null,
+        RequestOptions.none());
   }
 }

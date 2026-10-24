@@ -1,9 +1,8 @@
 package com.nuntly.sdk.models;
 
-public record OrganizationResponse(
-    /** The id of the organization */
-    String id,
-    /** The name of the organization */
-    String name,
-    /** The status of the organization */
-    OrganizationStatus status) {}
+/**
+ * @param id The id of the organization
+ * @param name The name of the organization
+ * @param status The status of the organization
+ */
+public record OrganizationResponse(String id, String name, OrganizationStatus status) {}

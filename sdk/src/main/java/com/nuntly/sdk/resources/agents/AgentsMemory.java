@@ -10,14 +10,34 @@ public final class AgentsMemory extends Resource {
     super(client);
   }
 
-  /** Retrieve the memory for an AI agent. */
-  public AgentMemory retrieve(String agentId) {
-    return client.get("/agents/" + agentId + "/memory", AgentMemory.class, RequestOptions.none());
+  /**
+   * Retrieves the key-value memory and summary saved for an AI agent, at organization level or
+   * scoped to one inbox or thread via query parameters.
+   */
+  public AgentMemory retrieve(String agentId, AgentsMemoryRetrieveParams params) {
+    var query = new HashMap<String, Object>();
+    params.inboxId().ifPresent(v -> query.put("inboxId", v));
+    params.threadId().ifPresent(v -> query.put("threadId", v));
+    return client.get(
+        "/agents/" + pathParam("agentId", agentId) + "/memory",
+        AgentMemory.class,
+        query,
+        RequestOptions.none());
   }
 
-  /** Create or update the memory for an AI agent. */
+  public AgentMemory retrieve(String agentId) {
+    return retrieve(agentId, AgentsMemoryRetrieveParams.builder().build());
+  }
+
+  /**
+   * Saves the key-value memory and optional summary of an AI agent, at organization level or scoped
+   * to a specific inbox or thread. Returns the saved memory.
+   */
   public AgentMemory upsert(String agentId, AgentMemoryRequest body) {
     return client.put(
-        "/agents/" + agentId + "/memory", body, AgentMemory.class, RequestOptions.none());
+        "/agents/" + pathParam("agentId", agentId) + "/memory",
+        body,
+        AgentMemory.class,
+        RequestOptions.none());
   }
 }

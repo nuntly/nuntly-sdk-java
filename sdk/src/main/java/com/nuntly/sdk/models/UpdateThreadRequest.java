@@ -1,7 +1,7 @@
 package com.nuntly.sdk.models;
 
+import com.nuntly.sdk.JsonNullable;
 import java.util.List;
-import java.util.Optional;
 
 /**
  *
@@ -10,14 +10,13 @@ import java.util.Optional;
  * var result = nuntly.threads().update(UpdateThreadRequest.builder()
  *     .build());
  * }</pre>
+ *
+ * @param addLabels Labels to add to all messages in the thread.
+ * @param removeLabels Labels to remove from all messages in the thread.
+ * @param agentId The AI agent identifier.
  */
 public record UpdateThreadRequest(
-    /** Labels to add to all messages in the thread. */
-    List<String> addLabels,
-    /** Labels to remove from all messages in the thread. */
-    List<String> removeLabels,
-    /** The AI agent identifier. */
-    Optional<String> agentId) {
+    List<String> addLabels, List<String> removeLabels, JsonNullable<String> agentId) {
 
   public static Builder builder() {
     return new Builder();
@@ -26,7 +25,7 @@ public record UpdateThreadRequest(
   public static final class Builder {
     private List<String> addLabels;
     private List<String> removeLabels;
-    private String agentId;
+    private JsonNullable<String> agentId = JsonNullable.absent();
 
     /** Labels to add to all messages in the thread. */
     public Builder addLabels(List<String> addLabels) {
@@ -40,14 +39,22 @@ public record UpdateThreadRequest(
       return this;
     }
 
-    /** The AI agent identifier. */
+    /**
+     * Sets {@code agentId}; {@code null} leaves it unset. Use {@link #clearAgentId()} to send null.
+     */
     public Builder agentId(String agentId) {
-      this.agentId = agentId;
+      this.agentId = JsonNullable.ofNullable(agentId);
+      return this;
+    }
+
+    /** Sends {@code agentId} as null. The AI agent identifier. */
+    public Builder clearAgentId() {
+      this.agentId = JsonNullable.ofNull();
       return this;
     }
 
     public UpdateThreadRequest build() {
-      return new UpdateThreadRequest(addLabels, removeLabels, Optional.ofNullable(agentId));
+      return new UpdateThreadRequest(addLabels, removeLabels, agentId);
     }
   }
 }

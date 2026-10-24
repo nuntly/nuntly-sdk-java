@@ -9,6 +9,7 @@ public record EmailRejectedEventData(
     Optional<String> id,
     Optional<String> orgId,
     Optional<String> bulkId,
+    Optional<String> broadcastId,
     Optional<String> messageId,
     Optional<String> sentAt,
     Optional<String> enqueuedAt,
@@ -20,6 +21,9 @@ public record EmailRejectedEventData(
     List<String> bcc,
     List<String> replyTo,
     Optional<String> subject,
-    List<Map<String, Object>> headers,
+    List<HeadersItem> headers,
     Map<String, Object> tags,
-    RejectDetail reject) {}
+    RejectDetail reject) {
+
+  public record HeadersItem(String name, String value) {}
+}

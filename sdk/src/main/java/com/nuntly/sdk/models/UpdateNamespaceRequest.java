@@ -1,5 +1,6 @@
 package com.nuntly.sdk.models;
 
+import com.nuntly.sdk.JsonNullable;
 import java.util.Optional;
 
 /**
@@ -9,12 +10,11 @@ import java.util.Optional;
  * var result = nuntly.namespaces().update(UpdateNamespaceRequest.builder()
  *     .build());
  * }</pre>
+ *
+ * @param name The display name of the namespace.
+ * @param externalId An optional external identifier for the namespace.
  */
-public record UpdateNamespaceRequest(
-    /** The display name of the namespace. */
-    Optional<String> name,
-    /** An optional external identifier for the namespace. */
-    Optional<String> externalId) {
+public record UpdateNamespaceRequest(Optional<String> name, JsonNullable<String> externalId) {
 
   public static Builder builder() {
     return new Builder();
@@ -22,7 +22,7 @@ public record UpdateNamespaceRequest(
 
   public static final class Builder {
     private String name;
-    private String externalId;
+    private JsonNullable<String> externalId = JsonNullable.absent();
 
     /** The display name of the namespace. */
     public Builder name(String name) {
@@ -30,14 +30,23 @@ public record UpdateNamespaceRequest(
       return this;
     }
 
-    /** An optional external identifier for the namespace. */
+    /**
+     * Sets {@code externalId}; {@code null} leaves it unset. Use {@link #clearExternalId()} to send
+     * null.
+     */
     public Builder externalId(String externalId) {
-      this.externalId = externalId;
+      this.externalId = JsonNullable.ofNullable(externalId);
+      return this;
+    }
+
+    /** Sends {@code externalId} as null. An optional external identifier for the namespace. */
+    public Builder clearExternalId() {
+      this.externalId = JsonNullable.ofNull();
       return this;
     }
 
     public UpdateNamespaceRequest build() {
-      return new UpdateNamespaceRequest(Optional.ofNullable(name), Optional.ofNullable(externalId));
+      return new UpdateNamespaceRequest(Optional.ofNullable(name), externalId);
     }
   }
 }

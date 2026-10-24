@@ -23,7 +23,10 @@ public final class Messages extends Resource {
     return content;
   }
 
-  /** Forward a message to new recipients. */
+  /**
+   * Sends a message with a Fwd: subject from the inbox of the original message to one or more new
+   * recipients, in a new thread, with an optional text note.
+   */
   public SendMessageResponse forward(String messageId, ForwardMessageRequest body) {
     return forward(messageId, body, RequestOptions.none());
   }
@@ -36,28 +39,33 @@ public final class Messages extends Resource {
     var optsWithKey =
         new RequestOptions(opts.timeout(), opts.maxRetries(), headers, Optional.of(idempotencyKey));
     return client.post(
-        "/messages/" + messageId + "/forward", body, SendMessageResponse.class, optsWithKey);
+        "/messages/" + pathParam("messageId", messageId) + "/forward",
+        body,
+        SendMessageResponse.class,
+        optsWithKey);
   }
 
-  /** List all received messages across inboxes. */
-  public CursorPage<MessagesResponseItem> list(
-      Optional<String> cursor,
-      Optional<Integer> limit,
-      Optional<String> domainId,
-      Optional<String> from) {
+  /**
+   * Lists messages newest first, with cursor pagination and optional filters by domain and sender.
+   * Each item includes its labels, status and attachment count.
+   */
+  public CursorPage<MessagesResponseItem> list(MessagesListParams params) {
     var query = new HashMap<String, String>();
-    cursor.ifPresent(c -> query.put("cursor", c));
-    limit.ifPresent(l -> query.put("limit", l.toString()));
-    domainId.ifPresent(v -> query.put("domainId", v.toString()));
-    from.ifPresent(v -> query.put("from", v.toString()));
+    params.cursor().ifPresent(v -> query.put("cursor", v));
+    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.domainId().ifPresent(v -> query.put("domainId", v));
+    params.from().ifPresent(v -> query.put("from", v));
     return client.list("/messages", MessagesResponseItem.class, query, RequestOptions.none());
   }
 
   public CursorPage<MessagesResponseItem> list() {
-    return list(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+    return list(MessagesListParams.builder().build());
   }
 
-  /** Reply to a message. Set replyAll to true to reply to all recipients. */
+  /**
+   * Replies from the inbox that holds the message, in the same thread. Set replyAll to true to also
+   * copy the other recipients. The send is queued.
+   */
   public SendMessageResponse reply(String messageId, ReplyMessageRequest body) {
     return reply(messageId, body, RequestOptions.none());
   }
@@ -70,17 +78,32 @@ public final class Messages extends Resource {
     var optsWithKey =
         new RequestOptions(opts.timeout(), opts.maxRetries(), headers, Optional.of(idempotencyKey));
     return client.post(
-        "/messages/" + messageId + "/reply", body, SendMessageResponse.class, optsWithKey);
+        "/messages/" + pathParam("messageId", messageId) + "/reply",
+        body,
+        SendMessageResponse.class,
+        optsWithKey);
   }
 
-  /** Retrieve a single message with inbox enrichment. */
+  /**
+   * Retrieves a received or sent message by id, including its sender, recipients, subject, labels,
+   * status, attachment count and raw headers.
+   */
   public MessageResponse retrieve(String messageId) {
-    return client.get("/messages/" + messageId + "", MessageResponse.class, RequestOptions.none());
+    return client.get(
+        "/messages/" + pathParam("messageId", messageId) + "",
+        MessageResponse.class,
+        RequestOptions.none());
   }
 
-  /** Update message labels. Only available for messages in user-created inboxes. */
+  /**
+   * Adds or removes labels on a message. Only messages in user-created inboxes accept labels, and a
+   * message can hold at most 10 labels.
+   */
   public IdResponse update(String messageId, UpdateMessageRequest body) {
     return client.patch(
-        "/messages/" + messageId + "", body, IdResponse.class, RequestOptions.none());
+        "/messages/" + pathParam("messageId", messageId) + "",
+        body,
+        IdResponse.class,
+        RequestOptions.none());
   }
 }

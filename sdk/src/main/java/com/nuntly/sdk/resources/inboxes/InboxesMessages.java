@@ -10,7 +10,10 @@ public final class InboxesMessages extends Resource {
     super(client);
   }
 
-  /** Send a new message from an inbox. */
+  /**
+   * Sends a new email from an inbox to one or more recipients. The message is queued for delivery
+   * and the response returns its id, thread id, and Message-ID.
+   */
   public SendMessageResponse send(String inboxId, SendMessageRequest body) {
     return send(inboxId, body, RequestOptions.none());
   }
@@ -22,6 +25,9 @@ public final class InboxesMessages extends Resource {
     var optsWithKey =
         new RequestOptions(opts.timeout(), opts.maxRetries(), headers, Optional.of(idempotencyKey));
     return client.post(
-        "/inboxes/" + inboxId + "/messages", body, SendMessageResponse.class, optsWithKey);
+        "/inboxes/" + pathParam("inboxId", inboxId) + "/messages",
+        body,
+        SendMessageResponse.class,
+        optsWithKey);
   }
 }

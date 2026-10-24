@@ -17,15 +17,11 @@ package com.nuntly.sdk.models;
  * }</pre>
  *
  * <p>An {@link UnknownWebhookEvent} is returned when the payload {@code type} field does not match
- * any known event. This keeps consumers forward-compatible with new event types added by the Nuntly
- * API.
+ * any event a webhook can deliver. This keeps consumers forward-compatible with new event types
+ * added by the Nuntly API.
  */
 public sealed interface WebhookEvent
-    permits EmailQueuedEvent,
-        EmailScheduledEvent,
-        EmailProcessedEvent,
-        EmailSendingEvent,
-        EmailSentEvent,
+    permits EmailSentEvent,
         EmailDeliveredEvent,
         EmailOpenedEvent,
         EmailClickedEvent,

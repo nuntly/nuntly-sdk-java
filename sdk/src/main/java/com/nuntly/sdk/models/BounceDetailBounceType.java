@@ -1,14 +1,19 @@
 package com.nuntly.sdk.models;
 
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.nuntly.sdk.OpenEnumTypeAdapterFactory;
 
+@JsonAdapter(OpenEnumTypeAdapterFactory.class)
 public enum BounceDetailBounceType {
   @SerializedName("Permanent")
   PERMANENT("Permanent"),
   @SerializedName("Undetermined")
   UNDETERMINED("Undetermined"),
   @SerializedName("Transient")
-  TRANSIENT("Transient");
+  TRANSIENT("Transient"),
+  /** A value this SDK version does not know yet; {@link #value()} returns null. */
+  UNKNOWN(null);
 
   private final String value;
 
@@ -21,7 +26,7 @@ public enum BounceDetailBounceType {
   }
 
   public static BounceDetailBounceType fromValue(String value) {
-    for (var e : values()) if (e.value.equals(value)) return e;
-    throw new IllegalArgumentException("Unknown BounceDetailBounceType: " + value);
+    for (var e : values()) if (e != UNKNOWN && e.value.equals(value)) return e;
+    return UNKNOWN;
   }
 }

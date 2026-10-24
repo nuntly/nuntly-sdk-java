@@ -8,7 +8,7 @@ Adds a single `Nuntly` bean to the application context, configurable via `applic
 
 ```kotlin
 dependencies {
-    implementation("com.nuntly:nuntly-java-spring:0.0.1")
+    implementation("com.nuntly:nuntly-java-spring:2.0.0")
 }
 ```
 

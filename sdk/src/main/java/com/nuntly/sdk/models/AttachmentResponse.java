@@ -2,18 +2,20 @@ package com.nuntly.sdk.models;
 
 import java.util.Optional;
 
+/**
+ * @param id The id of the attachment
+ * @param filename The original filename.
+ * @param contentType The MIME content type.
+ * @param size The size in bytes.
+ * @param contentDisposition The content disposition (inline or attachment).
+ * @param contentId The CID for inline images.
+ * @param downloadUrl Presigned download URL (included when retrieving a single attachment).
+ */
 public record AttachmentResponse(
-    /** The id of the attachment */
     String id,
-    /** The original filename. */
-    String filename,
-    /** The MIME content type. */
+    Optional<String> filename,
     String contentType,
-    /** The size in bytes. */
     long size,
-    /** The content disposition (inline or attachment). */
-    String contentDisposition,
-    /** The CID for inline images. */
-    String contentId,
-    /** Presigned download URL (included when retrieving a single attachment). */
+    Optional<String> contentDisposition,
+    Optional<String> contentId,
     Optional<String> downloadUrl) {}

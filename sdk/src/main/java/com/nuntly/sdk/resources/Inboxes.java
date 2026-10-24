@@ -23,37 +23,68 @@ public final class Inboxes extends Resource {
     return threads;
   }
 
-  /** Create a new inbox on a verified domain. */
+  /**
+   * Creates an inbox address on a verified domain with receiving active, or on your provided domain
+   * if none is given. Can assign a namespace and agent id.
+   */
   public InboxResponse create(CreateInboxRequest body) {
-    return client.post("/inboxes", body, InboxResponse.class, RequestOptions.none());
+    return create(body, RequestOptions.none());
   }
 
-  /** Soft-delete an inbox. */
+  public InboxResponse create(CreateInboxRequest body, RequestOptions opts) {
+    var idempotencyKey = opts.idempotencyKey().orElse(UUID.randomUUID().toString());
+    var headers = new HashMap<String, String>(opts.headers());
+    headers.putIfAbsent("Idempotency-Key", idempotencyKey);
+    var optsWithKey =
+        new RequestOptions(opts.timeout(), opts.maxRetries(), headers, Optional.of(idempotencyKey));
+    return client.post("/inboxes", body, InboxResponse.class, optsWithKey);
+  }
+
+  /**
+   * Deletes an inbox so it no longer appears in lists and stops matching incoming mail. The default
+   * catch-all inbox of a domain cannot be deleted.
+   */
   public IdResponse delete(String inboxId) {
-    return client.delete("/inboxes/" + inboxId + "", IdResponse.class, RequestOptions.none());
+    return client.delete(
+        "/inboxes/" + pathParam("inboxId", inboxId) + "", IdResponse.class, RequestOptions.none());
   }
 
-  /** List all inboxes. */
-  public CursorPage<InboxesResponseItem> list(
-      Optional<String> cursor, Optional<Integer> limit, Optional<String> namespaceId) {
+  /**
+   * Lists the active inboxes of your organization, newest first, with cursor pagination. Optionally
+   * filter the results to a single namespace.
+   */
+  public CursorPage<InboxesResponseItem> list(InboxesListParams params) {
     var query = new HashMap<String, String>();
-    cursor.ifPresent(c -> query.put("cursor", c));
-    limit.ifPresent(l -> query.put("limit", l.toString()));
-    namespaceId.ifPresent(v -> query.put("namespaceId", v.toString()));
+    params.cursor().ifPresent(v -> query.put("cursor", v));
+    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.namespaceId().ifPresent(v -> query.put("namespaceId", v));
     return client.list("/inboxes", InboxesResponseItem.class, query, RequestOptions.none());
   }
 
   public CursorPage<InboxesResponseItem> list() {
-    return list(Optional.empty(), Optional.empty(), Optional.empty());
+    return list(InboxesListParams.builder().build());
   }
 
-  /** Retrieve an inbox. */
+  /**
+   * Retrieves an inbox by id, including its address, domain, display name, namespace, and assigned
+   * agent id. Deleted inboxes return a not found error.
+   */
   public InboxResponse retrieve(String inboxId) {
-    return client.get("/inboxes/" + inboxId + "", InboxResponse.class, RequestOptions.none());
+    return client.get(
+        "/inboxes/" + pathParam("inboxId", inboxId) + "",
+        InboxResponse.class,
+        RequestOptions.none());
   }
 
-  /** Update an inbox. */
+  /**
+   * Updates the display name of an inbox, used as the sender name on messages it sends. Set the
+   * name to null to clear it. Returns the inbox id.
+   */
   public IdResponse update(String inboxId, UpdateInboxRequest body) {
-    return client.patch("/inboxes/" + inboxId + "", body, IdResponse.class, RequestOptions.none());
+    return client.patch(
+        "/inboxes/" + pathParam("inboxId", inboxId) + "",
+        body,
+        IdResponse.class,
+        RequestOptions.none());
   }
 }

@@ -10,15 +10,20 @@ public final class EmailsBulk extends Resource {
     super(client);
   }
 
-  /** Returns the emails submitted in a bulk request. */
-  public BulkEmailsResponse list(String bulkId) {
+  /**
+   * Returns the emails created by a bulk request, with the id and current status of each one,
+   * looked up by the bulk id returned when it was sent.
+   */
+  public BulkEmailsResponse retrieve(String bulkId) {
     return client.get(
-        "/emails/bulk/" + bulkId + "", BulkEmailsResponse.class, RequestOptions.none());
+        "/emails/bulk/" + pathParam("bulkId", bulkId) + "",
+        BulkEmailsResponse.class,
+        RequestOptions.none());
   }
 
   /**
-   * Send up to 20 emails in a single request. Use `fallback` to set default values shared across
-   * all messages.
+   * Queues 1 to 20 emails in one request with optional shared fallback values, and returns a bulk
+   * id plus the id and status of each email. No scheduling.
    */
   public CreateBulkEmailsResponse send(CreateBulkEmailsRequest body) {
     return send(body, RequestOptions.none());

@@ -10,12 +10,11 @@ import java.util.Optional;
  *     .name("example.com")
  *     .build());
  * }</pre>
+ *
+ * @param name The display name of the namespace.
+ * @param externalId An optional external identifier for the namespace.
  */
-public record CreateNamespaceRequest(
-    /** The display name of the namespace. */
-    String name,
-    /** An optional external identifier for the namespace. */
-    Optional<String> externalId) {
+public record CreateNamespaceRequest(String name, Optional<String> externalId) {
 
   public static Builder builder() {
     return new Builder();

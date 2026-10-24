@@ -11,12 +11,12 @@ import java.util.Optional;
  *     .emails(List.of())
  *     .build());
  * }</pre>
+ *
+ * @param fallback Used as a fallback field email value if no value is present in emails.
+ * @param emails The bulk emails to send.
  */
 public record CreateBulkEmailsRequest(
-    /** Used as a fallback field email value if no value is present in emails. */
-    Optional<CreateBulkFallback> fallback,
-    /** The bulk emails to send. */
-    List<CreateBulkEmail> emails) {
+    Optional<CreateBulkFallback> fallback, List<CreateBulkEmail> emails) {
 
   public static Builder builder() {
     return new Builder();

@@ -1,22 +1,26 @@
 package com.nuntly.sdk.models;
 
+import com.google.gson.annotations.JsonAdapter;
+import com.nuntly.sdk.ExplicitNullTypeAdapterFactory;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * @param id The agent memory record id.
+ * @param createdAt Date at which the object was created (ISO 8601 format)
+ * @param updatedAt Date at which the object was updated (ISO 8601 format)
+ * @param agentId The agent identifier.
+ * @param inboxId The inbox id.
+ * @param threadId The thread id.
+ * @param memory The agent memory data.
+ * @param summary The conversation summary.
+ */
 public record AgentMemory(
-    /** The agent memory record id. */
-    String id,
-    /** Date at which the object was created (ISO 8601 format) */
-    String createdAt,
-    /** Date at which the object was updated (ISO 8601 format) */
+    Optional<String> id,
+    Optional<String> createdAt,
     Optional<String> updatedAt,
-    /** The agent identifier. */
     String agentId,
-    /** The inbox id. */
-    String inboxId,
-    /** The thread id. */
-    String threadId,
-    /** The agent memory data. */
-    Map<String, Object> memory,
-    /** The conversation summary. */
-    String summary) {}
+    Optional<String> inboxId,
+    Optional<String> threadId,
+    @JsonAdapter(ExplicitNullTypeAdapterFactory.MapNullValues.class) Map<String, Object> memory,
+    Optional<String> summary) {}

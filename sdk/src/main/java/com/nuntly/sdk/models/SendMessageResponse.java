@@ -1,11 +1,9 @@
 package com.nuntly.sdk.models;
 
-public record SendMessageResponse(
-    /** The id of the message */
-    String id,
-    /** The id of the thread. */
-    String threadId,
-    /** The RFC 5322 Message-ID header. */
-    String messageId,
-    /** The subject of the message. */
-    String subject) {}
+/**
+ * @param id The id of the message
+ * @param threadId The id of the thread.
+ * @param messageId The RFC 5322 Message-ID header.
+ * @param subject The subject of the message.
+ */
+public record SendMessageResponse(String id, String threadId, String messageId, String subject) {}

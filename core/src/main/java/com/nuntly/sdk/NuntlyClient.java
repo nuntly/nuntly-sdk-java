@@ -10,30 +10,53 @@ import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class NuntlyClient {
-  private static final Set<Integer> RETRYABLE_CODES = Set.of(408, 409, 429, 500, 502, 503, 504);
+  // 409 is a deterministic business conflict: a retry only adds latency.
+  private static final Set<Integer> RETRYABLE_CODES = Set.of(408, 429, 500, 502, 503, 504);
+  // A longer Retry-After is not waited on: the caller gets that response's error at once.
+  private static final long MAX_RETRY_AFTER_MS = 60_000;
   // Optional adapter is mandatory: without it, Gson falls back to reflection
   // on java.util.Optional, which the JDK 17+ module system refuses to allow.
   private static final Gson GSON =
-      new GsonBuilder().registerTypeAdapterFactory(new OptionalTypeAdapterFactory()).create();
+      new GsonBuilder()
+          .registerTypeAdapterFactory(new OptionalTypeAdapterFactory())
+          .registerTypeAdapterFactory(new ExplicitNullTypeAdapterFactory())
+          .create();
 
   private final ClientOptions options;
   private final HttpClient httpClient;
+  private final Sleeper sleeper;
   private final String userAgent;
 
+  interface Sleeper {
+    void sleep(long millis) throws InterruptedException;
+  }
+
   public NuntlyClient(ClientOptions options) {
-    this.options = options;
-    this.httpClient =
+    this(
+        options,
         HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .connectTimeout(options.timeout())
-            .build();
+            .build(),
+        Thread::sleep);
+  }
+
+  NuntlyClient(ClientOptions options, HttpClient httpClient, Sleeper sleeper) {
+    this.options = options;
+    this.httpClient = httpClient;
+    this.sleeper = sleeper;
     var appInfoSuffix =
         options
             .appInfo()
@@ -47,7 +70,7 @@ public final class NuntlyClient {
     return unwrap(request("GET", path, null, opts), type);
   }
 
-  public <T> T get(String path, Class<T> type, Map<String, String> query, RequestOptions opts) {
+  public <T> T get(String path, Class<T> type, Map<String, ?> query, RequestOptions opts) {
     var queryPath = query.isEmpty() ? path : path + "?" + encodeQuery(query);
     return unwrap(request("GET", queryPath, null, opts), type);
   }
@@ -135,6 +158,9 @@ public final class NuntlyClient {
     reqBuilder.method(method, bodyPublisher);
 
     var req = reqBuilder.build();
+    // A POST without Idempotency-Key may already have been applied: only a 429 is safe to replay.
+    var replaySafe =
+        !method.equals("POST") || req.headers().firstValue("Idempotency-Key").isPresent();
 
     if (options.debug()) {
       System.err.printf("-> %s %s%n", method, uri);
@@ -161,15 +187,26 @@ public final class NuntlyClient {
           return response;
         }
 
-        if (attempt < maxRetries && RETRYABLE_CODES.contains(response.statusCode())) {
-          var delay = computeRetryDelay(attempt, response, backoff);
+        var status = response.statusCode();
+        // The server can force or forbid a retry; otherwise the status rules apply.
+        var retryable =
+            switch (response.headers().firstValue("x-should-retry").orElse("")) {
+              case "true" -> true;
+              case "false" -> false;
+              default -> RETRYABLE_CODES.contains(status) && (replaySafe || status == 429);
+            };
+        var retryAfter = response.headers().firstValue("retry-after");
+        if (attempt < maxRetries
+            && retryable
+            && retryAfter.flatMap(RetryAfter::parseMillis).orElse(0L) <= MAX_RETRY_AFTER_MS) {
+          var delay = computeRetryDelay(attempt, retryAfter, backoff);
           if (options.debug()) {
             System.err.printf("~> Retry #%d in %dms%n", attempt + 1, delay);
           }
           if (hooks.onRetry() != null) {
             hooks.onRetry().accept(new Hooks.RetryContext(attempt + 1, response, null, req));
           }
-          Thread.sleep(delay);
+          sleeper.sleep(delay);
           continue;
         }
 
@@ -178,26 +215,29 @@ public final class NuntlyClient {
         throw error;
 
       } catch (IOException e) {
-        if (attempt < maxRetries) {
+        if (attempt < maxRetries && replaySafe) {
           if (hooks.onRetry() != null) {
             hooks.onRetry().accept(new Hooks.RetryContext(attempt + 1, null, e, req));
           }
           try {
-            Thread.sleep(computeRetryDelay(attempt, null, backoff));
+            sleeper.sleep(computeRetryDelay(attempt, Optional.empty(), backoff));
           } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
-            var err = new ConnectionError(e.getMessage(), e);
+            var err = new ConnectionError("Request interrupted", ie);
             if (hooks.onError() != null) hooks.onError().accept(err, req);
             throw err;
           }
           continue;
         }
-        var err = new ConnectionError(e.getMessage(), e);
+        var err =
+            e instanceof HttpTimeoutException
+                ? new ConnectionError.TimeoutError(e)
+                : new ConnectionError(e.getMessage(), e);
         if (hooks.onError() != null) hooks.onError().accept(err, req);
         throw err;
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
-        var err = new ConnectionError.TimeoutError(e);
+        var err = new ConnectionError("Request interrupted", e);
         if (hooks.onError() != null) hooks.onError().accept(err, req);
         throw err;
       }
@@ -206,23 +246,14 @@ public final class NuntlyClient {
     throw new ConnectionError("Max retries exceeded", null);
   }
 
-  private long computeRetryDelay(
-      int attempt, HttpResponse<String> response, BackoffStrategy backoff) {
-    if (response != null && response.statusCode() == 429) {
-      var retryAfter = response.headers().firstValue("retry-after");
-      if (retryAfter.isPresent()) {
-        try {
-          return Long.parseLong(retryAfter.get()) * 1000;
-        } catch (NumberFormatException ignored) {
-        }
-      }
-    }
+  static long computeRetryDelay(int attempt, Optional<String> retryAfter, BackoffStrategy backoff) {
+    var retryAfterMs = retryAfter.flatMap(RetryAfter::parseMillis);
+    if (retryAfterMs.isPresent()) return retryAfterMs.get();
     var base =
         Math.min(
             (long) (backoff.initialIntervalMs() * Math.pow(backoff.exponent(), attempt)),
             backoff.maxIntervalMs());
-    var jitter = (long) (base * 0.25 * ThreadLocalRandom.current().nextDouble());
-    return base + jitter;
+    return (long) (base * (0.75 + 0.25 * ThreadLocalRandom.current().nextDouble()));
   }
 
   private <T> T unwrap(HttpResponse<String> response, Class<T> type) {
@@ -234,15 +265,23 @@ public final class NuntlyClient {
     return GSON.fromJson(json, type);
   }
 
-  private String encodeQuery(Map<String, String> query) {
+  // A collection value is sent as repeated keys (format=html&format=text).
+  private String encodeQuery(Map<String, ?> query) {
     return query.entrySet().stream()
-        .map(
-            e ->
-                URLEncoder.encode(e.getKey(), StandardCharsets.UTF_8)
-                    + "="
-                    + URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8))
-        .reduce((a, b) -> a + "&" + b)
-        .orElse("");
+        .flatMap(
+            e -> {
+              var key = URLEncoder.encode(e.getKey(), StandardCharsets.UTF_8);
+              var values =
+                  e.getValue() instanceof Collection<?> c ? c.stream() : Stream.of(e.getValue());
+              return values.map(
+                  v -> key + "=" + URLEncoder.encode(queryValue(v), StandardCharsets.UTF_8));
+            })
+        .collect(Collectors.joining("&"));
+  }
+
+  // An enum goes out as its @SerializedName wire value (html), not its constant name (HTML).
+  private static String queryValue(Object value) {
+    return value instanceof Enum<?> ? GSON.toJsonTree(value).getAsString() : String.valueOf(value);
   }
 
   private static String detectPlatform() {

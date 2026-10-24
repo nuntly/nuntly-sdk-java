@@ -1,5 +1,6 @@
 package com.nuntly.sdk.models;
 
-public record DeleteDomainResponse(
-    /** The id of the domain */
-    String id) {}
+/**
+ * @param id The id of the domain
+ */
+public record DeleteDomainResponse(String id) {}

@@ -10,20 +10,23 @@ public final class ThreadsMessages extends Resource {
     super(client);
   }
 
-  /** List messages in a thread (chronological order). */
+  /**
+   * Lists the messages in a thread in chronological order, oldest first, with cursor pagination.
+   * Returns up to 30 messages per page.
+   */
   public CursorPage<ThreadMessagesResponseItem> list(
-      String threadId, Optional<String> cursor, Optional<Integer> limit) {
+      String threadId, ThreadsMessagesListParams params) {
     var query = new HashMap<String, String>();
-    cursor.ifPresent(c -> query.put("cursor", c));
-    limit.ifPresent(l -> query.put("limit", l.toString()));
+    params.cursor().ifPresent(v -> query.put("cursor", v));
+    params.limit().ifPresent(v -> query.put("limit", v.toString()));
     return client.list(
-        "/threads/" + threadId + "/messages",
+        "/threads/" + pathParam("threadId", threadId) + "/messages",
         ThreadMessagesResponseItem.class,
         query,
         RequestOptions.none());
   }
 
   public CursorPage<ThreadMessagesResponseItem> list(String threadId) {
-    return list(threadId, Optional.empty(), Optional.empty());
+    return list(threadId, ThreadsMessagesListParams.builder().build());
   }
 }

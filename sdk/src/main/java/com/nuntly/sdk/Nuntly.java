@@ -6,13 +6,19 @@ public final class Nuntly {
   private final NuntlyClient client;
   private Agents agents;
   private ApiKeys apiKeys;
+  private Broadcasts broadcasts;
+  private ContactProperties contactProperties;
+  private Contacts contacts;
   private Domains domains;
   private Emails emails;
   private Inboxes inboxes;
   private Messages messages;
   private Namespaces namespaces;
   private Organizations organizations;
+  private Segments segments;
+  private Templates templates;
   private Threads threads;
+  private Topics topics;
   private Webhooks webhooks;
 
   private Nuntly(ClientOptions options) {
@@ -35,6 +41,21 @@ public final class Nuntly {
   public ApiKeys apiKeys() {
     if (apiKeys == null) apiKeys = new ApiKeys(client);
     return apiKeys;
+  }
+
+  public Broadcasts broadcasts() {
+    if (broadcasts == null) broadcasts = new Broadcasts(client);
+    return broadcasts;
+  }
+
+  public ContactProperties contactProperties() {
+    if (contactProperties == null) contactProperties = new ContactProperties(client);
+    return contactProperties;
+  }
+
+  public Contacts contacts() {
+    if (contacts == null) contacts = new Contacts(client);
+    return contacts;
   }
 
   public Domains domains() {
@@ -67,9 +88,24 @@ public final class Nuntly {
     return organizations;
   }
 
+  public Segments segments() {
+    if (segments == null) segments = new Segments(client);
+    return segments;
+  }
+
+  public Templates templates() {
+    if (templates == null) templates = new Templates(client);
+    return templates;
+  }
+
   public Threads threads() {
     if (threads == null) threads = new Threads(client);
     return threads;
+  }
+
+  public Topics topics() {
+    if (topics == null) topics = new Topics(client);
+    return topics;
   }
 
   public Webhooks webhooks() {

@@ -10,17 +10,18 @@ import java.util.Optional;
  * var result = nuntly.webhooks().update(UpdateWebhookRequest.builder()
  *     .build());
  * }</pre>
+ *
+ * @param name The name of the webhook
+ * @param endpointUrl The endpoint URL of the webhook
+ * @param events The event types to subscribe to
+ * @param status The status of the webhook.
+ * @param rotateSecret If true, a new signing secret will be generated
  */
 public record UpdateWebhookRequest(
-    /** The name of the webhook */
     Optional<String> name,
-    /** The endpoint URL of the webhook */
     Optional<String> endpointUrl,
-    /** The event types to subscribe to */
-    List<EventType> events,
-    /** The status of the webhook. */
+    List<WebhookEventType> events,
     Optional<WebhookMutableStatus> status,
-    /** If true, a new signing secret will be generated */
     Optional<Boolean> rotateSecret) {
 
   public static Builder builder() {
@@ -30,7 +31,7 @@ public record UpdateWebhookRequest(
   public static final class Builder {
     private String name;
     private String endpointUrl;
-    private List<EventType> events;
+    private List<WebhookEventType> events;
     private WebhookMutableStatus status;
     private Boolean rotateSecret;
 
@@ -47,7 +48,7 @@ public record UpdateWebhookRequest(
     }
 
     /** The event types to subscribe to */
-    public Builder events(List<EventType> events) {
+    public Builder events(List<WebhookEventType> events) {
       this.events = events;
       return this;
     }

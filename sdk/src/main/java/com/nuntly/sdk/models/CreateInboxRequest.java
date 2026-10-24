@@ -10,17 +10,19 @@ import java.util.Optional;
  *     .address("jane@example.com")
  *     .build());
  * }</pre>
+ *
+ * @param domainId The id of the domain for this inbox. Defaults to your provided domain when
+ *     omitted.
+ * @param address The local-part of the email address (before the @).
+ * @param name The display name of the inbox.
+ * @param namespaceId The id of the namespace to assign the inbox to.
+ * @param agentId The external AI agent identifier.
  */
 public record CreateInboxRequest(
-    /** The id of the domain for this inbox. Defaults to your provided domain when omitted. */
     Optional<String> domainId,
-    /** The local-part of the email address (before the @). */
     String address,
-    /** The display name of the inbox. */
     Optional<String> name,
-    /** The id of the namespace to assign the inbox to. */
     Optional<String> namespaceId,
-    /** The external AI agent identifier. */
     Optional<String> agentId) {
 
   public static Builder builder() {

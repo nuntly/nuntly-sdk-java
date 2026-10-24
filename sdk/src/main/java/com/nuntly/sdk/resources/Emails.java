@@ -36,27 +36,36 @@ public final class Emails extends Resource {
   }
 
   /**
-   * Cancel a scheduled email before delivery. Only emails with `scheduled` status can be cancelled.
+   * Cancels a scheduled email before it is sent and returns its id with status canceled. Only
+   * scheduled emails sent outside a bulk request qualify.
    */
   public DeleteEmailResponse cancel(String id) {
-    return client.delete("/emails/" + id + "", DeleteEmailResponse.class, RequestOptions.none());
+    return client.delete(
+        "/emails/" + pathParam("id", id) + "", DeleteEmailResponse.class, RequestOptions.none());
   }
 
-  /** Returns sent emails ordered by submission date, newest first. */
-  public CursorPage<EmailsResponseItem> list(Optional<String> cursor, Optional<Integer> limit) {
+  /**
+   * Lists your emails newest first with cursor pagination, up to 30 per page. Each item has its
+   * sender, recipients, subject, status and submission date.
+   */
+  public CursorPage<EmailsResponseItem> list(EmailsListParams params) {
     var query = new HashMap<String, String>();
-    cursor.ifPresent(c -> query.put("cursor", c));
-    limit.ifPresent(l -> query.put("limit", l.toString()));
+    params.cursor().ifPresent(v -> query.put("cursor", v));
+    params.limit().ifPresent(v -> query.put("limit", v.toString()));
     return client.list("/emails", EmailsResponseItem.class, query, RequestOptions.none());
   }
 
   public CursorPage<EmailsResponseItem> list() {
-    return list(Optional.empty(), Optional.empty());
+    return list(EmailsListParams.builder().build());
   }
 
-  /** Returns an email with its current delivery status and metadata. */
+  /**
+   * Returns a single email by id with its delivery status, status reason, recipients, subject,
+   * headers, tags, attachment metadata and schedule.
+   */
   public EmailResponse retrieve(String id) {
-    return client.get("/emails/" + id + "", EmailResponse.class, RequestOptions.none());
+    return client.get(
+        "/emails/" + pathParam("id", id) + "", EmailResponse.class, RequestOptions.none());
   }
 
   /**

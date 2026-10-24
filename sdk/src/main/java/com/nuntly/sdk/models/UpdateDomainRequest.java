@@ -9,15 +9,16 @@ import java.util.Optional;
  * var result = nuntly.domains().update(UpdateDomainRequest.builder()
  *     .build());
  * }</pre>
+ *
+ * @param openTracking Emit an event for each recipient opens an email their email client
+ * @param clickTracking Emit an event for each time the recipient clicks a link in the email
+ * @param sending Enable or disable sending
+ * @param receiving Enable or disable receiving
  */
 public record UpdateDomainRequest(
-    /** Emit an event for each recipient opens an email their email client */
     Optional<Boolean> openTracking,
-    /** Emit an event for each time the recipient clicks a link in the email */
     Optional<Boolean> clickTracking,
-    /** Enable or disable sending */
     Optional<Boolean> sending,
-    /** Enable or disable receiving */
     Optional<Boolean> receiving) {
 
   public static Builder builder() {

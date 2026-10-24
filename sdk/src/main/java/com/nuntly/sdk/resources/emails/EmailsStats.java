@@ -10,7 +10,10 @@ public final class EmailsStats extends Resource {
     super(client);
   }
 
-  /** Returns aggregated daily sending statistics for the current period. */
+  /**
+   * Returns daily email counts for the last 30 days and today, per status and engagement type
+   * (sent, delivered, bounced, opened, clicked and more).
+   */
   public EmailsStatsResponse retrieve() {
     return client.get("/emails/stats", EmailsStatsResponse.class, RequestOptions.none());
   }

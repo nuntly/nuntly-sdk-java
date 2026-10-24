@@ -17,37 +17,58 @@ public final class Webhooks extends Resource {
     return events;
   }
 
-  /** Register an endpoint to start receiving webhook events for your organization. */
+  /**
+   * Registers an HTTPS endpoint to receive the event types you subscribe to. The response includes
+   * the signing secret used to verify webhook payloads.
+   */
   public CreateWebhookResponse create(CreateWebhookRequest body) {
     return client.post("/webhooks", body, CreateWebhookResponse.class, RequestOptions.none());
   }
 
-  /** Remove a webhook endpoint. No further events will be delivered to this URL. */
+  /**
+   * Permanently deletes a webhook endpoint. Events are no longer delivered to its URL after
+   * deletion. This cannot be undone.
+   */
   public DeleteWebhookResponse delete(String id) {
     return client.delete(
-        "/webhooks/" + id + "", DeleteWebhookResponse.class, RequestOptions.none());
+        "/webhooks/" + pathParam("id", id) + "",
+        DeleteWebhookResponse.class,
+        RequestOptions.none());
   }
 
-  /** Returns all registered webhook endpoints for the organization. */
-  public CursorPage<WebhooksResponseItem> list(Optional<String> cursor, Optional<Integer> limit) {
+  /**
+   * Lists the webhook endpoints of your organization, newest first, with cursor pagination. Each
+   * entry shows its URL, event types, and status.
+   */
+  public CursorPage<WebhooksResponseItem> list(WebhooksListParams params) {
     var query = new HashMap<String, String>();
-    cursor.ifPresent(c -> query.put("cursor", c));
-    limit.ifPresent(l -> query.put("limit", l.toString()));
+    params.cursor().ifPresent(v -> query.put("cursor", v));
+    params.limit().ifPresent(v -> query.put("limit", v.toString()));
     return client.list("/webhooks", WebhooksResponseItem.class, query, RequestOptions.none());
   }
 
   public CursorPage<WebhooksResponseItem> list() {
-    return list(Optional.empty(), Optional.empty());
+    return list(WebhooksListParams.builder().build());
   }
 
-  /** Returns a webhook endpoint with its URL, subscribed events, and configuration. */
+  /**
+   * Retrieves a webhook endpoint with its URL, subscribed event types, status, and the reason and
+   * time it was disabled, if it is disabled.
+   */
   public WebhookResponse retrieve(String id) {
-    return client.get("/webhooks/" + id + "", WebhookResponse.class, RequestOptions.none());
+    return client.get(
+        "/webhooks/" + pathParam("id", id) + "", WebhookResponse.class, RequestOptions.none());
   }
 
-  /** Update the endpoint URL, subscribed event types, or rotate the signing secret. */
+  /**
+   * Updates the name, URL, event types, or status of a webhook, or rotates its signing secret. The
+   * new secret is returned only when you rotate it.
+   */
   public UpdateWebhookResponse update(String id, UpdateWebhookRequest body) {
     return client.patch(
-        "/webhooks/" + id + "", body, UpdateWebhookResponse.class, RequestOptions.none());
+        "/webhooks/" + pathParam("id", id) + "",
+        body,
+        UpdateWebhookResponse.class,
+        RequestOptions.none());
   }
 }

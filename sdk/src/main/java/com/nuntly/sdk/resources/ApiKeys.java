@@ -10,36 +10,56 @@ public final class ApiKeys extends Resource {
     super(client);
   }
 
-  /** Generate a new API key. The key value is only returned once. Store it securely. */
+  /**
+   * Creates an API key with full access or send-only access, optionally limited to chosen domains.
+   * The secret key value is returned only in this response.
+   */
   public CreateApiKeyResponse create(CreateApiKeyRequest body) {
     return client.post("/api-keys", body, CreateApiKeyResponse.class, RequestOptions.none());
   }
 
-  /** Revoke an API key. Requests authenticating with this key will be rejected immediately. */
+  /**
+   * Permanently deletes an API key. Any request that authenticates with this key is rejected from
+   * then on. This cannot be undone.
+   */
   public DeleteApiKeyResponse delete(String id) {
-    return client.delete("/api-keys/" + id + "", DeleteApiKeyResponse.class, RequestOptions.none());
+    return client.delete(
+        "/api-keys/" + pathParam("id", id) + "", DeleteApiKeyResponse.class, RequestOptions.none());
   }
 
-  /** Returns all API keys for the organization. Key values are never included in list responses. */
-  public CursorPage<ApiKeysResponseItem> list(Optional<String> cursor, Optional<Integer> limit) {
+  /**
+   * Lists the API keys of your organization, newest first, with cursor pagination. Each key shows
+   * its name, status, creation date, and a short token hint.
+   */
+  public CursorPage<ApiKeysResponseItem> list(ApiKeysListParams params) {
     var query = new HashMap<String, String>();
-    cursor.ifPresent(c -> query.put("cursor", c));
-    limit.ifPresent(l -> query.put("limit", l.toString()));
+    params.cursor().ifPresent(v -> query.put("cursor", v));
+    params.limit().ifPresent(v -> query.put("limit", v.toString()));
     return client.list("/api-keys", ApiKeysResponseItem.class, query, RequestOptions.none());
   }
 
   public CursorPage<ApiKeysResponseItem> list() {
-    return list(Optional.empty(), Optional.empty());
+    return list(ApiKeysListParams.builder().build());
   }
 
-  /** Returns API key metadata. The key value is never returned after creation. */
+  /**
+   * Retrieves an API key by id with its name, status, creation date, and a short token hint. The
+   * full secret key value is never returned after creation.
+   */
   public ApiKeyResponse retrieve(String id) {
-    return client.get("/api-keys/" + id + "", ApiKeyResponse.class, RequestOptions.none());
+    return client.get(
+        "/api-keys/" + pathParam("id", id) + "", ApiKeyResponse.class, RequestOptions.none());
   }
 
-  /** Update the key name, permissions, or restrict it to specific sending domains. */
+  /**
+   * Updates the name of an API key, enables or disables it, or changes its access level and domain
+   * restrictions. Returns the id of the updated key.
+   */
   public UpdateApiKeyResponse update(String id, UpdateApiKeyRequest body) {
     return client.patch(
-        "/api-keys/" + id + "", body, UpdateApiKeyResponse.class, RequestOptions.none());
+        "/api-keys/" + pathParam("id", id) + "",
+        body,
+        UpdateApiKeyResponse.class,
+        RequestOptions.none());
   }
 }
