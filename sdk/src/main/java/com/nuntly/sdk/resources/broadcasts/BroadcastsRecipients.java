@@ -13,6 +13,11 @@ public final class BroadcastsRecipients extends Resource {
   /** List the recipients of a broadcast. */
   public CursorPage<BroadcastRecipientsResponseItem> list(
       String broadcastId, BroadcastsRecipientsListParams params) {
+    return list(broadcastId, params, RequestOptions.none());
+  }
+
+  public CursorPage<BroadcastRecipientsResponseItem> list(
+      String broadcastId, BroadcastsRecipientsListParams params, RequestOptions opts) {
     var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
     params.limit().ifPresent(v -> query.put("limit", v));
@@ -20,10 +25,14 @@ public final class BroadcastsRecipients extends Resource {
         "/broadcasts/" + pathParam("broadcastId", broadcastId) + "/recipients",
         BroadcastRecipientsResponseItem.class,
         query,
-        RequestOptions.none());
+        opts);
   }
 
   public CursorPage<BroadcastRecipientsResponseItem> list(String broadcastId) {
     return list(broadcastId, BroadcastsRecipientsListParams.builder().build());
+  }
+
+  public CursorPage<BroadcastRecipientsResponseItem> list(String broadcastId, RequestOptions opts) {
+    return list(broadcastId, BroadcastsRecipientsListParams.builder().build(), opts);
   }
 }

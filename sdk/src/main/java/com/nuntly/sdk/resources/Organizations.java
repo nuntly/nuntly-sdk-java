@@ -22,15 +22,23 @@ public final class Organizations extends Resource {
    * is paginated with a cursor like other list endpoints.
    */
   public CursorPage<OrganizationsResponseItem> list(OrganizationsListParams params) {
+    return list(params, RequestOptions.none());
+  }
+
+  public CursorPage<OrganizationsResponseItem> list(
+      OrganizationsListParams params, RequestOptions opts) {
     var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
     params.limit().ifPresent(v -> query.put("limit", v));
-    return client.list(
-        "/organizations", OrganizationsResponseItem.class, query, RequestOptions.none());
+    return client.list("/organizations", OrganizationsResponseItem.class, query, opts);
   }
 
   public CursorPage<OrganizationsResponseItem> list() {
     return list(OrganizationsListParams.builder().build());
+  }
+
+  public CursorPage<OrganizationsResponseItem> list(RequestOptions opts) {
+    return list(OrganizationsListParams.builder().build(), opts);
   }
 
   /**
@@ -38,9 +46,11 @@ public final class Organizations extends Resource {
    * (enabled or disabled).
    */
   public OrganizationResponse retrieve(String id) {
+    return retrieve(id, RequestOptions.none());
+  }
+
+  public OrganizationResponse retrieve(String id, RequestOptions opts) {
     return client.get(
-        "/organizations/" + pathParam("id", id) + "",
-        OrganizationResponse.class,
-        RequestOptions.none());
+        "/organizations/" + pathParam("id", id) + "", OrganizationResponse.class, opts);
   }
 }

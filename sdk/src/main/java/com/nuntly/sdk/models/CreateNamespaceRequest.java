@@ -6,8 +6,8 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.namespaces().create(CreateNamespaceRequest.builder()
- *     .name("example.com")
+ * var response = nuntly.namespaces().create(CreateNamespaceRequest.builder()
+ *     .name("Customer support")
  *     .build());
  * }</pre>
  *

@@ -22,6 +22,13 @@ public record ClientOptions(
     if (baseUrl != null) baseUrl = baseUrl.replaceFirst("/+$", "");
   }
 
+  /** Every component but the API key, which no string form shows. */
+  @Override
+  public String toString() {
+    return "ClientOptions[apiKey=[redacted], baseUrl=%s, timeout=%s, maxRetries=%d, backoff=%s, retryEnabled=%s, debug=%s, hooks=%s, appInfo=%s]"
+        .formatted(baseUrl, timeout, maxRetries, backoff, retryEnabled, debug, hooks, appInfo);
+  }
+
   public static Builder builder() {
     return new Builder();
   }
@@ -47,6 +54,10 @@ public record ClientOptions(
       return this;
     }
 
+    /**
+     * Timeout of each attempt, and of each connection the client opens. {@link Duration#ZERO} sets
+     * neither; a negative one throws {@link NuntlyError} when the options are built.
+     */
     public Builder timeout(Duration timeout) {
       this.timeout = timeout;
       return this;
@@ -94,7 +105,7 @@ public record ClientOptions(
           Optional.ofNullable(baseUrl)
               .orElse(
                   Optional.ofNullable(System.getenv("NUNTLY_BASE_URL")).orElse(DEFAULT_BASE_URL)),
-          Optional.ofNullable(timeout).orElse(DEFAULT_TIMEOUT),
+          NuntlyClient.checkTimeout(Optional.ofNullable(timeout).orElse(DEFAULT_TIMEOUT)),
           Optional.ofNullable(maxRetries).orElse(DEFAULT_MAX_RETRIES),
           Optional.ofNullable(backoff).orElse(BackoffStrategy.DEFAULT),
           retryEnabled,

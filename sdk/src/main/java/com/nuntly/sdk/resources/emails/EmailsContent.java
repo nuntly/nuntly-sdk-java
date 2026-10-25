@@ -15,9 +15,11 @@ public final class EmailsContent extends Resource {
    * an email, plus its stored subject and body templates.
    */
   public EmailContentResponse retrieve(String id) {
+    return retrieve(id, RequestOptions.none());
+  }
+
+  public EmailContentResponse retrieve(String id, RequestOptions opts) {
     return client.get(
-        "/emails/" + pathParam("id", id) + "/content",
-        EmailContentResponse.class,
-        RequestOptions.none());
+        "/emails/" + pathParam("id", id) + "/content", EmailContentResponse.class, opts);
   }
 }

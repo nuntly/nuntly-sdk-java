@@ -5,6 +5,12 @@ import java.net.http.HttpResponse;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+/**
+ * Hooks called during each request, in this order: {@code onRequest} before every attempt, {@code
+ * onRetry} before each retry, {@code onResponse} once on the final response (not when the last
+ * attempt got no response), then {@code onSuccess} on a 2xx or {@code onError}. An exception a hook
+ * other than {@code onError} throws ends the request with that exception, never retried.
+ */
 public record Hooks(
     Consumer<HttpRequest> onRequest,
     BiConsumer<HttpResponse<String>, HttpRequest> onResponse,

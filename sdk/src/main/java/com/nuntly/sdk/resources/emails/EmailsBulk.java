@@ -15,10 +15,12 @@ public final class EmailsBulk extends Resource {
    * looked up by the bulk id returned when it was sent.
    */
   public BulkEmailsResponse retrieve(String bulkId) {
+    return retrieve(bulkId, RequestOptions.none());
+  }
+
+  public BulkEmailsResponse retrieve(String bulkId, RequestOptions opts) {
     return client.get(
-        "/emails/bulk/" + pathParam("bulkId", bulkId) + "",
-        BulkEmailsResponse.class,
-        RequestOptions.none());
+        "/emails/bulk/" + pathParam("bulkId", bulkId) + "", BulkEmailsResponse.class, opts);
   }
 
   /**
@@ -26,11 +28,11 @@ public final class EmailsBulk extends Resource {
    * id plus the id and status of each email. No scheduling.
    */
   public CreateBulkEmailsResponse send(CreateBulkEmailsRequest body) {
-    return send(body, RequestOptions.none());
+    return send(body, IdempotentRequestOptions.none());
   }
 
-  public CreateBulkEmailsResponse send(CreateBulkEmailsRequest body, RequestOptions opts) {
-    return client.post(
-        "/emails/bulk", body, CreateBulkEmailsResponse.class, withIdempotencyKey(opts));
+  public CreateBulkEmailsResponse send(
+      CreateBulkEmailsRequest body, IdempotentRequestOptions opts) {
+    return postIdempotent("/emails/bulk", body, CreateBulkEmailsResponse.class, opts);
   }
 }

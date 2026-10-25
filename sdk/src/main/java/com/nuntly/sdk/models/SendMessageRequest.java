@@ -7,9 +7,11 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.inboxes().messages().send(SendMessageRequest.builder()
- *     .to(List.of("user@example.com"))
- *     .subject("Welcome to Nuntly")
+ * var response = nuntly.inboxes().messages().send("ibx_01kabn43yqyxn2bx4ve84mczd3", SendMessageRequest.builder()
+ *     .to(List.of("brian67@gmail.com"))
+ *     .subject("Verify your email address")
+ *     .text("Thank you for signing up! Please verify your email address.")
+ *     .html("<h1>Welcome</h1><p>Thank you for signing up! Please verify your email address.</p>")
  *     .build());
  * }</pre>
  *

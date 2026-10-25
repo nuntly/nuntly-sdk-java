@@ -7,7 +7,8 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.apiKeys().update(UpdateApiKeyRequest.builder()
+ * var response = nuntly.apiKeys().update("apk_01ka8k8s80gvx9604cn9am5st4", UpdateApiKeyRequest.builder()
+ *     .name("Production")
  *     .build());
  * }</pre>
  *

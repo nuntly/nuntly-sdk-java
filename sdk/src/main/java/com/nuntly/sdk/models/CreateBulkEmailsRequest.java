@@ -7,8 +7,8 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.emails().bulk().send(CreateBulkEmailsRequest.builder()
- *     .emails(List.of())
+ * var response = nuntly.emails().bulk().send(CreateBulkEmailsRequest.builder()
+ *     .emails(List.of(CreateBulkEmail.builder().from("Tomlinson AI <ray@info.tomlinson.ai>").to(List.of("brian67@gmail.com")).subject("Verify your email address").text("Thank you for signing up! Please verify your email address.").build()))
  *     .build());
  * }</pre>
  *

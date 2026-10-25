@@ -10,8 +10,8 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.agents().memory().upsert(AgentMemoryRequest.builder()
- *     .memory(Map.of())
+ * var response = nuntly.agents().memory().upsert("aB3dE7fG", AgentMemoryRequest.builder()
+ *     .memory(java.util.Map.of("lastTopic", "billing", "openTickets", 2))
  *     .build());
  * }</pre>
  *

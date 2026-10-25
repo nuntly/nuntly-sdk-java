@@ -3,12 +3,9 @@ package com.nuntly.sdk.lib;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.nuntly.sdk.Conformance;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -20,26 +17,9 @@ import org.junit.jupiter.api.TestFactory;
 /** Runs conformance/webhook.json against {@link Webhook#verify}. */
 class WebhookConformanceTest {
 
-  // The vectors are in conformance/ at the repository root, the nearest ancestor that has one.
-  private static JsonObject vectors(String file) throws IOException {
-    for (var dir = Path.of("").toAbsolutePath(); dir != null; dir = dir.getParent()) {
-      var path = dir.resolve("conformance").resolve(file);
-      if (Files.exists(path))
-        return JsonParser.parseString(Files.readString(path)).getAsJsonObject();
-    }
-    throw new IOException("conformance/" + file + " not found");
-  }
-
   @TestFactory
   Stream<DynamicTest> webhook() throws IOException {
-    return vectors("webhook.json").getAsJsonArray("cases").asList().stream()
-        .map(JsonElement::getAsJsonObject)
-        .filter(
-            c ->
-                !c.has("runtimes")
-                    || c.getAsJsonArray("runtimes").asList().stream()
-                        .anyMatch(r -> r.getAsString().equals("java")))
-        .map(c -> DynamicTest.dynamicTest(c.get("name").getAsString(), () -> run(c)));
+    return Conformance.each("webhook.json", WebhookConformanceTest::run);
   }
 
   private static void run(JsonObject c) {
@@ -55,11 +35,13 @@ class WebhookConformanceTest {
     var secret = input.get("secret").getAsString();
 
     if (expected.get("outcome").getAsString().equals("reject")) {
+      Conformance.assertAsserted(expected, "outcome");
       assertThrows(
           WebhookVerificationError.class,
           () -> Webhook.verify(payload, header, secret, tolerance, clock));
       return;
     }
+    Conformance.assertAsserted(expected, "outcome", "eventType", "eventId");
     var event = Webhook.verify(payload, header, secret, tolerance, clock);
     assertEquals(expected.get("eventType").getAsString(), event.type());
     assertEquals(expected.get("eventId").getAsString(), event.id());

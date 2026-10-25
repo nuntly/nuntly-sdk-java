@@ -15,6 +15,10 @@ public final class EmailsStats extends Resource {
    * (sent, delivered, bounced, opened, clicked and more).
    */
   public EmailsStatsResponse retrieve() {
-    return client.get("/emails/stats", EmailsStatsResponse.class, RequestOptions.none());
+    return retrieve(RequestOptions.none());
+  }
+
+  public EmailsStatsResponse retrieve(RequestOptions opts) {
+    return client.get("/emails/stats", EmailsStatsResponse.class, opts);
   }
 }

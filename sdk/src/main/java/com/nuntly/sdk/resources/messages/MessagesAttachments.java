@@ -15,11 +15,15 @@ public final class MessagesAttachments extends Resource {
    * content id. Download links are not included.
    */
   public List<AttachmentResponse> list(String messageId) {
+    return list(messageId, RequestOptions.none());
+  }
+
+  public List<AttachmentResponse> list(String messageId, RequestOptions opts) {
     return List.of(
         client.get(
             "/messages/" + pathParam("messageId", messageId) + "/attachments",
             AttachmentResponse[].class,
-            RequestOptions.none()));
+            opts));
   }
 
   /**
@@ -27,6 +31,10 @@ public final class MessagesAttachments extends Resource {
    * minutes. Use it to fetch the attachment file itself.
    */
   public AttachmentResponse retrieve(String messageId, String attachmentId) {
+    return retrieve(messageId, attachmentId, RequestOptions.none());
+  }
+
+  public AttachmentResponse retrieve(String messageId, String attachmentId, RequestOptions opts) {
     return client.get(
         "/messages/"
             + pathParam("messageId", messageId)
@@ -34,6 +42,6 @@ public final class MessagesAttachments extends Resource {
             + pathParam("attachmentId", attachmentId)
             + "",
         AttachmentResponse.class,
-        RequestOptions.none());
+        opts);
   }
 }

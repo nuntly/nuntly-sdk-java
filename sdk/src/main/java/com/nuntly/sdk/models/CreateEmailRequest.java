@@ -10,10 +10,13 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.emails().send(CreateEmailRequest.builder()
- *     .from("hello@nuntly.com")
- *     .to(List.of("user@example.com"))
- *     .subject("Welcome to Nuntly")
+ * var response = nuntly.emails().send(CreateEmailRequest.builder()
+ *     .from("Tomlinson AI <ray@info.tomlinson.ai>")
+ *     .to(List.of("brian67@gmail.com"))
+ *     .subject("Verify your email address")
+ *     .text("Thank you for signing up! Please verify your email address.")
+ *     .html("<h1>Welcome 🎉</h1><p>Thank you for signing up! Please verify your email address.</p>")
+ *     .tags(List.of(Tag.builder().name("category").value("transactional").build()))
  *     .build());
  * }</pre>
  *

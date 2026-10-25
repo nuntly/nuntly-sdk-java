@@ -18,6 +18,7 @@ class WireTest {
   static String lastMethod;
   static String lastPath;
   static String lastAuth;
+  static String lastUserAgent;
   static String lastBody;
 
   @BeforeAll
@@ -31,6 +32,7 @@ class WireTest {
           lastMethod = exchange.getRequestMethod();
           lastPath = exchange.getRequestURI().toString();
           lastAuth = exchange.getRequestHeaders().getFirst("Authorization");
+          lastUserAgent = exchange.getRequestHeaders().getFirst("User-Agent");
           lastBody = new String(exchange.getRequestBody().readAllBytes());
 
           var response =
@@ -185,6 +187,15 @@ class WireTest {
     var nuntly = createClient();
     nuntly.emails().retrieve("em_1");
     assertEquals("Bearer test_wire_key", lastAuth);
+  }
+
+  @Test
+  void sendsUserAgentWithSdkVersionAndRuntime() {
+    var nuntly = createClient();
+    nuntly.emails().retrieve("em_1");
+    assertTrue(
+        lastUserAgent.startsWith("@nuntly/sdk-java/" + Version.SDK_VERSION + " "), lastUserAgent);
+    assertTrue(lastUserAgent.endsWith("/" + System.getProperty("java.version")), lastUserAgent);
   }
 
   @Test

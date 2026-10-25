@@ -40,8 +40,11 @@ public final class Emails extends Resource {
    * scheduled emails sent outside a bulk request qualify.
    */
   public DeleteEmailResponse cancel(String id) {
-    return client.delete(
-        "/emails/" + pathParam("id", id) + "", DeleteEmailResponse.class, RequestOptions.none());
+    return cancel(id, RequestOptions.none());
+  }
+
+  public DeleteEmailResponse cancel(String id, RequestOptions opts) {
+    return client.delete("/emails/" + pathParam("id", id) + "", DeleteEmailResponse.class, opts);
   }
 
   /**
@@ -49,14 +52,22 @@ public final class Emails extends Resource {
    * sender, recipients, subject, status and submission date.
    */
   public CursorPage<EmailsResponseItem> list(EmailsListParams params) {
+    return list(params, RequestOptions.none());
+  }
+
+  public CursorPage<EmailsResponseItem> list(EmailsListParams params, RequestOptions opts) {
     var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
     params.limit().ifPresent(v -> query.put("limit", v));
-    return client.list("/emails", EmailsResponseItem.class, query, RequestOptions.none());
+    return client.list("/emails", EmailsResponseItem.class, query, opts);
   }
 
   public CursorPage<EmailsResponseItem> list() {
     return list(EmailsListParams.builder().build());
+  }
+
+  public CursorPage<EmailsResponseItem> list(RequestOptions opts) {
+    return list(EmailsListParams.builder().build(), opts);
   }
 
   /**
@@ -64,8 +75,11 @@ public final class Emails extends Resource {
    * headers, tags, attachment metadata and schedule.
    */
   public EmailResponse retrieve(String id) {
-    return client.get(
-        "/emails/" + pathParam("id", id) + "", EmailResponse.class, RequestOptions.none());
+    return retrieve(id, RequestOptions.none());
+  }
+
+  public EmailResponse retrieve(String id, RequestOptions opts) {
+    return client.get("/emails/" + pathParam("id", id) + "", EmailResponse.class, opts);
   }
 
   /**
@@ -73,10 +87,10 @@ public final class Emails extends Resource {
    * attachments, labels, custom headers and scheduling.
    */
   public CreateEmailResponse send(CreateEmailRequest body) {
-    return send(body, RequestOptions.none());
+    return send(body, IdempotentRequestOptions.none());
   }
 
-  public CreateEmailResponse send(CreateEmailRequest body, RequestOptions opts) {
-    return client.post("/emails", body, CreateEmailResponse.class, withIdempotencyKey(opts));
+  public CreateEmailResponse send(CreateEmailRequest body, IdempotentRequestOptions opts) {
+    return postIdempotent("/emails", body, CreateEmailResponse.class, opts);
   }
 }

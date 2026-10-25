@@ -22,7 +22,11 @@ public final class Namespaces extends Resource {
    * it to a customer or tenant in your own system.
    */
   public NamespaceResponse create(CreateNamespaceRequest body) {
-    return client.post("/namespaces", body, NamespaceResponse.class, RequestOptions.none());
+    return create(body, RequestOptions.none());
+  }
+
+  public NamespaceResponse create(CreateNamespaceRequest body, RequestOptions opts) {
+    return client.post("/namespaces", body, NamespaceResponse.class, opts);
   }
 
   /**
@@ -30,10 +34,12 @@ public final class Namespaces extends Resource {
    * still has active inboxes, so delete them first.
    */
   public IdResponse delete(String namespaceId) {
+    return delete(namespaceId, RequestOptions.none());
+  }
+
+  public IdResponse delete(String namespaceId, RequestOptions opts) {
     return client.delete(
-        "/namespaces/" + pathParam("namespaceId", namespaceId) + "",
-        IdResponse.class,
-        RequestOptions.none());
+        "/namespaces/" + pathParam("namespaceId", namespaceId) + "", IdResponse.class, opts);
   }
 
   /**
@@ -41,14 +47,22 @@ public final class Namespaces extends Resource {
    * includes the name and the optional external id.
    */
   public CursorPage<NamespacesResponseItem> list(NamespacesListParams params) {
+    return list(params, RequestOptions.none());
+  }
+
+  public CursorPage<NamespacesResponseItem> list(NamespacesListParams params, RequestOptions opts) {
     var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
     params.limit().ifPresent(v -> query.put("limit", v));
-    return client.list("/namespaces", NamespacesResponseItem.class, query, RequestOptions.none());
+    return client.list("/namespaces", NamespacesResponseItem.class, query, opts);
   }
 
   public CursorPage<NamespacesResponseItem> list() {
     return list(NamespacesListParams.builder().build());
+  }
+
+  public CursorPage<NamespacesResponseItem> list(RequestOptions opts) {
+    return list(NamespacesListParams.builder().build(), opts);
   }
 
   /**
@@ -56,10 +70,12 @@ public final class Namespaces extends Resource {
    * including how many of its inboxes are currently active.
    */
   public NamespaceDetail retrieve(String namespaceId) {
+    return retrieve(namespaceId, RequestOptions.none());
+  }
+
+  public NamespaceDetail retrieve(String namespaceId, RequestOptions opts) {
     return client.get(
-        "/namespaces/" + pathParam("namespaceId", namespaceId) + "",
-        NamespaceDetail.class,
-        RequestOptions.none());
+        "/namespaces/" + pathParam("namespaceId", namespaceId) + "", NamespaceDetail.class, opts);
   }
 
   /**
@@ -67,10 +83,11 @@ public final class Namespaces extends Resource {
    * it. Returns the id of the updated namespace.
    */
   public IdResponse update(String namespaceId, UpdateNamespaceRequest body) {
+    return update(namespaceId, body, RequestOptions.none());
+  }
+
+  public IdResponse update(String namespaceId, UpdateNamespaceRequest body, RequestOptions opts) {
     return client.patch(
-        "/namespaces/" + pathParam("namespaceId", namespaceId) + "",
-        body,
-        IdResponse.class,
-        RequestOptions.none());
+        "/namespaces/" + pathParam("namespaceId", namespaceId) + "", body, IdResponse.class, opts);
   }
 }

@@ -2,6 +2,9 @@ package com.nuntly.sdk;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -12,6 +15,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
@@ -47,13 +51,21 @@ public final class NuntlyClient {
   }
 
   public NuntlyClient(ClientOptions options) {
-    this(
-        options,
-        HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_2)
-            .connectTimeout(options.timeout())
-            .build(),
-        Thread::sleep);
+    this(options, httpClient(options.timeout()), Thread::sleep);
+  }
+
+  // A zero timeout sets none, as for a request.
+  private static HttpClient httpClient(Duration timeout) {
+    var builder = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2);
+    if (timeout.isPositive()) builder.connectTimeout(timeout);
+    return builder.build();
+  }
+
+  static Duration checkTimeout(Duration timeout) {
+    if (timeout.isNegative()) {
+      throw new NuntlyError("timeout must be zero, for none, or positive, not " + timeout + ".");
+    }
+    return timeout;
   }
 
   NuntlyClient(ClientOptions options, HttpClient httpClient, Sleeper sleeper) {
@@ -70,37 +82,45 @@ public final class NuntlyClient {
   }
 
   public <T> T get(String path, Class<T> type, RequestOptions opts) {
-    return unwrap(request("GET", path, null, opts), type);
+    return unwrap(request("GET", path, null, opts, false, type != Void.class), type);
   }
 
   public <T> T get(String path, Class<T> type, Map<String, ?> query, RequestOptions opts) {
     var queryPath = withQuery(path, query);
-    return unwrap(request("GET", queryPath, null, opts), type);
+    return unwrap(request("GET", queryPath, null, opts, false, type != Void.class), type);
   }
 
   public <T> T post(String path, Object body, Class<T> type, RequestOptions opts) {
-    return unwrap(request("POST", path, body, opts), type);
+    return unwrap(request("POST", path, body, opts, false, type != Void.class), type);
+  }
+
+  // Only for an endpoint the API deduplicates by Idempotency-Key: a retry replays it on a 5xx.
+  <T> T postIdempotent(String path, Object body, Class<T> type, IdempotentRequestOptions opts) {
+    var keyed = Resource.withIdempotencyKey(opts);
+    var plain = new RequestOptions(keyed.timeout(), keyed.maxRetries(), keyed.headers());
+    return unwrap(request("POST", path, body, plain, true, type != Void.class), type);
   }
 
   public <T> T put(String path, Object body, Class<T> type, RequestOptions opts) {
-    return unwrap(request("PUT", path, body, opts), type);
+    return unwrap(request("PUT", path, body, opts, false, type != Void.class), type);
   }
 
   public <T> T patch(String path, Object body, Class<T> type, RequestOptions opts) {
-    return unwrap(request("PATCH", path, body, opts), type);
+    return unwrap(request("PATCH", path, body, opts, false, type != Void.class), type);
   }
 
   public <T> T delete(String path, Class<T> type, RequestOptions opts) {
-    return unwrap(request("DELETE", path, null, opts), type);
+    return unwrap(request("DELETE", path, null, opts, false, type != Void.class), type);
   }
 
   public void deleteVoid(String path, RequestOptions opts) {
-    request("DELETE", path, null, opts);
+    request("DELETE", path, null, opts, false, false);
   }
 
+  /** Sends a request and returns its 2xx response as is: the body is not read as JSON. */
   public HttpResponse<String> rawRequest(
       String method, String path, Object body, RequestOptions opts) {
-    return request(method, path, body, opts);
+    return request(method, path, body, opts, false, false).response();
   }
 
   /**
@@ -111,8 +131,7 @@ public final class NuntlyClient {
   public <T> CursorPage<T> list(
       String path, Class<T> itemType, Map<String, ?> query, RequestOptions opts) {
     var queryPath = withQuery(path, query);
-    var response = request("GET", queryPath, null, opts);
-    var json = JsonParser.parseString(response.body()).getAsJsonObject();
+    var json = request("GET", queryPath, null, opts, false, true).json();
     @SuppressWarnings("unchecked")
     T[] items = (T[]) GSON.fromJson(json.get("data"), Array.newInstance(itemType, 0).getClass());
     String next =
@@ -139,9 +158,17 @@ public final class NuntlyClient {
     return GSON;
   }
 
-  private HttpResponse<String> request(
-      String method, String path, Object body, RequestOptions opts) {
-    var timeout = opts.timeout().orElse(options.timeout());
+  // The final 2xx response, with its body parsed when the caller reads it as JSON.
+  private record Reply(HttpResponse<String> response, JsonObject json) {}
+
+  private Reply request(
+      String method,
+      String path,
+      Object body,
+      RequestOptions opts,
+      boolean idempotent,
+      boolean readsJson) {
+    var timeout = checkTimeout(opts.timeout().orElse(options.timeout()));
     var maxRetries = options.retryEnabled() ? opts.maxRetries().orElse(options.maxRetries()) : 0;
     var backoff = options.backoff();
     var hooks = options.hooks();
@@ -150,12 +177,12 @@ public final class NuntlyClient {
     var reqBuilder =
         HttpRequest.newBuilder()
             .uri(uri)
-            .timeout(timeout)
             .header("Authorization", "Bearer " + options.apiKey())
             .header("User-Agent", userAgent)
             .header("Content-Type", "application/json")
             .header("Accept", "application/json");
 
+    if (timeout.isPositive()) reqBuilder.timeout(timeout);
     for (var entry : opts.headers().entrySet()) {
       reqBuilder.header(entry.getKey(), entry.getValue());
     }
@@ -167,94 +194,109 @@ public final class NuntlyClient {
     reqBuilder.method(method, bodyPublisher);
 
     var req = reqBuilder.build();
-    // A POST or PATCH without Idempotency-Key may already have been applied: only a 429 is safe
-    // to replay.
+    // A POST or PATCH may already have been applied: only a 429 is safe to replay, unless the
+    // operation is one the API deduplicates by Idempotency-Key and the request carries a key.
     var replaySafe =
         IDEMPOTENT_METHODS.contains(method)
-            || req.headers().firstValue("Idempotency-Key").isPresent();
+            || (idempotent && req.headers().firstValue("Idempotency-Key").isPresent());
+
+    // Hooks and errors see the request without the API key.
+    var hookRequest = RedactedResponse.redact(req);
 
     if (options.debug()) {
       System.err.printf("-> %s %s%n", method, uri);
     }
-    if (hooks.onRequest() != null) hooks.onRequest().accept(req);
 
+    // Hooks follow the TypeScript order: onRequest before every attempt, onRetry before each retry,
+    // onResponse once on the final response, then onSuccess or onError.
     for (int attempt = 0; attempt <= maxRetries; attempt++) {
+      if (hooks.onRequest() != null) hooks.onRequest().accept(hookRequest);
+      HttpResponse<String> response;
       try {
-        var response = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
-
-        if (options.debug()) {
-          var requestId = response.headers().firstValue("x-request-id").orElse("");
-          System.err.printf(
-              "<- %d %s %s%s%n",
-              response.statusCode(),
-              method,
-              uri,
-              requestId.isEmpty() ? "" : " [" + requestId + "]");
-        }
-        if (hooks.onResponse() != null) hooks.onResponse().accept(response, req);
-
-        if (response.statusCode() >= 200 && response.statusCode() < 300) {
-          if (hooks.onSuccess() != null) hooks.onSuccess().accept(response.body(), req);
-          return response;
-        }
-
-        var status = response.statusCode();
-        // The server can force or forbid a retry; otherwise the status rules apply.
-        var retryable =
-            switch (response
-                .headers()
-                .firstValue("x-should-retry")
-                .orElse("")
-                .toLowerCase(Locale.ROOT)) {
-              case "true" -> true;
-              case "false" -> false;
-              default -> RETRYABLE_CODES.contains(status) && (replaySafe || status == 429);
-            };
-        var retryAfter = response.headers().firstValue("retry-after");
-        if (attempt < maxRetries
-            && retryable
-            && retryAfter.flatMap(RetryAfter::parseMillis).orElse(0L) <= MAX_RETRY_AFTER_MS) {
-          var delay = computeRetryDelay(attempt, retryAfter, backoff);
-          if (options.debug()) {
-            System.err.printf("~> Retry #%d in %dms%n", attempt + 1, delay);
-          }
-          if (hooks.onRetry() != null) {
-            hooks.onRetry().accept(new Hooks.RetryContext(attempt + 1, response, null, req));
-          }
-          sleeper.sleep(delay);
-          continue;
-        }
-
-        var error = ApiError.from(response);
-        throw reportError(hooks, error, req);
-
+        response =
+            new RedactedResponse(
+                httpClient.send(req, HttpResponse.BodyHandlers.ofString()), hookRequest);
       } catch (IOException e) {
         if (attempt < maxRetries && replaySafe) {
           if (hooks.onRetry() != null) {
-            hooks.onRetry().accept(new Hooks.RetryContext(attempt + 1, null, e, req));
+            hooks.onRetry().accept(new Hooks.RetryContext(attempt + 1, null, e, hookRequest));
           }
-          try {
-            sleeper.sleep(computeRetryDelay(attempt, Optional.empty(), backoff));
-          } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-            var err = new ConnectionError("Request interrupted", ie);
-            throw reportError(hooks, err, req);
-          }
+          sleep(computeRetryDelay(attempt, Optional.empty(), backoff), hooks, hookRequest);
           continue;
         }
         var err =
             e instanceof HttpTimeoutException
                 ? new ConnectionError.TimeoutError(e)
                 : new ConnectionError(e.getMessage(), e);
-        throw reportError(hooks, err, req);
+        throw reportError(hooks, err, hookRequest);
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
-        var err = new ConnectionError("Request interrupted", e);
-        throw reportError(hooks, err, req);
+        throw reportError(hooks, new ConnectionError("Request interrupted", e), hookRequest);
       }
+
+      var status = response.statusCode();
+      if (options.debug()) {
+        var requestId = response.headers().firstValue("x-request-id").orElse("");
+        System.err.printf(
+            "<- %d %s %s%s%n",
+            status, method, uri, requestId.isEmpty() ? "" : " [" + requestId + "]");
+      }
+      var success = status >= 200 && status < 300;
+
+      if (!success && attempt < maxRetries && retryable(response, replaySafe)) {
+        var delay =
+            computeRetryDelay(attempt, response.headers().firstValue("retry-after"), backoff);
+        if (options.debug()) {
+          System.err.printf("~> Retry #%d in %dms%n", attempt + 1, delay);
+        }
+        if (hooks.onRetry() != null) {
+          hooks.onRetry().accept(new Hooks.RetryContext(attempt + 1, response, null, hookRequest));
+        }
+        sleep(delay, hooks, hookRequest);
+        continue;
+      }
+
+      if (hooks.onResponse() != null) hooks.onResponse().accept(response, hookRequest);
+      if (!success) throw reportError(hooks, ApiError.from(response), hookRequest);
+      JsonObject json = null;
+      if (readsJson) {
+        try {
+          json = parseSuccess(response);
+        } catch (NuntlyError e) {
+          throw reportError(hooks, e, hookRequest);
+        }
+      }
+      if (hooks.onSuccess() != null) hooks.onSuccess().accept(response.body(), hookRequest);
+      return new Reply(response, json);
     }
 
     throw new ConnectionError("Max retries exceeded", null);
+  }
+
+  // The server can force or forbid a retry; otherwise the status rules apply. A Retry-After above
+  // the cap is not waited on, whatever x-should-retry says.
+  private static boolean retryable(HttpResponse<String> response, boolean replaySafe) {
+    var status = response.statusCode();
+    var retryAfter = response.headers().firstValue("retry-after");
+    if (retryAfter.flatMap(RetryAfter::parseMillis).orElse(0L) > MAX_RETRY_AFTER_MS) return false;
+    return switch (response
+        .headers()
+        .firstValue("x-should-retry")
+        .orElse("")
+        .toLowerCase(Locale.ROOT)) {
+      case "true" -> true;
+      case "false" -> false;
+      default -> RETRYABLE_CODES.contains(status) && (replaySafe || status == 429);
+    };
+  }
+
+  private void sleep(long millis, Hooks hooks, HttpRequest hookRequest) {
+    try {
+      sleeper.sleep(millis);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw reportError(hooks, new ConnectionError("Request interrupted", e), hookRequest);
+    }
   }
 
   // The caller gets the original error: a failing hook must not hide why the request failed.
@@ -283,9 +325,36 @@ public final class NuntlyClient {
     return (long) (base * (0.75 + 0.25 * ThreadLocalRandom.current().nextDouble()));
   }
 
-  private <T> T unwrap(HttpResponse<String> response, Class<T> type) {
+  // Every 2xx of the API carries a JSON object; anything else is no answer the caller can use.
+  // A 2xx means the API may have applied the request, so the error says so before a retry.
+  private static JsonObject parseSuccess(HttpResponse<String> response) {
+    var body = response.body();
+    if (body == null || body.isEmpty()) {
+      throw notJson(response, "an empty body where JSON was expected", null);
+    }
+    JsonElement json;
+    try {
+      json = JsonParser.parseString(body);
+    } catch (JsonParseException e) {
+      throw notJson(response, "a body that is not JSON", e);
+    }
+    if (!json.isJsonObject()) throw notJson(response, "a JSON body that is not an object", null);
+    return json.getAsJsonObject();
+  }
+
+  private static NuntlyError notJson(HttpResponse<String> response, String what, Throwable cause) {
+    return new NuntlyError(
+        "The API answered "
+            + response.statusCode()
+            + " with "
+            + what
+            + ": the request may have been applied.",
+        cause);
+  }
+
+  private <T> T unwrap(Reply reply, Class<T> type) {
     if (type == Void.class) return null;
-    var json = JsonParser.parseString(response.body()).getAsJsonObject();
+    var json = reply.json();
     if (json.has("data")) {
       return GSON.fromJson(json.get("data"), type);
     }

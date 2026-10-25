@@ -22,7 +22,11 @@ public final class Webhooks extends Resource {
    * the signing secret used to verify webhook payloads.
    */
   public CreateWebhookResponse create(CreateWebhookRequest body) {
-    return client.post("/webhooks", body, CreateWebhookResponse.class, RequestOptions.none());
+    return create(body, RequestOptions.none());
+  }
+
+  public CreateWebhookResponse create(CreateWebhookRequest body, RequestOptions opts) {
+    return client.post("/webhooks", body, CreateWebhookResponse.class, opts);
   }
 
   /**
@@ -30,10 +34,12 @@ public final class Webhooks extends Resource {
    * deletion. This cannot be undone.
    */
   public DeleteWebhookResponse delete(String id) {
+    return delete(id, RequestOptions.none());
+  }
+
+  public DeleteWebhookResponse delete(String id, RequestOptions opts) {
     return client.delete(
-        "/webhooks/" + pathParam("id", id) + "",
-        DeleteWebhookResponse.class,
-        RequestOptions.none());
+        "/webhooks/" + pathParam("id", id) + "", DeleteWebhookResponse.class, opts);
   }
 
   /**
@@ -41,14 +47,22 @@ public final class Webhooks extends Resource {
    * entry shows its URL, event types, and status.
    */
   public CursorPage<WebhooksResponseItem> list(WebhooksListParams params) {
+    return list(params, RequestOptions.none());
+  }
+
+  public CursorPage<WebhooksResponseItem> list(WebhooksListParams params, RequestOptions opts) {
     var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
     params.limit().ifPresent(v -> query.put("limit", v));
-    return client.list("/webhooks", WebhooksResponseItem.class, query, RequestOptions.none());
+    return client.list("/webhooks", WebhooksResponseItem.class, query, opts);
   }
 
   public CursorPage<WebhooksResponseItem> list() {
     return list(WebhooksListParams.builder().build());
+  }
+
+  public CursorPage<WebhooksResponseItem> list(RequestOptions opts) {
+    return list(WebhooksListParams.builder().build(), opts);
   }
 
   /**
@@ -56,8 +70,11 @@ public final class Webhooks extends Resource {
    * time it was disabled, if it is disabled.
    */
   public WebhookResponse retrieve(String id) {
-    return client.get(
-        "/webhooks/" + pathParam("id", id) + "", WebhookResponse.class, RequestOptions.none());
+    return retrieve(id, RequestOptions.none());
+  }
+
+  public WebhookResponse retrieve(String id, RequestOptions opts) {
+    return client.get("/webhooks/" + pathParam("id", id) + "", WebhookResponse.class, opts);
   }
 
   /**
@@ -65,10 +82,11 @@ public final class Webhooks extends Resource {
    * new secret is returned only when you rotate it.
    */
   public UpdateWebhookResponse update(String id, UpdateWebhookRequest body) {
+    return update(id, body, RequestOptions.none());
+  }
+
+  public UpdateWebhookResponse update(String id, UpdateWebhookRequest body, RequestOptions opts) {
     return client.patch(
-        "/webhooks/" + pathParam("id", id) + "",
-        body,
-        UpdateWebhookResponse.class,
-        RequestOptions.none());
+        "/webhooks/" + pathParam("id", id) + "", body, UpdateWebhookResponse.class, opts);
   }
 }

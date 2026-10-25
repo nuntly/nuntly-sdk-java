@@ -15,9 +15,11 @@ public final class OrganizationsUsage extends Resource {
    * and a breakdown by channel.
    */
   public OrganizationUsageResponse retrieve(String id) {
+    return retrieve(id, RequestOptions.none());
+  }
+
+  public OrganizationUsageResponse retrieve(String id, RequestOptions opts) {
     return client.get(
-        "/organizations/" + pathParam("id", id) + "/usage",
-        OrganizationUsageResponse.class,
-        RequestOptions.none());
+        "/organizations/" + pathParam("id", id) + "/usage", OrganizationUsageResponse.class, opts);
   }
 }

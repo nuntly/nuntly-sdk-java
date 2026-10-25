@@ -36,7 +36,7 @@ class ResourceTest {
 
   @Test
   void withIdempotencyKeyGeneratesAUuidKeyWhenNoneIsSet() {
-    var opts = Resource.withIdempotencyKey(RequestOptions.none());
+    var opts = Resource.withIdempotencyKey(IdempotentRequestOptions.none());
 
     var key = opts.headers().get("Idempotency-Key");
     assertEquals(key, UUID.fromString(key).toString());
@@ -47,7 +47,7 @@ class ResourceTest {
   void withIdempotencyKeySendsTheCallerKeyAndKeepsTheOtherOptions() {
     var opts =
         Resource.withIdempotencyKey(
-            RequestOptions.builder()
+            IdempotentRequestOptions.builder()
                 .idempotencyKey("send-2026-10-21")
                 .maxRetries(5)
                 .headers(Map.of("X-Trace", "t1"))
@@ -61,7 +61,9 @@ class ResourceTest {
   void withIdempotencyKeyKeepsAKeyHeaderTheCallerSet() {
     var opts =
         Resource.withIdempotencyKey(
-            RequestOptions.builder().headers(Map.of("Idempotency-Key", "from-header")).build());
+            IdempotentRequestOptions.builder()
+                .headers(Map.of("Idempotency-Key", "from-header"))
+                .build());
 
     assertEquals("from-header", opts.headers().get("Idempotency-Key"));
     assertEquals(Optional.of("from-header"), opts.idempotencyKey());
@@ -73,7 +75,9 @@ class ResourceTest {
     callerHeaders.put("idempotency-key", null);
     callerHeaders.put("X-Trace", "t1");
 
-    var opts = Resource.withIdempotencyKey(RequestOptions.builder().headers(callerHeaders).build());
+    var opts =
+        Resource.withIdempotencyKey(
+            IdempotentRequestOptions.builder().headers(callerHeaders).build());
 
     var key = opts.headers().get("Idempotency-Key");
     assertEquals(key, UUID.fromString(key).toString());
@@ -86,7 +90,8 @@ class ResourceTest {
     var withNull = new HashMap<String, String>();
     withNull.put("Idempotency-Key", "send-2026-10-25");
     withNull.put("idempotency-key", null);
-    var opts = Resource.withIdempotencyKey(RequestOptions.builder().headers(withNull).build());
+    var opts =
+        Resource.withIdempotencyKey(IdempotentRequestOptions.builder().headers(withNull).build());
     assertEquals(Map.of("Idempotency-Key", "send-2026-10-25"), opts.headers());
     assertEquals(Optional.of("send-2026-10-25"), opts.idempotencyKey());
 
@@ -98,7 +103,7 @@ class ResourceTest {
       if (!exactFirst) headers.put("Idempotency-Key", "exact");
 
       var twoValues =
-          Resource.withIdempotencyKey(RequestOptions.builder().headers(headers).build());
+          Resource.withIdempotencyKey(IdempotentRequestOptions.builder().headers(headers).build());
 
       assertEquals(Map.of("Idempotency-Key", "exact"), twoValues.headers());
       assertEquals(Optional.of("exact"), twoValues.idempotencyKey());
@@ -109,7 +114,7 @@ class ResourceTest {
   void withIdempotencyKeyMatchesTheCallerHeaderWhateverItsCase() {
     var opts =
         Resource.withIdempotencyKey(
-            RequestOptions.builder()
+            IdempotentRequestOptions.builder()
                 .idempotencyKey("from-option")
                 .headers(Map.of("idempotency-key", "from-header"))
                 .build());

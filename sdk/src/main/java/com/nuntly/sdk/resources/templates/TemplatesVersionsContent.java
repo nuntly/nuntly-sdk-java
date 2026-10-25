@@ -12,6 +12,11 @@ public final class TemplatesVersionsContent extends Resource {
 
   /** Get download links for a version's HTML and text. */
   public TemplateVersionContentResponse retrieve(String templateId, String versionId) {
+    return retrieve(templateId, versionId, RequestOptions.none());
+  }
+
+  public TemplateVersionContentResponse retrieve(
+      String templateId, String versionId, RequestOptions opts) {
     return client.get(
         "/templates/"
             + pathParam("templateId", templateId)
@@ -19,6 +24,6 @@ public final class TemplatesVersionsContent extends Resource {
             + pathParam("versionId", versionId)
             + "/content",
         TemplateVersionContentResponse.class,
-        RequestOptions.none());
+        opts);
   }
 }

@@ -6,7 +6,9 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.domains().update(UpdateDomainRequest.builder()
+ * var response = nuntly.domains().update("dns_01kabn43yqyxn2bx4ve84mczd3", UpdateDomainRequest.builder()
+ *     .openTracking(true)
+ *     .clickTracking(true)
  *     .build());
  * }</pre>
  *

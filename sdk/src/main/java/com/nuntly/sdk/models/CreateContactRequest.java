@@ -8,8 +8,8 @@ import java.util.Map;
  *
  *
  * <pre>{@code
- * var result = nuntly.contacts().create(CreateContactRequest.builder()
- *     .email("...")
+ * var response = nuntly.contacts().create(CreateContactRequest.builder()
+ *     .email("jane@example.com")
  *     .build());
  * }</pre>
  *

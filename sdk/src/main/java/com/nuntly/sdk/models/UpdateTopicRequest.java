@@ -4,8 +4,8 @@ package com.nuntly.sdk.models;
  *
  *
  * <pre>{@code
- * var result = nuntly.topics().update(UpdateTopicRequest.builder()
- *     .name("example.com")
+ * var response = nuntly.topics().update("tpc_01kabn43yqyxn2bx4ve84mczd3", UpdateTopicRequest.builder()
+ *     .name("product updates")
  *     .build());
  * }</pre>
  *

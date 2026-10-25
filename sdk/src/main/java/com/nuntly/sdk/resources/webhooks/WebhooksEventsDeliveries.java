@@ -15,6 +15,11 @@ public final class WebhooksEventsDeliveries extends Resource {
    * code, response data, and delivery time of each attempt.
    */
   public List<WebhookEventDeliveriesResponseItem> list(String id, String eventId) {
+    return list(id, eventId, RequestOptions.none());
+  }
+
+  public List<WebhookEventDeliveriesResponseItem> list(
+      String id, String eventId, RequestOptions opts) {
     return List.of(
         client.get(
             "/webhooks/"
@@ -23,6 +28,6 @@ public final class WebhooksEventsDeliveries extends Resource {
                 + pathParam("eventId", eventId)
                 + "/deliveries",
             WebhookEventDeliveriesResponseItem[].class,
-            RequestOptions.none()));
+            opts));
   }
 }

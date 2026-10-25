@@ -30,10 +30,19 @@ public abstract class Resource {
     return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
   }
 
+  /**
+   * A POST to an endpoint that deduplicates requests by {@code Idempotency-Key}: it sends the key
+   * of {@code opts}, or a generated one, and the same key on every retry.
+   */
+  protected <T> T postIdempotent(
+      String path, Object body, Class<T> type, IdempotentRequestOptions opts) {
+    return client.postIdempotent(path, body, type, opts);
+  }
+
   // A retry replays the same key, so the server applies the request once.
   // A key header the caller set, in any case, wins over the option and is never sent twice;
   // one set to null counts as not set.
-  protected static RequestOptions withIdempotencyKey(RequestOptions opts) {
+  static IdempotentRequestOptions withIdempotencyKey(IdempotentRequestOptions opts) {
     var header =
         opts.headers().entrySet().stream()
             .filter(e -> isKeyHeader(e.getKey()) && e.getValue() != null)
@@ -48,7 +57,7 @@ public abstract class Resource {
     var headers = new HashMap<>(opts.headers());
     headers.keySet().removeIf(Resource::isKeyHeader);
     headers.put(header.getKey(), header.getValue());
-    return new RequestOptions(
+    return new IdempotentRequestOptions(
         opts.timeout(), opts.maxRetries(), headers, Optional.of(header.getValue()));
   }
 
