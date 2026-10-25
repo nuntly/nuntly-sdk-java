@@ -6,7 +6,7 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.domains().create(CreateDomainRequest.builder()
+ * var response = nuntly.domains().create(CreateDomainRequest.builder()
  *     .name("example.com")
  *     .build());
  * }</pre>

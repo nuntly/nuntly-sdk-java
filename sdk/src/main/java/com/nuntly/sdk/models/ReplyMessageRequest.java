@@ -6,8 +6,9 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.messages().reply(ReplyMessageRequest.builder()
- *     .replyAll(false)
+ * var response = nuntly.messages().reply("imsg_01kabn43yqyxn2bx4ve84mczd3", ReplyMessageRequest.builder()
+ *     .text("Thank you for signing up! Please verify your email address.")
+ *     .html("<h1>Welcome</h1><p>Thank you for signing up! Please verify your email address.</p>")
  *     .build());
  * }</pre>
  *
@@ -15,7 +16,8 @@ import java.util.Optional;
  * @param html The HTML body.
  * @param replyAll Whether to reply to all recipients.
  */
-public record ReplyMessageRequest(Optional<String> text, Optional<String> html, boolean replyAll) {
+public record ReplyMessageRequest(
+    Optional<String> text, Optional<String> html, Optional<Boolean> replyAll) {
 
   public static Builder builder() {
     return new Builder();
@@ -24,7 +26,7 @@ public record ReplyMessageRequest(Optional<String> text, Optional<String> html, 
   public static final class Builder {
     private String text;
     private String html;
-    private boolean replyAll;
+    private Boolean replyAll;
 
     /** The plain text body. */
     public Builder text(String text) {
@@ -39,14 +41,14 @@ public record ReplyMessageRequest(Optional<String> text, Optional<String> html, 
     }
 
     /** Whether to reply to all recipients. */
-    public Builder replyAll(boolean replyAll) {
+    public Builder replyAll(Boolean replyAll) {
       this.replyAll = replyAll;
       return this;
     }
 
     public ReplyMessageRequest build() {
       return new ReplyMessageRequest(
-          Optional.ofNullable(text), Optional.ofNullable(html), replyAll);
+          Optional.ofNullable(text), Optional.ofNullable(html), Optional.ofNullable(replyAll));
     }
   }
 }

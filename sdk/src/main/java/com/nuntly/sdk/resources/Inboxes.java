@@ -28,11 +28,11 @@ public final class Inboxes extends Resource {
    * if none is given. Can assign a namespace and agent id.
    */
   public InboxResponse create(CreateInboxRequest body) {
-    return create(body, RequestOptions.none());
+    return create(body, IdempotentRequestOptions.none());
   }
 
-  public InboxResponse create(CreateInboxRequest body, RequestOptions opts) {
-    return client.post("/inboxes", body, InboxResponse.class, withIdempotencyKey(opts));
+  public InboxResponse create(CreateInboxRequest body, IdempotentRequestOptions opts) {
+    return postIdempotent("/inboxes", body, InboxResponse.class, opts);
   }
 
   /**
@@ -40,8 +40,11 @@ public final class Inboxes extends Resource {
    * catch-all inbox of a domain cannot be deleted.
    */
   public IdResponse delete(String inboxId) {
-    return client.delete(
-        "/inboxes/" + pathParam("inboxId", inboxId) + "", IdResponse.class, RequestOptions.none());
+    return delete(inboxId, RequestOptions.none());
+  }
+
+  public IdResponse delete(String inboxId, RequestOptions opts) {
+    return client.delete("/inboxes/" + pathParam("inboxId", inboxId) + "", IdResponse.class, opts);
   }
 
   /**
@@ -49,15 +52,23 @@ public final class Inboxes extends Resource {
    * filter the results to a single namespace.
    */
   public CursorPage<InboxesResponseItem> list(InboxesListParams params) {
+    return list(params, RequestOptions.none());
+  }
+
+  public CursorPage<InboxesResponseItem> list(InboxesListParams params, RequestOptions opts) {
     var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
     params.limit().ifPresent(v -> query.put("limit", v));
     params.namespaceId().ifPresent(v -> query.put("namespaceId", v));
-    return client.list("/inboxes", InboxesResponseItem.class, query, RequestOptions.none());
+    return client.list("/inboxes", InboxesResponseItem.class, query, opts);
   }
 
   public CursorPage<InboxesResponseItem> list() {
     return list(InboxesListParams.builder().build());
+  }
+
+  public CursorPage<InboxesResponseItem> list(RequestOptions opts) {
+    return list(InboxesListParams.builder().build(), opts);
   }
 
   /**
@@ -65,10 +76,11 @@ public final class Inboxes extends Resource {
    * agent id. Deleted inboxes return a not found error.
    */
   public InboxResponse retrieve(String inboxId) {
-    return client.get(
-        "/inboxes/" + pathParam("inboxId", inboxId) + "",
-        InboxResponse.class,
-        RequestOptions.none());
+    return retrieve(inboxId, RequestOptions.none());
+  }
+
+  public InboxResponse retrieve(String inboxId, RequestOptions opts) {
+    return client.get("/inboxes/" + pathParam("inboxId", inboxId) + "", InboxResponse.class, opts);
   }
 
   /**
@@ -76,10 +88,11 @@ public final class Inboxes extends Resource {
    * name to null to clear it. Returns the inbox id.
    */
   public IdResponse update(String inboxId, UpdateInboxRequest body) {
+    return update(inboxId, body, RequestOptions.none());
+  }
+
+  public IdResponse update(String inboxId, UpdateInboxRequest body, RequestOptions opts) {
     return client.patch(
-        "/inboxes/" + pathParam("inboxId", inboxId) + "",
-        body,
-        IdResponse.class,
-        RequestOptions.none());
+        "/inboxes/" + pathParam("inboxId", inboxId) + "", body, IdResponse.class, opts);
   }
 }

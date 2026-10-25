@@ -8,8 +8,9 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.broadcasts().create(CreateBroadcastRequest.builder()
- *     .from("hello@nuntly.com")
+ * var response = nuntly.broadcasts().create(CreateBroadcastRequest.builder()
+ *     .from("Tomlinson AI <ray@info.tomlinson.ai>")
+ *     .name("October newsletter")
  *     .build());
  * }</pre>
  *

@@ -7,8 +7,9 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.messages().forward(ForwardMessageRequest.builder()
- *     .to(List.of("user@example.com"))
+ * var response = nuntly.messages().forward("imsg_01kabn43yqyxn2bx4ve84mczd3", ForwardMessageRequest.builder()
+ *     .to(List.of("brian67@gmail.com"))
+ *     .text("Thank you for signing up! Please verify your email address.")
  *     .build());
  * }</pre>
  *

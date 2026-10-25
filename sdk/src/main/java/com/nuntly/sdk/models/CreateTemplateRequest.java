@@ -4,8 +4,8 @@ package com.nuntly.sdk.models;
  *
  *
  * <pre>{@code
- * var result = nuntly.templates().create(CreateTemplateRequest.builder()
- *     .name("example.com")
+ * var response = nuntly.templates().create(CreateTemplateRequest.builder()
+ *     .name("Welcome email")
  *     .build());
  * }</pre>
  *

@@ -7,7 +7,8 @@ import java.util.List;
  *
  *
  * <pre>{@code
- * var result = nuntly.threads().update(UpdateThreadRequest.builder()
+ * var response = nuntly.threads().update("thr_01kabn43yqyxn2bx4ve84mczd3", UpdateThreadRequest.builder()
+ *     .addLabels(List.of("urgent"))
  *     .build());
  * }</pre>
  *

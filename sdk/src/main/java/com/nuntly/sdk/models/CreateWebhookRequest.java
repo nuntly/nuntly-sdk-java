@@ -7,9 +7,10 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.webhooks().create(CreateWebhookRequest.builder()
+ * var response = nuntly.webhooks().create(CreateWebhookRequest.builder()
+ *     .name("Production webhook")
  *     .endpointUrl("https://example.com/webhooks")
- *     .events(List.of("email.delivered", "email.bounced"))
+ *     .events(List.of(WebhookEventType.EMAIL_SENT))
  *     .build());
  * }</pre>
  *

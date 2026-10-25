@@ -17,7 +17,7 @@ spotless {
 }
 
 group = "com.nuntly"
-version = "2.0.0-beta.2"
+version = "2.0.0-beta.3"
 
 mavenPublishing {
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)

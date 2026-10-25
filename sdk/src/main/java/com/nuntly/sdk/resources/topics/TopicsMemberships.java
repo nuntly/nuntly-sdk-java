@@ -16,6 +16,11 @@ public final class TopicsMemberships extends Resource {
    */
   public CursorPage<TopicMembershipsResponseItem> list(
       String topicId, TopicsMembershipsListParams params) {
+    return list(topicId, params, RequestOptions.none());
+  }
+
+  public CursorPage<TopicMembershipsResponseItem> list(
+      String topicId, TopicsMembershipsListParams params, RequestOptions opts) {
     var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
     params.limit().ifPresent(v -> query.put("limit", v));
@@ -23,10 +28,14 @@ public final class TopicsMemberships extends Resource {
         "/topics/" + pathParam("topicId", topicId) + "/memberships",
         TopicMembershipsResponseItem.class,
         query,
-        RequestOptions.none());
+        opts);
   }
 
   public CursorPage<TopicMembershipsResponseItem> list(String topicId) {
     return list(topicId, TopicsMembershipsListParams.builder().build());
+  }
+
+  public CursorPage<TopicMembershipsResponseItem> list(String topicId, RequestOptions opts) {
+    return list(topicId, TopicsMembershipsListParams.builder().build(), opts);
   }
 }

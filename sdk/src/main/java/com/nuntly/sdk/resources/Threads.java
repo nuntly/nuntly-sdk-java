@@ -22,17 +22,23 @@ public final class Threads extends Resource {
    * messages. Pass markRead=true to clear unread labels.
    */
   public ThreadResponse retrieve(String threadId, ThreadsRetrieveParams params) {
+    return retrieve(threadId, params, RequestOptions.none());
+  }
+
+  public ThreadResponse retrieve(
+      String threadId, ThreadsRetrieveParams params, RequestOptions opts) {
     var query = new HashMap<String, Object>();
     params.markRead().ifPresent(v -> query.put("markRead", v));
     return client.get(
-        "/threads/" + pathParam("threadId", threadId) + "",
-        ThreadResponse.class,
-        query,
-        RequestOptions.none());
+        "/threads/" + pathParam("threadId", threadId) + "", ThreadResponse.class, query, opts);
   }
 
   public ThreadResponse retrieve(String threadId) {
     return retrieve(threadId, ThreadsRetrieveParams.builder().build());
+  }
+
+  public ThreadResponse retrieve(String threadId, RequestOptions opts) {
+    return retrieve(threadId, ThreadsRetrieveParams.builder().build(), opts);
   }
 
   /**
@@ -40,10 +46,11 @@ public final class Threads extends Resource {
    * work on threads in user-created inboxes.
    */
   public IdResponse update(String threadId, UpdateThreadRequest body) {
+    return update(threadId, body, RequestOptions.none());
+  }
+
+  public IdResponse update(String threadId, UpdateThreadRequest body, RequestOptions opts) {
     return client.patch(
-        "/threads/" + pathParam("threadId", threadId) + "",
-        body,
-        IdResponse.class,
-        RequestOptions.none());
+        "/threads/" + pathParam("threadId", threadId) + "", body, IdResponse.class, opts);
   }
 }

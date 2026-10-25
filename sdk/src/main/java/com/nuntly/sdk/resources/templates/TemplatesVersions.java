@@ -18,16 +18,26 @@ public final class TemplatesVersions extends Resource {
 
   /** Create a draft version of a template. */
   public TemplateVersionResponse create(String templateId, CreateTemplateVersionRequest body) {
+    return create(templateId, body, RequestOptions.none());
+  }
+
+  public TemplateVersionResponse create(
+      String templateId, CreateTemplateVersionRequest body, RequestOptions opts) {
     return client.post(
         "/templates/" + pathParam("templateId", templateId) + "/versions",
         body,
         TemplateVersionResponse.class,
-        RequestOptions.none());
+        opts);
   }
 
   /** List the versions of a template. */
   public CursorPage<TemplateVersionsResponseItem> list(
       String templateId, TemplatesVersionsListParams params) {
+    return list(templateId, params, RequestOptions.none());
+  }
+
+  public CursorPage<TemplateVersionsResponseItem> list(
+      String templateId, TemplatesVersionsListParams params, RequestOptions opts) {
     var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
     params.limit().ifPresent(v -> query.put("limit", v));
@@ -35,15 +45,24 @@ public final class TemplatesVersions extends Resource {
         "/templates/" + pathParam("templateId", templateId) + "/versions",
         TemplateVersionsResponseItem.class,
         query,
-        RequestOptions.none());
+        opts);
   }
 
   public CursorPage<TemplateVersionsResponseItem> list(String templateId) {
     return list(templateId, TemplatesVersionsListParams.builder().build());
   }
 
+  public CursorPage<TemplateVersionsResponseItem> list(String templateId, RequestOptions opts) {
+    return list(templateId, TemplatesVersionsListParams.builder().build(), opts);
+  }
+
   /** Publish a draft template version. */
   public TemplateVersionIdResponse publish(String templateId, String versionId) {
+    return publish(templateId, versionId, RequestOptions.none());
+  }
+
+  public TemplateVersionIdResponse publish(
+      String templateId, String versionId, RequestOptions opts) {
     return client.patch(
         "/templates/"
             + pathParam("templateId", templateId)
@@ -52,11 +71,16 @@ public final class TemplatesVersions extends Resource {
             + "/publish",
         null,
         TemplateVersionIdResponse.class,
-        RequestOptions.none());
+        opts);
   }
 
   /** Retrieve one content version. */
   public TemplateVersionResponse retrieve(String templateId, String versionId) {
+    return retrieve(templateId, versionId, RequestOptions.none());
+  }
+
+  public TemplateVersionResponse retrieve(
+      String templateId, String versionId, RequestOptions opts) {
     return client.get(
         "/templates/"
             + pathParam("templateId", templateId)
@@ -64,6 +88,6 @@ public final class TemplatesVersions extends Resource {
             + pathParam("versionId", versionId)
             + "",
         TemplateVersionResponse.class,
-        RequestOptions.none());
+        opts);
   }
 }

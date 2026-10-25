@@ -13,6 +13,11 @@ public final class SegmentsMembers extends Resource {
   /** List the members of a segment. */
   public CursorPage<SegmentMembersResponseItem> list(
       String segmentId, SegmentsMembersListParams params) {
+    return list(segmentId, params, RequestOptions.none());
+  }
+
+  public CursorPage<SegmentMembersResponseItem> list(
+      String segmentId, SegmentsMembersListParams params, RequestOptions opts) {
     var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
     params.limit().ifPresent(v -> query.put("limit", v));
@@ -20,10 +25,14 @@ public final class SegmentsMembers extends Resource {
         "/segments/" + pathParam("segmentId", segmentId) + "/members",
         SegmentMembersResponseItem.class,
         query,
-        RequestOptions.none());
+        opts);
   }
 
   public CursorPage<SegmentMembersResponseItem> list(String segmentId) {
     return list(segmentId, SegmentsMembersListParams.builder().build());
+  }
+
+  public CursorPage<SegmentMembersResponseItem> list(String segmentId, RequestOptions opts) {
+    return list(segmentId, SegmentsMembersListParams.builder().build(), opts);
   }
 }

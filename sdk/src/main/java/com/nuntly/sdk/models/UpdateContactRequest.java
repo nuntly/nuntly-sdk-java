@@ -9,11 +9,13 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.contacts().update(UpdateContactRequest.builder()
+ * var response = nuntly.contacts().update("ct_01kabn43yqyxn2bx4ve84mczd3", UpdateContactRequest.builder()
+ *     .properties(java.util.Map.of("plan", "pro"))
  *     .build());
  * }</pre>
  *
- * @param email The address cannot be changed.
+ * @param email The contact's current address, in any letter case. The address cannot be changed: a
+ *     different address is refused with the error code contact_email_immutable.
  * @param properties Contact properties keyed by name, matched exactly. A null value removes the
  *     property.
  */
@@ -30,7 +32,10 @@ public record UpdateContactRequest(
     private String email;
     private Map<String, Object> properties;
 
-    /** The address cannot be changed. */
+    /**
+     * The contact's current address, in any letter case. The address cannot be changed: a different
+     * address is refused with the error code contact_email_immutable.
+     */
     public Builder email(String email) {
       this.email = email;
       return this;

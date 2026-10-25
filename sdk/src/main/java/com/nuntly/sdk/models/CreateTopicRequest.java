@@ -4,8 +4,8 @@ package com.nuntly.sdk.models;
  *
  *
  * <pre>{@code
- * var result = nuntly.topics().create(CreateTopicRequest.builder()
- *     .name("example.com")
+ * var response = nuntly.topics().create(CreateTopicRequest.builder()
+ *     .name("product updates")
  *     .build());
  * }</pre>
  *

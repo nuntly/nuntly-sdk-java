@@ -15,6 +15,11 @@ public final class InboxesThreads extends Resource {
    * labels; spam and trash threads are excluded by default.
    */
   public CursorPage<ThreadsResponseItem> list(String inboxId, InboxesThreadsListParams params) {
+    return list(inboxId, params, RequestOptions.none());
+  }
+
+  public CursorPage<ThreadsResponseItem> list(
+      String inboxId, InboxesThreadsListParams params, RequestOptions opts) {
     var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
     params.limit().ifPresent(v -> query.put("limit", v));
@@ -23,10 +28,14 @@ public final class InboxesThreads extends Resource {
         "/inboxes/" + pathParam("inboxId", inboxId) + "/threads",
         ThreadsResponseItem.class,
         query,
-        RequestOptions.none());
+        opts);
   }
 
   public CursorPage<ThreadsResponseItem> list(String inboxId) {
     return list(inboxId, InboxesThreadsListParams.builder().build());
+  }
+
+  public CursorPage<ThreadsResponseItem> list(String inboxId, RequestOptions opts) {
+    return list(inboxId, InboxesThreadsListParams.builder().build(), opts);
   }
 }

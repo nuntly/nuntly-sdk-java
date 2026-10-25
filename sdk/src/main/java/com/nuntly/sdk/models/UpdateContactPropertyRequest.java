@@ -6,7 +6,8 @@ import com.nuntly.sdk.JsonNullable;
  *
  *
  * <pre>{@code
- * var result = nuntly.contactProperties().update(UpdateContactPropertyRequest.builder()
+ * var response = nuntly.contactProperties().update("ctpd_01kabn43yqyxn2bx4ve84mczd3", UpdateContactPropertyRequest.builder()
+ *     .description("The plan the customer is on.")
  *     .build());
  * }</pre>
  *

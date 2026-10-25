@@ -6,7 +6,8 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.broadcasts().send(SendBroadcastRequest.builder()
+ * var response = nuntly.broadcasts().send("bc_01kabn43yqyxn2bx4ve84mczd3", SendBroadcastRequest.builder()
+ *     .scheduledAt("2026-03-30T09:00:00.000Z")
  *     .build());
  * }</pre>
  *

@@ -4,24 +4,26 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.RecordComponent;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
 /**
@@ -33,6 +35,8 @@ class ResourceConformanceTest {
   static HttpServer server;
   static Nuntly nuntly;
   static final List<String> sent = new CopyOnWriteArrayList<>();
+  static final List<String> queries = new CopyOnWriteArrayList<>();
+  static final List<String> traces = new CopyOnWriteArrayList<>();
   static volatile String responseBody = "{\"data\":{}}";
 
   @BeforeAll
@@ -42,6 +46,8 @@ class ResourceConformanceTest {
         "/",
         exchange -> {
           sent.add(exchange.getRequestMethod() + " " + exchange.getRequestURI().getRawPath());
+          queries.add(Objects.toString(exchange.getRequestURI().getRawQuery(), ""));
+          traces.add(Objects.toString(exchange.getRequestHeaders().getFirst("X-Trace-Id"), ""));
           var body = responseBody.getBytes(StandardCharsets.UTF_8);
           exchange.getResponseHeaders().add("Content-Type", "application/json");
           exchange.sendResponseHeaders(200, body.length);
@@ -63,43 +69,44 @@ class ResourceConformanceTest {
     server.stop(0);
   }
 
-  // The vectors are in conformance/ at the repository root, the nearest ancestor that has one.
-  private static JsonObject vectors(String file) throws IOException {
-    for (var dir = Path.of("").toAbsolutePath(); dir != null; dir = dir.getParent()) {
-      var path = dir.resolve("conformance").resolve(file);
-      if (Files.exists(path))
-        return JsonParser.parseString(Files.readString(path)).getAsJsonObject();
-    }
-    throw new IOException("conformance/" + file + " not found");
-  }
-
-  private static Stream<JsonObject> javaCases(String file) throws IOException {
-    return vectors(file).getAsJsonArray("cases").asList().stream()
-        .map(JsonElement::getAsJsonObject)
-        .filter(
-            c ->
-                !c.has("runtimes")
-                    || c.getAsJsonArray("runtimes").asList().stream()
-                        .anyMatch(r -> r.getAsString().equals("java")));
-  }
-
   @TestFactory
   Stream<DynamicTest> transport() throws IOException {
-    return javaCases("transport.json")
-        .filter(c -> c.has("call"))
-        .map(c -> DynamicTest.dynamicTest(c.get("name").getAsString(), () -> run(c)));
+    // The cases with a `request` run against the client: ConformanceTest in core runs them.
+    return Conformance.each(
+        "transport.json", c -> c.has("call"), c -> c.has("request"), ResourceConformanceTest::run);
+  }
+
+  // Per-request options reach the wire through a public resource method, not only the core client.
+  @Test
+  void requestOptionsThroughAResourceMethod() {
+    sent.clear();
+    traces.clear();
+    responseBody = "{\"data\":{}}";
+
+    nuntly
+        .emails()
+        .retrieve(
+            "em_123",
+            RequestOptions.builder()
+                .headers(Map.of("X-Trace-Id", "trace_42"))
+                .timeout(Duration.ofSeconds(5))
+                .maxRetries(0)
+                .build());
+
+    assertEquals(List.of("GET /emails/em_123"), sent);
+    assertEquals(List.of("trace_42"), traces);
   }
 
   @TestFactory
   Stream<DynamicTest> forwardCompat() throws IOException {
-    return javaCases("forward-compat.json")
-        .map(c -> DynamicTest.dynamicTest(c.get("name").getAsString(), () -> readField(c)));
+    return Conformance.each("forward-compat.json", ResourceConformanceTest::readField);
   }
 
   private static void readField(JsonObject c) throws ReflectiveOperationException {
     responseBody = c.getAsJsonObject("response").get("body").toString();
     var result = invoke(c.getAsJsonObject("call"));
     var expected = c.getAsJsonObject("expected");
+    Conformance.assertAsserted(expected, "field", "value", "known");
     var field =
         (Enum<?>) result.getClass().getMethod(expected.get("field").getAsString()).invoke(result);
     if (expected.get("known").getAsBoolean()) {
@@ -111,20 +118,57 @@ class ResourceConformanceTest {
   }
 
   private static Object invoke(JsonObject call) throws ReflectiveOperationException {
-    var args =
+    var ids =
         call.getAsJsonArray("args").asList().stream()
             .map(a -> a.isJsonNull() ? null : a.getAsString())
-            .toArray();
+            .toList();
     var segments = call.get("operation").getAsString().split("\\.");
     Object target = nuntly;
     for (var accessor : Arrays.copyOf(segments, segments.length - 1)) {
       target = target.getClass().getMethod(accessor).invoke(target);
     }
-    return operation(target, segments[segments.length - 1], args.length).invoke(target, args);
+    var name = segments[segments.length - 1];
+    if (!call.has("query")) {
+      return operation(target, name, ids.size()).invoke(target, ids.toArray());
+    }
+    var method = queryOperation(target, name, ids.size());
+    var args = new ArrayList<Object>(ids);
+    args.add(params(method.getParameterTypes()[ids.size()], call.getAsJsonObject("query")));
+    return method.invoke(target, args.toArray());
+  }
+
+  private static Method queryOperation(Object target, String name, int ids) {
+    return Arrays.stream(target.getClass().getMethods())
+        .filter(m -> m.getName().equals(name) && m.getParameterCount() == ids + 1)
+        .filter(
+            m ->
+                m.getParameterTypes()[ids].isRecord()
+                    && m.getParameterTypes()[ids] != RequestOptions.class)
+        .findFirst()
+        .orElseThrow();
+  }
+
+  // Builds the params record through its canonical constructor, so its own checks run.
+  private static Object params(Class<?> type, JsonObject query)
+      throws ReflectiveOperationException {
+    var components = type.getRecordComponents();
+    var values = new Object[components.length];
+    for (int i = 0; i < components.length; i++) {
+      var value = query.get(components[i].getName());
+      values[i] =
+          value == null
+              ? null
+              : NuntlyClient.defaultGson().fromJson(value, components[i].getGenericType());
+    }
+    var constructor =
+        type.getDeclaredConstructor(
+            Arrays.stream(components).map(RecordComponent::getType).toArray(Class<?>[]::new));
+    return constructor.newInstance(values);
   }
 
   private static void run(JsonObject c) throws ReflectiveOperationException {
     sent.clear();
+    queries.clear();
     responseBody = "{\"data\":{}}";
     Throwable error = null;
     try {
@@ -134,13 +178,16 @@ class ResourceConformanceTest {
     }
 
     var expected = c.getAsJsonObject("expected");
+    Conformance.assertAsserted(expected, "calls", "method", "path", "query", "error");
     assertEquals(expected.get("calls").getAsInt(), sent.size(), "calls " + sent);
-    if (expected.has("path")) {
-      assertEquals(
-          expected.get("method").getAsString() + " " + expected.get("path").getAsString(),
-          sent.get(0));
+    var request = sent.isEmpty() ? new String[] {"", ""} : sent.get(0).split(" ", 2);
+    if (expected.has("method")) assertEquals(expected.get("method").getAsString(), request[0]);
+    if (expected.has("path")) assertEquals(expected.get("path").getAsString(), request[1]);
+    if (expected.has("query")) {
+      assertEquals(expected.get("query").getAsString(), queries.isEmpty() ? null : queries.get(0));
     }
     if (expected.has("error")) {
+      Conformance.assertAsserted(expected.getAsJsonObject("error"), "kind");
       assertEquals("sdk", expected.getAsJsonObject("error").get("kind").getAsString());
       assertSame(NuntlyError.class, error == null ? null : error.getClass(), "error " + error);
     } else {

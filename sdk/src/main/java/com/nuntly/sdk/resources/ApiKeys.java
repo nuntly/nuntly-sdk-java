@@ -15,7 +15,11 @@ public final class ApiKeys extends Resource {
    * The secret key value is returned only in this response.
    */
   public CreateApiKeyResponse create(CreateApiKeyRequest body) {
-    return client.post("/api-keys", body, CreateApiKeyResponse.class, RequestOptions.none());
+    return create(body, RequestOptions.none());
+  }
+
+  public CreateApiKeyResponse create(CreateApiKeyRequest body, RequestOptions opts) {
+    return client.post("/api-keys", body, CreateApiKeyResponse.class, opts);
   }
 
   /**
@@ -23,8 +27,11 @@ public final class ApiKeys extends Resource {
    * then on. This cannot be undone.
    */
   public DeleteApiKeyResponse delete(String id) {
-    return client.delete(
-        "/api-keys/" + pathParam("id", id) + "", DeleteApiKeyResponse.class, RequestOptions.none());
+    return delete(id, RequestOptions.none());
+  }
+
+  public DeleteApiKeyResponse delete(String id, RequestOptions opts) {
+    return client.delete("/api-keys/" + pathParam("id", id) + "", DeleteApiKeyResponse.class, opts);
   }
 
   /**
@@ -32,14 +39,22 @@ public final class ApiKeys extends Resource {
    * its name, status, creation date, and a short token hint.
    */
   public CursorPage<ApiKeysResponseItem> list(ApiKeysListParams params) {
+    return list(params, RequestOptions.none());
+  }
+
+  public CursorPage<ApiKeysResponseItem> list(ApiKeysListParams params, RequestOptions opts) {
     var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
     params.limit().ifPresent(v -> query.put("limit", v));
-    return client.list("/api-keys", ApiKeysResponseItem.class, query, RequestOptions.none());
+    return client.list("/api-keys", ApiKeysResponseItem.class, query, opts);
   }
 
   public CursorPage<ApiKeysResponseItem> list() {
     return list(ApiKeysListParams.builder().build());
+  }
+
+  public CursorPage<ApiKeysResponseItem> list(RequestOptions opts) {
+    return list(ApiKeysListParams.builder().build(), opts);
   }
 
   /**
@@ -47,8 +62,11 @@ public final class ApiKeys extends Resource {
    * full secret key value is never returned after creation.
    */
   public ApiKeyResponse retrieve(String id) {
-    return client.get(
-        "/api-keys/" + pathParam("id", id) + "", ApiKeyResponse.class, RequestOptions.none());
+    return retrieve(id, RequestOptions.none());
+  }
+
+  public ApiKeyResponse retrieve(String id, RequestOptions opts) {
+    return client.get("/api-keys/" + pathParam("id", id) + "", ApiKeyResponse.class, opts);
   }
 
   /**
@@ -56,10 +74,11 @@ public final class ApiKeys extends Resource {
    * restrictions. Returns the id of the updated key.
    */
   public UpdateApiKeyResponse update(String id, UpdateApiKeyRequest body) {
+    return update(id, body, RequestOptions.none());
+  }
+
+  public UpdateApiKeyResponse update(String id, UpdateApiKeyRequest body, RequestOptions opts) {
     return client.patch(
-        "/api-keys/" + pathParam("id", id) + "",
-        body,
-        UpdateApiKeyResponse.class,
-        RequestOptions.none());
+        "/api-keys/" + pathParam("id", id) + "", body, UpdateApiKeyResponse.class, opts);
   }
 }

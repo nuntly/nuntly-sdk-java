@@ -7,7 +7,8 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.namespaces().update(UpdateNamespaceRequest.builder()
+ * var response = nuntly.namespaces().update("ns_01kabn43yqyxn2bx4ve84mczd3", UpdateNamespaceRequest.builder()
+ *     .name("Customer support")
  *     .build());
  * }</pre>
  *

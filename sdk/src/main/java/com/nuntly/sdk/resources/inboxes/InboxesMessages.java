@@ -15,14 +15,15 @@ public final class InboxesMessages extends Resource {
    * and the response returns its id, thread id, and Message-ID.
    */
   public SendMessageResponse send(String inboxId, SendMessageRequest body) {
-    return send(inboxId, body, RequestOptions.none());
+    return send(inboxId, body, IdempotentRequestOptions.none());
   }
 
-  public SendMessageResponse send(String inboxId, SendMessageRequest body, RequestOptions opts) {
-    return client.post(
+  public SendMessageResponse send(
+      String inboxId, SendMessageRequest body, IdempotentRequestOptions opts) {
+    return postIdempotent(
         "/inboxes/" + pathParam("inboxId", inboxId) + "/messages",
         body,
         SendMessageResponse.class,
-        withIdempotencyKey(opts));
+        opts);
   }
 }

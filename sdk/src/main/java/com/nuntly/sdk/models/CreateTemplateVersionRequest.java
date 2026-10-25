@@ -7,9 +7,10 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.templates().versions().create(CreateTemplateVersionRequest.builder()
- *     .subject("Welcome to Nuntly")
- *     .html("<h1>Welcome!</h1>")
+ * var response = nuntly.templates().versions().create("tpl_01kabn43yqyxn2bx4ve84mczd3", CreateTemplateVersionRequest.builder()
+ *     .subject("Verify your email address")
+ *     .html("<h1>Welcome</h1><p>Thank you for signing up! Please verify your email address.</p>")
+ *     .text("Thank you for signing up! Please verify your email address.")
  *     .build());
  * }</pre>
  *

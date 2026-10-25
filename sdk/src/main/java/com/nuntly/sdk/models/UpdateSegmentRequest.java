@@ -4,8 +4,8 @@ package com.nuntly.sdk.models;
  *
  *
  * <pre>{@code
- * var result = nuntly.segments().update(UpdateSegmentRequest.builder()
- *     .name("example.com")
+ * var response = nuntly.segments().update("seg_01kabn43yqyxn2bx4ve84mczd3", UpdateSegmentRequest.builder()
+ *     .name("vip customers")
  *     .build());
  * }</pre>
  *

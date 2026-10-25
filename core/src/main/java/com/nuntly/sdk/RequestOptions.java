@@ -4,13 +4,14 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Options of one call, taken by every resource method except those that take {@link
+ * IdempotentRequestOptions}.
+ */
 public record RequestOptions(
-    Optional<Duration> timeout,
-    Optional<Integer> maxRetries,
-    Map<String, String> headers,
-    Optional<String> idempotencyKey) {
+    Optional<Duration> timeout, Optional<Integer> maxRetries, Map<String, String> headers) {
   public static RequestOptions none() {
-    return new RequestOptions(Optional.empty(), Optional.empty(), Map.of(), Optional.empty());
+    return new RequestOptions(Optional.empty(), Optional.empty(), Map.of());
   }
 
   public static Builder builder() {
@@ -21,8 +22,13 @@ public record RequestOptions(
     private Duration timeout;
     private Integer maxRetries;
     private Map<String, String> headers = Map.of();
-    private String idempotencyKey;
 
+    /**
+     * Timeout of each attempt of this call, in place of the client timeout. {@link Duration#ZERO}
+     * sets none for the attempt; opening a connection still follows the client timeout, which the
+     * HTTP client applies to every call. A negative one throws {@link NuntlyError} when the call is
+     * made.
+     */
     public Builder timeout(Duration timeout) {
       this.timeout = timeout;
       return this;
@@ -38,22 +44,9 @@ public record RequestOptions(
       return this;
     }
 
-    /**
-     * Set an explicit idempotency key for endpoints that support server-side deduplication. When
-     * omitted, the SDK auto-generates a UUID v4 for {@code emails().send()} and {@code
-     * emails().bulk().send()} so transient retries replay safely without duplicate sends.
-     */
-    public Builder idempotencyKey(String idempotencyKey) {
-      this.idempotencyKey = idempotencyKey;
-      return this;
-    }
-
     public RequestOptions build() {
       return new RequestOptions(
-          Optional.ofNullable(timeout),
-          Optional.ofNullable(maxRetries),
-          headers,
-          Optional.ofNullable(idempotencyKey));
+          Optional.ofNullable(timeout), Optional.ofNullable(maxRetries), headers);
     }
   }
 }

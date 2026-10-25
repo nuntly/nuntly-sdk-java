@@ -15,16 +15,25 @@ public final class MessagesContent extends Resource {
    * content of a message. Only HTML is returned by default.
    */
   public MessageContent retrieve(String messageId, MessagesContentRetrieveParams params) {
+    return retrieve(messageId, params, RequestOptions.none());
+  }
+
+  public MessageContent retrieve(
+      String messageId, MessagesContentRetrieveParams params, RequestOptions opts) {
     var query = new HashMap<String, Object>();
     if (params.format() != null) query.put("format", params.format());
     return client.get(
         "/messages/" + pathParam("messageId", messageId) + "/content",
         MessageContent.class,
         query,
-        RequestOptions.none());
+        opts);
   }
 
   public MessageContent retrieve(String messageId) {
     return retrieve(messageId, MessagesContentRetrieveParams.builder().build());
+  }
+
+  public MessageContent retrieve(String messageId, RequestOptions opts) {
+    return retrieve(messageId, MessagesContentRetrieveParams.builder().build(), opts);
   }
 }

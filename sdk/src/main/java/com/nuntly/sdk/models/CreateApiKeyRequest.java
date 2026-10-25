@@ -7,8 +7,8 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.apiKeys().create(CreateApiKeyRequest.builder()
- *     .permission(CreateApiKeyRequestPermission.FULL_ACCESS)
+ * var response = nuntly.apiKeys().create(CreateApiKeyRequest.builder()
+ *     .name("Production")
  *     .build());
  * }</pre>
  *
@@ -20,7 +20,7 @@ import java.util.Optional;
 public record CreateApiKeyRequest(
     Optional<String> name,
     Optional<ApiKeyStatus> status,
-    CreateApiKeyRequestPermission permission,
+    Optional<CreateApiKeyRequestPermission> permission,
     List<String> domainIds) {
 
   public static Builder builder() {
@@ -59,7 +59,10 @@ public record CreateApiKeyRequest(
 
     public CreateApiKeyRequest build() {
       return new CreateApiKeyRequest(
-          Optional.ofNullable(name), Optional.ofNullable(status), permission, domainIds);
+          Optional.ofNullable(name),
+          Optional.ofNullable(status),
+          Optional.ofNullable(permission),
+          domainIds);
     }
   }
 }

@@ -9,7 +9,8 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.broadcasts().update(UpdateBroadcastRequest.builder()
+ * var response = nuntly.broadcasts().update("bc_01kabn43yqyxn2bx4ve84mczd3", UpdateBroadcastRequest.builder()
+ *     .name("October newsletter")
  *     .build());
  * }</pre>
  *

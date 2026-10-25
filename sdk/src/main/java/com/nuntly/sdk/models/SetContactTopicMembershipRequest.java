@@ -4,7 +4,7 @@ package com.nuntly.sdk.models;
  *
  *
  * <pre>{@code
- * var result = nuntly.contacts().topics().update(SetContactTopicMembershipRequest.builder()
+ * var response = nuntly.contacts().topics().update("ct_01kabn43yqyxn2bx4ve84mczd3", "tpc_01kabn43yqyxn2bx4ve84mczd3", SetContactTopicMembershipRequest.builder()
  *     .state(TopicMembershipState.SUBSCRIBED)
  *     .build());
  * }</pre>

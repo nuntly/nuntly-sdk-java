@@ -66,7 +66,7 @@ System.out.println(email.id());
 var nuntly = Nuntly.create(ClientOptions.builder()
     .apiKey(System.getenv("NUNTLY_API_KEY"))
     .baseUrl("https://api.nuntly.com")       // optional
-    .timeout(Duration.ofSeconds(30))          // optional, default: 60s
+    .timeout(Duration.ofSeconds(30))          // optional, default: 60s, Duration.ZERO for none
     .maxRetries(3)                            // optional, default: 2
     .backoff(BackoffStrategy.builder()        // optional
         .initialIntervalMs(200)
@@ -82,11 +82,35 @@ var nuntly = Nuntly.create(ClientOptions.builder()
 A failed request is retried up to `maxRetries` times (2 by default) on a 408, a 429, a 500, a 502, a 503, a 504 or an `IOException` (connection reset, timeout). The first retry waits 375 to 500 ms and each later one twice as long, up to 8 s (`BackoffStrategy.DEFAULT`: 500 ms initial interval, exponent 2, jitter that shortens each delay to 75% to 100% of it).
 
 - A 409 is retried only when the API sends `x-should-retry: true`, as on `idempotency_key_in_progress`: the first attempt of a keyed send still holds the key, and the retry gets its stored response. Any other conflict, such as `contact_already_exists`, does not resolve on its own.
-- A `POST` is retried only on a 429 unless it carries an `Idempotency-Key`, so a retry cannot create a duplicate. `emails().send()`, `emails().bulk().send()`, `messages().reply()`, `messages().forward()`, `inboxes().messages().send()`, `inboxes().create()`, `broadcasts().create()` and `broadcasts().send()` generate one when you pass none.
+- A `POST` or a `PATCH` is retried only on a 429, so a retry cannot create a duplicate. The exception is the methods the API deduplicates by `Idempotency-Key`: `emails().send()`, `emails().bulk().send()`, `messages().reply()`, `messages().forward()`, `inboxes().messages().send()`, `inboxes().create()`, `broadcasts().create()` and `broadcasts().send()` send your key or generate one, and are also retried on a 408, a 5xx or an `IOException`. An `Idempotency-Key` header on another request does not change its retries.
 - A server-sent `x-should-retry: true|false` overrides these rules. A `Retry-After` (seconds, decimals allowed, or an HTTP-date) on any response replaces the backoff delay; above 60 s the SDK does not wait and throws the error for that response at once, with `RateLimitError.retryAfter()` set on a 429.
 - An exception thrown by a hook is never retried.
 
 Call `disableRetry()` on the builder to turn retries off.
+
+### Per-request options
+
+Every resource method has an overload that takes a `RequestOptions` as its last argument, to change the timeout, the maximum retries or the headers of one call:
+
+```java
+var email = nuntly.emails().retrieve("em_01k8a1b2c3", RequestOptions.builder()
+    .timeout(Duration.ofSeconds(10))
+    .maxRetries(0)
+    .headers(Map.of("X-Trace-Id", "checkout-1042"))
+    .build());
+```
+
+### Idempotency keys
+
+The methods whose endpoint deduplicates by key take an `IdempotentRequestOptions` instead, with the same settings and the key. Pass your own key to deduplicate across processes:
+
+```java
+var email = nuntly.emails().send(request, IdempotentRequestOptions.builder()
+    .idempotencyKey("order-1042-confirmation")
+    .build());
+```
+
+No other method takes an idempotency key: the API would ignore it.
 
 ## Pagination
 
@@ -156,6 +180,8 @@ try {
 
 Every `ApiError` exposes `status()`, `code()` (for example `invalid_body`), `title()`, `details()`, `headers()`, `requestId()` and `rawResponse()`. When the body is not the API error JSON, such as a proxy's HTML page, `code()` is `unknown` and `title()` holds its first 200 characters.
 
+A 2xx response whose body is empty or not a JSON object, such as a captive portal page, throws a plain `NuntlyError`: the API may have applied the request, so check before sending it again.
+
 ## Lifecycle hooks
 
 ```java
@@ -169,6 +195,8 @@ var nuntly = Nuntly.create(ClientOptions.builder()
         .build())
     .build());
 ```
+
+For one request, the hooks run in this order: `onRequest` before every attempt, `onRetry` before each retry, `onResponse` once on the final response, then `onSuccess` on a 2xx or `onError`. The request a hook receives, also through `response.request()` and `ApiError.rawResponse().request()`, carries `Authorization: Bearer [redacted]`, and `ClientOptions.toString()` hides the key: no hook argument, log line or error carries the API key.
 
 ## Raw response access
 

@@ -6,7 +6,8 @@ import java.util.List;
  *
  *
  * <pre>{@code
- * var result = nuntly.messages().update(UpdateMessageRequest.builder()
+ * var response = nuntly.messages().update("imsg_01kabn43yqyxn2bx4ve84mczd3", UpdateMessageRequest.builder()
+ *     .addLabels(List.of("urgent"))
  *     .build());
  * }</pre>
  *

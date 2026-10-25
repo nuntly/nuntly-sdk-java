@@ -16,6 +16,11 @@ public final class ThreadsMessages extends Resource {
    */
   public CursorPage<ThreadMessagesResponseItem> list(
       String threadId, ThreadsMessagesListParams params) {
+    return list(threadId, params, RequestOptions.none());
+  }
+
+  public CursorPage<ThreadMessagesResponseItem> list(
+      String threadId, ThreadsMessagesListParams params, RequestOptions opts) {
     var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
     params.limit().ifPresent(v -> query.put("limit", v));
@@ -23,10 +28,14 @@ public final class ThreadsMessages extends Resource {
         "/threads/" + pathParam("threadId", threadId) + "/messages",
         ThreadMessagesResponseItem.class,
         query,
-        RequestOptions.none());
+        opts);
   }
 
   public CursorPage<ThreadMessagesResponseItem> list(String threadId) {
     return list(threadId, ThreadsMessagesListParams.builder().build());
+  }
+
+  public CursorPage<ThreadMessagesResponseItem> list(String threadId, RequestOptions opts) {
+    return list(threadId, ThreadsMessagesListParams.builder().build(), opts);
   }
 }

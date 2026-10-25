@@ -6,7 +6,8 @@ import com.nuntly.sdk.JsonNullable;
  *
  *
  * <pre>{@code
- * var result = nuntly.inboxes().update(UpdateInboxRequest.builder()
+ * var response = nuntly.inboxes().update("ibx_01kabn43yqyxn2bx4ve84mczd3", UpdateInboxRequest.builder()
+ *     .name("Support team")
  *     .build());
  * }</pre>
  *

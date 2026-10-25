@@ -15,10 +15,12 @@ public final class EmailsEvents extends Resource {
    * opened, clicked or bounced. The list is not paginated.
    */
   public List<EmailEventsResponseItem> list(String id) {
+    return list(id, RequestOptions.none());
+  }
+
+  public List<EmailEventsResponseItem> list(String id, RequestOptions opts) {
     return List.of(
         client.get(
-            "/emails/" + pathParam("id", id) + "/events",
-            EmailEventsResponseItem[].class,
-            RequestOptions.none()));
+            "/emails/" + pathParam("id", id) + "/events", EmailEventsResponseItem[].class, opts));
   }
 }

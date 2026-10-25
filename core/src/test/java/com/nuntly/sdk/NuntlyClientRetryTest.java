@@ -114,11 +114,39 @@ class NuntlyClientRetryTest {
   }
 
   @Test
-  void retriesAKeyedPostOn503WithTheSameKey() throws IOException {
+  void retriesAKeyedIdempotentPostOn503WithTheSameKey() throws IOException {
     var nuntly = serve(call -> new Reply(call == 1 ? 503 : 202, Map.of()));
 
-    nuntly.post("/emails", Map.of(), Object.class, withKey("send-2026-10-21"));
+    nuntly.postIdempotent(
+        "/emails",
+        Map.of(),
+        Object.class,
+        IdempotentRequestOptions.builder().idempotencyKey("send-2026-10-21").build());
     assertEquals(List.of("send-2026-10-21", "send-2026-10-21"), idempotencyKeys);
+  }
+
+  @Test
+  void doesNotRetryAPostOn503ForACallerKeyHeaderAlone() throws IOException {
+    var nuntly = serve(call -> new Reply(503, Map.of()));
+
+    assertThrows(
+        ApiError.InternalServerError.class,
+        () -> nuntly.post("/domains", Map.of(), Object.class, withKey("domain-2026-10-25")));
+    assertEquals(1, idempotencyKeys.size());
+  }
+
+  @Test
+  void sendsTheKeyOfIdempotentOptionsOrAGeneratedOne() throws IOException {
+    var nuntly = serve(call -> new Reply(202, Map.of()));
+
+    nuntly.postIdempotent(
+        "/emails",
+        Map.of(),
+        Object.class,
+        IdempotentRequestOptions.builder().idempotencyKey("send-2026-10-25").build());
+    nuntly.postIdempotent("/emails", Map.of(), Object.class, IdempotentRequestOptions.none());
+    assertEquals("send-2026-10-25", idempotencyKeys.get(0));
+    assertEquals(36, idempotencyKeys.get(1).length());
   }
 
   @Test
@@ -132,11 +160,13 @@ class NuntlyClientRetryTest {
   }
 
   @Test
-  void retriesAKeyedPatchOn503WithTheSameKey() throws IOException {
-    var nuntly = serve(call -> new Reply(call == 1 ? 503 : 200, Map.of()));
+  void doesNotRetryAKeyedPatchOn503() throws IOException {
+    var nuntly = serve(call -> new Reply(503, Map.of()));
 
-    nuntly.patch("/domains/dns_1", Map.of(), Object.class, withKey("patch-2026-10-24"));
-    assertEquals(List.of("patch-2026-10-24", "patch-2026-10-24"), idempotencyKeys);
+    assertThrows(
+        ApiError.InternalServerError.class,
+        () -> nuntly.patch("/domains/dns_1", Map.of(), Object.class, withKey("patch-2026-10-24")));
+    assertEquals(1, idempotencyKeys.size());
   }
 
   @Test

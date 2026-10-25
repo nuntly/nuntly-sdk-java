@@ -6,7 +6,8 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.templates().update(UpdateTemplateRequest.builder()
+ * var response = nuntly.templates().update("tpl_01kabn43yqyxn2bx4ve84mczd3", UpdateTemplateRequest.builder()
+ *     .name("Welcome email")
  *     .build());
  * }</pre>
  *

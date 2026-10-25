@@ -6,8 +6,8 @@ import java.util.Optional;
  *
  *
  * <pre>{@code
- * var result = nuntly.inboxes().create(CreateInboxRequest.builder()
- *     .address("jane@example.com")
+ * var response = nuntly.inboxes().create(CreateInboxRequest.builder()
+ *     .address("support")
  *     .build());
  * }</pre>
  *
