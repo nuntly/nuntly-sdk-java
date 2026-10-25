@@ -38,9 +38,9 @@ public final class Contacts extends Resource {
 
   /** List the organization contacts. */
   public CursorPage<ContactsResponseItem> list(ContactsListParams params) {
-    var query = new HashMap<String, String>();
+    var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
-    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.limit().ifPresent(v -> query.put("limit", v));
     return client.list("/contacts", ContactsResponseItem.class, query, RequestOptions.none());
   }
 

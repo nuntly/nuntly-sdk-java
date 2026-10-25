@@ -6,7 +6,7 @@ import java.util.Optional;
  * Query parameters of {@code nuntly.inboxes().list(...)}.
  *
  * @param cursor The cursor to retrieve the next page of results
- * @param limit The maximum number of results to return
+ * @param limit The maximum number of results to return, from 1 to 30. Defaults to 30.
  * @param namespaceId Filter by namespace.
  */
 public record InboxesListParams(
@@ -26,7 +26,7 @@ public record InboxesListParams(
       return this;
     }
 
-    /** The maximum number of results to return */
+    /** The maximum number of results to return, from 1 to 30. Defaults to 30. */
     public Builder limit(Integer limit) {
       this.limit = limit;
       return this;

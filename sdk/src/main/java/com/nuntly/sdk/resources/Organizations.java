@@ -22,9 +22,9 @@ public final class Organizations extends Resource {
    * is paginated with a cursor like other list endpoints.
    */
   public CursorPage<OrganizationsResponseItem> list(OrganizationsListParams params) {
-    var query = new HashMap<String, String>();
+    var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
-    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.limit().ifPresent(v -> query.put("limit", v));
     return client.list(
         "/organizations", OrganizationsResponseItem.class, query, RequestOptions.none());
   }

@@ -19,15 +19,10 @@ public final class InboxesMessages extends Resource {
   }
 
   public SendMessageResponse send(String inboxId, SendMessageRequest body, RequestOptions opts) {
-    var idempotencyKey = opts.idempotencyKey().orElse(UUID.randomUUID().toString());
-    var headers = new HashMap<String, String>(opts.headers());
-    headers.putIfAbsent("Idempotency-Key", idempotencyKey);
-    var optsWithKey =
-        new RequestOptions(opts.timeout(), opts.maxRetries(), headers, Optional.of(idempotencyKey));
     return client.post(
         "/inboxes/" + pathParam("inboxId", inboxId) + "/messages",
         body,
         SendMessageResponse.class,
-        optsWithKey);
+        withIdempotencyKey(opts));
   }
 }

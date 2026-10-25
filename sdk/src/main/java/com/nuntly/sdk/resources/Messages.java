@@ -33,16 +33,11 @@ public final class Messages extends Resource {
 
   public SendMessageResponse forward(
       String messageId, ForwardMessageRequest body, RequestOptions opts) {
-    var idempotencyKey = opts.idempotencyKey().orElse(UUID.randomUUID().toString());
-    var headers = new HashMap<String, String>(opts.headers());
-    headers.putIfAbsent("Idempotency-Key", idempotencyKey);
-    var optsWithKey =
-        new RequestOptions(opts.timeout(), opts.maxRetries(), headers, Optional.of(idempotencyKey));
     return client.post(
         "/messages/" + pathParam("messageId", messageId) + "/forward",
         body,
         SendMessageResponse.class,
-        optsWithKey);
+        withIdempotencyKey(opts));
   }
 
   /**
@@ -50,9 +45,9 @@ public final class Messages extends Resource {
    * Each item includes its labels, status and attachment count.
    */
   public CursorPage<MessagesResponseItem> list(MessagesListParams params) {
-    var query = new HashMap<String, String>();
+    var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
-    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.limit().ifPresent(v -> query.put("limit", v));
     params.domainId().ifPresent(v -> query.put("domainId", v));
     params.from().ifPresent(v -> query.put("from", v));
     return client.list("/messages", MessagesResponseItem.class, query, RequestOptions.none());
@@ -72,16 +67,11 @@ public final class Messages extends Resource {
 
   public SendMessageResponse reply(
       String messageId, ReplyMessageRequest body, RequestOptions opts) {
-    var idempotencyKey = opts.idempotencyKey().orElse(UUID.randomUUID().toString());
-    var headers = new HashMap<String, String>(opts.headers());
-    headers.putIfAbsent("Idempotency-Key", idempotencyKey);
-    var optsWithKey =
-        new RequestOptions(opts.timeout(), opts.maxRetries(), headers, Optional.of(idempotencyKey));
     return client.post(
         "/messages/" + pathParam("messageId", messageId) + "/reply",
         body,
         SendMessageResponse.class,
-        optsWithKey);
+        withIdempotencyKey(opts));
   }
 
   /**

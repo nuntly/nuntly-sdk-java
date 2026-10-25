@@ -12,16 +12,11 @@ public final class ContactsTopics extends Resource {
 
   /** List a contact's subscription state per topic. */
   public List<ContactTopicMembershipsResponseItem> list(String contactId) {
-    var response =
-        client.rawRequest(
-            "GET",
+    return List.of(
+        client.get(
             "/contacts/" + pathParam("contactId", contactId) + "/topics",
-            null,
-            RequestOptions.none());
-    var json = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
-    var items =
-        client.gson().fromJson(json.get("data"), ContactTopicMembershipsResponseItem[].class);
-    return List.of(items);
+            ContactTopicMembershipsResponseItem[].class,
+            RequestOptions.none()));
   }
 
   /** Subscribe or unsubscribe a contact from a topic. */

@@ -15,15 +15,11 @@ public final class MessagesAttachments extends Resource {
    * content id. Download links are not included.
    */
   public List<AttachmentResponse> list(String messageId) {
-    var response =
-        client.rawRequest(
-            "GET",
+    return List.of(
+        client.get(
             "/messages/" + pathParam("messageId", messageId) + "/attachments",
-            null,
-            RequestOptions.none());
-    var json = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
-    var items = client.gson().fromJson(json.get("data"), AttachmentResponse[].class);
-    return List.of(items);
+            AttachmentResponse[].class,
+            RequestOptions.none()));
   }
 
   /**

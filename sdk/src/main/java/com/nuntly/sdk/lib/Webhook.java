@@ -1,8 +1,10 @@
 package com.nuntly.sdk.lib;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.nuntly.sdk.NuntlyClient;
 import com.nuntly.sdk.models.UnknownWebhookEvent;
 import com.nuntly.sdk.models.WebhookEvent;
 import java.nio.charset.StandardCharsets;
@@ -45,13 +47,8 @@ import javax.crypto.spec.SecretKeySpec;
 public final class Webhook {
   static final Duration DEFAULT_TOLERANCE = Duration.ofMinutes(5);
   private static final String SECRET_PREFIX = "whsec_";
-  // Optional adapter is mandatory: webhook event records can contain
-  // Optional<T> fields, and Gson's reflective fallback fails on JDK 17+
-  // ("module java.base does not opens java.util to unnamed module").
-  private static final Gson GSON =
-      new GsonBuilder()
-          .registerTypeAdapterFactory(new com.nuntly.sdk.OptionalTypeAdapterFactory())
-          .create();
+  // An event decodes like an API response, with the same adapters (Optional, JsonNullable).
+  static final Gson GSON = NuntlyClient.defaultGson();
 
   private Webhook() {}
 
@@ -123,7 +120,18 @@ public final class Webhook {
       throw new WebhookVerificationError("Webhook signature verification failed");
     }
 
-    return parseEvent(payload);
+    return decode(payload, GSON);
+  }
+
+  // Only a malformed payload (JsonSyntaxException, also Gson's report of a wrong token type) is a
+  // verification error. Anything else, JsonIOException included, is an SDK or setup bug and stays
+  // visible as is.
+  static WebhookEvent decode(String payload, Gson gson) {
+    try {
+      return parseEvent(payload, gson);
+    } catch (JsonSyntaxException e) {
+      throw new WebhookVerificationError("Invalid webhook payload", e);
+    }
   }
 
   private static boolean withinTolerance(long now, long ts, Duration tolerance) {
@@ -151,24 +159,30 @@ public final class Webhook {
         a.getBytes(StandardCharsets.UTF_8), b.getBytes(StandardCharsets.UTF_8));
   }
 
-  private static WebhookEvent parseEvent(String payload) {
-    var json = JsonParser.parseString(payload).getAsJsonObject();
-    var type =
-        json.has("type") && !json.get("type").isJsonNull() ? json.get("type").getAsString() : null;
+  private static WebhookEvent parseEvent(String payload, Gson gson) {
+    var root = JsonParser.parseString(payload);
+    if (!root.isJsonObject()) throw new JsonSyntaxException("Webhook payload is not a JSON object");
+    var json = root.getAsJsonObject();
+    var type = stringField(json, "type");
     var recordClass = type != null ? WebhookEventRecords.BY_TYPE.get(type) : null;
     if (recordClass != null) {
-      return GSON.fromJson(json, recordClass);
+      return gson.fromJson(json, recordClass);
     }
     // Unknown event type: keep forward-compatibility by returning the raw shape.
-    var id = json.has("id") && !json.get("id").isJsonNull() ? json.get("id").getAsString() : null;
-    var createdAt =
-        json.has("createdAt") && !json.get("createdAt").isJsonNull()
-            ? json.get("createdAt").getAsString()
-            : null;
     var data =
         json.has("data") && json.get("data").isJsonObject()
             ? json.get("data").getAsJsonObject()
-            : new com.google.gson.JsonObject();
-    return new UnknownWebhookEvent(id, createdAt, type, data);
+            : new JsonObject();
+    return new UnknownWebhookEvent(
+        stringField(json, "id"), stringField(json, "createdAt"), type, data);
+  }
+
+  private static String stringField(JsonObject json, String name) {
+    var value = json.get(name);
+    if (value == null || value.isJsonNull()) return null;
+    if (!value.isJsonPrimitive()) {
+      throw new JsonSyntaxException("Webhook event " + name + " is not a string");
+    }
+    return value.getAsString();
   }
 }

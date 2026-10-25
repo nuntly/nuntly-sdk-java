@@ -21,9 +21,9 @@ public final class WebhooksEvents extends Resource {
    * status and payload. Results use cursor pagination.
    */
   public CursorPage<WebhookEventsResponseItem> list(WebhooksEventsListParams params) {
-    var query = new HashMap<String, String>();
+    var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
-    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.limit().ifPresent(v -> query.put("limit", v));
     return client.list(
         "/webhooks/events", WebhookEventsResponseItem.class, query, RequestOptions.none());
   }

@@ -47,6 +47,11 @@ public record Hooks(
       return this;
     }
 
+    /**
+     * Called with the error a request fails with, before it is thrown. Anything the hook throws,
+     * other than that error itself or a {@link VirtualMachineError}, is added to it as suppressed:
+     * the caller still receives the original error.
+     */
     public Builder onError(BiConsumer<Throwable, HttpRequest> hook) {
       this.onError = hook;
       return this;

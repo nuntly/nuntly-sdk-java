@@ -49,9 +49,9 @@ public final class Emails extends Resource {
    * sender, recipients, subject, status and submission date.
    */
   public CursorPage<EmailsResponseItem> list(EmailsListParams params) {
-    var query = new HashMap<String, String>();
+    var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
-    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.limit().ifPresent(v -> query.put("limit", v));
     return client.list("/emails", EmailsResponseItem.class, query, RequestOptions.none());
   }
 
@@ -77,11 +77,6 @@ public final class Emails extends Resource {
   }
 
   public CreateEmailResponse send(CreateEmailRequest body, RequestOptions opts) {
-    var idempotencyKey = opts.idempotencyKey().orElse(UUID.randomUUID().toString());
-    var headers = new HashMap<String, String>(opts.headers());
-    headers.putIfAbsent("Idempotency-Key", idempotencyKey);
-    var optsWithKey =
-        new RequestOptions(opts.timeout(), opts.maxRetries(), headers, Optional.of(idempotencyKey));
-    return client.post("/emails", body, CreateEmailResponse.class, optsWithKey);
+    return client.post("/emails", body, CreateEmailResponse.class, withIdempotencyKey(opts));
   }
 }

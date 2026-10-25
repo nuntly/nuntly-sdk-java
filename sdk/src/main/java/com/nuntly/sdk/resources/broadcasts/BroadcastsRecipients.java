@@ -13,9 +13,9 @@ public final class BroadcastsRecipients extends Resource {
   /** List the recipients of a broadcast. */
   public CursorPage<BroadcastRecipientsResponseItem> list(
       String broadcastId, BroadcastsRecipientsListParams params) {
-    var query = new HashMap<String, String>();
+    var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
-    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.limit().ifPresent(v -> query.put("limit", v));
     return client.list(
         "/broadcasts/" + pathParam("broadcastId", broadcastId) + "/recipients",
         BroadcastRecipientsResponseItem.class,

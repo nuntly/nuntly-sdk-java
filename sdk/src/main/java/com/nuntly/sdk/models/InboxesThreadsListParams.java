@@ -6,7 +6,7 @@ import java.util.Optional;
  * Query parameters of {@code nuntly.inboxes().threads().list(...)}.
  *
  * @param cursor The cursor to retrieve the next page of results
- * @param limit The maximum number of results to return
+ * @param limit The maximum number of results to return, from 1 to 30. Defaults to 30.
  * @param labels Comma-separated labels to filter by (AND logic). Threads with spam/trash are
  *     excluded by default unless explicitly requested via ?labels=spam or ?labels=trash.
  */
@@ -27,7 +27,7 @@ public record InboxesThreadsListParams(
       return this;
     }
 
-    /** The maximum number of results to return */
+    /** The maximum number of results to return, from 1 to 30. Defaults to 30. */
     public Builder limit(Integer limit) {
       this.limit = limit;
       return this;

@@ -12,7 +12,8 @@ import java.io.IOException;
 /**
  * Reads a value this SDK version does not know as the enum's {@code UNKNOWN} member, where Gson
  * would read {@code null}, so a value the API adds later does not break a response. Set with
- * {@code @JsonAdapter} on the response enums; {@code UNKNOWN} is never sent.
+ * {@code @JsonAdapter} on the response enums; {@code UNKNOWN} is written as {@code null}, so a
+ * field holding it is left out of a request.
  */
 public final class OpenEnumTypeAdapterFactory implements TypeAdapterFactory {
 
@@ -24,10 +25,10 @@ public final class OpenEnumTypeAdapterFactory implements TypeAdapterFactory {
     return new TypeAdapter<T>() {
       @Override
       public void write(JsonWriter out, T value) throws IOException {
+        // UNKNOWN has no wire value: a response read with one serializes it as null.
         if (value == unknown) {
-          throw new NuntlyError(
-              type.getRawType().getSimpleName()
-                  + ".UNKNOWN is a value read from the API, not one to send.");
+          out.nullValue();
+          return;
         }
         delegate.write(out, value);
       }
@@ -50,6 +51,7 @@ public final class OpenEnumTypeAdapterFactory implements TypeAdapterFactory {
     for (var member : raw.getEnumConstants()) {
       if (((Enum<?>) member).name().equals("UNKNOWN")) return member;
     }
-    throw new IllegalStateException(raw.getName() + " has no UNKNOWN member");
+    // Not IllegalStateException, which Gson reports as a JsonSyntaxException, a payload error.
+    throw new IllegalArgumentException(raw.getName() + " has no UNKNOWN member");
   }
 }

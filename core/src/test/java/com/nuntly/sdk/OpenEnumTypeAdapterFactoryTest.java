@@ -2,7 +2,6 @@ package com.nuntly.sdk;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.JsonAdapter;
@@ -46,8 +45,11 @@ class OpenEnumTypeAdapterFactoryTest {
     assertEquals("\"on\"", GSON.toJson(Status.ON));
   }
 
+  // UNKNOWN has no wire value to write back: a response read with one serializes it as null.
   @Test
-  void refusesToSendUnknown() {
-    assertThrows(NuntlyError.class, () -> GSON.toJson(Status.UNKNOWN));
+  void writesUnknownAsNullWithoutThrowing() {
+    var holder =
+        GSON.fromJson("{\"status\":\"paused\",\"history\":[\"on\",\"archived\"]}", Holder.class);
+    assertEquals("{\"history\":[\"on\",null]}", GSON.toJson(holder));
   }
 }

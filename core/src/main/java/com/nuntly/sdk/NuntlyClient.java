@@ -14,6 +14,7 @@ import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -24,6 +25,8 @@ import java.util.stream.Stream;
 public final class NuntlyClient {
   // 409 is a deterministic business conflict: a retry only adds latency.
   private static final Set<Integer> RETRYABLE_CODES = Set.of(408, 429, 500, 502, 503, 504);
+  private static final Set<String> IDEMPOTENT_METHODS =
+      Set.of("GET", "HEAD", "OPTIONS", "PUT", "DELETE");
   // A longer Retry-After is not waited on: the caller gets that response's error at once.
   private static final long MAX_RETRY_AFTER_MS = 60_000;
   // Optional adapter is mandatory: without it, Gson falls back to reflection
@@ -71,7 +74,7 @@ public final class NuntlyClient {
   }
 
   public <T> T get(String path, Class<T> type, Map<String, ?> query, RequestOptions opts) {
-    var queryPath = query.isEmpty() ? path : path + "?" + encodeQuery(query);
+    var queryPath = withQuery(path, query);
     return unwrap(request("GET", queryPath, null, opts), type);
   }
 
@@ -103,11 +106,11 @@ public final class NuntlyClient {
   /**
    * Issue a paginated GET, decode the response into a {@link CursorPage} of items, and capture the
    * original query so {@link CursorPage#nextPage()} replays the same filters with only the cursor
-   * updated.
+   * updated. Query values are encoded as in {@link #get(String, Class, Map, RequestOptions)}.
    */
   public <T> CursorPage<T> list(
-      String path, Class<T> itemType, Map<String, String> query, RequestOptions opts) {
-    var queryPath = query.isEmpty() ? path : path + "?" + encodeQuery(query);
+      String path, Class<T> itemType, Map<String, ?> query, RequestOptions opts) {
+    var queryPath = withQuery(path, query);
     var response = request("GET", queryPath, null, opts);
     var json = JsonParser.parseString(response.body()).getAsJsonObject();
     @SuppressWarnings("unchecked")
@@ -120,13 +123,19 @@ public final class NuntlyClient {
         java.util.List.of(items),
         next,
         (cursor) -> {
-          var nextQuery = new HashMap<>(query);
+          var nextQuery = new HashMap<String, Object>(query);
           cursor.ifPresent(c -> nextQuery.put("cursor", c));
           return list(path, itemType, nextQuery, opts);
-        });
+        },
+        Optional.ofNullable(query.get("cursor")).map(String::valueOf));
   }
 
   public Gson gson() {
+    return GSON;
+  }
+
+  /** The Gson configuration of every request and response, the instance {@link #gson()} returns. */
+  public static Gson defaultGson() {
     return GSON;
   }
 
@@ -158,9 +167,11 @@ public final class NuntlyClient {
     reqBuilder.method(method, bodyPublisher);
 
     var req = reqBuilder.build();
-    // A POST without Idempotency-Key may already have been applied: only a 429 is safe to replay.
+    // A POST or PATCH without Idempotency-Key may already have been applied: only a 429 is safe
+    // to replay.
     var replaySafe =
-        !method.equals("POST") || req.headers().firstValue("Idempotency-Key").isPresent();
+        IDEMPOTENT_METHODS.contains(method)
+            || req.headers().firstValue("Idempotency-Key").isPresent();
 
     if (options.debug()) {
       System.err.printf("-> %s %s%n", method, uri);
@@ -190,7 +201,11 @@ public final class NuntlyClient {
         var status = response.statusCode();
         // The server can force or forbid a retry; otherwise the status rules apply.
         var retryable =
-            switch (response.headers().firstValue("x-should-retry").orElse("")) {
+            switch (response
+                .headers()
+                .firstValue("x-should-retry")
+                .orElse("")
+                .toLowerCase(Locale.ROOT)) {
               case "true" -> true;
               case "false" -> false;
               default -> RETRYABLE_CODES.contains(status) && (replaySafe || status == 429);
@@ -211,8 +226,7 @@ public final class NuntlyClient {
         }
 
         var error = ApiError.from(response);
-        if (hooks.onError() != null) hooks.onError().accept(error, req);
-        throw error;
+        throw reportError(hooks, error, req);
 
       } catch (IOException e) {
         if (attempt < maxRetries && replaySafe) {
@@ -224,8 +238,7 @@ public final class NuntlyClient {
           } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
             var err = new ConnectionError("Request interrupted", ie);
-            if (hooks.onError() != null) hooks.onError().accept(err, req);
-            throw err;
+            throw reportError(hooks, err, req);
           }
           continue;
         }
@@ -233,17 +246,31 @@ public final class NuntlyClient {
             e instanceof HttpTimeoutException
                 ? new ConnectionError.TimeoutError(e)
                 : new ConnectionError(e.getMessage(), e);
-        if (hooks.onError() != null) hooks.onError().accept(err, req);
-        throw err;
+        throw reportError(hooks, err, req);
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
         var err = new ConnectionError("Request interrupted", e);
-        if (hooks.onError() != null) hooks.onError().accept(err, req);
-        throw err;
+        throw reportError(hooks, err, req);
       }
     }
 
     throw new ConnectionError("Max retries exceeded", null);
+  }
+
+  // The caller gets the original error: a failing hook must not hide why the request failed.
+  private static NuntlyError reportError(Hooks hooks, NuntlyError error, HttpRequest req) {
+    if (hooks.onError() != null) {
+      try {
+        hooks.onError().accept(error, req);
+      } catch (VirtualMachineError fatal) {
+        // Out of memory or stack: the JVM cannot be trusted to go on, so nothing hides it.
+        throw fatal;
+      } catch (Throwable hookError) {
+        // A hook that logs and rethrows the same error must not make addSuppressed throw.
+        if (hookError != error) error.addSuppressed(hookError);
+      }
+    }
+    return error;
   }
 
   static long computeRetryDelay(int attempt, Optional<String> retryAfter, BackoffStrategy backoff) {
@@ -265,23 +292,47 @@ public final class NuntlyClient {
     return GSON.fromJson(json, type);
   }
 
-  // A collection value is sent as repeated keys (format=html&format=text).
-  private String encodeQuery(Map<String, ?> query) {
+  private static String withQuery(String path, Map<String, ?> query) {
+    var encoded = encodeQuery(query);
+    return encoded.isEmpty() ? path : path + "?" + encoded;
+  }
+
+  // A collection value is sent as repeated keys (format=html&format=text); a null one is left out.
+  private static String encodeQuery(Map<String, ?> query) {
     return query.entrySet().stream()
+        .filter(e -> e.getValue() != null)
         .flatMap(
             e -> {
               var key = URLEncoder.encode(e.getKey(), StandardCharsets.UTF_8);
               var values =
                   e.getValue() instanceof Collection<?> c ? c.stream() : Stream.of(e.getValue());
               return values.map(
-                  v -> key + "=" + URLEncoder.encode(queryValue(v), StandardCharsets.UTF_8));
+                  v ->
+                      key
+                          + "="
+                          + URLEncoder.encode(queryValue(e.getKey(), v), StandardCharsets.UTF_8));
             })
         .collect(Collectors.joining("&"));
   }
 
   // An enum goes out as its @SerializedName wire value (html), not its constant name (HTML).
-  private static String queryValue(Object value) {
-    return value instanceof Enum<?> ? GSON.toJsonTree(value).getAsString() : String.valueOf(value);
+  private static String queryValue(String name, Object value) {
+    // Only a list can hold a null here: a null param itself is left out before.
+    if (value == null) throw new NuntlyError("Query param '" + name + "' must not contain null.");
+    if (!(value instanceof Enum<?> member)) return String.valueOf(value);
+    var wire = GSON.toJsonTree(value);
+    // An open enum's UNKNOWN has no wire value.
+    if (wire.isJsonNull()) {
+      throw new NuntlyError(
+          "Query param '"
+              + name
+              + "' cannot send "
+              + member.getDeclaringClass().getSimpleName()
+              + "."
+              + member.name()
+              + ", a value read from the API.");
+    }
+    return wire.getAsString();
   }
 
   private static String detectPlatform() {

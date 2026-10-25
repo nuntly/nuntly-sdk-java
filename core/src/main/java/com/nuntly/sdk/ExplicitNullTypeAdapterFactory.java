@@ -8,15 +8,18 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Map;
 
 /**
  * Writes the JSON {@code null}s a request means to send, while Gson keeps omitting every other null
  * field (serializeNulls = false): {@link JsonNullable#ofNull()}, and a null value in a map marked
- * with {@link MapNullValues}, such as a contact property to remove. Each switches serializeNulls on
- * for that one value only. A null value in any other map, such as an email header, is dropped.
+ * with {@link MapNullValues} (at any depth), such as a contact property to remove. Each switches
+ * serializeNulls on for that one value only. A null value in any other map, such as an email
+ * header, is dropped.
  */
 @SuppressWarnings("unchecked")
 public final class ExplicitNullTypeAdapterFactory implements TypeAdapterFactory {
@@ -79,12 +82,16 @@ public final class ExplicitNullTypeAdapterFactory implements TypeAdapterFactory 
         in.nextNull();
         return JsonNullable.ofNull();
       }
-      return JsonNullable.of(inner.read(in));
+      // The inner adapter can read a non-null token as null (an enum value it does not know).
+      // Absent, not null: copying the record into an update must not clear the field.
+      var value = inner.read(in);
+      return value == null ? JsonNullable.absent() : JsonNullable.of(value);
     }
   }
 
-  // Writes each entry itself so that only a null value is forced out; any other
-  // value keeps Gson's omit-null rule (an absent field nested in it stays absent).
+  // Writes each map, collection and array itself, at any depth, so that only a null in them is
+  // forced out, like JSON.stringify; any other value keeps Gson's omit-null rule
+  // (an absent field of a record nested in it stays absent).
   private static final class NullValuesAdapter extends TypeAdapter<Map<Object, Object>> {
     private final Gson gson;
     private final TypeAdapter<Map<Object, Object>> delegate;
@@ -100,17 +107,30 @@ public final class ExplicitNullTypeAdapterFactory implements TypeAdapterFactory 
         out.nullValue();
         return;
       }
-      out.beginObject();
-      for (var entry : value.entrySet()) {
-        out.name(String.valueOf(entry.getKey()));
-        if (entry.getValue() == null) {
-          writeNull(out);
-        } else {
-          var adapter = (TypeAdapter<Object>) gson.getAdapter(entry.getValue().getClass());
-          adapter.write(out, entry.getValue());
+      writeValue(out, value);
+    }
+
+    private void writeValue(JsonWriter out, Object value) throws IOException {
+      if (value == null) {
+        writeNull(out);
+      } else if (value instanceof Map<?, ?> map) {
+        out.beginObject();
+        for (var entry : map.entrySet()) {
+          out.name(String.valueOf(entry.getKey()));
+          writeValue(out, entry.getValue());
         }
+        out.endObject();
+      } else if (value instanceof Collection<?> items) {
+        out.beginArray();
+        for (var item : items) writeValue(out, item);
+        out.endArray();
+      } else if (value.getClass().isArray()) {
+        out.beginArray();
+        for (int i = 0; i < Array.getLength(value); i++) writeValue(out, Array.get(value, i));
+        out.endArray();
+      } else {
+        ((TypeAdapter<Object>) gson.getAdapter(value.getClass())).write(out, value);
       }
-      out.endObject();
     }
 
     @Override

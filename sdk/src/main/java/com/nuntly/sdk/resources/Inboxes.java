@@ -32,12 +32,7 @@ public final class Inboxes extends Resource {
   }
 
   public InboxResponse create(CreateInboxRequest body, RequestOptions opts) {
-    var idempotencyKey = opts.idempotencyKey().orElse(UUID.randomUUID().toString());
-    var headers = new HashMap<String, String>(opts.headers());
-    headers.putIfAbsent("Idempotency-Key", idempotencyKey);
-    var optsWithKey =
-        new RequestOptions(opts.timeout(), opts.maxRetries(), headers, Optional.of(idempotencyKey));
-    return client.post("/inboxes", body, InboxResponse.class, optsWithKey);
+    return client.post("/inboxes", body, InboxResponse.class, withIdempotencyKey(opts));
   }
 
   /**
@@ -54,9 +49,9 @@ public final class Inboxes extends Resource {
    * filter the results to a single namespace.
    */
   public CursorPage<InboxesResponseItem> list(InboxesListParams params) {
-    var query = new HashMap<String, String>();
+    var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
-    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.limit().ifPresent(v -> query.put("limit", v));
     params.namespaceId().ifPresent(v -> query.put("namespaceId", v));
     return client.list("/inboxes", InboxesResponseItem.class, query, RequestOptions.none());
   }
