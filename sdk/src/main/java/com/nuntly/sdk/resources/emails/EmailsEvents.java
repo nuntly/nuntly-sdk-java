@@ -15,11 +15,10 @@ public final class EmailsEvents extends Resource {
    * opened, clicked or bounced. The list is not paginated.
    */
   public List<EmailEventsResponseItem> list(String id) {
-    var response =
-        client.rawRequest(
-            "GET", "/emails/" + pathParam("id", id) + "/events", null, RequestOptions.none());
-    var json = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
-    var items = client.gson().fromJson(json.get("data"), EmailEventsResponseItem[].class);
-    return List.of(items);
+    return List.of(
+        client.get(
+            "/emails/" + pathParam("id", id) + "/events",
+            EmailEventsResponseItem[].class,
+            RequestOptions.none()));
   }
 }

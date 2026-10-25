@@ -1,10 +1,19 @@
 package com.nuntly.sdk.lib;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonIOException;
+import com.google.gson.annotations.JsonAdapter;
+import com.nuntly.sdk.NuntlyClient;
+import com.nuntly.sdk.OpenEnumTypeAdapterFactory;
 import com.nuntly.sdk.models.EmailDeliveredEvent;
 import com.nuntly.sdk.models.MessageReceivedEvent;
 import com.nuntly.sdk.models.UnknownWebhookEvent;
@@ -186,5 +195,92 @@ class WebhookTest {
     // 120s tolerance: 60s old should pass
     var event = Webhook.verify(PAYLOAD, headerOld, SECRET, Duration.ofSeconds(120));
     assertEquals("email.delivered", event.type());
+  }
+
+  @Test
+  void aSignedPayloadThatIsNotAnEventThrowsWebhookVerificationError() throws Exception {
+    var ts = System.currentTimeMillis() / 1000L;
+    for (var payload :
+        new String[] {
+          "not json{",
+          "[1]",
+          "{\"type\":{}}",
+          "{\"id\":\"evt_1\",\"type\":\"email.delivered\",\"data\":\"em_1\"}",
+          "{\"id\":{},\"type\":\"email.totallyNew\"}"
+        }) {
+      var error =
+          assertThrows(
+              WebhookVerificationError.class,
+              () -> Webhook.verify(payload, header(payload, SECRET, ts), SECRET),
+              payload);
+      assertEquals("Invalid webhook payload", error.getMessage());
+    }
+  }
+
+  // A failure that is not a malformed payload is an SDK bug: it must not read as a bad signature.
+  @Test
+  void aDecodingFailureThatIsNotAParseErrorStaysVisible() {
+    var bug = new IllegalArgumentException("adapter bug");
+    var gson =
+        new GsonBuilder()
+            .registerTypeAdapter(
+                EmailDeliveredEvent.class,
+                (JsonDeserializer<EmailDeliveredEvent>)
+                    (json, type, context) -> {
+                      throw bug;
+                    })
+            .create();
+
+    var thrown = assertThrows(IllegalArgumentException.class, () -> Webhook.decode(PAYLOAD, gson));
+    assertSame(bug, thrown);
+  }
+
+  private static Gson failingWith(java.util.function.Supplier<RuntimeException> failure) {
+    return new GsonBuilder()
+        .registerTypeAdapter(
+            EmailDeliveredEvent.class,
+            (JsonDeserializer<EmailDeliveredEvent>)
+                (json, type, context) -> {
+                  throw failure.get();
+                })
+        .create();
+  }
+
+  // JsonIOException is a JsonParseException, but it reports a Gson setup failure, not the payload.
+  @Test
+  void aGsonIoFailureIsNotReportedAsABadPayload() {
+    assertThrows(
+        JsonIOException.class,
+        () -> Webhook.decode(PAYLOAD, failingWith(() -> new JsonIOException("reflection"))));
+  }
+
+  @JsonAdapter(OpenEnumTypeAdapterFactory.class)
+  enum MisconfiguredStatus {
+    ON
+  }
+
+  record Misconfigured(MisconfiguredStatus status) {}
+
+  // An open enum without UNKNOWN is an SDK bug, which Gson must not turn into a payload error.
+  @Test
+  void anSdkMisconfigurationIsNotReportedAsABadPayload() {
+    var gson =
+        new GsonBuilder()
+            .registerTypeAdapter(
+                EmailDeliveredEvent.class,
+                (JsonDeserializer<EmailDeliveredEvent>)
+                    (json, type, context) -> {
+                      context.deserialize(json, Misconfigured.class);
+                      return null;
+                    })
+            .create();
+
+    var error = assertThrows(RuntimeException.class, () -> Webhook.decode(PAYLOAD, gson));
+    assertFalse(error instanceof WebhookVerificationError, error.toString());
+  }
+
+  @Test
+  void parsesEventsWithTheClientGsonConfiguration() {
+    assertSame(NuntlyClient.defaultGson(), Webhook.GSON);
   }
 }

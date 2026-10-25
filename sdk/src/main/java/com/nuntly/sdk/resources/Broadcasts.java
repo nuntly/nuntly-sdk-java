@@ -23,12 +23,7 @@ public final class Broadcasts extends Resource {
   }
 
   public BroadcastResponse create(CreateBroadcastRequest body, RequestOptions opts) {
-    var idempotencyKey = opts.idempotencyKey().orElse(UUID.randomUUID().toString());
-    var headers = new HashMap<String, String>(opts.headers());
-    headers.putIfAbsent("Idempotency-Key", idempotencyKey);
-    var optsWithKey =
-        new RequestOptions(opts.timeout(), opts.maxRetries(), headers, Optional.of(idempotencyKey));
-    return client.post("/broadcasts", body, BroadcastResponse.class, optsWithKey);
+    return client.post("/broadcasts", body, BroadcastResponse.class, withIdempotencyKey(opts));
   }
 
   /** Delete a draft, scheduled, or failed broadcast. */
@@ -41,9 +36,9 @@ public final class Broadcasts extends Resource {
 
   /** List the organization broadcasts. */
   public CursorPage<BroadcastsResponseItem> list(BroadcastsListParams params) {
-    var query = new HashMap<String, String>();
+    var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
-    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.limit().ifPresent(v -> query.put("limit", v));
     return client.list("/broadcasts", BroadcastsResponseItem.class, query, RequestOptions.none());
   }
 
@@ -71,16 +66,11 @@ public final class Broadcasts extends Resource {
 
   public SendBroadcastResponse send(
       String broadcastId, SendBroadcastRequest body, RequestOptions opts) {
-    var idempotencyKey = opts.idempotencyKey().orElse(UUID.randomUUID().toString());
-    var headers = new HashMap<String, String>(opts.headers());
-    headers.putIfAbsent("Idempotency-Key", idempotencyKey);
-    var optsWithKey =
-        new RequestOptions(opts.timeout(), opts.maxRetries(), headers, Optional.of(idempotencyKey));
     return client.post(
         "/broadcasts/" + pathParam("broadcastId", broadcastId) + "/send",
         body,
         SendBroadcastResponse.class,
-        optsWithKey);
+        withIdempotencyKey(opts));
   }
 
   /** Edit a draft or scheduled broadcast. */

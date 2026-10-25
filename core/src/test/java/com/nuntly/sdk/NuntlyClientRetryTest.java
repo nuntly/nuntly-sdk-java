@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.time.Duration;
@@ -120,6 +121,132 @@ class NuntlyClientRetryTest {
     assertEquals(List.of("send-2026-10-21", "send-2026-10-21"), idempotencyKeys);
   }
 
+  @Test
+  void doesNotRetryAnUnkeyedPatchOn503() throws IOException {
+    var nuntly = serve(call -> new Reply(503, Map.of()));
+
+    assertThrows(
+        ApiError.InternalServerError.class,
+        () -> nuntly.patch("/domains/dns_1", Map.of(), Object.class, RequestOptions.none()));
+    assertEquals(1, idempotencyKeys.size());
+  }
+
+  @Test
+  void retriesAKeyedPatchOn503WithTheSameKey() throws IOException {
+    var nuntly = serve(call -> new Reply(call == 1 ? 503 : 200, Map.of()));
+
+    nuntly.patch("/domains/dns_1", Map.of(), Object.class, withKey("patch-2026-10-24"));
+    assertEquals(List.of("patch-2026-10-24", "patch-2026-10-24"), idempotencyKeys);
+  }
+
+  @Test
+  void retriesAnUnkeyedPutAndDeleteOn503() throws IOException {
+    var nuntly = serve(call -> new Reply(call % 2 == 1 ? 503 : 200, Map.of()));
+
+    nuntly.put("/domains/dns_1", Map.of(), Object.class, RequestOptions.none());
+    nuntly.delete("/domains/dns_1", Object.class, RequestOptions.none());
+    assertEquals(4, idempotencyKeys.size());
+  }
+
+  @Test
+  void aThrowingOnErrorHookKeepsTheOriginalApiError() throws IOException {
+    var hookFailure = new IllegalStateException("hook failed");
+    var nuntly =
+        serve(
+            call -> new Reply(404, Map.of()),
+            Hooks.builder()
+                .onError(
+                    (error, req) -> {
+                      throw hookFailure;
+                    })
+                .build());
+
+    var error =
+        assertThrows(
+            ApiError.NotFoundError.class,
+            () -> nuntly.get("/emails/em_1", Object.class, RequestOptions.none()));
+    assertEquals(List.of(hookFailure), List.of(error.getSuppressed()));
+  }
+
+  @Test
+  void aThrowingOnErrorHookKeepsTheOriginalConnectionError() throws IOException {
+    var hookFailure = new IllegalStateException("hook failed");
+    var nuntly =
+        dropConnections(
+            new AtomicInteger(),
+            Hooks.builder()
+                .onError(
+                    (error, req) -> {
+                      throw hookFailure;
+                    })
+                .build());
+
+    var error =
+        assertThrows(
+            ConnectionError.class,
+            () -> nuntly.post("/domains", Map.of(), Object.class, RequestOptions.none()));
+    assertEquals(List.of(hookFailure), List.of(error.getSuppressed()));
+  }
+
+  @Test
+  void anOnErrorHookThatRethrowsTheErrorThrowsItUnchanged() throws IOException {
+    var nuntly =
+        serve(
+            call -> new Reply(404, Map.of()),
+            Hooks.builder()
+                .onError(
+                    (error, req) -> {
+                      throw (RuntimeException) error;
+                    })
+                .build());
+
+    var error =
+        assertThrows(
+            ApiError.NotFoundError.class,
+            () -> nuntly.get("/emails/em_1", Object.class, RequestOptions.none()));
+    assertEquals(0, error.getSuppressed().length);
+  }
+
+  @Test
+  void aVirtualMachineErrorFromTheOnErrorHookIsNotSwallowed() throws IOException {
+    var nuntly =
+        serve(
+            call -> new Reply(404, Map.of()),
+            Hooks.builder()
+                .onError(
+                    (error, req) -> {
+                      throw new StackOverflowError("hook overflow");
+                    })
+                .build());
+
+    var fatal =
+        assertThrows(
+            StackOverflowError.class,
+            () -> nuntly.get("/emails/em_1", Object.class, RequestOptions.none()));
+    // Rethrown untouched: HotSpot can share one preallocated instance of such an error.
+    assertEquals(0, fatal.getSuppressed().length);
+  }
+
+  @Test
+  void anOnErrorHookThatThrowsAnErrorKeepsTheOriginalError() throws IOException {
+    var hookFailure = new AssertionError("hook assertion");
+    var nuntly =
+        serve(
+            call -> new Reply(404, Map.of()),
+            Hooks.builder()
+                .onError(
+                    (error, req) -> {
+                      throw hookFailure;
+                    })
+                .build());
+
+    var error =
+        assertThrows(
+            ApiError.NotFoundError.class,
+            () -> nuntly.get("/emails/em_1", Object.class, RequestOptions.none()));
+    assertEquals(List.of(hookFailure), List.of(error.getSuppressed()));
+  }
+
   // Accepts each connection and closes it before any response, so the client gets an IOException.
   private NuntlyClient dropConnections(AtomicInteger accepted) throws IOException {
     return dropConnections(
@@ -153,6 +280,23 @@ class NuntlyClientRetryTest {
         ConnectionError.class,
         () -> nuntly.post("/domains", Map.of(), Object.class, RequestOptions.none()));
     assertEquals(1, accepted.get());
+    assertEquals(0, retries.get());
+  }
+
+  // Even a refused connection is not replayed for an unkeyed POST, as in TypeScript.
+  @Test
+  void doesNotRetryAConnectExceptionOnAnUnkeyedPost() throws IOException {
+    int port;
+    try (var closed = new ServerSocket(0)) {
+      port = closed.getLocalPort();
+    }
+    var nuntly = client("http://127.0.0.1:" + port);
+
+    var error =
+        assertThrows(
+            ConnectionError.class,
+            () -> nuntly.post("/domains", Map.of(), Object.class, RequestOptions.none()));
+    assertTrue(error.getCause() instanceof ConnectException, "cause was " + error.getCause());
     assertEquals(0, retries.get());
   }
 
@@ -227,5 +371,19 @@ class NuntlyClientRetryTest {
       var delay = NuntlyClient.computeRetryDelay(1, Optional.empty(), backoff);
       assertTrue(delay >= 1500 && delay <= 2000, "delay was " + delay);
     }
+  }
+
+  @Test
+  void honorsXShouldRetryWhateverItsCase() throws IOException {
+    var nuntly = serve(call -> new Reply(call == 1 ? 400 : 200, Map.of("X-Should-Retry", "TRUE")));
+    nuntly.get("/emails/em_1", Object.class, RequestOptions.none());
+    assertEquals(1, retries.get());
+
+    stop();
+    var refused = serve(call -> new Reply(503, Map.of("X-Should-Retry", "False")));
+    assertThrows(
+        ApiError.InternalServerError.class,
+        () -> refused.get("/emails/em_1", Object.class, RequestOptions.none()));
+    assertEquals(1, retries.get());
   }
 }

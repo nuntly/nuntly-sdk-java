@@ -28,9 +28,9 @@ public final class TemplatesVersions extends Resource {
   /** List the versions of a template. */
   public CursorPage<TemplateVersionsResponseItem> list(
       String templateId, TemplatesVersionsListParams params) {
-    var query = new HashMap<String, String>();
+    var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
-    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.limit().ifPresent(v -> query.put("limit", v));
     return client.list(
         "/templates/" + pathParam("templateId", templateId) + "/versions",
         TemplateVersionsResponseItem.class,

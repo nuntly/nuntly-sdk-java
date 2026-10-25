@@ -19,9 +19,7 @@ public record ClientOptions(
 
   public ClientOptions {
     // Request paths start with "/".
-    if (baseUrl != null && baseUrl.endsWith("/")) {
-      baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
-    }
+    if (baseUrl != null) baseUrl = baseUrl.replaceFirst("/+$", "");
   }
 
   public static Builder builder() {

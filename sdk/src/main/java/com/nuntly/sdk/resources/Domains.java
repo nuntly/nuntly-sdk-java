@@ -32,9 +32,9 @@ public final class Domains extends Resource {
    * its verification status and sending and receiving status.
    */
   public CursorPage<DomainsResponseItem> list(DomainsListParams params) {
-    var query = new HashMap<String, String>();
+    var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
-    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.limit().ifPresent(v -> query.put("limit", v));
     return client.list("/domains", DomainsResponseItem.class, query, RequestOptions.none());
   }
 

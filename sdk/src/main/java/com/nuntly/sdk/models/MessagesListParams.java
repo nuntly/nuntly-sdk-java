@@ -6,7 +6,7 @@ import java.util.Optional;
  * Query parameters of {@code nuntly.messages().list(...)}.
  *
  * @param cursor The cursor to retrieve the next page of results
- * @param limit The maximum number of results to return
+ * @param limit The maximum number of results to return, from 1 to 30. Defaults to 30.
  * @param domainId Filter by domain.
  * @param from Filter by sender address.
  */
@@ -31,7 +31,7 @@ public record MessagesListParams(
       return this;
     }
 
-    /** The maximum number of results to return */
+    /** The maximum number of results to return, from 1 to 30. Defaults to 30. */
     public Builder limit(Integer limit) {
       this.limit = limit;
       return this;

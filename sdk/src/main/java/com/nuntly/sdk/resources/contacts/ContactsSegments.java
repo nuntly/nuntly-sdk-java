@@ -25,15 +25,11 @@ public final class ContactsSegments extends Resource {
 
   /** List a contact's segments. */
   public List<ContactSegmentsResponseItem> list(String contactId) {
-    var response =
-        client.rawRequest(
-            "GET",
+    return List.of(
+        client.get(
             "/contacts/" + pathParam("contactId", contactId) + "/segments",
-            null,
-            RequestOptions.none());
-    var json = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
-    var items = client.gson().fromJson(json.get("data"), ContactSegmentsResponseItem[].class);
-    return List.of(items);
+            ContactSegmentsResponseItem[].class,
+            RequestOptions.none()));
   }
 
   /** Remove a contact from a segment. */

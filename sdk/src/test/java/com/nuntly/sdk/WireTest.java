@@ -116,6 +116,12 @@ class WireTest {
                         """
                         {"data":[{"id":"bcr_1","contactId":null,"email":"jane@example.com","outcome":"delivered","createdAt":"2026-01-01T00:00:00Z"}],"nextCursor":null}\
                         """);
+                case String p when p.equals("/contacts/ct_1/segments") ->
+                    new MockResponse(
+                        200,
+                        """
+                        {"data":[{"segmentId":"seg_1","createdAt":"2026-01-01T00:00:00Z"},{"segmentId":"seg_2","createdAt":"2026-01-02T00:00:00Z"}]}\
+                        """);
                 case String p when p.startsWith("/messages/msg_null/content") ->
                     new MockResponse(
                         200,
@@ -160,6 +166,18 @@ class WireTest {
             .baseUrl("http://localhost:" + port)
             .disableRetry()
             .build());
+  }
+
+  @Test
+  void aNonPaginatedListReadsTheItemsUnderData() {
+    var segments = createClient().contacts().segments().list("ct_1");
+
+    assertEquals("GET", lastMethod);
+    assertEquals(
+        List.of(
+            new ContactSegmentsResponseItem("seg_1", "2026-01-01T00:00:00Z"),
+            new ContactSegmentsResponseItem("seg_2", "2026-01-02T00:00:00Z")),
+        segments);
   }
 
   @Test

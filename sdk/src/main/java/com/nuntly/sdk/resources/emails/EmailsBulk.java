@@ -30,11 +30,7 @@ public final class EmailsBulk extends Resource {
   }
 
   public CreateBulkEmailsResponse send(CreateBulkEmailsRequest body, RequestOptions opts) {
-    var idempotencyKey = opts.idempotencyKey().orElse(UUID.randomUUID().toString());
-    var headers = new HashMap<String, String>(opts.headers());
-    headers.putIfAbsent("Idempotency-Key", idempotencyKey);
-    var optsWithKey =
-        new RequestOptions(opts.timeout(), opts.maxRetries(), headers, Optional.of(idempotencyKey));
-    return client.post("/emails/bulk", body, CreateBulkEmailsResponse.class, optsWithKey);
+    return client.post(
+        "/emails/bulk", body, CreateBulkEmailsResponse.class, withIdempotencyKey(opts));
   }
 }

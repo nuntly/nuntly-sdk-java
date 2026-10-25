@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.annotations.SerializedName;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -79,5 +81,68 @@ class ExplicitNullTypeAdapterFactoryTest {
     properties.put("plan", null);
     assertEquals("{\"properties\":{\"plan\":null}}", GSON.toJson(new Contact(properties)));
     assertEquals("{}", GSON.toJson(new Contact(null)));
+  }
+
+  private enum Plan {
+    @SerializedName("pro")
+    PRO
+  }
+
+  // An Iterable that is not a collection, like java.nio.file.Path, which iterates over itself.
+  public record Labels(List<String> names) implements Iterable<String> {
+    @Override
+    public java.util.Iterator<String> iterator() {
+      return names.iterator();
+    }
+  }
+
+  @Test
+  void writesAnIterableThatIsNotACollectionWithItsOwnAdapter() {
+    var properties = new HashMap<String, Object>();
+    properties.put("labels", new Labels(List.of("vip")));
+
+    assertEquals(
+        "{\"properties\":{\"labels\":{\"names\":[\"vip\"]}}}",
+        GSON.toJson(new Contact(properties)));
+  }
+
+  @Test
+  void writesNullsNestedInAnArray() {
+    var address = new HashMap<String, Object>();
+    address.put("line2", null);
+    var properties = new HashMap<String, Object>();
+    properties.put("history", new Object[] {address, null});
+
+    assertEquals(
+        "{\"properties\":{\"history\":[{\"line2\":null},null]}}",
+        GSON.toJson(new Contact(properties)));
+  }
+
+  public record Tier(JsonNullable<Plan> plan) {}
+
+  // Gson's enum adapter reads a value it does not know as null. Reading it as JsonNullable.ofNull()
+  // would clear the field on the server when the record is copied into an update.
+  @Test
+  void readsAValueTheInnerAdapterCannotDecodeAsAbsent() {
+    var tier = GSON.fromJson("{\"plan\":\"enterprise\"}", Tier.class);
+
+    assertEquals(JsonNullable.absent(), tier.plan());
+    assertEquals("{}", GSON.toJson(tier));
+  }
+
+  // Like JSON.stringify in the TypeScript SDK: a null at any depth is sent, an enum as its value.
+  @Test
+  void writesNullsNestedInAMapMarkedForThemAndEnumsAsTheirValue() {
+    var address = new HashMap<String, Object>();
+    address.put("line2", null);
+    address.put("plan", Plan.PRO);
+    var properties = new HashMap<String, Object>();
+    properties.put("address", address);
+    properties.put("history", List.of(address));
+
+    assertEquals(
+        "{\"properties\":{\"address\":{\"line2\":null,\"plan\":\"pro\"},"
+            + "\"history\":[{\"line2\":null,\"plan\":\"pro\"}]}}",
+        GSON.toJson(new Contact(properties)));
   }
 }

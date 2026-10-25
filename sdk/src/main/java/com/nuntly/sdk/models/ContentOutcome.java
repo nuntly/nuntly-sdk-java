@@ -3,7 +3,7 @@ package com.nuntly.sdk.models;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.JsonAdapter;
 import java.lang.reflect.Type;
 
@@ -27,9 +27,12 @@ public sealed interface ContentOutcome {
     @Override
     public ContentOutcome deserialize(
         JsonElement json, Type type, JsonDeserializationContext context) {
+      if (!json.isJsonObject()) {
+        throw new JsonSyntaxException("ContentOutcome is not an object");
+      }
       var discriminator = json.getAsJsonObject().get("status");
       if (discriminator == null || !discriminator.isJsonPrimitive()) {
-        throw new JsonParseException("ContentOutcome without a status");
+        throw new JsonSyntaxException("ContentOutcome without a status");
       }
       var value = discriminator.getAsString();
       return switch (value) {

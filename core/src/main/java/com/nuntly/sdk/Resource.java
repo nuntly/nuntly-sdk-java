@@ -2,6 +2,11 @@ package com.nuntly.sdk;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Base class for SDK resources (Emails, Domains, Webhooks, ...). Holds the shared {@link
@@ -23,5 +28,31 @@ public abstract class Resource {
     }
     // Percent-encoded, so a '/', '?' or '#' in the value cannot change the route.
     return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
+  }
+
+  // A retry replays the same key, so the server applies the request once.
+  // A key header the caller set, in any case, wins over the option and is never sent twice;
+  // one set to null counts as not set.
+  protected static RequestOptions withIdempotencyKey(RequestOptions opts) {
+    var header =
+        opts.headers().entrySet().stream()
+            .filter(e -> isKeyHeader(e.getKey()) && e.getValue() != null)
+            // The exact spelling wins over another case variant of the header.
+            .min(Comparator.comparing(e -> !e.getKey().equals("Idempotency-Key")))
+            .map(e -> Map.entry(e.getKey(), e.getValue()))
+            .orElseGet(
+                () ->
+                    Map.entry(
+                        "Idempotency-Key",
+                        opts.idempotencyKey().orElseGet(() -> UUID.randomUUID().toString())));
+    var headers = new HashMap<>(opts.headers());
+    headers.keySet().removeIf(Resource::isKeyHeader);
+    headers.put(header.getKey(), header.getValue());
+    return new RequestOptions(
+        opts.timeout(), opts.maxRetries(), headers, Optional.of(header.getValue()));
+  }
+
+  private static boolean isKeyHeader(String name) {
+    return name.equalsIgnoreCase("Idempotency-Key");
   }
 }

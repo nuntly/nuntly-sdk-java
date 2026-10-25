@@ -16,9 +16,9 @@ public final class ThreadsMessages extends Resource {
    */
   public CursorPage<ThreadMessagesResponseItem> list(
       String threadId, ThreadsMessagesListParams params) {
-    var query = new HashMap<String, String>();
+    var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
-    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.limit().ifPresent(v -> query.put("limit", v));
     return client.list(
         "/threads/" + pathParam("threadId", threadId) + "/messages",
         ThreadMessagesResponseItem.class,

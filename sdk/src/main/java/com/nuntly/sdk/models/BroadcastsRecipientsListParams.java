@@ -6,7 +6,7 @@ import java.util.Optional;
  * Query parameters of {@code nuntly.broadcasts().recipients().list(...)}.
  *
  * @param cursor The cursor to retrieve the next page of results
- * @param limit The maximum number of results to return
+ * @param limit The maximum number of results to return, from 1 to 30. Defaults to 30.
  */
 public record BroadcastsRecipientsListParams(Optional<String> cursor, Optional<Integer> limit) {
   public static Builder builder() {
@@ -23,7 +23,7 @@ public record BroadcastsRecipientsListParams(Optional<String> cursor, Optional<I
       return this;
     }
 
-    /** The maximum number of results to return */
+    /** The maximum number of results to return, from 1 to 30. Defaults to 30. */
     public Builder limit(Integer limit) {
       this.limit = limit;
       return this;

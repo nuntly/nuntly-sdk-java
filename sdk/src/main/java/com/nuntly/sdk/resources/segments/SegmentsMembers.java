@@ -13,9 +13,9 @@ public final class SegmentsMembers extends Resource {
   /** List the members of a segment. */
   public CursorPage<SegmentMembersResponseItem> list(
       String segmentId, SegmentsMembersListParams params) {
-    var query = new HashMap<String, String>();
+    var query = new HashMap<String, Object>();
     params.cursor().ifPresent(v -> query.put("cursor", v));
-    params.limit().ifPresent(v -> query.put("limit", v.toString()));
+    params.limit().ifPresent(v -> query.put("limit", v));
     return client.list(
         "/segments/" + pathParam("segmentId", segmentId) + "/members",
         SegmentMembersResponseItem.class,

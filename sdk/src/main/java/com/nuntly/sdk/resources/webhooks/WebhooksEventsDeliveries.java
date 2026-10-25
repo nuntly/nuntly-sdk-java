@@ -15,19 +15,14 @@ public final class WebhooksEventsDeliveries extends Resource {
    * code, response data, and delivery time of each attempt.
    */
   public List<WebhookEventDeliveriesResponseItem> list(String id, String eventId) {
-    var response =
-        client.rawRequest(
-            "GET",
+    return List.of(
+        client.get(
             "/webhooks/"
                 + pathParam("id", id)
                 + "/events/"
                 + pathParam("eventId", eventId)
                 + "/deliveries",
-            null,
-            RequestOptions.none());
-    var json = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
-    var items =
-        client.gson().fromJson(json.get("data"), WebhookEventDeliveriesResponseItem[].class);
-    return List.of(items);
+            WebhookEventDeliveriesResponseItem[].class,
+            RequestOptions.none()));
   }
 }

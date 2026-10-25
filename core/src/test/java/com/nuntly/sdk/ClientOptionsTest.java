@@ -23,4 +23,12 @@ class ClientOptionsTest {
 
     assertEquals("https://api.nuntly.com", options.baseUrl());
   }
+
+  @Test
+  void dropsEveryTrailingSlashOfTheBaseUrl() {
+    var options =
+        ClientOptions.builder().apiKey("test_key").baseUrl("https://api.nuntly.com//").build();
+
+    assertEquals("https://api.nuntly.com", options.baseUrl());
+  }
 }
