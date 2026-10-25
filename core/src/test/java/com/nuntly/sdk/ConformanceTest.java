@@ -486,12 +486,14 @@ class ConformanceTest {
     var query = stringMap(request.getAsJsonObject("query"));
 
     var ids = new ArrayList<String>();
+    CursorPage<JsonObject> firstPage = null;
     Throwable error = null;
     try {
       var page =
           nuntly.list(
               request.get("path").getAsString(), JsonObject.class, query, RequestOptions.none());
       if (c.get("action").getAsString().equals("nextPage")) {
+        firstPage = page;
         page.nextPage();
       } else {
         page.forEach(item -> ids.add(item.get("id").getAsString()));
@@ -501,7 +503,7 @@ class ConformanceTest {
     }
 
     var expected = c.getAsJsonObject("expected");
-    assertAsserted(expected, "calls", "queries", "ids", "error");
+    assertAsserted(expected, "calls", "queries", "ids", "nextCursor", "error");
     assertEquals(expected.get("calls").getAsInt(), http.requests.size(), "calls");
     if (expected.has("queries")) {
       var queries = http.requests.stream().map(r -> queryOf(r.uri())).toList();
@@ -513,6 +515,12 @@ class ConformanceTest {
       assertEquals(
           expected.getAsJsonArray("ids").asList().stream().map(JsonElement::getAsString).toList(),
           ids);
+    }
+    if (expected.has("nextCursor")) {
+      var cursor = expected.get("nextCursor");
+      assertEquals(
+          cursor.isJsonNull() ? Optional.empty() : Optional.of(cursor.getAsString()),
+          firstPage == null ? null : firstPage.nextCursor());
     }
     if (expected.has("error")) assertError(error, expected.getAsJsonObject("error"));
     else assertEquals(null, error);

@@ -27,8 +27,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
 /**
- * Runs the conformance cases that call the generated resources: the path id cases of transport.json
- * and forward-compat.json.
+ * Runs the conformance cases that call the generated resources: the path id cases of
+ * transport.json, forward-compat.json and serialization.json.
  */
 class ResourceConformanceTest {
 
@@ -115,6 +115,28 @@ class ResourceConformanceTest {
     } else {
       assertEquals("UNKNOWN", field.name());
     }
+  }
+
+  @TestFactory
+  Stream<DynamicTest> serialization() throws IOException {
+    return Conformance.each("serialization.json", ResourceConformanceTest::readNumber);
+  }
+
+  private static void readNumber(JsonObject c) throws ReflectiveOperationException {
+    responseBody = c.getAsJsonObject("response").get("body").toString();
+    Object value = invoke(c.getAsJsonObject("call"));
+    var expected = c.getAsJsonObject("expected");
+    Conformance.assertAsserted(expected, "path", "number", "integer");
+    var path = expected.getAsJsonArray("path").asList();
+    value = value.getClass().getMethod(path.get(0).getAsString()).invoke(value);
+    for (var key : path.subList(1, path.size())) value = ((Map<?, ?>) value).get(key.getAsString());
+    var number = expected.get("number").getAsBigDecimal();
+    // Boxed apart: a ternary over long and double would widen the Long to a Double.
+    Object wanted =
+        expected.get("integer").getAsBoolean()
+            ? (Object) number.longValueExact()
+            : (Object) number.doubleValue();
+    assertEquals(wanted, value);
   }
 
   private static Object invoke(JsonObject call) throws ReflectiveOperationException {

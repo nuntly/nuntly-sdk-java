@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.google.gson.ToNumberPolicy;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.URI;
@@ -35,10 +36,14 @@ public final class NuntlyClient {
   private static final long MAX_RETRY_AFTER_MS = 60_000;
   // Optional adapter is mandatory: without it, Gson falls back to reflection
   // on java.util.Optional, which the JDK 17+ module system refuses to allow.
+  // LONG_OR_DOUBLE: an integer in a map or Object value reads as an exact Long, not a Double
+  // that loses precision above 2^53.
   private static final Gson GSON =
       new GsonBuilder()
           .registerTypeAdapterFactory(new OptionalTypeAdapterFactory())
           .registerTypeAdapterFactory(new ExplicitNullTypeAdapterFactory())
+          .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+          .setNumberToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
           .create();
 
   private final ClientOptions options;

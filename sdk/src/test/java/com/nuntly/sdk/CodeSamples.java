@@ -1,7 +1,10 @@
 package com.nuntly.sdk;
 
 import com.nuntly.sdk.models.*;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 
 final class CodeSamples {
   private CodeSamples() {}
@@ -638,5 +641,84 @@ final class CodeSamples {
                 AgentMemoryRequest.builder()
                     .memory(java.util.Map.of("lastTopic", "billing", "openTickets", 2))
                     .build());
+  }
+
+  static void readmeQuickStart() {
+    var nuntly =
+        Nuntly.create(ClientOptions.builder().apiKey(System.getenv("NUNTLY_API_KEY")).build());
+
+    var email =
+        nuntly
+            .emails()
+            .send(
+                CreateEmailRequest.builder()
+                    .from("hello@yourcompany.com")
+                    .to(List.of("recipient@example.com"))
+                    .subject("Welcome to Nuntly")
+                    .html("<h1>Welcome!</h1><p>Your account is ready.</p>")
+                    .build());
+
+    System.out.println(email.id());
+  }
+
+  static void readmeBroadcastQuickStart() {
+    var nuntly =
+        Nuntly.create(ClientOptions.builder().apiKey(System.getenv("NUNTLY_API_KEY")).build());
+
+    // A contact in a segment
+    var contact =
+        nuntly
+            .contacts()
+            .create(CreateContactRequest.builder().email("jane@yourcustomer.com").build());
+    var segment =
+        nuntly.segments().create(CreateSegmentRequest.builder().name("Early adopters").build());
+    nuntly.contacts().segments().add(contact.id(), segment.id());
+
+    // A template with one published version
+    var template =
+        nuntly
+            .templates()
+            .create(CreateTemplateRequest.builder().name("Monthly product update").build());
+    var version =
+        nuntly
+            .templates()
+            .versions()
+            .create(
+                template.id(),
+                CreateTemplateVersionRequest.builder()
+                    .subject("What shipped in {{month}}")
+                    .html(
+                        "<p>Here is what shipped in {{month}}.</p><p><a"
+                            + " href=\"{{system.unsubscribeUrl}}\">Unsubscribe</a></p>")
+                    .variables(
+                        List.of(
+                            VariableDeclaration.builder()
+                                .name("month")
+                                .type(VariableDeclarationType.STRING)
+                                .build()))
+                    .build());
+    nuntly.templates().versions().publish(template.id(), version.id());
+
+    // A broadcast to the segment, scheduled in one hour
+    var broadcast =
+        nuntly
+            .broadcasts()
+            .create(
+                CreateBroadcastRequest.builder()
+                    .from("Your Company <updates@yourcompany.com>")
+                    .templateId(template.id())
+                    .segmentId(segment.id())
+                    .variables(Map.of("month", "October"))
+                    .build());
+    var sent =
+        nuntly
+            .broadcasts()
+            .send(
+                broadcast.id(),
+                SendBroadcastRequest.builder()
+                    .scheduledAt(Instant.now().plus(1, ChronoUnit.HOURS).toString())
+                    .build());
+
+    System.out.println(sent.status()); // SCHEDULED
   }
 }

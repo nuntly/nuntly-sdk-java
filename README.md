@@ -60,6 +60,63 @@ var email = nuntly.emails().send(CreateEmailRequest.builder()
 System.out.println(email.id());
 ```
 
+Sending needs a verified domain: the `from` address must be on a domain you added to Nuntly and verified (see [sending domains](https://nuntly.com/docs/guides/sending-domains)). Until then, a send fails with the `domain_not_verified` error code, or `domain_not_found` for a domain you never added.
+
+## Broadcast quick start
+
+A broadcast sends one template to the contacts of a segment. This code creates a contact in a segment, publishes a template version, then schedules a broadcast:
+
+```java
+import com.nuntly.sdk.*;
+import com.nuntly.sdk.models.*;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Map;
+
+var nuntly = Nuntly.create(ClientOptions.builder()
+    .apiKey(System.getenv("NUNTLY_API_KEY"))
+    .build());
+
+// A contact in a segment
+var contact = nuntly.contacts().create(CreateContactRequest.builder()
+    .email("jane@yourcustomer.com")
+    .build());
+var segment = nuntly.segments().create(CreateSegmentRequest.builder()
+    .name("Early adopters")
+    .build());
+nuntly.contacts().segments().add(contact.id(), segment.id());
+
+// A template with one published version
+var template = nuntly.templates().create(CreateTemplateRequest.builder()
+    .name("Monthly product update")
+    .build());
+var version = nuntly.templates().versions().create(template.id(), CreateTemplateVersionRequest.builder()
+    .subject("What shipped in {{month}}")
+    .html("<p>Here is what shipped in {{month}}.</p><p><a href=\"{{system.unsubscribeUrl}}\">Unsubscribe</a></p>")
+    .variables(List.of(VariableDeclaration.builder()
+        .name("month")
+        .type(VariableDeclarationType.STRING)
+        .build()))
+    .build());
+nuntly.templates().versions().publish(template.id(), version.id());
+
+// A broadcast to the segment, scheduled in one hour
+var broadcast = nuntly.broadcasts().create(CreateBroadcastRequest.builder()
+    .from("Your Company <updates@yourcompany.com>")
+    .templateId(template.id())
+    .segmentId(segment.id())
+    .variables(Map.of("month", "October"))
+    .build());
+var sent = nuntly.broadcasts().send(broadcast.id(), SendBroadcastRequest.builder()
+    .scheduledAt(Instant.now().plus(1, ChronoUnit.HOURS).toString())
+    .build());
+
+System.out.println(sent.status()); // SCHEDULED
+```
+
+Call `send(broadcast.id())` to send the broadcast right away. A version whose HTML has no `{{system.unsubscribeUrl}}` link cannot be published. The broadcast `from` address needs a verified domain too, or `broadcasts().create()` fails with `broadcast_no_eligible_domain`. See the [broadcast guides](https://nuntly.com/docs/guides/broadcast-overview) for segments, topics and unsubscribes.
+
 ## Configuration
 
 ```java
