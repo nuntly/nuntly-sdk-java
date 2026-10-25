@@ -21,9 +21,6 @@ public record EmailRejectedEventData(
     List<String> bcc,
     List<String> replyTo,
     Optional<String> subject,
-    List<HeadersItem> headers,
+    List<EmailEvent.HeadersItem> headers,
     Map<String, Object> tags,
-    RejectDetail reject) {
-
-  public record HeadersItem(String name, String value) {}
-}
+    RejectDetail reject) {}
